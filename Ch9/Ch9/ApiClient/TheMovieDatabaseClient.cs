@@ -40,6 +40,8 @@ namespace Ch9.ApiClient
             public HttpStatusCode HttpStatusCode { get; set; }
         }
 
+        
+
 
 
 
@@ -53,6 +55,7 @@ namespace Ch9.ApiClient
         private const string TRENDING_Day_Path = "/trending/movie/day";
         private const string MOVIE_Details_Path = "/movie";
         private Func<int, string> GET_Movie_Images_Path = (int Id) => ("/movie/" + Id + "/images");
+        private const string LANGUAGE_Selector = "language";
 
 
         private const string API_KEY_KEY = "api_key";
@@ -264,5 +267,63 @@ namespace Ch9.ApiClient
                 movie.GalleryDisplayImage = movie.GalleryDisplayImages[0];            
             }
         }
+
+
+
+        // NEW REFACTORED CODE AFTER THIS LINE OLD CODE ABOVE
+
+        public class GenreNameFetchResult
+        {
+            public HttpStatusCode HttpStatusCode { get; set; }
+            public GenreIdNamePair[] IdNamePairs { get; set; }
+        }
+
+
+        // Fetches Genre information from WebAPI
+        // indicates success or failure as Http code,
+        // retries as required
+        // ToDo: magic string (language should be replaced by enum type) 
+        public async Task<GenreNameFetchResult> FetchGenreIdsWithNames(string language = null,  int retryCount=0, int delayMilliseconds = 1000)
+        {
+            string baseUrl = BASE_Addr + BASE_Path + GENRE_List_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_KEY, API_KEY_Value);
+
+            if (!string.IsNullOrEmpty(language))
+                query.Add(LANGUAGE_Selector, language);
+
+
+            HttpResponseMessage response = null;
+            int counter = retryCount;
+
+            try
+            {
+                response = await HttpClient.GetAsync(QueryHelpers.AddQueryString(baseUrl, query));
+            }
+            catch { }
+            while (response?.IsSuccessStatusCode != true && counter > 0)
+            {
+                await Task.Delay(delayMilliseconds);
+
+                try
+                {
+                    response = await HttpClient.GetAsync(QueryHelpers.AddQueryString(baseUrl, query));
+                }
+                catch { }
+            }
+
+            GenreNameFetchResult result = new GenreNameFetchResult { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout };
+
+            if (response.IsSuccessStatusCode)
+            {
+                var message = await response.Content.ReadAsStringAsync();
+                GenreIdNamePairWrapper responseObject = JsonConvert.DeserializeObject<GenreIdNamePairWrapper>(message);
+                result.IdNamePairs = responseObject.Genres;
+            }
+            return result;
+        }
+
+
     }
 }

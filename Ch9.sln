@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ch9.Android", "Ch9\Ch9.Andr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ch9", "Ch9\Ch9\Ch9.csproj", "{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mock", "Mock\Mock.csproj", "{7AFB5FE5-B93D-4F8D-A9C3-78BD97CABE1C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,10 +25,6 @@ Global
 		{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{7AFB5FE5-B93D-4F8D-A9C3-78BD97CABE1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7AFB5FE5-B93D-4F8D-A9C3-78BD97CABE1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7AFB5FE5-B93D-4F8D-A9C3-78BD97CABE1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7AFB5FE5-B93D-4F8D-A9C3-78BD97CABE1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

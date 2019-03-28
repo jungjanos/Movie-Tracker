@@ -14,17 +14,22 @@ namespace Ch9
 	public partial class MainSettingsPage : ContentPage
 	{
         private Settings settings;
+        private MovieGenreSettings movieGenreSettings;
 
 		public MainSettingsPage ()
 		{
             settings = ((App)Application.Current).Settings;
+            movieGenreSettings = ((App)Application.Current).MovieGenreSettings;
             InitializeComponent ();
             BindingContext = settings;
 		}
 
-        private void OnSearchLanguage_Changed(object sender, EventArgs e)
+        private async void OnSearchLanguage_Changed(object sender, EventArgs e)
         {
             settings.SearchLanguage =  searchLanguagePicker.Items[searchLanguagePicker.SelectedIndex];
+
+            await movieGenreSettings.OnSearchLanguageChanged(settings.SearchLanguage);           
+
         }
 
         private async void OnSelectGenres_Tapped(object sender, EventArgs e)

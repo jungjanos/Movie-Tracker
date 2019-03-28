@@ -25,7 +25,6 @@ namespace Ch9.Models
         [JsonProperty("overview")]
         public string Overview { get; set; }
 
-
         [JsonProperty("poster_path")]
         public string ImgPosterName { get; set; }
 
@@ -40,7 +39,6 @@ namespace Ch9.Models
 
         [JsonProperty("vote_average")]
         public double VoteAverage { get; set; }
-
 
         public string ImgSmSrc { get; set; }
 

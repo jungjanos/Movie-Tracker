@@ -21,8 +21,6 @@ namespace Ch9
 			InitializeComponent ();
             //genreListView.BindingContext = movieGenreSettings.GenreSelectionDisplay;
             genreListView.ItemsSource = movieGenreSettings.GenreSelectionDisplay;
-
-
         }
 
 

@@ -16,7 +16,7 @@ namespace Ch9
 
         public TheMovieDatabaseClient ApiClient { get; } = new TheMovieDatabaseClient();
         public IAppCache MovieSearchCache { get; } = new CachingService();
-        public Func<string, Task<TheMovieDatabaseClient.SearchResult>> movieGetter;
+        public Func<string, string, bool?, Task<TheMovieDatabaseClient.SearchResult>> movieGetter;
         public Func<Task<TheMovieDatabaseClient.SearchResult>> trendingWeekGetter;
         public Func<Task<TheMovieDatabaseClient.SearchResult>> trendingDayGetter;
         public Func<MovieDetailModel, Task<TheMovieDatabaseClient.MovieDetailsUpdateResult>> movieModelDeatilUpdateGetter;
@@ -27,9 +27,9 @@ namespace Ch9
             Settings = new Settings();
             MovieGenreSettings = new MovieGenreSettings();
 
-            movieGetter = (string searchString) =>
+            movieGetter = (string searchString, string searchLanguage, bool? includeAdult) =>
             {
-                return MovieSearchCache.GetOrAddAsync(searchString, () => ApiClient.SearchByMovie(searchString));
+                return MovieSearchCache.GetOrAddAsync(searchString, () => ApiClient.SearchByMovie(searchString, searchLanguage, includeAdult));
             };
 
             trendingWeekGetter = () =>

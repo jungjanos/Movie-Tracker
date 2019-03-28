@@ -203,12 +203,6 @@ namespace Ch9.Models
             return obj.Id;
         }
     }
-
-    [Flags]
-    public enum MovieCategories
-    {
-        
-    }
 }
 
 

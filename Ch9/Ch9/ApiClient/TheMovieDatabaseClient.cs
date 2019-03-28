@@ -13,22 +13,6 @@ namespace Ch9.ApiClient
 {
     public class TheMovieDatabaseClient
     {
-        public class SearchResult
-        {
-            public HttpStatusCode HttpStatusCode { get; set; }
-
-            [JsonProperty("page")]
-            public int Page { get; set; }
-
-            [JsonProperty("results")]
-            public List<MovieDetailModel> MovieDetailModels { get; set; }
-
-            [JsonProperty("total_results")]
-            public int TotalResults { get; set; }
-
-            [JsonProperty("total_pages")]
-            public int TotalPages { get; set; }
-        }
 
         public class MovieDetailsUpdateResult
         {
@@ -42,9 +26,6 @@ namespace Ch9.ApiClient
 
         
 
-
-
-
         private const string BASE_Addr = "https://api.themoviedb.org";
         private const string BASE_Path = "/3";
         private const string CONFIG_Path = "/configuration";
@@ -55,7 +36,9 @@ namespace Ch9.ApiClient
         private const string TRENDING_Day_Path = "/trending/movie/day";
         private const string MOVIE_Details_Path = "/movie";
         private Func<int, string> GET_Movie_Images_Path = (int Id) => ("/movie/" + Id + "/images");
-        private const string LANGUAGE_Selector = "language";
+        private const string LANGUAGE_Key = "language";
+        private const string PAGE_Key = "page";
+        private const string INCLUDE_Adult_Key = "include_adult";
 
 
         private const string API_KEY_KEY = "api_key";
@@ -114,41 +97,8 @@ namespace Ch9.ApiClient
 
                 ConfigurationModel = JsonConvert.DeserializeObject<TmdbConfigurationModel>(configResponse);
             }
-        }
+        }       
 
-        public async Task<SearchResult> SearchByMovie(string searchString, int page = 0)
-        {
-            string baseUrl = BASE_Addr + BASE_Path + SEARCH_Movie_Path;
-
-            var query = new Dictionary<string, string>();
-            query.Add(API_KEY_KEY, API_KEY_Value);
-            query.Add(SEARCH_Query_Key, searchString);
-            query.Add("include_adult", "false");
-            if (page > 0)
-                query.Add("page", page.ToString());
-
-            var response = await HttpClient.GetAsync(QueryHelpers.AddQueryString(baseUrl, query));
-            SearchResult searchResult = new SearchResult()
-            {
-                HttpStatusCode = response.StatusCode,
-                MovieDetailModels = new List<MovieDetailModel>()
-            };
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                string content = await response.Content.ReadAsStringAsync();
-                searchResult.MovieDetailModels = JsonConvert.DeserializeObject<SearchResult>(content).MovieDetailModels
-                                                .Where(x => x.ReleaseDate > DateTime.Today - TimeSpan.FromDays(365 * 30))
-                                                .Where(x => x.ReleaseDate?.Year <= DateTime.Today.Year).
-                                                Where(x => x.GenreIds != null && x.GenreIds.Length != 0)
-                                                .ToList();
-
-                SetGenreNamesFromGenreIds(searchResult.MovieDetailModels);
-                SetImageSrc(searchResult.MovieDetailModels);
-            }
-
-            return searchResult;
-        }
 
         public async Task<SearchResult> GetTrending(bool week = true)
         {
@@ -291,7 +241,7 @@ namespace Ch9.ApiClient
             query.Add(API_KEY_KEY, API_KEY_Value);
 
             if (!string.IsNullOrEmpty(language))
-                query.Add(LANGUAGE_Selector, language);
+                query.Add(LANGUAGE_Key, language);
 
 
             HttpResponseMessage response = null;
@@ -325,5 +275,76 @@ namespace Ch9.ApiClient
         }
 
 
+
+        public class SearchResult
+        {
+            public HttpStatusCode HttpStatusCode { get; set; }
+
+            [JsonProperty("page")]
+            public int Page { get; set; }
+
+            [JsonProperty("results")]
+            public List<MovieDetailModel> MovieDetailModels { get; set; }
+
+            [JsonProperty("total_results")]
+            public int TotalResults { get; set; }
+
+            [JsonProperty("total_pages")]
+            public int TotalPages { get; set; }
+        }
+
+        // Searches for moves according to settings 
+        // Swallows exceptions
+        // Modifies image paths ToDo: extract that function from here
+        public async Task<SearchResult> SearchByMovie(string searchString, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            string baseUrl = BASE_Addr + BASE_Path + SEARCH_Movie_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_KEY, API_KEY_Value);
+            query.Add(SEARCH_Query_Key, searchString);
+
+            if (!string.IsNullOrEmpty(language))
+                query.Add(LANGUAGE_Key, language);
+
+            if (includeAdult != null)
+            {
+                if (includeAdult.Value)
+                    query.Add(INCLUDE_Adult_Key, "true");
+                else
+                    query.Add(INCLUDE_Adult_Key, "false");
+            }
+
+            if (page > 0)
+                query.Add(PAGE_Key, page.ToString());
+
+            HttpResponseMessage response = null;
+            int counter = retryCount;
+
+            try
+            {
+                response = await HttpClient.GetAsync(QueryHelpers.AddQueryString(baseUrl, query));
+            }
+            catch { }
+            while (response?.IsSuccessStatusCode != true && counter > 0)
+            {
+                await Task.Delay(delayMilliseconds);
+
+                try
+                {
+                    response = await HttpClient.GetAsync(QueryHelpers.AddQueryString(baseUrl, query));
+                }
+                catch { }
+            }
+            SearchResult result = new SearchResult { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout };
+
+            if (response.IsSuccessStatusCode)
+            {
+                var message = await response.Content.ReadAsStringAsync();
+                JsonConvert.PopulateObject(message, result);
+                SetImageSrc(result.MovieDetailModels);
+            }
+            return result;
+        }
     }
 }

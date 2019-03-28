@@ -1,0 +1,191 @@
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using Xamarin.Forms;
+
+namespace Ch9.Models
+{
+    public class MovieGenreSettings
+    {
+        public class GenreItem : INotifyPropertyChanged
+        {
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            private void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+            protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
+            {
+                if (EqualityComparer<T>.Default.Equals(storage, value))
+                {
+                    return false;
+                }
+                storage = value;
+                OnPropertyChanged(propertyName);
+                return true;
+            }
+
+
+            public int Id { get; set; }
+
+            private string genreName;
+            public string GenreName
+            {
+                get => genreName;
+                set => SetProperty(ref genreName, value);
+            }
+
+            private bool isSelected;
+            public bool IsSelected
+            {
+                get => isSelected;
+                set => SetProperty(ref isSelected, value);
+            }
+        }
+
+        private IDictionary<string, object> appDictionary;
+
+        public ObservableCollection<GenreItem> GenreSelectionDisplay;
+
+
+        public HashSet<int> PreferredCategories;
+        public Dictionary<int, string> ExistingGenreCategories;
+
+        public MovieGenreSettings()
+        {
+            appDictionary = Application.Current.Properties;
+
+            InitializeExistingGenreCategories();
+            InitializePreferredCategories();
+
+            var items = ExistingGenreCategories.Select(x => new GenreItem
+            {
+                Id = x.Key,
+                GenreName = x.Value,
+                IsSelected = PreferredCategories.Contains(x.Key)
+            });
+
+            GenreSelectionDisplay = new ObservableCollection<GenreItem>(items);
+
+            foreach (var item in GenreSelectionDisplay)
+            {
+                item.PropertyChanged += GenreItem_PropertyChanged;
+            }
+        }
+
+        private void GenreItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var item = (GenreItem)sender;
+            if (item.IsSelected)
+                PreferredCategories.Add(item.Id);
+            else
+                PreferredCategories.Remove(item.Id);
+
+            SavePreferredCategories();
+        }
+
+        private void InitializeExistingGenreCategories()
+        {
+            if (appDictionary.ContainsKey(nameof(ExistingGenreCategories)))
+                ExistingGenreCategories = JsonConvert.DeserializeObject<Dictionary<int, string>>(appDictionary[nameof(ExistingGenreCategories)].ToString());
+            else
+            {
+                ExistingGenreCategories = new Dictionary<int, string>();
+                ExistingGenreCategories.Add(28, "Action");
+                ExistingGenreCategories.Add(12, "Adventure");
+                ExistingGenreCategories.Add(16, "Animation");
+                ExistingGenreCategories.Add(35, "Comedy");
+                ExistingGenreCategories.Add(80, "Crime");
+                ExistingGenreCategories.Add(99, "Documentary");
+                ExistingGenreCategories.Add(18, "Drama");
+                ExistingGenreCategories.Add(10751, "Family");
+                ExistingGenreCategories.Add(14, "Fantasy");
+                ExistingGenreCategories.Add(36, "History");
+                ExistingGenreCategories.Add(27, "Horror");
+                ExistingGenreCategories.Add(10402, "Music");
+                ExistingGenreCategories.Add(9648, "Mystery");
+                ExistingGenreCategories.Add(10749, "Romance");
+                ExistingGenreCategories.Add(878, "Science Fiction");
+                ExistingGenreCategories.Add(10770, "TV Movie");
+                ExistingGenreCategories.Add(53, "Thriller");
+                ExistingGenreCategories.Add(10752, "War");
+                ExistingGenreCategories.Add(37, "Western");
+            }
+        }
+
+        private void UpdateExistingGenreCategories(GenreIdNamePair[] genreIdNamePairs)
+        {
+            if (genreIdNamePairs?.Length < 1) return;
+
+            // Delete GenreItem-s which are not included in the new update
+            IEnumerable<GenreItem> toRemove = GenreSelectionDisplay.Where(x => genreIdNamePairs.Count(y => y.Id == x.Id) == 0);
+            foreach (GenreItem item in toRemove)
+                GenreSelectionDisplay.Remove(item);
+
+
+            // Update the old elements with the new name
+            foreach (var item in GenreSelectionDisplay)
+            {
+                item.GenreName = genreIdNamePairs.First(x => x.Id == item.Id).Name;
+            }
+
+            // Prepare and add new elements to the display collection
+            var newElements = genreIdNamePairs
+                .Where(x => GenreSelectionDisplay
+                .Count(y => y.Id == x.Id) == 0)
+                .Select(z =>
+                {
+                    var i = new GenreItem { Id = z.Id, GenreName = z.Name, IsSelected = true };
+                    i.PropertyChanged += GenreItem_PropertyChanged;
+                    return i;
+                });
+
+            foreach (GenreItem item in newElements)
+                GenreSelectionDisplay.Add(item);
+
+        }
+
+
+        private void InitializePreferredCategories()
+        {
+            if (appDictionary.ContainsKey(nameof(PreferredCategories)))
+                PreferredCategories = JsonConvert.DeserializeObject<HashSet<int>>(appDictionary[nameof(PreferredCategories)].ToString());
+            else
+            {
+                PreferredCategories = new HashSet<int>();
+                PreferredCategories.Add(28);
+                PreferredCategories.Add(12);
+                PreferredCategories.Add(16);
+                PreferredCategories.Add(35);
+                PreferredCategories.Add(80);
+                PreferredCategories.Add(18);
+                PreferredCategories.Add(10751);
+                PreferredCategories.Add(14);
+                PreferredCategories.Add(36);
+                PreferredCategories.Add(27);
+                PreferredCategories.Add(10402);
+                PreferredCategories.Add(9648);
+                PreferredCategories.Add(10749);
+                PreferredCategories.Add(878);
+                PreferredCategories.Add(53);
+                PreferredCategories.Add(10752);
+                PreferredCategories.Add(37);
+            }
+        }
+
+        public void SavePreferredCategories()
+        {
+            appDictionary[nameof(PreferredCategories)] = JsonConvert.SerializeObject(PreferredCategories);
+        }
+
+        public void SaveExistingCategories()
+        {
+            appDictionary[nameof(PreferredCategories)] = JsonConvert.SerializeObject(PreferredCategories);
+        }
+    }
+}

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Ch9.MainSettingsPage"
+             Padding="5,5,5,5">
+    <ContentPage.Content>
+        <TableView Intent="Settings">
+            <TableRoot>
+                
+                <TableSection Title="Account">
+                    <EntryCell Label="Api key" Text="{Binding Path=ApiKey}"/>
+                </TableSection>
+
+                <TableSection Title="Search settings">
+                    <SwitchCell Text="Include adult" On="{Binding Path=IncludeAdult}"/>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal" Padding="13,0" HorizontalOptions="FillAndExpand">
+                            <Label Text="Search language " VerticalTextAlignment="Center"/>
+                            <Picker x:Name="searchLanguagePicker" SelectedIndexChanged="OnSearchLanguage_Changed"
+                                    SelectedItem="{Binding Path=SearchLanguage}"
+                                    HorizontalOptions="EndAndExpand">
+                                <Picker.Items>
+                                    <x:String>en</x:String>
+                                    <x:String>hu</x:String>
+                                </Picker.Items>
+                            </Picker>
+                        </StackLayout>
+                    </ViewCell>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal" Padding="13,0" HorizontalOptions="FillAndExpand">
+                            <Label Text="{Binding Source={x:Reference periodStepper}, Path=Value, StringFormat='Search period (years):   {0}'}" VerticalTextAlignment="Center"/>
+                            <Stepper x:Name="periodStepper" Maximum="60" Minimum="1" Value="{Binding Path=SearchPeriod}"
+                                     HorizontalOptions="EndAndExpand"/>
+                        </StackLayout>                        
+                    </ViewCell>
+                    <ViewCell Tapped="OnSelectGenres_Tapped">
+                        <StackLayout Orientation="Horizontal" Padding="13,0">
+                            <Label Text="Configure search categories" VerticalTextAlignment="Center"/>                            
+                        </StackLayout>
+                    </ViewCell>                  
+                </TableSection>
+
+            </TableRoot>
+        </TableView>
+    </ContentPage.Content>
+</ContentPage>

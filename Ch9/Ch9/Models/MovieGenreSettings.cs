@@ -96,6 +96,7 @@ namespace Ch9.Models
                 item.PropertyChanged += GenreItem_PropertyChanged;
         }
 
+        // updates the existing categories with the new categories fassed as attribute
         private void UpdateExistingGenreCategories(GenreIdNamePair[] genreIdNamePairs)
         {
             if (genreIdNamePairs?.Length < 1) return;
@@ -141,7 +142,12 @@ namespace Ch9.Models
         {
             var result = await ((App)Application.Current).ApiClient.FetchGenreIdsWithNames(newLanguage, 2, 1000);
             if (199 < (int)result.HttpStatusCode && (int)result.HttpStatusCode < 300)
-                UpdateExistingGenreCategories(result.IdNamePairs);
+            {
+
+                //UpdateExistingGenreCategories(result.IdNamePairs);
+                var fetchedCategories = JsonConvert.DeserializeObject<GenreIdNamePairWrapper>(result.Json);
+                UpdateExistingGenreCategories(fetchedCategories.Genres);
+            }
         }
 
     }

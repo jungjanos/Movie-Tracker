@@ -92,6 +92,7 @@ namespace Ch9.ApiClient
         {
             public HttpStatusCode HttpStatusCode { get; set; }
             public GenreIdNamePair[] IdNamePairs { get; set; }
+            public string Json { get; set; }
         }
 
         // Fetches Genre information from WebAPI
@@ -131,11 +132,13 @@ namespace Ch9.ApiClient
             GenreNameFetchResult result = new GenreNameFetchResult { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout };
 
             if (response.IsSuccessStatusCode)
-            {
-                var message = await response.Content.ReadAsStringAsync();
-                GenreIdNamePairWrapper responseObject = JsonConvert.DeserializeObject<GenreIdNamePairWrapper>(message);
-                result.IdNamePairs = responseObject.Genres;
-            }
+                //{
+                //    var message = await response.Content.ReadAsStringAsync();
+                //    GenreIdNamePairWrapper responseObject = JsonConvert.DeserializeObject<GenreIdNamePairWrapper>(message);
+                //    result.IdNamePairs = responseObject.Genres;
+                //}
+                result.Json = await response.Content.ReadAsStringAsync();
+
             return result;
         }
 

@@ -56,10 +56,7 @@ namespace Ch9.Utils
                 movie.Genre = movie.GenreIds?.Length == null ? string.Empty :
                 string.Join(", ", movie.GenreIds.Select(id => movieGenreSettings.GenreSelectionDisplay.FirstOrDefault(y => y.Id == id)?.GenreName ?? string.Empty))
                 .TrimEnd(new char[] { ',', ' ' });
-
-
             }
         }
-
     }
 }

@@ -1,12 +1,7 @@
 ﻿using Ch9.Models;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using static Ch9.ApiClient.TheMovieDatabaseClient;

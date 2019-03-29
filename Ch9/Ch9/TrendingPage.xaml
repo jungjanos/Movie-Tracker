@@ -6,11 +6,10 @@
              x:Name="trendingPage">
     <ContentPage.Content>
         <StackLayout  Orientation="Vertical" Padding="5,0,5,5">
-            <StackLayout Orientation="Horizontal">
-                <Label x:Name="weekOrDayLabel" Text="Week"/>
+            <StackLayout Orientation="Horizontal" Padding="5">
+                <Label x:Name="weekOrDayLabel" Text="Week" VerticalTextAlignment="Center"/>
                 <Switch IsToggled="{Binding Source={x:Reference trendingPage}, Path=QueryTheWeek}" Toggled="WeekOrDaySwitch_Toggled"/>
             </StackLayout>
-
             
             <ListView x:Name="listView" HasUnevenRows="True" ItemTapped="ListView_ItemTapped">
                 <ListView.ItemTemplate>
@@ -40,6 +39,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

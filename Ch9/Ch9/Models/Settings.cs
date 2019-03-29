@@ -1,13 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.Collections.Generic;
 using Xamarin.Forms;
-using System.Linq;
-using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
-using System.Collections.Specialized;
 
 namespace Ch9.Models
 {

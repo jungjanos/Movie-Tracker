@@ -19,7 +19,7 @@ namespace Ch9
         public MovieDetailModelConfigurator MovieDetailModelConfigurator { get; set; }
 
 
-        public TheMovieDatabaseClient ApiClient { get; } = new TheMovieDatabaseClient();
+        public TheMovieDatabaseClient ApiClient { get; private set; } 
         public IAppCache MovieSearchCache { get; } = new CachingService();
         
         public Func<string, string, bool?, Task<TheMovieDatabaseClient.SearchByMovieResult>> movieGetter2;
@@ -35,6 +35,7 @@ namespace Ch9
         public App()
         {            
             Settings = new Settings();
+            ApiClient = new TheMovieDatabaseClient(Settings);
             MovieGenreSettings = new MovieGenreSettings();
 
             movieGetter2 = (string searchString, string searchLanguage, bool? includeAdult) =>

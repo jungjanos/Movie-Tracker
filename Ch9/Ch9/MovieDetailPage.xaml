@@ -18,9 +18,9 @@
         </ImageButton>
 
 
-        <StackLayout Orientation="Horizontal" Spacing="0">
-            <Label Text="{Binding Path=GalleryPositionCounter, StringFormat='{0}/'}" FontSize="Micro" HorizontalOptions="EndAndExpand"/>
-            <Label Text="{Binding Path=GalleryDisplayImages.Length, StringFormat='{0} gallery images (tap picture)'}" FontSize="Micro" HorizontalOptions="EndAndExpand"/>
+        <StackLayout Orientation="Horizontal" Spacing="0" HorizontalOptions="EndAndExpand">
+            <Label Text="{Binding Path=GalleryPositionCounter, StringFormat='{0}/'}" FontSize="Micro" HorizontalOptions="End"/>
+            <Label Text="{Binding Path=GalleryDisplayImages.Length, StringFormat='{0} gallery images (tap picture)'}" FontSize="Micro" HorizontalOptions="End"/>
         </StackLayout>
 
         <StackLayout Orientation="Horizontal" Spacing="10">

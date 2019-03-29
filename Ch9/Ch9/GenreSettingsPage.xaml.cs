@@ -18,8 +18,7 @@ namespace Ch9
 		public GenreSettingsPage ()
 		{
             movieGenreSettings = ((App)Application.Current).MovieGenreSettings;
-			InitializeComponent ();
-            //genreListView.BindingContext = movieGenreSettings.GenreSelectionDisplay;
+			InitializeComponent ();            
             genreListView.ItemsSource = movieGenreSettings.GenreSelectionDisplay;
         }
 

@@ -56,8 +56,7 @@ namespace Ch9
                     ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(obj.MovieDetailModels);
                     ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(obj.MovieDetailModels);
                     Utils.Utils.UpdateListviewCollection(movies, obj.MovieDetailModels, new MovieModelComparer());
-                }
-                    
+                }                    
             }
         }
 

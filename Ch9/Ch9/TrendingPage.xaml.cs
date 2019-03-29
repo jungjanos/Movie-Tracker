@@ -54,8 +54,8 @@ namespace Ch9
             {
                 string json = result.Json;
                 SearchResult obj = JsonConvert.DeserializeObject<SearchResult>(json);
-                ((App)Application.Current).ImagePathConfiguratorUtil.SetImageSrc(obj.MovieDetailModels);
-                
+                ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(obj.MovieDetailModels);
+                ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(obj.MovieDetailModels);
                 movies.Clear();                
                 foreach (MovieDetailModel movie in obj.MovieDetailModels)
                     movies.Add(movie);
@@ -72,7 +72,8 @@ namespace Ch9
             {
                 string json = result.Json;
                 SearchResult obj = JsonConvert.DeserializeObject<SearchResult>(json);
-                ((App)Application.Current).ImagePathConfiguratorUtil.SetImageSrc(obj.MovieDetailModels);
+                ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(obj.MovieDetailModels);
+                ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(obj.MovieDetailModels);
 
                 movies.Clear();
                 foreach (MovieDetailModel movie in obj.MovieDetailModels)

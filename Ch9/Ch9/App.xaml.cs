@@ -16,7 +16,7 @@ namespace Ch9
         public Settings Settings { get; private set; }
         public MovieGenreSettings MovieGenreSettings { get; private set; }
         public TmdbConfigurationModel TmdbConfiguration { get; set; }
-        public ImagePathConfiguratorUtil ImagePathConfiguratorUtil { get; set; }
+        public MovieDetailModelConfigurator MovieDetailModelConfigurator { get; set; }
 
 
         public TheMovieDatabaseClient ApiClient { get; } = new TheMovieDatabaseClient();
@@ -60,8 +60,6 @@ namespace Ch9
                     () => ApiClient.UpdateMovieImages2(id, language, otherLanguage, includeLanguageless));
             };
 
-
-
             InitializeComponent();
 
             MainPage = new NavigationPage(new MainPage());
@@ -71,7 +69,7 @@ namespace Ch9
         {
             //await ApiClient.InitializeConfigurationAsync();
             TmdbConfiguration = await GetTmdbConfiguration(3, 1000);
-            ImagePathConfiguratorUtil = new ImagePathConfiguratorUtil(TmdbConfiguration);
+            MovieDetailModelConfigurator = new MovieDetailModelConfigurator(TmdbConfiguration, MovieGenreSettings);
         }
 
         protected override void OnSleep()

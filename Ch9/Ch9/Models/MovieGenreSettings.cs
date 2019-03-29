@@ -88,7 +88,7 @@ namespace Ch9.Models
                 GenreSelectionDisplay.Add(new GenreItem { Id = 10770, GenreName = "TV Movie", IsSelected = false });
                 GenreSelectionDisplay.Add(new GenreItem { Id = 53, GenreName = "Thriller", IsSelected = true });
                 GenreSelectionDisplay.Add(new GenreItem { Id = 10752, GenreName = "War", IsSelected = true });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 37, GenreName = "Western", IsSelected = true });
+                GenreSelectionDisplay.Add(new GenreItem { Id = 37, GenreName = "Western", IsSelected = true });                
             }
 
             // ToDo: check whether serialization also gets the public event property serialized!!!
@@ -96,7 +96,7 @@ namespace Ch9.Models
                 item.PropertyChanged += GenreItem_PropertyChanged;
         }
 
-        // updates the existing categories with the new categories fassed as attribute
+        // updates the existing categories with the new categories passed as attribute
         private void UpdateExistingGenreCategories(GenreIdNamePair[] genreIdNamePairs)
         {
             if (genreIdNamePairs?.Length < 1) return;

@@ -38,7 +38,7 @@ namespace Ch9
                         _movie.ImageDetailCollection = new ImageDetailCollection();
 
                     JsonConvert.PopulateObject(t.Result.Json, _movie.ImageDetailCollection);
-                    ((App)Application.Current).ImagePathConfiguratorUtil.SetGalleryImageSources(_movie);
+                    ((App)Application.Current).MovieDetailModelConfigurator.SetGalleryImageSources(_movie);
                 }                    
             });
 

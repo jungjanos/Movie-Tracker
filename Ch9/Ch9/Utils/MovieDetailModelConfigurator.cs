@@ -7,15 +7,17 @@ using System.Text;
 
 namespace Ch9.Utils
 {
-    public class ImagePathConfiguratorUtil
+    public class MovieDetailModelConfigurator
     {
         private readonly TmdbConfigurationModel tmdbConfiguration;
+        private readonly MovieGenreSettings movieGenreSettings;
 
-        public ImagePathConfiguratorUtil(TmdbConfigurationModel tmdbConfiguration)
+        public MovieDetailModelConfigurator(TmdbConfigurationModel tmdbConfiguration, MovieGenreSettings movieGenreSettings)
         {
             this.tmdbConfiguration = tmdbConfiguration;
+            this.movieGenreSettings = movieGenreSettings;
         }
-        
+
         public void SetGalleryImageSources(MovieDetailModel movie)
         {
             List<string> tempResult = new List<string>(1 + movie.ImageDetailCollection.Backdrops?.Length ?? 0);
@@ -32,7 +34,7 @@ namespace Ch9.Utils
             movie.GalleryDisplayImages = tempResult.ToArray();
         }
 
-        
+
         public void SetImageSrc(IEnumerable<MovieDetailModel> movies)
         {
             foreach (MovieDetailModel movie in movies)
@@ -44,6 +46,18 @@ namespace Ch9.Utils
                     tmdbConfiguration.Images.BaseUrl + "w780" + movie.ImgBackdropName
                 };
                 movie.GalleryDisplayImage = movie.GalleryDisplayImages[0];
+            }
+        }
+
+        public void SetGenreNamesFromGenreIds(IEnumerable<MovieDetailModel> movies)
+        {
+            foreach (MovieDetailModel movie in movies)
+            {
+                movie.Genre = movie.GenreIds?.Length == null ? string.Empty :
+                string.Join(", ", movie.GenreIds.Select(id => movieGenreSettings.GenreSelectionDisplay.FirstOrDefault(y => y.Id == id)?.GenreName ?? string.Empty))
+                .TrimEnd(new char[] { ',', ' ' });
+
+
             }
         }
 

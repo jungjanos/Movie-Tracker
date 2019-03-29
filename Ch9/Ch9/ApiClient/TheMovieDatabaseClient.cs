@@ -14,17 +14,12 @@ namespace Ch9.ApiClient
     public class TheMovieDatabaseClient
     {
 
-        public class MovieDetailsUpdateResult
-        {
-            public HttpStatusCode StatusCode { get; set; }
-        }
-
         public class GetMovieImagesResult
         {
             public HttpStatusCode HttpStatusCode { get; set; }
         }
 
-        
+
 
         private const string BASE_Addr = "https://api.themoviedb.org";
         private const string BASE_Path = "/3";
@@ -97,7 +92,7 @@ namespace Ch9.ApiClient
 
                 ConfigurationModel = JsonConvert.DeserializeObject<TmdbConfigurationModel>(configResponse);
             }
-        }       
+        }
 
 
         public async Task<SearchResult> GetTrending(bool week = true)
@@ -129,34 +124,13 @@ namespace Ch9.ApiClient
             return searchResult;
         }
 
-
-        //Potential race condition via side effects when reentering function!!!!
-        public async Task<MovieDetailsUpdateResult> UpdateMovieDetail(MovieDetailModel movie)
-        {
-            string baseUrl = BASE_Addr + BASE_Path + MOVIE_Details_Path + "/" + movie.Id;
-            var query = new Dictionary<string, string>();
-            query.Add(API_KEY_KEY, API_KEY_Value);
-            var response = await HttpClient.GetAsync(QueryHelpers.AddQueryString(baseUrl, query));
-            MovieDetailsUpdateResult movieDetailsUpdateResult = new MovieDetailsUpdateResult()
-            {
-                StatusCode = response.StatusCode
-            };
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                string content = await response.Content.ReadAsStringAsync();
-                JsonConvert.PopulateObject(content, movie);
-            }
-            return movieDetailsUpdateResult;
-        }
-
         //Potential race condition via side effects when reentering function!!!!
         public async Task<GetMovieImagesResult> UpdateMovieImages(MovieDetailModel movie)
         {
             string baseUrl = BASE_Addr + BASE_Path + GET_Movie_Images_Path(movie.Id);
             var query = new Dictionary<string, string>();
             query.Add(API_KEY_KEY, API_KEY_Value);
-            query.Add("language", "en,null"); 
+            query.Add("language", "en,null");
 
             var response = await HttpClient.GetAsync(QueryHelpers.AddQueryString(baseUrl, query));
 
@@ -168,17 +142,18 @@ namespace Ch9.ApiClient
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 if (movie.ImageDetailCollection == null)
-                    movie.ImageDetailCollection = new ImageDetailCollection();                
+                    movie.ImageDetailCollection = new ImageDetailCollection();
 
                 string content = await response.Content.ReadAsStringAsync();
-                JsonConvert.PopulateObject(content, movie.ImageDetailCollection);                
+                JsonConvert.PopulateObject(content, movie.ImageDetailCollection);
             }
             SetGalleryImageSources(movie);
 
             return getMovieImagesResult;
         }
 
-        private void SetGalleryImageSources(MovieDetailModel movie)
+        // Needs to be carved out from here
+        public void SetGalleryImageSources(MovieDetailModel movie)
         {
             List<string> tempResult = new List<string>(1 + movie.ImageDetailCollection.Backdrops?.Length ?? 0);
 
@@ -203,18 +178,18 @@ namespace Ch9.ApiClient
                     .TrimEnd(new char[] { ',', ' ' });
             }
         }
-
-        private void SetImageSrc(IEnumerable<MovieDetailModel> movies)
+        // Needs to be carved out from here
+        public void SetImageSrc(IEnumerable<MovieDetailModel> movies)
         {
             foreach (MovieDetailModel movie in movies)
             {
                 movie.ImgSmSrc = ConfigurationModel.Images.BaseUrl + ConfigurationModel.Images.PosterSizes[0] + movie.ImgPosterName;
                 movie.ImgBackdropSrc = ConfigurationModel.Images.BaseUrl + "w780" + movie.ImgBackdropName;
-                movie.GalleryDisplayImages = new string[] 
+                movie.GalleryDisplayImages = new string[]
                 {
                     ConfigurationModel.Images.BaseUrl + "w780" + movie.ImgBackdropName
                 };
-                movie.GalleryDisplayImage = movie.GalleryDisplayImages[0];            
+                movie.GalleryDisplayImage = movie.GalleryDisplayImages[0];
             }
         }
 
@@ -233,7 +208,7 @@ namespace Ch9.ApiClient
         // indicates success or failure as Http code,
         // retries as required
         // ToDo: magic string (language should be replaced by enum type) 
-        public async Task<GenreNameFetchResult> FetchGenreIdsWithNames(string language = null,  int retryCount=0, int delayMilliseconds = 1000)
+        public async Task<GenreNameFetchResult> FetchGenreIdsWithNames(string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Addr + BASE_Path + GENRE_List_Path;
 
@@ -294,9 +269,14 @@ namespace Ch9.ApiClient
         }
 
         // Searches for moves according to settings 
-        // Swallows exceptions
-        // Modifies image paths ToDo: extract that function from here
-        public async Task<SearchResult> SearchByMovie(string searchString, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        // Swallows exceptions retries as needed      
+        public class SearchByMovieResult
+        {
+            public HttpStatusCode HttpStatusCode { get; set; }
+            public string Json { get; set; }
+        }
+
+        public async Task<SearchByMovieResult> SearchByMovie2(string searchString, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Addr + BASE_Path + SEARCH_Movie_Path;
 
@@ -336,15 +316,70 @@ namespace Ch9.ApiClient
                 }
                 catch { }
             }
-            SearchResult result = new SearchResult { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout };
+            SearchByMovieResult result = new SearchByMovieResult { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout };
 
             if (response.IsSuccessStatusCode)
-            {
-                var message = await response.Content.ReadAsStringAsync();
-                JsonConvert.PopulateObject(message, result);
-                SetImageSrc(result.MovieDetailModels);
-            }
+                result.Json = await response.Content.ReadAsStringAsync();
+
             return result;
         }
+        
+
+        public class FetchMovieDetailsResult
+        {
+            public HttpStatusCode HttpStatusCode { get; set; }
+            public string Json { get; set; }
+        }
+
+        // Fetches movie details, swallows exceptions
+        // retries as needed
+
+        public async Task<FetchMovieDetailsResult> FetchMovieDetails(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            string baseUrl = BASE_Addr + BASE_Path + MOVIE_Details_Path + "/" + id;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_KEY, API_KEY_Value);
+
+            if (!string.IsNullOrEmpty(language))
+                query.Add(LANGUAGE_Key, language);
+
+            HttpResponseMessage response = null;
+            int counter = retryCount;
+
+            try
+            {
+                response = await HttpClient.GetAsync(QueryHelpers.AddQueryString(baseUrl, query));
+            }
+            catch { }
+            while (response?.IsSuccessStatusCode != true && counter > 0)
+            {
+                await Task.Delay(delayMilliseconds);
+
+                try
+                {
+                    response = await HttpClient.GetAsync(QueryHelpers.AddQueryString(baseUrl, query));
+                }
+                catch { }
+            }
+            FetchMovieDetailsResult result = new FetchMovieDetailsResult { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout };
+
+            if (response.IsSuccessStatusCode)
+                result.Json = await response.Content.ReadAsStringAsync();
+
+            return result;
+        }
+
+
+
+        // WORKING HERE
+
+        
+
+
+
+
+        //
+
     }
 }

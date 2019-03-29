@@ -10,6 +10,8 @@ namespace Ch9.Utils
     {
         public static void UpdateListviewCollection<T>(ObservableCollection<T> oldList, IEnumerable<T> newList, IEqualityComparer<T> valueComparer)
         {
+            if (newList == null)
+                return;
             List<T> toRemove = oldList.Where(x => !newList.Contains(x, valueComparer)).ToList();
             List<T> toAdd = newList.Where(y => !oldList.Contains(y, valueComparer)).ToList();
 

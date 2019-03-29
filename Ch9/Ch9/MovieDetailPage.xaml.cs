@@ -9,6 +9,7 @@ using Xamarin.Forms.Xaml;
 using Ch9.Models;
 using Ch9.ApiClient;
 using static Ch9.ApiClient.TheMovieDatabaseClient;
+using Newtonsoft.Json;
 
 namespace Ch9
 {
@@ -18,10 +19,12 @@ namespace Ch9
 
         private MovieDetailModel _movie;
         private Task<GetMovieImagesResult> imageDetailCollectionUpdateTask;
+        private Settings settings;
 
         public MovieDetailPage(MovieDetailModel movie)
         {
             _movie = movie;
+            settings = ((App)Application.Current).Settings;
             imageDetailCollectionUpdateTask = ((App)App.Current).ApiClient.UpdateMovieImages(_movie);
             InitializeComponent();
             BindingContext = _movie;
@@ -30,26 +33,10 @@ namespace Ch9
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            MovieDetailsUpdateResult updateResult = null;
 
-            try
-            {
-                updateResult = await ((App)App.Current).movieModelDeatilUpdateGetter(_movie);
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Exception", ex.Message, "OK");
-            }
-
-            if (updateResult.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                await DisplayAlert("Update error", $"Error code: {updateResult.StatusCode.ToString()}", "Ok");
-            }
-            else
-            {
-
-            }
-
+            FetchMovieDetailsResult movieDetailsResult = await ((App)Application.Current).MovieDetailGetter(_movie.Id, settings.SearchLanguage);
+            if (200 <= (int)movieDetailsResult.HttpStatusCode && (int)movieDetailsResult.HttpStatusCode < 300)            
+                JsonConvert.PopulateObject(movieDetailsResult.Json, _movie);        
         }
 
         private async void ImageButton_Clicked(object sender, EventArgs e)

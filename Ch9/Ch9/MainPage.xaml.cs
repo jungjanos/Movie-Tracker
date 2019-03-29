@@ -1,9 +1,10 @@
 ﻿using Ch9.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;
-
+using static Ch9.ApiClient.TheMovieDatabaseClient;
 
 namespace Ch9
 {
@@ -47,10 +48,15 @@ namespace Ch9
 
             if (searchText.Length >= 5)
             {               
-                var searchResult = await ((App)Application.Current).movieGetter(searchText, settings.SearchLanguage, settings.IncludeAdult);
+                var searchResult = await ((App)Application.Current).movieGetter2(searchText, settings.SearchLanguage, settings.IncludeAdult);
 
                 if ( 200 <= (int)searchResult.HttpStatusCode && (int)searchResult.HttpStatusCode < 300)
-                    Utils.Utils.UpdateListviewCollection(movies, searchResult.MovieDetailModels, new MovieModelComparer());
+                {
+                    var obj = JsonConvert.DeserializeObject<SearchResult>(searchResult.Json);
+                    ((App)Application.Current).ApiClient.SetImageSrc(obj.MovieDetailModels);
+                    Utils.Utils.UpdateListviewCollection(movies, obj.MovieDetailModels, new MovieModelComparer());
+                }
+                    
             }
         }
 

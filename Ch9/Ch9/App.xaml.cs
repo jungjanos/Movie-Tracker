@@ -16,10 +16,12 @@ namespace Ch9
 
         public TheMovieDatabaseClient ApiClient { get; } = new TheMovieDatabaseClient();
         public IAppCache MovieSearchCache { get; } = new CachingService();
-        public Func<string, string, bool?, Task<TheMovieDatabaseClient.SearchResult>> movieGetter;
+        
+        public Func<string, string, bool?, Task<TheMovieDatabaseClient.SearchByMovieResult>> movieGetter2;
         public Func<Task<TheMovieDatabaseClient.SearchResult>> trendingWeekGetter;
         public Func<Task<TheMovieDatabaseClient.SearchResult>> trendingDayGetter;
-        public Func<MovieDetailModel, Task<TheMovieDatabaseClient.MovieDetailsUpdateResult>> movieModelDeatilUpdateGetter;
+        
+        public Func<int, string, Task<TheMovieDatabaseClient.FetchMovieDetailsResult>> MovieDetailGetter;
 
 
         public App()
@@ -27,9 +29,9 @@ namespace Ch9
             Settings = new Settings();
             MovieGenreSettings = new MovieGenreSettings();
 
-            movieGetter = (string searchString, string searchLanguage, bool? includeAdult) =>
+            movieGetter2 = (string searchString, string searchLanguage, bool? includeAdult) =>
             {
-                return MovieSearchCache.GetOrAddAsync(searchString, () => ApiClient.SearchByMovie(searchString, searchLanguage, includeAdult));
+                return MovieSearchCache.GetOrAddAsync(searchString, () => ApiClient.SearchByMovie2(searchString, searchLanguage, includeAdult));
             };
 
             trendingWeekGetter = () =>
@@ -42,9 +44,9 @@ namespace Ch9
                 return MovieSearchCache.GetOrAddAsync("$day", () => ApiClient.GetTrending(false));
             };
 
-            movieModelDeatilUpdateGetter = (MovieDetailModel movie) =>
+            MovieDetailGetter = (int id, string language) =>
             {
-                return MovieSearchCache.GetOrAddAsync("$MovieDetailModelUpdate id=" + movie.Id.ToString(), () => ApiClient.UpdateMovieDetail(movie));
+                return MovieSearchCache.GetOrAddAsync("$MovieDetailGetter id=" + id.ToString() + language, () => ApiClient.FetchMovieDetails(id, language));
             };
 
 

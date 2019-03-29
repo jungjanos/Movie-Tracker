@@ -13,23 +13,23 @@ namespace Ch9.ApiClient
 {
     public class TheMovieDatabaseClient
     {
-
-        public class GetMovieImagesResult
-        {
-            public HttpStatusCode HttpStatusCode { get; set; }
-        }
-
-
-
         private const string BASE_Addr = "https://api.themoviedb.org";
         private const string BASE_Path = "/3";
         private const string CONFIG_Path = "/configuration";
         private const string GENRE_List_Path = "/genre/movie/list";
         private const string SEARCH_Movie_Path = "/search/movie";
         private const string SEARCH_Query_Key = "query";
+        private const string TRENDING_Path = "/trending";
+        private const string TRENDING_Movie_type_selector = "/movie";
+        private const string WEEK_Path = "/week";
+        private const string DAY_Path = "/day";
+        private const string IMAGE_Detail_Path = "/images";
+        private const string IMAGE_Additional_Languages = "include_image_language";
+
         private const string TRENDING_Week_Path = "/trending/movie/week";
         private const string TRENDING_Day_Path = "/trending/movie/day";
         private const string MOVIE_Details_Path = "/movie";
+
         private Func<int, string> GET_Movie_Images_Path = (int Id) => ("/movie/" + Id + "/images");
         private const string LANGUAGE_Key = "language";
         private const string PAGE_Key = "page";
@@ -44,165 +44,55 @@ namespace Ch9.ApiClient
             {
                 var client = new HttpClient();
                 return client;
-            });
-
-        private Dictionary<int, string> genreIdNamePairs;
-
+            });        
 
         private HttpClient HttpClient => httpClient.Value;
 
-
-        public TmdbConfigurationModel ConfigurationModel { get; private set; }
-
-
-        public async Task InitializeConfigurationAsync()
+        public class TmdbConfigurationModelResult
         {
-            await Task.WhenAll(GetGenreIdNamePairsAsync(), GetSettingsAsync());
+            public HttpStatusCode HttpStatusCode;
+            public string Json { get; set; }
+        }
 
-            // OLD NEEDS TO BE REPLACED!!!
-            async Task GetGenreIdNamePairsAsync()
+        public async Task<TmdbConfigurationModelResult> GetTmdbConfiguration(int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            string baseUrl = BASE_Addr + BASE_Path + CONFIG_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_KEY, API_KEY_Value);
+
+            HttpResponseMessage response = null;
+            int counter = retryCount;
+
+            try
             {
-                UriBuilder uriBuilder = new UriBuilder(new Uri(BASE_Addr));
-                uriBuilder.Path = BASE_Path + GENRE_List_Path;
-                uriBuilder.Query = API_KEY_KEY + "=" + API_KEY_Value;
+                response = await HttpClient.GetAsync(QueryHelpers.AddQueryString(baseUrl, query));
+            }
+            catch { }
+            while (response?.IsSuccessStatusCode != true && counter > 0)
+            {
+                await Task.Delay(delayMilliseconds);
 
                 try
                 {
-                    var genreResponse = await HttpClient.GetStringAsync(uriBuilder.Uri);
-                    var genreList = JsonConvert.DeserializeObject<GenreIdNamePairWrapper>(genreResponse).Genres;
-
-                    genreIdNamePairs = new Dictionary<int, string>();
-
-                    foreach (var genre in genreList)
-                        genreIdNamePairs[genre.Id] = genre.Name;
+                    response = await HttpClient.GetAsync(QueryHelpers.AddQueryString(baseUrl, query));
                 }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine(ex.Message);
-                }
+                catch { }
             }
 
-            async Task GetSettingsAsync()
-            {
-                UriBuilder uriBuilder = new UriBuilder(new Uri(BASE_Addr));
-                uriBuilder.Path = BASE_Path + CONFIG_Path;
-                uriBuilder.Query = API_KEY_KEY + "=" + API_KEY_Value;
+            TmdbConfigurationModelResult result = new TmdbConfigurationModelResult { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout };
 
-                var configResponse = await HttpClient.GetStringAsync(uriBuilder.Uri);
-
-                ConfigurationModel = JsonConvert.DeserializeObject<TmdbConfigurationModel>(configResponse);
-            }
+            if (response.IsSuccessStatusCode)
+                result.Json = await response.Content.ReadAsStringAsync();
+            
+            return result;            
         }
-
-
-        public async Task<SearchResult> GetTrending(bool week = true)
-        {
-            string baseUrl = BASE_Addr + BASE_Path + (week ? TRENDING_Week_Path : TRENDING_Day_Path);
-
-            var query = new Dictionary<string, string>();
-            query.Add(API_KEY_KEY, API_KEY_Value);
-
-            var response = await HttpClient.GetAsync(QueryHelpers.AddQueryString(baseUrl, query));
-            SearchResult searchResult = new SearchResult()
-            {
-                HttpStatusCode = response.StatusCode,
-                MovieDetailModels = new List<MovieDetailModel>()
-            };
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                string content = await response.Content.ReadAsStringAsync();
-                searchResult.MovieDetailModels = JsonConvert.DeserializeObject<SearchResult>(content).MovieDetailModels
-                                                .Where(x => x.ReleaseDate > DateTime.Today - TimeSpan.FromDays(365 * 30))
-                                                .Where(x => x.ReleaseDate?.Year <= DateTime.Today.Year).
-                                                Where(x => x.GenreIds != null && x.GenreIds.Length != 0)
-                                                .ToList();
-
-                SetGenreNamesFromGenreIds(searchResult.MovieDetailModels);
-                SetImageSrc(searchResult.MovieDetailModels);
-            }
-            return searchResult;
-        }
-
-        //Potential race condition via side effects when reentering function!!!!
-        public async Task<GetMovieImagesResult> UpdateMovieImages(MovieDetailModel movie)
-        {
-            string baseUrl = BASE_Addr + BASE_Path + GET_Movie_Images_Path(movie.Id);
-            var query = new Dictionary<string, string>();
-            query.Add(API_KEY_KEY, API_KEY_Value);
-            query.Add("language", "en,null");
-
-            var response = await HttpClient.GetAsync(QueryHelpers.AddQueryString(baseUrl, query));
-
-            GetMovieImagesResult getMovieImagesResult = new GetMovieImagesResult()
-            {
-                HttpStatusCode = response.StatusCode
-            };
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                if (movie.ImageDetailCollection == null)
-                    movie.ImageDetailCollection = new ImageDetailCollection();
-
-                string content = await response.Content.ReadAsStringAsync();
-                JsonConvert.PopulateObject(content, movie.ImageDetailCollection);
-            }
-            SetGalleryImageSources(movie);
-
-            return getMovieImagesResult;
-        }
-
-        // Needs to be carved out from here
-        public void SetGalleryImageSources(MovieDetailModel movie)
-        {
-            List<string> tempResult = new List<string>(1 + movie.ImageDetailCollection.Backdrops?.Length ?? 0);
-
-            tempResult.Add(movie.ImgBackdropSrc);
-
-            if (movie.ImageDetailCollection.Posters?.Length > 0)
-                tempResult.Add(ConfigurationModel.Images.BaseUrl + "w780" + movie.ImageDetailCollection.Posters.First().FilePath);
-
-            if (movie.ImageDetailCollection.Backdrops?.Length > 0)
-                foreach (ImageModel backdrop in movie.ImageDetailCollection.Backdrops)
-                    tempResult.Add(ConfigurationModel.Images.BaseUrl + "w780" + backdrop.FilePath);
-
-            movie.GalleryDisplayImages = tempResult.ToArray();
-        }
-
-        private void SetGenreNamesFromGenreIds(IEnumerable<MovieDetailModel> movies)
-        {
-            foreach (MovieDetailModel movie in movies)
-            {
-                movie.Genre = movie.GenreIds?.Length == null ? null :
-                    string.Join(", ", movie.GenreIds.Select(id => genreIdNamePairs[id]))
-                    .TrimEnd(new char[] { ',', ' ' });
-            }
-        }
-        // Needs to be carved out from here
-        public void SetImageSrc(IEnumerable<MovieDetailModel> movies)
-        {
-            foreach (MovieDetailModel movie in movies)
-            {
-                movie.ImgSmSrc = ConfigurationModel.Images.BaseUrl + ConfigurationModel.Images.PosterSizes[0] + movie.ImgPosterName;
-                movie.ImgBackdropSrc = ConfigurationModel.Images.BaseUrl + "w780" + movie.ImgBackdropName;
-                movie.GalleryDisplayImages = new string[]
-                {
-                    ConfigurationModel.Images.BaseUrl + "w780" + movie.ImgBackdropName
-                };
-                movie.GalleryDisplayImage = movie.GalleryDisplayImages[0];
-            }
-        }
-
-
-
-        // NEW REFACTORED CODE AFTER THIS LINE OLD CODE ABOVE
 
         public class GenreNameFetchResult
         {
             public HttpStatusCode HttpStatusCode { get; set; }
             public GenreIdNamePair[] IdNamePairs { get; set; }
         }
-
 
         // Fetches Genre information from WebAPI
         // indicates success or failure as Http code,
@@ -249,8 +139,6 @@ namespace Ch9.ApiClient
             return result;
         }
 
-
-
         public class SearchResult
         {
             public HttpStatusCode HttpStatusCode { get; set; }
@@ -268,15 +156,16 @@ namespace Ch9.ApiClient
             public int TotalPages { get; set; }
         }
 
-        // Searches for moves according to settings 
-        // Swallows exceptions retries as needed      
+  
         public class SearchByMovieResult
         {
             public HttpStatusCode HttpStatusCode { get; set; }
             public string Json { get; set; }
         }
 
-        public async Task<SearchByMovieResult> SearchByMovie2(string searchString, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        // Searches for moves according to settings 
+        // Swallows exceptions retries as needed    
+        public async Task<SearchByMovieResult> SearchByMovie(string searchString, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Addr + BASE_Path + SEARCH_Movie_Path;
 
@@ -323,7 +212,7 @@ namespace Ch9.ApiClient
 
             return result;
         }
-        
+
 
         public class FetchMovieDetailsResult
         {
@@ -370,16 +259,113 @@ namespace Ch9.ApiClient
             return result;
         }
 
+        // The two classes use the same result format,
+        // inheritacne is used only to give a more descriptive class name
+        public class TrendingMoviesResult : SearchByMovieResult { }
 
+        // Fetches the list of trending moves according to query
+        // swallows exceptions, retries as configured
+        public async Task<TrendingMoviesResult> GetTrendingMovies(bool week = true, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            string baseUrl = BASE_Addr + BASE_Path + TRENDING_Path + TRENDING_Movie_type_selector + (week ? WEEK_Path : DAY_Path);
 
-        // WORKING HERE
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_KEY, API_KEY_Value);
 
-        
+            if (!string.IsNullOrEmpty(language))
+                query.Add(LANGUAGE_Key, language);
 
+            if (includeAdult != null)
+            {
+                if (includeAdult.Value)
+                    query.Add(INCLUDE_Adult_Key, "true");
+                else
+                    query.Add(INCLUDE_Adult_Key, "false");
+            }
 
+            if (page > 0)
+                query.Add(PAGE_Key, page.Value.ToString());
 
+            HttpResponseMessage response = null;
+            int counter = retryCount;
 
-        //
+            try
+            {
+                response = await HttpClient.GetAsync(QueryHelpers.AddQueryString(baseUrl, query));
+            }
+            catch { }
+            while (response?.IsSuccessStatusCode != true && counter > 0)
+            {
+                await Task.Delay(delayMilliseconds);
 
+                try
+                {
+                    response = await HttpClient.GetAsync(QueryHelpers.AddQueryString(baseUrl, query));
+                }
+                catch { }
+            }
+            TrendingMoviesResult result = new TrendingMoviesResult { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout };
+
+            if (response.IsSuccessStatusCode)
+                result.Json = await response.Content.ReadAsStringAsync();
+
+            return result;
+        }
+
+        public class GetMovieImagesResult
+        {
+            public HttpStatusCode HttpStatusCode { get; set; }
+            public string Json { get; set; }
+        }
+
+        // Fetches the image paths of the gallery images from the server
+        // swallows exceptions, retries as required
+        public async Task<GetMovieImagesResult> UpdateMovieImages2(int id, string language = null, string otherLanguage = null, bool? includeLanguageless = true, int retryCount = 0, int delayMilliseconds = 1000)
+        {           
+            string baseUrl = BASE_Addr + BASE_Path + MOVIE_Details_Path + "/" + id + IMAGE_Detail_Path;
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_KEY, API_KEY_Value);
+
+            if (!string.IsNullOrEmpty(language))
+                query.Add(LANGUAGE_Key, language);
+
+            List<string> otherLanguages = new List<string>();
+            if (!string.IsNullOrEmpty(otherLanguage))
+                otherLanguages.Add(otherLanguage);
+
+            // for the TMDB WebAPI 'null' means include languageless pictures 
+            if (includeLanguageless == true)
+                otherLanguages.Add("null"); 
+
+            var otherLanguagesValue = string.Join(",", otherLanguages);
+
+            if (!string.IsNullOrWhiteSpace(otherLanguagesValue))
+                query.Add(IMAGE_Additional_Languages, otherLanguagesValue);
+
+            HttpResponseMessage response = null;
+            int counter = retryCount;
+
+            try
+            {
+                response = await HttpClient.GetAsync(QueryHelpers.AddQueryString(baseUrl, query));
+            }
+            catch { }
+            while (response?.IsSuccessStatusCode != true && counter > 0)
+            {
+                await Task.Delay(delayMilliseconds);
+
+                try
+                {
+                    response = await HttpClient.GetAsync(QueryHelpers.AddQueryString(baseUrl, query));
+                }
+                catch { }
+            }
+            GetMovieImagesResult result = new GetMovieImagesResult { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout };
+
+            if (response.IsSuccessStatusCode)
+                result.Json = await response.Content.ReadAsStringAsync();
+
+            return result;
+        }
     }
 }

@@ -53,7 +53,7 @@ namespace Ch9
                 if ( 200 <= (int)searchResult.HttpStatusCode && (int)searchResult.HttpStatusCode < 300)
                 {
                     var obj = JsonConvert.DeserializeObject<SearchResult>(searchResult.Json);
-                    ((App)Application.Current).ApiClient.SetImageSrc(obj.MovieDetailModels);
+                    ((App)Application.Current).ImagePathConfiguratorUtil.SetImageSrc(obj.MovieDetailModels);
                     Utils.Utils.UpdateListviewCollection(movies, obj.MovieDetailModels, new MovieModelComparer());
                 }
                     

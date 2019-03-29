@@ -1,4 +1,5 @@
 ﻿using Ch9.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,32 +16,30 @@ namespace Ch9
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class TrendingPage : ContentPage
 	{
+        private Settings settings;
         ObservableCollection<MovieModel> movies;
 
         public bool QueryTheWeek { get; set; } = true;
 
-        Task<SearchResult> trendingThisWeekTask;
-        Task<SearchResult> trendingThisDayTask;
-
+        Task<TrendingMoviesResult> trendingThisWeekTask;
+        Task<TrendingMoviesResult> trendingThisDayTask;
 
 
         public TrendingPage ()
 		{
+            settings = ((App)Application.Current).Settings;
             movies = new ObservableCollection<MovieModel>();
-            trendingThisWeekTask = ((App)App.Current).trendingWeekGetter.Invoke();
-            trendingThisDayTask = ((App)App.Current).trendingDayGetter.Invoke();
 
-            InitializeComponent ();
+            trendingThisWeekTask = ((App)Application.Current).TrendingMoviesGetter.Invoke(true, settings.SearchLanguage, settings.IncludeAdult, null);
+            trendingThisDayTask = ((App)Application.Current).TrendingMoviesGetter.Invoke(false, settings.SearchLanguage, settings.IncludeAdult, null);                                 
 
+            InitializeComponent();
             listView.ItemsSource = movies;
-
-
         }
 
         private void ListView_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             MovieDetailModel movie = e.Item as MovieDetailModel;
-
             Navigation.PushAsync(new MovieDetailPage(movie));
         }
 
@@ -49,62 +48,36 @@ namespace Ch9
             weekOrDayLabel.Text = QueryTheWeek ? "Week" : "Day";
             QueryTheWeek = !QueryTheWeek;
 
-            Task<SearchResult> search = QueryTheWeek ? trendingThisWeekTask : trendingThisDayTask;
+            TrendingMoviesResult result = await (QueryTheWeek ? trendingThisWeekTask : trendingThisDayTask);
 
-            SearchResult result = null;
-
-            try
+            if (200 <= (int)result.HttpStatusCode && (int)result.HttpStatusCode < 300)
             {
-                result = await search;
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Exception", ex.Message, "OK");
-            }
-
-            if (result.HttpStatusCode != System.Net.HttpStatusCode.OK)
-            {
-                await DisplayAlert("Search error", $"Error code: {result.HttpStatusCode.ToString()}", "Ok");
-            }
-            else
-            {
-                movies.Clear();
-                foreach (MovieModel movie in result.MovieDetailModels)
+                string json = result.Json;
+                SearchResult obj = JsonConvert.DeserializeObject<SearchResult>(json);
+                ((App)Application.Current).ImagePathConfiguratorUtil.SetImageSrc(obj.MovieDetailModels);
+                
+                movies.Clear();                
+                foreach (MovieDetailModel movie in obj.MovieDetailModels)
                     movies.Add(movie);
             }
-
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
 
-            Task<SearchResult> search = QueryTheWeek ? trendingThisWeekTask : trendingThisDayTask;
+            TrendingMoviesResult result = await (QueryTheWeek ? trendingThisWeekTask : trendingThisDayTask);
 
-            SearchResult result = null;
+            if (200 <= (int)result.HttpStatusCode && (int)result.HttpStatusCode < 300)
+            {
+                string json = result.Json;
+                SearchResult obj = JsonConvert.DeserializeObject<SearchResult>(json);
+                ((App)Application.Current).ImagePathConfiguratorUtil.SetImageSrc(obj.MovieDetailModels);
 
-            try
-            {
-                result = await search;
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Exception", ex.Message, "OK");
-            }
-
-            if (result.HttpStatusCode != System.Net.HttpStatusCode.OK)
-            {
-                await DisplayAlert("Search error", $"Error code: {result.HttpStatusCode.ToString()}", "Ok");
-            }
-            else
-            {
                 movies.Clear();
-                foreach (MovieModel movie in result.MovieDetailModels)
+                foreach (MovieDetailModel movie in obj.MovieDetailModels)
                     movies.Add(movie);
-
             }
-
-
         }
     }
 }

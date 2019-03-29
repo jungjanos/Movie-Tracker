@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Ch9.Models;
-using Ch9.ApiClient;
 using static Ch9.ApiClient.TheMovieDatabaseClient;
 using Newtonsoft.Json;
 
@@ -17,15 +12,36 @@ namespace Ch9
     public partial class MovieDetailPage : ContentPage
     {
 
-        private MovieDetailModel _movie;
-        private Task<GetMovieImagesResult> imageDetailCollectionUpdateTask;
+        private MovieDetailModel _movie;        
+
+        private Task<GetMovieImagesResult> imageDetailCollectionUpdateTask2;
+        Task initializeGallery;
+
         private Settings settings;
 
         public MovieDetailPage(MovieDetailModel movie)
         {
             _movie = movie;
-            settings = ((App)Application.Current).Settings;
-            imageDetailCollectionUpdateTask = ((App)App.Current).ApiClient.UpdateMovieImages(_movie);
+
+            // starts a hot task to fetch gallery image paths as early as possible
+            settings = ((App)Application.Current).Settings;            
+            imageDetailCollectionUpdateTask2 = ((App)Application.Current).GetMovieImages
+                .Invoke(_movie.Id, settings.SearchLanguage, null, true);
+
+            // attaches task to update movie gallery details with the results of the antecendent
+            initializeGallery = imageDetailCollectionUpdateTask2.ContinueWith(t =>
+            {
+                if (200 <= (int)t.Result.HttpStatusCode && (int)t.Result.HttpStatusCode < 300)
+                {
+                    // ToDo: initialize that in the MovieDetailModel constructor
+                    if (_movie.ImageDetailCollection == null)
+                        _movie.ImageDetailCollection = new ImageDetailCollection();
+
+                    JsonConvert.PopulateObject(t.Result.Json, _movie.ImageDetailCollection);
+                    ((App)Application.Current).ImagePathConfiguratorUtil.SetGalleryImageSources(_movie);
+                }                    
+            });
+
             InitializeComponent();
             BindingContext = _movie;
         }
@@ -35,31 +51,14 @@ namespace Ch9
             base.OnAppearing();
 
             FetchMovieDetailsResult movieDetailsResult = await ((App)Application.Current).MovieDetailGetter(_movie.Id, settings.SearchLanguage);
-            if (200 <= (int)movieDetailsResult.HttpStatusCode && (int)movieDetailsResult.HttpStatusCode < 300)            
-                JsonConvert.PopulateObject(movieDetailsResult.Json, _movie);        
+            if (200 <= (int)movieDetailsResult.HttpStatusCode && (int)movieDetailsResult.HttpStatusCode < 300)
+                JsonConvert.PopulateObject(movieDetailsResult.Json, _movie);
         }
 
         private async void ImageButton_Clicked(object sender, EventArgs e)
         {
-            Task<GetMovieImagesResult> imageDetailCollectionUpdateTask1 = imageDetailCollectionUpdateTask;
-            GetMovieImagesResult updateResult;
-            try
-            {
-
-                updateResult = await imageDetailCollectionUpdateTask1;
-                _movie.GalleryPositionCounter++;
-            }
-            catch (AggregateException aex)
-            {
-                foreach (var ex in aex.InnerExceptions) 
-                    await DisplayAlert("Exception", ex.GetType().Name+ ex.Message + " " + ex.StackTrace, "OK");
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Exception", ex.GetType().Name + ex.Message + " " + ex.StackTrace, "OK"); 
-            }
-
-            
+            await initializeGallery;
+            _movie.GalleryPositionCounter++;       
         }
     }
 }

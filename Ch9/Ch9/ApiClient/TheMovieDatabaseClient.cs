@@ -19,7 +19,7 @@ namespace Ch9.ApiClient
             {
                 var client = new HttpClient();
                 return client;
-            });        
+            });
 
         private HttpClient HttpClient => httpClient.Value;
 
@@ -65,13 +65,13 @@ namespace Ch9.ApiClient
 
             if (response.IsSuccessStatusCode)
                 result.Json = await response.Content.ReadAsStringAsync();
-            
-            return result;            
+
+            return result;
         }
 
         public class GenreNameFetchResult
         {
-            public HttpStatusCode HttpStatusCode { get; set; }            
+            public HttpStatusCode HttpStatusCode { get; set; }
             public string Json { get; set; }
         }
 
@@ -295,7 +295,7 @@ namespace Ch9.ApiClient
         // Fetches the image paths of the gallery images from the server
         // swallows exceptions, retries as required
         public async Task<GetMovieImagesResult> UpdateMovieImages2(int id, string language = null, string otherLanguage = null, bool? includeLanguageless = true, int retryCount = 0, int delayMilliseconds = 1000)
-        {           
+        {
             string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id + IMAGE_DETAIL_Path;
             var query = new Dictionary<string, string>();
             query.Add(API_KEY_Key, apiKeyValue);
@@ -309,7 +309,7 @@ namespace Ch9.ApiClient
 
             // for the TMDB WebAPI 'null' means include languageless pictures 
             if (includeLanguageless == true)
-                otherLanguages.Add("null"); 
+                otherLanguages.Add("null");
 
             var otherLanguagesValue = string.Join(",", otherLanguages);
 

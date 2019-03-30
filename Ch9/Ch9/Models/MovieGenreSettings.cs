@@ -47,6 +47,7 @@ namespace Ch9.Models
         }
     }
 
+    // contains the movie genre preferences of the user to filter the results of WebAPI queries
     public class MovieGenreSettings
     {
         private IDictionary<string, object> appDictionary;

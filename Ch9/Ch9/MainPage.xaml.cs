@@ -8,10 +8,19 @@ using static Ch9.ApiClient.TheMovieDatabaseClient;
 
 namespace Ch9
 {
+    /*
+    Main page provides searching for movies with a live updated result list
+    Results are filtered based on user preferences and only results which are 
+    relevant are shown
+
+    Search first starts after a pre-set number of characters are entered
+    User can select any ListView item for details         
+    */
+
+
     public partial class MainPage : ContentPage
     {
-        private ObservableCollection<MovieDetailModel> movies;
-        private Dictionary<string, Dictionary<int, MovieDetailModel>> queryCache;
+        private ObservableCollection<MovieDetailModel> movies;        
         private Settings settings;
 
         public string SearchString { get; set; }        
@@ -19,9 +28,7 @@ namespace Ch9
         public MainPage()
         {
             settings = ((App)Application.Current).Settings;
-
             movies = new ObservableCollection<MovieDetailModel>();
-            queryCache = new Dictionary<string, Dictionary<int, MovieDetailModel>>();
 
             InitializeComponent();
             listView.ItemsSource = movies;
@@ -53,9 +60,11 @@ namespace Ch9
                 if ( 200 <= (int)searchResult.HttpStatusCode && (int)searchResult.HttpStatusCode < 300)
                 {
                     var obj = JsonConvert.DeserializeObject<SearchResult>(searchResult.Json);
-                    ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(obj.MovieDetailModels);
-                    ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(obj.MovieDetailModels);
-                    Utils.Utils.UpdateListviewCollection(movies, obj.MovieDetailModels, new MovieModelComparer());
+                    var filteredResult = ((App)Application.Current).ResultFilter.FilterBySearchSettings(obj.MovieDetailModels);
+
+                    ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(filteredResult);
+                    ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(filteredResult);
+                    Utils.Utils.UpdateListviewCollection(movies, filteredResult, new MovieModelComparer());
                 }                    
             }
         }

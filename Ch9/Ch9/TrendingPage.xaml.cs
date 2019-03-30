@@ -8,6 +8,19 @@ using static Ch9.ApiClient.TheMovieDatabaseClient;
 
 namespace Ch9
 {
+    /*     
+     This page displays trending movies for the week or day according to the bool QueryTheWeek switch
+     To speed things up in the constructor parallel hot tasks are started to fetch week and day information.
+
+     The results are filtered according to users preferences
+
+     When switching between week and day query, the ListView is compleatly emptied and refilled from the 
+     completed tasls to maintain the popularity sorted order in which the WebAPI sent it. At current 
+     list sizes its not a UI bottleneck. 
+
+        User can select any ListView item to view movie details and images         
+     */
+
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class TrendingPage : ContentPage
 	{
@@ -49,10 +62,12 @@ namespace Ch9
             {
                 string json = result.Json;
                 SearchResult obj = JsonConvert.DeserializeObject<SearchResult>(json);
-                ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(obj.MovieDetailModels);
-                ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(obj.MovieDetailModels);
+                var filteredResults = ((App)Application.Current).ResultFilter.FilterBySearchSettings(obj.MovieDetailModels);
+
+                ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(filteredResults);
+                ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(filteredResults);
                 movies.Clear();                
-                foreach (MovieDetailModel movie in obj.MovieDetailModels)
+                foreach (MovieDetailModel movie in filteredResults)
                     movies.Add(movie);
             }
         }
@@ -67,11 +82,13 @@ namespace Ch9
             {
                 string json = result.Json;
                 SearchResult obj = JsonConvert.DeserializeObject<SearchResult>(json);
-                ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(obj.MovieDetailModels);
-                ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(obj.MovieDetailModels);
+                var filteredResults = ((App)Application.Current).ResultFilter.FilterBySearchSettings(obj.MovieDetailModels);
+
+                ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(filteredResults);
+                ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(filteredResults);
 
                 movies.Clear();
-                foreach (MovieDetailModel movie in obj.MovieDetailModels)
+                foreach (MovieDetailModel movie in filteredResults)
                     movies.Add(movie);
             }
         }

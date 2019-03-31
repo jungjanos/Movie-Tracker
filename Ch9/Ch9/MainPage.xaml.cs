@@ -59,8 +59,8 @@ namespace Ch9
 
                 if ( 200 <= (int)searchResult.HttpStatusCode && (int)searchResult.HttpStatusCode < 300)
                 {
-                    var obj = JsonConvert.DeserializeObject<SearchResult>(searchResult.Json);
-                    var filteredResult = ((App)Application.Current).ResultFilter.FilterBySearchSettings(obj.MovieDetailModels);
+                    var deserializedApiResponse = JsonConvert.DeserializeObject<SearchResult>(searchResult.Json);
+                    var filteredResult = ((App)Application.Current).ResultFilter.FilterBySearchSettings(deserializedApiResponse.MovieDetailModels);
 
                     ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(filteredResult);
                     ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(filteredResult);

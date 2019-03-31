@@ -29,8 +29,8 @@ namespace Ch9
 
         public bool QueryTheWeek { get; set; } = true;
 
-        Task<TrendingMoviesResult> trendingThisWeekTask;
-        Task<TrendingMoviesResult> trendingThisDayTask;
+        Task<TrendingMoviesResult> trendingThisWeekGetter;
+        Task<TrendingMoviesResult> trendingThisDayGetter;
 
 
         public TrendingPage ()
@@ -38,8 +38,8 @@ namespace Ch9
             settings = ((App)Application.Current).Settings;
             movies = new ObservableCollection<MovieModel>();
 
-            trendingThisWeekTask = ((App)Application.Current).TrendingMoviesGetter.Invoke(true, settings.SearchLanguage, settings.IncludeAdult, null);
-            trendingThisDayTask = ((App)Application.Current).TrendingMoviesGetter.Invoke(false, settings.SearchLanguage, settings.IncludeAdult, null);                                 
+            trendingThisWeekGetter = ((App)Application.Current).TrendingMoviesGetter.Invoke(true, settings.SearchLanguage, settings.IncludeAdult, null);
+            trendingThisDayGetter = ((App)Application.Current).TrendingMoviesGetter.Invoke(false, settings.SearchLanguage, settings.IncludeAdult, null);                                 
 
             InitializeComponent();
             listView.ItemsSource = movies;
@@ -56,13 +56,13 @@ namespace Ch9
             weekOrDayLabel.Text = QueryTheWeek ? "Week" : "Day";
             QueryTheWeek = !QueryTheWeek;
 
-            TrendingMoviesResult result = await (QueryTheWeek ? trendingThisWeekTask : trendingThisDayTask);
+            TrendingMoviesResult result = await (QueryTheWeek ? trendingThisWeekGetter : trendingThisDayGetter);
 
             if (200 <= (int)result.HttpStatusCode && (int)result.HttpStatusCode < 300)
             {
                 string json = result.Json;
-                SearchResult obj = JsonConvert.DeserializeObject<SearchResult>(json);
-                var filteredResults = ((App)Application.Current).ResultFilter.FilterBySearchSettings(obj.MovieDetailModels);
+                SearchResult deserializedApiResponse = JsonConvert.DeserializeObject<SearchResult>(json);
+                var filteredResults = ((App)Application.Current).ResultFilter.FilterBySearchSettings(deserializedApiResponse.MovieDetailModels);
 
                 ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(filteredResults);
                 ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(filteredResults);
@@ -76,13 +76,13 @@ namespace Ch9
         {
             base.OnAppearing();
 
-            TrendingMoviesResult result = await (QueryTheWeek ? trendingThisWeekTask : trendingThisDayTask);
+            TrendingMoviesResult result = await (QueryTheWeek ? trendingThisWeekGetter : trendingThisDayGetter);
 
             if (200 <= (int)result.HttpStatusCode && (int)result.HttpStatusCode < 300)
             {
                 string json = result.Json;
-                SearchResult obj = JsonConvert.DeserializeObject<SearchResult>(json);
-                var filteredResults = ((App)Application.Current).ResultFilter.FilterBySearchSettings(obj.MovieDetailModels);
+                SearchResult deserializedApiResponse = JsonConvert.DeserializeObject<SearchResult>(json);
+                var filteredResults = ((App)Application.Current).ResultFilter.FilterBySearchSettings(deserializedApiResponse.MovieDetailModels);
 
                 ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(filteredResults);
                 ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(filteredResults);

@@ -46,7 +46,6 @@ namespace Ch9.ApiClient
         // indicates success or failure as Http code,
         // retries as required
         //ToDo: magic string (language should be replaced by enum type) 
-
         public async Task<GenreNameFetchResult> FetchGenreIdsWithNames(string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + GENRE_LIST_Path;
@@ -145,7 +144,6 @@ namespace Ch9.ApiClient
 
             return result;
         }
-
 
         // Fetches the image paths of the gallery images from the server
         // swallows exceptions, retries as required

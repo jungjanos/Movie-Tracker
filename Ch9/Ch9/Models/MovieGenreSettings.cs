@@ -92,7 +92,7 @@ namespace Ch9.Models
                 GenreSelectionDisplay.Add(new GenreItem { Id = 37, GenreName = "Western", IsSelected = true });                
             }
 
-            // ToDo: check whether serialization also gets the public event property serialized!!!
+            //ToDo: check whether serialization also gets the public event property serialized!!!
             foreach (GenreItem item in GenreSelectionDisplay)
                 item.PropertyChanged += GenreItem_PropertyChanged;
         }

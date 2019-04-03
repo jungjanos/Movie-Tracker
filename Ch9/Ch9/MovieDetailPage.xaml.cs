@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Ch9.Models;
-using static Ch9.ApiClient.TmdbNetworkClient;
 using Newtonsoft.Json;
 using Ch9.ApiClient;
 
@@ -15,7 +14,7 @@ namespace Ch9
 
         private MovieDetailModel _movie;        
 
-        private Task<GetMovieImagesResult> imageDetailCollectionUpdateTask2;
+        private Task<GetMovieImagesResult> imageDetailCollectionUpdateTask;
         Task initializeGallery;
 
         private Settings settings;
@@ -27,10 +26,10 @@ namespace Ch9
             // starts a hot task to fetch gallery image paths as early as possible
             settings = ((App)Application.Current).Settings;
 
-            imageDetailCollectionUpdateTask2 = ((App)Application.Current).CachedSearchClient.UpdateMovieImages(_movie.Id, settings.SearchLanguage, null, true);
+            imageDetailCollectionUpdateTask = ((App)Application.Current).CachedSearchClient.UpdateMovieImages(_movie.Id, settings.SearchLanguage, null, true);
 
             // attaches task to update movie gallery details with the results of the antecendent
-            initializeGallery = imageDetailCollectionUpdateTask2.ContinueWith(t =>
+            initializeGallery = imageDetailCollectionUpdateTask.ContinueWith(t =>
             {
                 if (200 <= (int)t.Result.HttpStatusCode && (int)t.Result.HttpStatusCode < 300)
                 {

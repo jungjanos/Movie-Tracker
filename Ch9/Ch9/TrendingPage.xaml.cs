@@ -38,8 +38,11 @@ namespace Ch9
             settings = ((App)Application.Current).Settings;
             movies = new ObservableCollection<MovieModel>();
 
-            trendingThisWeekGetter = ((App)Application.Current).TrendingMoviesGetter.Invoke(true, settings.SearchLanguage, settings.IncludeAdult, null);
-            trendingThisDayGetter = ((App)Application.Current).TrendingMoviesGetter.Invoke(false, settings.SearchLanguage, settings.IncludeAdult, null);                                 
+            //trendingThisWeekGetter = ((App)Application.Current).TrendingMoviesGetter.Invoke(true, settings.SearchLanguage, settings.IncludeAdult, null);
+            //trendingThisDayGetter = ((App)Application.Current).TrendingMoviesGetter.Invoke(false, settings.SearchLanguage, settings.IncludeAdult, null);
+
+            trendingThisWeekGetter = ((App)Application.Current).MovieSearchCache.GetTrendingMovies(true, settings.SearchLanguage, settings.IncludeAdult, null);
+            trendingThisDayGetter = ((App)Application.Current).MovieSearchCache.GetTrendingMovies(false, settings.SearchLanguage, settings.IncludeAdult, null);
 
             InitializeComponent();
             listView.ItemsSource = movies;

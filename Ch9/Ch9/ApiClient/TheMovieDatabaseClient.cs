@@ -12,7 +12,7 @@ namespace Ch9.ApiClient
 {
     public class TheMovieDatabaseClient
     {
-        private string apiKeyValue;
+        private string apiKeyValue;        
         private readonly Settings settings;
         private static Lazy<HttpClient> httpClient = new Lazy<HttpClient>(
             () =>
@@ -294,7 +294,7 @@ namespace Ch9.ApiClient
 
         // Fetches the image paths of the gallery images from the server
         // swallows exceptions, retries as required
-        public async Task<GetMovieImagesResult> UpdateMovieImages2(int id, string language = null, string otherLanguage = null, bool? includeLanguageless = true, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<GetMovieImagesResult> UpdateMovieImages(int id, string language = null, string otherLanguage = null, bool? includeLanguageless = true, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id + IMAGE_DETAIL_Path;
             var query = new Dictionary<string, string>();

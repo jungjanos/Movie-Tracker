@@ -24,9 +24,9 @@ namespace Ch9
             _movie = movie;
 
             // starts a hot task to fetch gallery image paths as early as possible
-            settings = ((App)Application.Current).Settings;            
-            imageDetailCollectionUpdateTask2 = ((App)Application.Current).GetMovieImages
-                .Invoke(_movie.Id, settings.SearchLanguage, null, true);
+            settings = ((App)Application.Current).Settings;
+
+            imageDetailCollectionUpdateTask2 = ((App)Application.Current).MovieSearchCache.UpdateMovieImages(_movie.Id, settings.SearchLanguage, null, true);
 
             // attaches task to update movie gallery details with the results of the antecendent
             initializeGallery = imageDetailCollectionUpdateTask2.ContinueWith(t =>
@@ -50,7 +50,7 @@ namespace Ch9
         {
             base.OnAppearing();
 
-            FetchMovieDetailsResult movieDetailsResult = await ((App)Application.Current).MovieDetailGetter(_movie.Id, settings.SearchLanguage);
+            FetchMovieDetailsResult movieDetailsResult = await ((App)Application.Current).MovieSearchCache.FetchMovieDetails(_movie.Id, settings.SearchLanguage);
             if (200 <= (int)movieDetailsResult.HttpStatusCode && (int)movieDetailsResult.HttpStatusCode < 300)
                 JsonConvert.PopulateObject(movieDetailsResult.Json, _movie);
         }

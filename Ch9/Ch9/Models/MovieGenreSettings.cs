@@ -141,10 +141,9 @@ namespace Ch9.Models
 
         public async Task OnSearchLanguageChanged(string newLanguage)
         {
-            var result = await ((App)Application.Current).ApiClient.FetchGenreIdsWithNames(newLanguage, 2, 1000);
+            var result = await ((App)Application.Current).ApiClient.FetchGenreIdsWithNames(newLanguage, 2, 1000);            
             if (199 < (int)result.HttpStatusCode && (int)result.HttpStatusCode < 300)
             {
-
                 //UpdateExistingGenreCategories(result.IdNamePairs);
                 var fetchedCategories = JsonConvert.DeserializeObject<GenreIdNamePairWrapper>(result.Json);
                 UpdateExistingGenreCategories(fetchedCategories.Genres);

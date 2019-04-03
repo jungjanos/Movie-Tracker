@@ -54,8 +54,9 @@ namespace Ch9
                 searchLabel.IsVisible = true;
 
             if (searchText.Length >= 5)
-            {               
-                var searchResult = await ((App)Application.Current).movieGetter2(searchText, settings.SearchLanguage, settings.IncludeAdult);
+            {
+                //var searchResult = await ((App)Application.Current).movieGetter2(searchText, settings.SearchLanguage, settings.IncludeAdult);
+                var searchResult = await ((App)Application.Current).MovieSearchCache.SearchByMovie(searchText, settings.SearchLanguage, settings.IncludeAdult);
 
                 if ( 200 <= (int)searchResult.HttpStatusCode && (int)searchResult.HttpStatusCode < 300)
                 {

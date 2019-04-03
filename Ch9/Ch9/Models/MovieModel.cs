@@ -53,6 +53,11 @@ namespace Ch9.Models
 
     public class MovieDetailModel : MovieModel, INotifyPropertyChanged
     {
+        public MovieDetailModel()
+        {
+            imageDetailCollection = new ImageDetailCollection();
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
@@ -68,7 +73,6 @@ namespace Ch9.Models
             OnPropertyChanged(propertyName);
             return true;
         }
-
 
         private int budget;
         [JsonProperty("budget")]

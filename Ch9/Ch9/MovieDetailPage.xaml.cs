@@ -33,10 +33,6 @@ namespace Ch9
             {
                 if (200 <= (int)t.Result.HttpStatusCode && (int)t.Result.HttpStatusCode < 300)
                 {
-                    // ToDo: initialize that in the MovieDetailModel constructor
-                    if (_movie.ImageDetailCollection == null)
-                        _movie.ImageDetailCollection = new ImageDetailCollection();
-
                     JsonConvert.PopulateObject(t.Result.Json, _movie.ImageDetailCollection);
                     ((App)Application.Current).MovieDetailModelConfigurator.SetGalleryImageSources(_movie);
                 }                    

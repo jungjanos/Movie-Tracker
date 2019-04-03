@@ -1,10 +1,9 @@
-﻿using Ch9.Models;
+﻿using Ch9.ApiClient;
+using Ch9.Models;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;
-using static Ch9.ApiClient.TheMovieDatabaseClient;
 
 namespace Ch9
 {
@@ -16,8 +15,6 @@ namespace Ch9
     Search first starts after a pre-set number of characters are entered
     User can select any ListView item for details         
     */
-
-
     public partial class MainPage : ContentPage
     {
         private ObservableCollection<MovieDetailModel> movies;        
@@ -54,9 +51,8 @@ namespace Ch9
                 searchLabel.IsVisible = true;
 
             if (searchText.Length >= 5)
-            {
-                //var searchResult = await ((App)Application.Current).movieGetter2(searchText, settings.SearchLanguage, settings.IncludeAdult);
-                var searchResult = await ((App)Application.Current).MovieSearchCache.SearchByMovie(searchText, settings.SearchLanguage, settings.IncludeAdult);
+            {                
+                var searchResult = await ((App)Application.Current).CachedSearchClient.SearchByMovie(searchText, settings.SearchLanguage, settings.IncludeAdult);
 
                 if ( 200 <= (int)searchResult.HttpStatusCode && (int)searchResult.HttpStatusCode < 300)
                 {

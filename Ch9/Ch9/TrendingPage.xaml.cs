@@ -1,10 +1,10 @@
-﻿using Ch9.Models;
+﻿using Ch9.ApiClient;
+using Ch9.Models;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static Ch9.ApiClient.TheMovieDatabaseClient;
 
 namespace Ch9
 {
@@ -36,13 +36,10 @@ namespace Ch9
         public TrendingPage ()
 		{
             settings = ((App)Application.Current).Settings;
-            movies = new ObservableCollection<MovieModel>();
+            movies = new ObservableCollection<MovieModel>();            
 
-            //trendingThisWeekGetter = ((App)Application.Current).TrendingMoviesGetter.Invoke(true, settings.SearchLanguage, settings.IncludeAdult, null);
-            //trendingThisDayGetter = ((App)Application.Current).TrendingMoviesGetter.Invoke(false, settings.SearchLanguage, settings.IncludeAdult, null);
-
-            trendingThisWeekGetter = ((App)Application.Current).MovieSearchCache.GetTrendingMovies(true, settings.SearchLanguage, settings.IncludeAdult, null);
-            trendingThisDayGetter = ((App)Application.Current).MovieSearchCache.GetTrendingMovies(false, settings.SearchLanguage, settings.IncludeAdult, null);
+            trendingThisWeekGetter = ((App)Application.Current).CachedSearchClient.GetTrendingMovies(true, settings.SearchLanguage, settings.IncludeAdult, null);
+            trendingThisDayGetter = ((App)Application.Current).CachedSearchClient.GetTrendingMovies(false, settings.SearchLanguage, settings.IncludeAdult, null);
 
             InitializeComponent();
             listView.ItemsSource = movies;

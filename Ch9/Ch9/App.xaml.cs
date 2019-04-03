@@ -18,16 +18,15 @@ namespace Ch9
         public TmdbConfigurationModel TmdbConfiguration { get; private set; }
         public MovieDetailModelConfigurator MovieDetailModelConfigurator { get; private set; }
         public SearchResultFilter ResultFilter { get; private set; }
-        public MovieSearchCache MovieSearchCache { get; private set; }
-        public TheMovieDatabaseClient ApiClient { get; private set; }         
+        public TmdbCachedSearchClient CachedSearchClient { get; private set; }
+        
 
         public App()
         {            
             Settings = new Settings();
-            ApiClient = new TheMovieDatabaseClient(Settings);
             MovieGenreSettings = new MovieGenreSettings();
             ResultFilter = new SearchResultFilter(Settings, MovieGenreSettings);
-            MovieSearchCache = new MovieSearchCache(ApiClient);            
+            CachedSearchClient = new TmdbCachedSearchClient(new TmdbNetworkClient(Settings));            
 
             InitializeComponent();
 
@@ -52,7 +51,7 @@ namespace Ch9
 
         private async Task<TmdbConfigurationModel> GetTmdbConfiguration(int retries, int retryDelay)
         {
-            var response = await ApiClient.GetTmdbConfiguration(retries, retryDelay);
+            var response = await CachedSearchClient.GetTmdbConfiguration(retries, retryDelay);
 
             if (200 <= (int)response.HttpStatusCode && (int)response.HttpStatusCode < 300)
             {

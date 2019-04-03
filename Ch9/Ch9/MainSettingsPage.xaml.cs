@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Ch9.Models;
 
 using Xamarin.Forms;
@@ -10,7 +6,7 @@ using Xamarin.Forms.Xaml;
 
 namespace Ch9
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class MainSettingsPage : ContentPage
 	{
         private Settings settings;

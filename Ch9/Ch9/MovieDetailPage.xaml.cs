@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Ch9.Models;
-using static Ch9.ApiClient.TheMovieDatabaseClient;
+using static Ch9.ApiClient.TmdbNetworkClient;
 using Newtonsoft.Json;
+using Ch9.ApiClient;
 
 namespace Ch9
 {
@@ -26,7 +27,7 @@ namespace Ch9
             // starts a hot task to fetch gallery image paths as early as possible
             settings = ((App)Application.Current).Settings;
 
-            imageDetailCollectionUpdateTask2 = ((App)Application.Current).MovieSearchCache.UpdateMovieImages(_movie.Id, settings.SearchLanguage, null, true);
+            imageDetailCollectionUpdateTask2 = ((App)Application.Current).CachedSearchClient.UpdateMovieImages(_movie.Id, settings.SearchLanguage, null, true);
 
             // attaches task to update movie gallery details with the results of the antecendent
             initializeGallery = imageDetailCollectionUpdateTask2.ContinueWith(t =>
@@ -50,7 +51,7 @@ namespace Ch9
         {
             base.OnAppearing();
 
-            FetchMovieDetailsResult movieDetailsResult = await ((App)Application.Current).MovieSearchCache.FetchMovieDetails(_movie.Id, settings.SearchLanguage);
+            FetchMovieDetailsResult movieDetailsResult = await ((App)Application.Current).CachedSearchClient.FetchMovieDetails(_movie.Id, settings.SearchLanguage);
             if (200 <= (int)movieDetailsResult.HttpStatusCode && (int)movieDetailsResult.HttpStatusCode < 300)
                 JsonConvert.PopulateObject(movieDetailsResult.Json, _movie);
         }

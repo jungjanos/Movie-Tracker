@@ -1,49 +1,63 @@
-﻿using Ch9.ApiClient;
-using LazyCache;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using LazyCache;
 using System.Threading.Tasks;
-using static Ch9.ApiClient.TheMovieDatabaseClient;
 
 namespace Ch9.ApiClient
 {
-    public class MovieSearchCache
+    public class TmdbCachedSearchClient
     {
         private IAppCache _cache;
-        private TheMovieDatabaseClient _apiClient;
+        private TmdbNetworkClient _networkClient;
 
-        public MovieSearchCache(TheMovieDatabaseClient theMovieDatabaseClient)
+        public TmdbCachedSearchClient(TmdbNetworkClient theMovieDatabaseClient)
         {
             _cache = new CachingService();
-            _apiClient = theMovieDatabaseClient;
+            _networkClient = theMovieDatabaseClient;
         }
+
+        #region CachedQueries
 
         public async Task<SearchByMovieResult> SearchByMovie(string searchString, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             return await _cache.GetOrAddAsync("$" + nameof(SearchByMovie) + searchString + (language ?? "") + 
-                (includeAdult?.ToString() ?? ""), () => _apiClient.SearchByMovie(searchString, language, includeAdult));            
+                (includeAdult?.ToString() ?? ""), () => _networkClient.SearchByMovie(searchString, language, includeAdult));            
         }
-
-        //ToDo: extract FetchMovieDetailsResult class declaration
+        
         public async Task<FetchMovieDetailsResult> FetchMovieDetails(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            return await _cache.GetOrAddAsync("$" + nameof(FetchMovieDetails)  + id.ToString() + (language ?? ""), () => _apiClient.FetchMovieDetails(id, language));            
+            return await _cache.GetOrAddAsync("$" + nameof(FetchMovieDetails)  + id.ToString() + (language ?? ""), () => _networkClient.FetchMovieDetails(id, language));            
         }
-
-        //ToDo: extract TrendingMoviesResult class declaration
+        
         public async Task<TrendingMoviesResult> GetTrendingMovies(bool week = true, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             return await _cache.GetOrAddAsync("$" + nameof(GetTrendingMovies) + week + (language ?? "") + (includeAdult?.ToString() ?? "") + (page?.ToString() ?? ""), () =>
-               _apiClient.GetTrendingMovies(week, language, includeAdult));
+               _networkClient.GetTrendingMovies(week, language, includeAdult));
         }
-
-        //ToDo: extract GetMovieImagesResult class declaration
+        
         public async Task<GetMovieImagesResult> UpdateMovieImages(int id, string language = null, string otherLanguage = null, bool? includeLanguageless = true, int retryCount = 0, int delayMilliseconds = 1000)
         {
             return await _cache.GetOrAddAsync("$" + nameof(UpdateMovieImages) + id.ToString() + (language ?? "") + (otherLanguage ?? "") + (includeLanguageless == null ? "" : includeLanguageless.Value.ToString()),
 
-                    () => _apiClient.UpdateMovieImages(id, language, otherLanguage, includeLanguageless));
+                    () => _networkClient.UpdateMovieImages(id, language, otherLanguage, includeLanguageless));
         }
+
+        #endregion
+
+
+        #region UncachedQueries
+
+        public async Task<GenreNameFetchResult> FetchGenreIdsWithNames(string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            return await _networkClient.FetchGenreIdsWithNames(language, retryCount, delayMilliseconds);
+        }
+
+        public async Task<TmdbConfigurationModelResult> GetTmdbConfiguration(int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            return await _networkClient.GetTmdbConfiguration(retryCount, delayMilliseconds);
+        }
+
+        #endregion
+
+
+
     }
 }

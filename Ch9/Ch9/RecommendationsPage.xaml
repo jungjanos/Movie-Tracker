@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Ch9.TrendingPage"
-             Title="Trending"
-             x:Name="trendingPage">
+             x:Class="Ch9.RecommendationsPage"
+             x:Name="recommendationsPage"
+             Title="{Binding Source={x:Reference recommendationsPage}, Path=Movie.Title}">
     <ContentPage.Content>
         <StackLayout  Orientation="Vertical" Padding="5,0,5,5">
-            <StackLayout Orientation="Horizontal" Padding="5">
-                <Label x:Name="weekOrDayLabel" Text="Week" VerticalTextAlignment="Center"/>
-                <Switch IsToggled="{Binding Source={x:Reference trendingPage}, Path=QueryTheWeek}" Toggled="OnWeekOrDaySwitch_Toggled"/>
+            <StackLayout Orientation="Horizontal" Padding="5" HorizontalOptions="FillAndExpand">
+                <Label x:Name="recommendationsOrSimilarsLabel" Text="Recommended" VerticalTextAlignment="Center" HorizontalOptions="Start" FontSize="Large"/>
+                <Switch IsToggled="{Binding Source={x:Reference recommendationsPage}, Path=RecommendationsOrSimilars}" Toggled="OnRecommendationsOrSimilarsSwitch_Toggled" HorizontalOptions="EndAndExpand"/>
             </StackLayout>
-            
-            <ListView x:Name="listView" HasUnevenRows="True" ItemTapped="ListView_ItemTapped">
+
+            <ListView x:Name="recommendationsListView" HasUnevenRows="True" ItemTapped="OnRecommendationsListView_ItemTapped">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -39,7 +39,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            
+
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

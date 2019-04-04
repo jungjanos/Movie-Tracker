@@ -51,7 +51,7 @@ namespace Ch9
             Navigation.PushAsync(new MovieDetailPage(movie));
         }
 
-        private async void WeekOrDaySwitch_Toggled(object sender, ToggledEventArgs e)
+        private async void OnWeekOrDaySwitch_Toggled(object sender, ToggledEventArgs e)
         {
             weekOrDayLabel.Text = QueryTheWeek ? "Week" : "Day";
             QueryTheWeek = !QueryTheWeek;

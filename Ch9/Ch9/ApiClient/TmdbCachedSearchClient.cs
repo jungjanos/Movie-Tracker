@@ -40,6 +40,20 @@ namespace Ch9.ApiClient
                     () => _networkClient.UpdateMovieImages(id, language, otherLanguage, includeLanguageless));
         }
 
+        public async Task<GetMovieRecommendationsResult> GetMovieRecommendations(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            return await _cache.GetOrAddAsync("$" + nameof(GetMovieRecommendations) + id.ToString() + (language ?? ""), 
+
+                    () => _networkClient.GetMovieRecommendations(id, language, retryCount, delayMilliseconds));
+        }
+
+        public async Task<GetSimilarMoviesResult> GetSimilarMovies(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            return await _cache.GetOrAddAsync("$" + nameof(GetSimilarMovies) + id.ToString() + (language ?? ""),
+
+                    () => _networkClient.GetSimilarMovies(id, language, retryCount, delayMilliseconds));
+        }
+
         #endregion
 
 

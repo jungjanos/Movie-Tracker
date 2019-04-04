@@ -94,6 +94,7 @@ namespace Ch9.Models
         [JsonProperty("imdb_id")]
         public string ImdbId { get; set; }
 
+
         private ProductionCountry[] productionCountries;
         [JsonProperty("production_countries")]
         public ProductionCountry[] ProductionCountries

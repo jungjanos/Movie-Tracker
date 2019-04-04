@@ -26,5 +26,7 @@ namespace Ch9.ApiClient
         public const string PAGE_Key = "page";
         public const string INCLUDE_Adult_Key = "include_adult";
         public const string API_KEY_Key = "api_key";
+        public const string RECOMMENDATIONS_Path = "/recommendations";
+        public const string SIMILARS_Path = "/similar";
     }
 }

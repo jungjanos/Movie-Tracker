@@ -175,6 +175,43 @@ namespace Ch9.ApiClient
             return result;
         }
 
+        //WORKING HERE
+        public async Task<GetMovieRecommendationsResult> GetMovieRecommendations(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id + RECOMMENDATIONS_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, apiKeyValue);
+
+            if (!string.IsNullOrEmpty(language))
+                query.Add(LANGUAGE_Key, language);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            GetMovieRecommendationsResult result = await GetResponse<GetMovieRecommendationsResult>(retryCount, delayMilliseconds, requestUri);
+
+            return result;
+        }
+
+        public async Task<GetSimilarMoviesResult> GetSimilarMovies(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id + SIMILARS_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, apiKeyValue);
+
+            if (!string.IsNullOrEmpty(language))
+                query.Add(LANGUAGE_Key, language);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            GetSimilarMoviesResult result = await GetResponse<GetSimilarMoviesResult>(retryCount, delayMilliseconds, requestUri);
+
+            return result;
+        }
+
+        //
+
 
         private async Task<T> GetResponse<T>(int retryCount, int delayMilliseconds, string requestUri) where T: TmdbResponseBase, new()
         {
@@ -183,7 +220,6 @@ namespace Ch9.ApiClient
 
             try
             {
-
                 response = await HttpClient.GetAsync(requestUri);
             }
             catch { }

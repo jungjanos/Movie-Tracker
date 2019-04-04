@@ -56,5 +56,17 @@ namespace Ch9
             await initializeGallery;
             _movie.GalleryPositionCounter++;       
         }
+
+        private async void OnRecommendationButton_Clicked(object sender, EventArgs e)
+        {
+            Task<GetMovieRecommendationsResult> getMovieRecommendations = ((App)Application.Current).CachedSearchClient.GetMovieRecommendations(_movie.Id, settings.SearchLanguage);
+            Task<GetSimilarMoviesResult> getSimilarMovies = ((App)Application.Current).CachedSearchClient.GetSimilarMovies(_movie.Id, settings.SearchLanguage);
+
+            GetMovieRecommendationsResult movieRecommendationsResult = await getMovieRecommendations;
+            if (200 <= (int)movieRecommendationsResult.HttpStatusCode && (int)movieRecommendationsResult.HttpStatusCode < 300)
+            {
+                await Navigation.PushAsync(new RecommendationsPage(_movie, getMovieRecommendations, getSimilarMovies));
+            }
+        }
     }
 }

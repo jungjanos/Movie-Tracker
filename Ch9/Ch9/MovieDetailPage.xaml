@@ -34,10 +34,17 @@
         <Label Text="{Binding Path= Tagline}"/>
         <Label Text="{Binding Path=Overview}" TextColor="DarkGray" FontSize="Medium" Visual="Material"/>
 
-        <Label Text="{Binding Path= Duration, StringFormat='{0} mins'}" IsVisible="{Binding Path=Duration.HasValue}"/>
-        <Label Text="{Binding Path= VoteAverage, StringFormat='Score: {0:F1}'}"/>
-        <Label Text="{Binding Path= VoteCount, StringFormat='Votes: {0}'}"/>
-        <Label Text="{Binding Path= Countries}"/>
+        <StackLayout Orientation="Horizontal">
+            <Label Text="{Binding Path= Duration, StringFormat='{0} mins'}" IsVisible="{Binding Path=Duration.HasValue}"/>
+            <Label Text="{Binding Path= VoteAverage, StringFormat='Score: {0:F1}'}"/>
+            <Label Text="{Binding Path= VoteCount, StringFormat='Votes: {0}'}"/>
+            <Label Text="{Binding Path= Countries}"/>
+        </StackLayout>
+        
+        <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
+            <Button Text="Recommendation >" HorizontalOptions="EndAndExpand" Clicked="OnRecommendationButton_Clicked" />
+        </StackLayout>
+        
 
     </StackLayout>
 

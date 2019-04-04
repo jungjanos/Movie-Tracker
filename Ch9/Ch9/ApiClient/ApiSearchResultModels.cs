@@ -44,4 +44,11 @@ namespace Ch9.ApiClient
 
     public class GetMovieImagesResult : TmdbResponseBase
     {}
+
+    public class GetMovieRecommendationsResult : TmdbResponseBase
+    {}
+
+    public class GetSimilarMoviesResult : TmdbResponseBase
+    {}
+
 }

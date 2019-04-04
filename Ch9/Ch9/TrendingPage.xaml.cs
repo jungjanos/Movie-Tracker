@@ -26,7 +26,7 @@ namespace Ch9
 	public partial class TrendingPage : ContentPage
 	{
         private Settings settings;
-        ObservableCollection<MovieModel> movies;
+        ObservableCollection<MovieModel> _movies;
 
         public bool QueryTheWeek { get; set; } = true;
 
@@ -37,13 +37,13 @@ namespace Ch9
         public TrendingPage ()
 		{
             settings = ((App)Application.Current).Settings;
-            movies = new ObservableCollection<MovieModel>();            
+            _movies = new ObservableCollection<MovieModel>();            
 
             trendingThisWeekGetter = ((App)Application.Current).CachedSearchClient.GetTrendingMovies(true, settings.SearchLanguage, settings.IncludeAdult, null);
             trendingThisDayGetter = ((App)Application.Current).CachedSearchClient.GetTrendingMovies(false, settings.SearchLanguage, settings.IncludeAdult, null);
 
             InitializeComponent();
-            listView.ItemsSource = movies;
+            listView.ItemsSource = _movies;
         }
 
         private void ListView_ItemTapped(object sender, ItemTappedEventArgs e)
@@ -67,7 +67,7 @@ namespace Ch9
 
                 ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(filteredResults);
                 ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(filteredResults);
-                RefillListView(filteredResults);
+                Utils.Utils.RefillList(_movies, filteredResults);
             }
         }
 
@@ -85,16 +85,8 @@ namespace Ch9
 
                 ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(filteredResults);
                 ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(filteredResults);
-
-                RefillListView(filteredResults);
+                Utils.Utils.RefillList(_movies, filteredResults);
             }
-        }
-
-        private void RefillListView(System.Collections.Generic.IEnumerable<MovieDetailModel> filteredResults)
-        {
-            movies.Clear();
-            foreach (MovieDetailModel movie in filteredResults)
-                movies.Add(movie);
         }
     }
 }

@@ -51,10 +51,7 @@ namespace Ch9
 
                 ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(filteredResults);
                 ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(filteredResults);
-
-                _movies.Clear();
-                foreach (MovieDetailModel movie in filteredResults)
-                    _movies.Add(movie);
+                Utils.Utils.RefillList(_movies, filteredResults);
             }
         }
 
@@ -74,9 +71,7 @@ namespace Ch9
                     ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(filteredResults);
                     ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(filteredResults);
 
-                    _movies.Clear();
-                    foreach (MovieDetailModel movie in filteredResults)
-                        _movies.Add(movie);
+                    Utils.Utils.RefillList(_movies, filteredResults);
                 }
             }
             else
@@ -92,10 +87,8 @@ namespace Ch9
 
                     ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(filteredResults);
                     ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(filteredResults);
-
-                    _movies.Clear();
-                    foreach (MovieDetailModel movie in filteredResults)
-                        _movies.Add(movie);
+                    
+                    Utils.Utils.RefillList(_movies, filteredResults);
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ch9.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -22,10 +23,18 @@ namespace Ch9.Utils
             foreach (T item in toAdd)
                 oldList.Add(item);
         }
+
+        // Empties and refills an ObservableCollection<T> object without dropping the reference to it.  
+        public static void RefillList<T>(ObservableCollection<T> intoList,  IEnumerable<T> fromList)
+        {
+            intoList.Clear();
+            foreach (T item in fromList)
+                intoList.Add(item);
+        }
+
         public static bool IsSuccessCode(this HttpStatusCode httpStatusCode)
         {
             return (200 <= (int)httpStatusCode && (int)httpStatusCode < 300);
         }
-
     }
 }

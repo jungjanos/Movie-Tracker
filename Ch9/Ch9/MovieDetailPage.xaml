@@ -1,15 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Ch9;assembly=Ch9"
              x:Class="Ch9.MovieDetailPage"
              Title="{Binding Title}" Padding="5"
               BackgroundColor="WhiteSmoke" NavigationPage.HasNavigationBar="False">
-
 
     <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="Fill">
 
         <ScrollView>
             <StackLayout>
+                
                 <ImageButton HorizontalOptions="FillAndExpand" Aspect="AspectFill" 
                                           Clicked="ImageButton_Clicked">
                     <ImageButton.Source>
@@ -20,23 +21,19 @@
                     </ImageButton.Source>
                 </ImageButton>
 
-
                 <StackLayout Orientation="Horizontal" Spacing="0" HorizontalOptions="EndAndExpand">
                     <Label Text="{Binding Path=GalleryPositionCounter, StringFormat='{0}/'}" FontSize="Micro" HorizontalOptions="End"/>
                     <Label Text="{Binding Path=GalleryDisplayImages.Length, StringFormat='{0} gallery images (tap picture)'}" FontSize="Micro" HorizontalOptions="End"/>
                 </StackLayout>
 
                 <StackLayout Orientation="Horizontal" Spacing="10">
-
                     <Label Text="{Binding Path=Title, StringFormat='{0}, '}" FontSize="Large"/>
                     <Label Text="{Binding Path=Year}" FontSize="Large"/>
-
                 </StackLayout>
 
                 <Label Text="{Binding Genre}" FontSize="Small"/>
-                <Label Text="{Binding Path= Tagline}"/>
-                <Label Text="{Binding Path=Overview}" TextColor="DarkGray" FontSize="Medium" Visual="Material"/>
-
+                <Label Text="{Binding Path= Tagline}"/>                
+                <local:ExtendedLabel Text="{Binding Path=Overview}" TextColor="DarkGray" FontSize="Medium" Visual="Material" JustifyText="True"/>
 
                 <StackLayout Orientation="Horizontal">
                     <Label Text="{Binding Path= Duration, StringFormat='{0} mins'}" IsVisible="{Binding Path=Duration.HasValue}"/>
@@ -51,7 +48,6 @@
         <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
             <Button Text="Recommendation >" HorizontalOptions="EndAndExpand" Clicked="OnRecommendationButton_Clicked" />
         </StackLayout>
-
 
     </StackLayout>
 

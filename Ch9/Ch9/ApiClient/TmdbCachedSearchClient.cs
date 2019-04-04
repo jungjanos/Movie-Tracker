@@ -6,16 +6,15 @@ namespace Ch9.ApiClient
     public class TmdbCachedSearchClient
     {
         private IAppCache _cache;
-        private TmdbNetworkClient _networkClient;
+        private ITmdbNetworkClient _networkClient;
 
-        public TmdbCachedSearchClient(TmdbNetworkClient theMovieDatabaseClient)
+        public TmdbCachedSearchClient(ITmdbNetworkClient theMovieDatabaseClient)
         {
             _cache = new CachingService();
             _networkClient = theMovieDatabaseClient;
         }
 
         #region CachedQueries
-
         public async Task<SearchByMovieResult> SearchByMovie(string searchString, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             return await _cache.GetOrAddAsync("$" + nameof(SearchByMovie) + searchString + (language ?? "") + 
@@ -53,12 +52,9 @@ namespace Ch9.ApiClient
 
                     () => _networkClient.GetSimilarMovies(id, language, retryCount, delayMilliseconds));
         }
-
         #endregion
 
-
         #region UncachedQueries
-
         public async Task<GenreNameFetchResult> FetchGenreIdsWithNames(string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             return await _networkClient.FetchGenreIdsWithNames(language, retryCount, delayMilliseconds);
@@ -70,8 +66,5 @@ namespace Ch9.ApiClient
         }
 
         #endregion
-
-
-
     }
 }

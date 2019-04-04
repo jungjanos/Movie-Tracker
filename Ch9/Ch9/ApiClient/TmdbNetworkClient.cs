@@ -9,9 +9,9 @@ using static Ch9.ApiClient.WebApiPathConstants;
 
 namespace Ch9.ApiClient
 {
-    public class TmdbNetworkClient
+    public class TmdbNetworkClient : ITmdbNetworkClient
     {
-        private string apiKeyValue;        
+        private string apiKeyValue;
         private readonly Settings settings;
         private static Lazy<HttpClient> httpClient = new Lazy<HttpClient>(
             () =>
@@ -114,7 +114,6 @@ namespace Ch9.ApiClient
             return result;
         }
 
-
         // Fetches the list of trending moves according to query
         // swallows exceptions, retries as configured
         public async Task<TrendingMoviesResult> GetTrendingMovies(bool week = true, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
@@ -213,7 +212,7 @@ namespace Ch9.ApiClient
         //
 
 
-        private async Task<T> GetResponse<T>(int retryCount, int delayMilliseconds, string requestUri) where T: TmdbResponseBase, new()
+        private async Task<T> GetResponse<T>(int retryCount, int delayMilliseconds, string requestUri) where T : TmdbResponseBase, new()
         {
             HttpResponseMessage response = null;
             int counter = retryCount;

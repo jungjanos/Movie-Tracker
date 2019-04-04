@@ -45,9 +45,22 @@
             </StackLayout>
         </ScrollView>
 
-        <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
+        <!--<StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
             <Button Text="Recommendation >" HorizontalOptions="EndAndExpand" Clicked="OnRecommendationButton_Clicked" />
-        </StackLayout>
+        </StackLayout>-->
+
+        <Grid VerticalOptions="EndAndExpand">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" Grid.Row="0" Text="Main page" TextColor="White" BackgroundColor="Blue" FontAttributes="Bold" FontSize="Medium" Clicked="OnMainPageButton_Clicked"/>
+            <Button Grid.Column="1" Grid.Row="0" Text="Similar" TextColor="White" BackgroundColor="Blue" FontAttributes="Bold" FontSize="Medium" Clicked="OnRecommendationButton_Clicked"/>
+        </Grid>
 
     </StackLayout>
 

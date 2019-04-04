@@ -72,5 +72,10 @@ namespace Ch9
                 await Navigation.PushAsync(new RecommendationsPage(_movie, getMovieRecommendations, getSimilarMovies));
 
         }
+
+        private async void OnMainPageButton_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PopToRootAsync();
+        }
     }
 }

@@ -53,7 +53,7 @@ namespace Ch9
         {
             var response = await CachedSearchClient.GetTmdbConfiguration(retries, retryDelay);
 
-            if (200 <= (int)response.HttpStatusCode && (int)response.HttpStatusCode < 300)
+            if (response.HttpStatusCode.IsSuccessCode())
             {
                 var result = JsonConvert.DeserializeObject<TmdbConfigurationModel>(response.Json);
                 return result;

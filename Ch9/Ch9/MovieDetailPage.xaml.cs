@@ -5,6 +5,7 @@ using Xamarin.Forms.Xaml;
 using Ch9.Models;
 using Newtonsoft.Json;
 using Ch9.ApiClient;
+using Ch9.Utils;
 
 namespace Ch9
 {
@@ -31,7 +32,7 @@ namespace Ch9
             // attaches task to update movie gallery details with the results of the antecendent
             initializeGallery = imageDetailCollectionUpdateTask.ContinueWith(t =>
             {
-                if (200 <= (int)t.Result.HttpStatusCode && (int)t.Result.HttpStatusCode < 300)
+                if (t.Result.HttpStatusCode.IsSuccessCode())
                 {
                     JsonConvert.PopulateObject(t.Result.Json, _movie.ImageDetailCollection);
                     ((App)Application.Current).MovieDetailModelConfigurator.SetGalleryImageSources(_movie);
@@ -47,7 +48,7 @@ namespace Ch9
             base.OnAppearing();
 
             FetchMovieDetailsResult movieDetailsResult = await ((App)Application.Current).CachedSearchClient.FetchMovieDetails(_movie.Id, settings.SearchLanguage);
-            if (200 <= (int)movieDetailsResult.HttpStatusCode && (int)movieDetailsResult.HttpStatusCode < 300)
+            if (movieDetailsResult.HttpStatusCode.IsSuccessCode())
                 JsonConvert.PopulateObject(movieDetailsResult.Json, _movie);
         }
 
@@ -63,7 +64,7 @@ namespace Ch9
             Task<GetSimilarMoviesResult> getSimilarMovies = ((App)Application.Current).CachedSearchClient.GetSimilarMovies(_movie.Id, settings.SearchLanguage);
 
             GetMovieRecommendationsResult movieRecommendationsResult = await getMovieRecommendations;
-            if (200 <= (int)movieRecommendationsResult.HttpStatusCode && (int)movieRecommendationsResult.HttpStatusCode < 300)
+            if (movieRecommendationsResult.HttpStatusCode.IsSuccessCode())
             {
                 await Navigation.PushAsync(new RecommendationsPage(_movie, getMovieRecommendations, getSimilarMovies));
             }

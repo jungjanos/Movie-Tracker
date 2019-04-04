@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 using System.Text;
 
 namespace Ch9.Utils
@@ -21,5 +22,10 @@ namespace Ch9.Utils
             foreach (T item in toAdd)
                 oldList.Add(item);
         }
+        public static bool IsSuccessCode(this HttpStatusCode httpStatusCode)
+        {
+            return (200 <= (int)httpStatusCode && (int)httpStatusCode < 300);
+        }
+
     }
 }

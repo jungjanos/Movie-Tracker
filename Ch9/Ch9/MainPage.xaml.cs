@@ -1,5 +1,6 @@
 ﻿using Ch9.ApiClient;
 using Ch9.Models;
+using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
@@ -54,7 +55,7 @@ namespace Ch9
             {                
                 var searchResult = await ((App)Application.Current).CachedSearchClient.SearchByMovie(searchText, settings.SearchLanguage, settings.IncludeAdult);
 
-                if ( 200 <= (int)searchResult.HttpStatusCode && (int)searchResult.HttpStatusCode < 300)
+                if (searchResult.HttpStatusCode.IsSuccessCode())
                 {
                     var deserializedApiResponse = JsonConvert.DeserializeObject<SearchResult>(searchResult.Json);
                     var filteredResult = ((App)Application.Current).ResultFilter.FilterBySearchSettings(deserializedApiResponse.MovieDetailModels);

@@ -1,5 +1,6 @@
 ﻿using Ch9.ApiClient;
 using Ch9.Models;
+using Ch9.Utils;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -58,7 +59,7 @@ namespace Ch9
 
             TrendingMoviesResult result = await (QueryTheWeek ? trendingThisWeekGetter : trendingThisDayGetter);
 
-            if (200 <= (int)result.HttpStatusCode && (int)result.HttpStatusCode < 300)
+            if (result.HttpStatusCode.IsSuccessCode())
             {
                 string json = result.Json;
                 SearchResult deserializedApiResponse = JsonConvert.DeserializeObject<SearchResult>(json);
@@ -78,7 +79,7 @@ namespace Ch9
 
             TrendingMoviesResult result = await (QueryTheWeek ? trendingThisWeekGetter : trendingThisDayGetter);
 
-            if (200 <= (int)result.HttpStatusCode && (int)result.HttpStatusCode < 300)
+            if (result.HttpStatusCode.IsSuccessCode())
             {
                 string json = result.Json;
                 SearchResult deserializedApiResponse = JsonConvert.DeserializeObject<SearchResult>(json);

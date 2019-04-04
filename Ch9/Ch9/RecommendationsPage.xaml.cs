@@ -42,11 +42,14 @@ namespace Ch9
             base.OnAppearing();
 
             GetMovieRecommendationsResult result = await _getMovieRecommendations;
+            AssembleListViewForUi(result);
+        }
 
+        private void AssembleListViewForUi(TmdbResponseBase result)
+        {
             if (result.HttpStatusCode.IsSuccessCode())
-            {
-                string json = result.Json;
-                SearchResult deserializedApiResponse = JsonConvert.DeserializeObject<SearchResult>(json);
+            {                
+                SearchResult deserializedApiResponse = JsonConvert.DeserializeObject<SearchResult>(result.Json);
                 var filteredResults = ((App)Application.Current).ResultFilter.FilterBySearchSettings(deserializedApiResponse.MovieDetailModels);
 
                 ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(filteredResults);
@@ -56,40 +59,18 @@ namespace Ch9
         }
 
         private async void OnRecommendationsOrSimilarsSwitch_Toggled(object sender, ToggledEventArgs e)
-        {           
+        {
+            recommendationsOrSimilarsLabel.Text =  RecommendationsOrSimilars ?  "Recommended" : "Similar";
+
             if (RecommendationsOrSimilars)
-            {
-                recommendationsOrSimilarsLabel.Text = "Recommended";
-
+            {               
                 var result = await _getMovieRecommendations;
-                if(result.HttpStatusCode.IsSuccessCode())
-                {
-                    string json = result.Json;
-                    SearchResult deserializedApiResponse = JsonConvert.DeserializeObject<SearchResult>(json);
-                    var filteredResults = ((App)Application.Current).ResultFilter.FilterBySearchSettings(deserializedApiResponse.MovieDetailModels);
-
-                    ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(filteredResults);
-                    ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(filteredResults);
-
-                    Utils.Utils.RefillList(_movies, filteredResults);
-                }
+                AssembleListViewForUi(result);
             }
             else
-            {
-                recommendationsOrSimilarsLabel.Text = "Similar";
-
+            {              
                 var result = await _getSimilarMovies;
-                if (result.HttpStatusCode.IsSuccessCode())
-                {
-                    string json = result.Json;
-                    SearchResult deserializedApiResponse = JsonConvert.DeserializeObject<SearchResult>(json);
-                    var filteredResults = ((App)Application.Current).ResultFilter.FilterBySearchSettings(deserializedApiResponse.MovieDetailModels);
-
-                    ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(filteredResults);
-                    ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(filteredResults);
-                    
-                    Utils.Utils.RefillList(_movies, filteredResults);
-                }
+                AssembleListViewForUi(result);
             }
         }
     }

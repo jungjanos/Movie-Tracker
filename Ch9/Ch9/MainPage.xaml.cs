@@ -18,18 +18,19 @@ namespace Ch9
     */
     public partial class MainPage : ContentPage
     {
-        private ObservableCollection<MovieDetailModel> movies;        
-        private Settings settings;
+        private const int MINIMUM_Search_Str_Length = 5;
+        private ObservableCollection<MovieDetailModel> _movies;        
+        private Settings _settings;
 
         public string SearchString { get; set; }        
 
         public MainPage()
         {
-            settings = ((App)Application.Current).Settings;
-            movies = new ObservableCollection<MovieDetailModel>();
+            _settings = ((App)Application.Current).Settings;
+            _movies = new ObservableCollection<MovieDetailModel>();
 
             InitializeComponent();
-            listView.ItemsSource = movies;
+            listView.ItemsSource = _movies;
         }
 
         private async void OnSettingsButton_Clicked(object sender, EventArgs e)
@@ -41,19 +42,11 @@ namespace Ch9
         {
             var searchText = (e.NewTextValue as string).Trim();
 
-            if (searchText.Length < 5)
-                listView.IsVisible = false;
-            else
-                listView.IsVisible = true;
+            SetUiControlVisibility(searchText);
 
-            if (searchText.Length == 0 || searchText.Length >= 5)
-                searchLabel.IsVisible = false;
-            else
-                searchLabel.IsVisible = true;
-
-            if (searchText.Length >= 5)
-            {                
-                var searchResult = await ((App)Application.Current).CachedSearchClient.SearchByMovie(searchText, settings.SearchLanguage, settings.IncludeAdult);
+            if (searchText.Length >= MINIMUM_Search_Str_Length)
+            {
+                var searchResult = await ((App)Application.Current).CachedSearchClient.SearchByMovie(searchText, _settings.SearchLanguage, _settings.IncludeAdult);
 
                 if (searchResult.HttpStatusCode.IsSuccessCode())
                 {
@@ -62,9 +55,15 @@ namespace Ch9
 
                     ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(filteredResult);
                     ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(filteredResult);
-                    Utils.Utils.UpdateListviewCollection(movies, filteredResult, new MovieModelComparer());
-                }                    
+                    Utils.Utils.UpdateListviewCollection(_movies, filteredResult, new MovieModelComparer());
+                }
             }
+        }
+
+        private void SetUiControlVisibility(string searchText)
+        {
+            listView.IsVisible = searchText.Length >= MINIMUM_Search_Str_Length;
+            searchLabel.IsVisible = searchText.Length != 0 && searchText.Length < MINIMUM_Search_Str_Length;
         }
 
         private void ListView_ItemTapped(object sender, ItemTappedEventArgs e)

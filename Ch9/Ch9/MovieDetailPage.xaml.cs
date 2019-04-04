@@ -12,7 +12,6 @@ namespace Ch9
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MovieDetailPage : ContentPage
     {
-
         private MovieDetailModel _movie;        
         private Settings _settings;
         private ITmdbCachedSearchClient _cachedSearchClient;

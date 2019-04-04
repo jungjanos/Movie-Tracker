@@ -18,7 +18,7 @@ namespace Ch9
         public TmdbConfigurationModel TmdbConfiguration { get; private set; }
         public MovieDetailModelConfigurator MovieDetailModelConfigurator { get; private set; }
         public SearchResultFilter ResultFilter { get; private set; }
-        public TmdbCachedSearchClient CachedSearchClient { get; private set; }
+        public ITmdbCachedSearchClient CachedSearchClient { get; private set; }
         
 
         public App()

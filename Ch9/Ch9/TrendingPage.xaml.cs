@@ -67,9 +67,7 @@ namespace Ch9
 
                 ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(filteredResults);
                 ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(filteredResults);
-                movies.Clear();                
-                foreach (MovieDetailModel movie in filteredResults)
-                    movies.Add(movie);
+                RefillListView(filteredResults);
             }
         }
 
@@ -88,10 +86,15 @@ namespace Ch9
                 ((App)Application.Current).MovieDetailModelConfigurator.SetImageSrc(filteredResults);
                 ((App)Application.Current).MovieDetailModelConfigurator.SetGenreNamesFromGenreIds(filteredResults);
 
-                movies.Clear();
-                foreach (MovieDetailModel movie in filteredResults)
-                    movies.Add(movie);
+                RefillListView(filteredResults);
             }
+        }
+
+        private void RefillListView(System.Collections.Generic.IEnumerable<MovieDetailModel> filteredResults)
+        {
+            movies.Clear();
+            foreach (MovieDetailModel movie in filteredResults)
+                movies.Add(movie);
         }
     }
 }

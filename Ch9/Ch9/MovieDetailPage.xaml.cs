@@ -14,60 +14,64 @@ namespace Ch9
     {
 
         private MovieDetailModel _movie;        
-
-        private Task<GetMovieImagesResult> imageDetailCollectionUpdateTask;
-        Task initializeGallery;
-
-        private Settings settings;
+        private Settings _settings;
+        private ITmdbCachedSearchClient _cachedSearchClient;
+        private Task _fetchGallery;
 
         public MovieDetailPage(MovieDetailModel movie)
         {
             _movie = movie;
+            _settings = ((App)Application.Current).Settings;
+            _cachedSearchClient = ((App)Application.Current).CachedSearchClient;
 
-            // starts a hot task to fetch gallery image paths as early as possible
-            settings = ((App)Application.Current).Settings;
+            _fetchGallery = UpdateImageDetailCollection();
 
-            imageDetailCollectionUpdateTask = ((App)Application.Current).CachedSearchClient.UpdateMovieImages(_movie.Id, settings.SearchLanguage, null, true);
+            InitializeComponent();
+            BindingContext = _movie;
+        }
 
-            // attaches task to update movie gallery details with the results of the antecendent
-            initializeGallery = imageDetailCollectionUpdateTask.ContinueWith(t =>
+        // starts a hot task to fetch and adjust gallery image paths as early as possible        
+        private Task UpdateImageDetailCollection()
+        {            
+            var imageDetailCollectionUpdateTask = _cachedSearchClient.UpdateMovieImages(_movie.Id, _settings.SearchLanguage, null, true);
+
+            // attaches task to adjust movie gallery details with the results of the antecendent
+            var galleryCollectionReady = imageDetailCollectionUpdateTask.ContinueWith(t =>
             {
                 if (t.Result.HttpStatusCode.IsSuccessCode())
                 {
                     JsonConvert.PopulateObject(t.Result.Json, _movie.ImageDetailCollection);
                     ((App)Application.Current).MovieDetailModelConfigurator.SetGalleryImageSources(_movie);
-                }                    
+                }
             });
-
-            InitializeComponent();
-            BindingContext = _movie;
+            return galleryCollectionReady;
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
 
-            FetchMovieDetailsResult movieDetailsResult = await ((App)Application.Current).CachedSearchClient.FetchMovieDetails(_movie.Id, settings.SearchLanguage);
+            FetchMovieDetailsResult movieDetailsResult = await _cachedSearchClient.FetchMovieDetails(_movie.Id, _settings.SearchLanguage);
             if (movieDetailsResult.HttpStatusCode.IsSuccessCode())
                 JsonConvert.PopulateObject(movieDetailsResult.Json, _movie);
         }
 
         private async void ImageButton_Clicked(object sender, EventArgs e)
         {
-            await initializeGallery;
+            await _fetchGallery;
             _movie.GalleryPositionCounter++;       
         }
 
         private async void OnRecommendationButton_Clicked(object sender, EventArgs e)
         {
-            Task<GetMovieRecommendationsResult> getMovieRecommendations = ((App)Application.Current).CachedSearchClient.GetMovieRecommendations(_movie.Id, settings.SearchLanguage);
-            Task<GetSimilarMoviesResult> getSimilarMovies = ((App)Application.Current).CachedSearchClient.GetSimilarMovies(_movie.Id, settings.SearchLanguage);
+            Task<GetMovieRecommendationsResult> getMovieRecommendations = _cachedSearchClient.GetMovieRecommendations(_movie.Id, _settings.SearchLanguage);
+            Task<GetSimilarMoviesResult> getSimilarMovies = _cachedSearchClient.GetSimilarMovies(_movie.Id, _settings.SearchLanguage);
 
             GetMovieRecommendationsResult movieRecommendationsResult = await getMovieRecommendations;
+
             if (movieRecommendationsResult.HttpStatusCode.IsSuccessCode())
-            {
                 await Navigation.PushAsync(new RecommendationsPage(_movie, getMovieRecommendations, getSimilarMovies));
-            }
+
         }
     }
 }

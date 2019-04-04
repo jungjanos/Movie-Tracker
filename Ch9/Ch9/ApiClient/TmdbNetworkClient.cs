@@ -144,7 +144,7 @@ namespace Ch9.ApiClient
             return result;
         }
 
-        // Fetches the image paths of the gallery images from the server
+        // Fetches the image paths of the gallery images from the TMDB server
         // swallows exceptions, retries as required
         public async Task<GetMovieImagesResult> UpdateMovieImages(int id, string language = null, string otherLanguage = null, bool? includeLanguageless = true, int retryCount = 0, int delayMilliseconds = 1000)
         {

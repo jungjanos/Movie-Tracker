@@ -10,14 +10,14 @@ namespace Ch9.Utils
     // Adult filter is implemented on server side
     public class SearchResultFilter
     {
-        private readonly Settings settings;
+        private readonly ISettings settings;
         private readonly MovieGenreSettings genreSettings;
 
 
         private Func<IEnumerable<MovieDetailModel>, IEnumerable<MovieDetailModel>> filterByTimeframe;
         private Func<IEnumerable<MovieDetailModel>, IEnumerable<MovieDetailModel>> filterByGenres;
 
-        public SearchResultFilter(Settings settings, MovieGenreSettings genreSettings)
+        public SearchResultFilter(ISettings settings, MovieGenreSettings genreSettings)
         {
             this.settings = settings;
             this.genreSettings = genreSettings;

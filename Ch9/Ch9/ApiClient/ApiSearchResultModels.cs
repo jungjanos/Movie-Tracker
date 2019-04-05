@@ -51,4 +51,9 @@ namespace Ch9.ApiClient
     public class GetSimilarMoviesResult : TmdbResponseBase
     {}
 
+    public class CreateRequestTokenResult : TmdbResponseBase
+    {}
+
+    public class CreateSessionIdResult : TmdbResponseBase
+    { }
 }

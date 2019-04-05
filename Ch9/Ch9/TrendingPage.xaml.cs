@@ -25,14 +25,13 @@ namespace Ch9
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class TrendingPage : ContentPage
 	{
-        private Settings settings;
+        private ISettings settings;
         ObservableCollection<MovieModel> _movies;
 
         public bool QueryTheWeek { get; set; } = true;
 
         Task<TrendingMoviesResult> trendingThisWeekGetter;
         Task<TrendingMoviesResult> trendingThisDayGetter;
-
 
         public TrendingPage ()
 		{

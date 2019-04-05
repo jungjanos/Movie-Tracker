@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Net;
 using static Ch9.ApiClient.WebApiPathConstants;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace Ch9.ApiClient
 {
     public class TmdbNetworkClient : ITmdbNetworkClient
     {
         private string apiKeyValue;
-        private readonly Settings settings;
+        private readonly ISettings settings;
         private static Lazy<HttpClient> httpClient = new Lazy<HttpClient>(
             () =>
             {
@@ -22,7 +24,7 @@ namespace Ch9.ApiClient
 
         private HttpClient HttpClient => httpClient.Value;
 
-        public TmdbNetworkClient(Settings settings)
+        public TmdbNetworkClient(ISettings settings)
         {
             this.settings = settings;
             apiKeyValue = settings.ApiKey;
@@ -173,8 +175,7 @@ namespace Ch9.ApiClient
 
             return result;
         }
-
-        //WORKING HERE
+        
         public async Task<GetMovieRecommendationsResult> GetMovieRecommendations(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id + RECOMMENDATIONS_Path;
@@ -209,8 +210,101 @@ namespace Ch9.ApiClient
             return result;
         }
 
-        //
+        // WORING HERE
 
+        public async Task<CreateRequestTokenResult> CreateRequestToken(int retryCount, int delayMilliseconds)
+        {
+            string baseUrl = BASE_Address + BASE_Path + REQUEST_TOKEN_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, apiKeyValue);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            CreateRequestTokenResult result = await GetResponse<CreateRequestTokenResult>(retryCount, delayMilliseconds, requestUri);
+
+            return result;
+        }
+
+        public async Task<CreateRequestTokenResult> ValidateRequestTokenWithLogin(string username, string password, string requestToken, int retryCount, int delayMilliseconds)
+        {
+            string baseUrl = BASE_Address + BASE_Path + VALIDATE_REQUEST_TOKEN_W_LOGIN_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, apiKeyValue);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            HttpResponseMessage response = null;
+            int counter = retryCount;
+
+            //dynamic jsonObj = new ExpandoObject();
+            //jsonObj.username = username;
+            //jsonObj.password = password;
+            //jsonObj.request_token = requestToken;
+
+            var jsonObj = new { username = username, password = password, request_token = requestToken };         
+           
+            string json = JsonConvert.SerializeObject(jsonObj);
+            try
+            {
+               response = await HttpClient.PostAsync(requestUri, new StringContent(json, encoding: Encoding.UTF8, mediaType: "application/json"));
+            }
+            catch { }
+            while (response?.IsSuccessStatusCode != true && counter > 0)
+            {
+                await Task.Delay(delayMilliseconds);
+                try
+                {
+                    response = await HttpClient.GetAsync(requestUri);
+                }
+                catch { }
+            }
+            CreateRequestTokenResult result = new CreateRequestTokenResult { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.ServiceUnavailable };
+            if (response.IsSuccessStatusCode)
+                result.Json = await response.Content.ReadAsStringAsync();
+            return result;
+        }
+
+        public async Task<CreateSessionIdResult> CreateSessionId(string requestToken, int retryCount, int delayMilliseconds)
+        {
+            string baseUrl = BASE_Address + BASE_Path + VALIDATE_REQUEST_TOKEN_W_LOGIN_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, apiKeyValue);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            HttpResponseMessage response = null;
+            int counter = retryCount;
+
+            //dynamic jsonObj = new ExpandoObject();
+            //jsonObj.request_token = requestToken;
+
+            var jsonObj = new { request_token = requestToken };
+
+            string json = JsonConvert.SerializeObject(jsonObj);
+            try
+            {
+                response = await HttpClient.PostAsync(requestUri, new StringContent(json, encoding: Encoding.UTF8, mediaType: "application/json"));
+            }
+            catch { }
+            while (response?.IsSuccessStatusCode != true && counter > 0)
+            {
+                await Task.Delay(delayMilliseconds);
+                try
+                {
+                    response = await HttpClient.GetAsync(requestUri);
+                }
+                catch { }
+            }
+            CreateSessionIdResult result = new CreateSessionIdResult { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.ServiceUnavailable };
+            if (response.IsSuccessStatusCode)
+                result.Json = await response.Content.ReadAsStringAsync();
+            return result;
+        }
+
+        //
 
         private async Task<T> GetResponse<T>(int retryCount, int delayMilliseconds, string requestUri) where T : TmdbResponseBase, new()
         {

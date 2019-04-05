@@ -10,7 +10,7 @@ namespace Ch9
     [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class MainSettingsPage : ContentPage
 	{
-        private Settings settings;
+        private ISettings settings;
         private MovieGenreSettings movieGenreSettings;
 
 		public MainSettingsPage ()

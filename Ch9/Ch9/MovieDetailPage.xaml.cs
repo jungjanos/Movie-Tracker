@@ -13,7 +13,7 @@ namespace Ch9
     public partial class MovieDetailPage : ContentPage
     {
         private MovieDetailModel _movie;        
-        private Settings _settings;
+        private ISettings _settings;
         private ITmdbCachedSearchClient _cachedSearchClient;
         private Task _fetchGallery;
 

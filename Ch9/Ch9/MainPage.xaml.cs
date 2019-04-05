@@ -20,7 +20,7 @@ namespace Ch9
     {
         private const int MINIMUM_Search_Str_Length = 5;
         private ObservableCollection<MovieDetailModel> _movies;        
-        private Settings _settings;
+        private ISettings _settings;
 
         public string SearchString { get; set; }        
 

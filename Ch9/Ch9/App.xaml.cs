@@ -13,7 +13,7 @@ namespace Ch9
 {
     public partial class App : Application
     {
-        public Settings Settings { get; private set; }
+        public ISettings Settings { get; private set; }
         public MovieGenreSettings MovieGenreSettings { get; private set; }
         public TmdbConfigurationModel TmdbConfiguration { get; private set; }
         public MovieDetailModelConfigurator MovieDetailModelConfigurator { get; private set; }

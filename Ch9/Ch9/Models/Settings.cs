@@ -5,14 +5,14 @@ namespace Ch9.Models
 {
     // Settings uses Application.Properties dictionary with data binding to UI
     // Default values are currently hard coded
-    public class Settings
+    public class Settings : ISettings
     {
         private IDictionary<string, object> appDictionary;
 
         public Settings()
         {
             appDictionary = Application.Current.Properties;
-        }       
+        }
 
         public string ApiKey
         {
@@ -97,7 +97,7 @@ namespace Ch9.Models
             }
             set => appDictionary[nameof(SearchPeriod)] = value;
         }
-        
+
         public string SearchLanguage
         {
             get

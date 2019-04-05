@@ -26,6 +26,54 @@ namespace Ch9.Models
             set => appDictionary[nameof(ApiKey)] = value;
         }
 
+        public bool HasTmdbAccount
+        {
+            get
+            {
+                if (appDictionary.ContainsKey(nameof(HasTmdbAccount)))
+                    return (bool)appDictionary[nameof(HasTmdbAccount)];
+                else
+                    return false;
+            }
+            set => appDictionary[nameof(HasTmdbAccount)] = value;
+        }
+
+        public string SessionId
+        {
+            get
+            {
+                if (appDictionary.ContainsKey(nameof(SessionId)))
+                    return appDictionary[nameof(SessionId)].ToString();
+                else
+                    return null;
+            }
+            set => appDictionary[nameof(SessionId)] = value;
+        }
+
+        public string AccountName
+        {
+            get
+            {
+                if (appDictionary.ContainsKey(nameof(AccountName)))
+                    return appDictionary[nameof(AccountName)].ToString();
+                else
+                    return null;
+            }
+            set => appDictionary[nameof(AccountName)] = value;
+        }
+
+        public string Password
+        {
+            get
+            {
+                if (appDictionary.ContainsKey(nameof(Password)))
+                    return appDictionary[nameof(Password)].ToString();
+                else
+                    return null;
+            }
+            set => appDictionary[nameof(Password)] = value;
+        }
+
         public bool IncludeAdult
         {
             get

@@ -27,7 +27,10 @@ namespace Ch9
             _getSimilarMovies = getSimilarMovies;
             _movies = new ObservableCollection<MovieModel>();
 
-			InitializeComponent ();
+            GetMovieRecommendationsResult result = getMovieRecommendations.Result; // this Task has already finished (awaited in the parent page), its safe to call Task.Result
+            AssembleListViewForUi(result);
+
+            InitializeComponent();
             recommendationsListView.ItemsSource = _movies;
 		}
 
@@ -35,14 +38,6 @@ namespace Ch9
         {
             MovieDetailModel movie = e.Item as MovieDetailModel;
             Navigation.PushAsync(new MovieDetailPage(movie));
-        }
-
-        protected override async void OnAppearing()
-        {
-            base.OnAppearing();
-
-            GetMovieRecommendationsResult result = await _getMovieRecommendations;
-            AssembleListViewForUi(result);
         }
 
         private void AssembleListViewForUi(TmdbResponseBase result)

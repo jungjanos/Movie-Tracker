@@ -26,9 +26,9 @@
                     <Label Text="{Binding Path=GalleryDisplayImages.Length, StringFormat='{0} gallery images (tap picture)'}" FontSize="Micro" HorizontalOptions="End"/>
                 </StackLayout>
 
-                <StackLayout Orientation="Horizontal" Spacing="10">
-                    <Label Text="{Binding Path=Title, StringFormat='{0}, '}" FontSize="Large"/>
-                    <Label Text="{Binding Path=Year}" FontSize="Large"/>
+                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10">
+                    <Label Text="{Binding Path=Title}" FontSize="Large" LineBreakMode="WordWrap" HorizontalOptions="Start"/>
+                    <Label Text="{Binding Path=Year}" FontSize="Large" LineBreakMode="NoWrap" MaxLines="1"  HorizontalOptions="EndAndExpand" MinimumWidthRequest="150"/>
                 </StackLayout>
 
                 <Label Text="{Binding Genre}" FontSize="Small"/>
@@ -44,10 +44,6 @@
 
             </StackLayout>
         </ScrollView>
-
-        <!--<StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
-            <Button Text="Recommendation >" HorizontalOptions="EndAndExpand" Clicked="OnRecommendationButton_Clicked" />
-        </StackLayout>-->
 
         <Grid VerticalOptions="EndAndExpand">
             <Grid.RowDefinitions>

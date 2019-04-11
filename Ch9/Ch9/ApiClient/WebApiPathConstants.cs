@@ -31,5 +31,6 @@ namespace Ch9.ApiClient
         public const string REQUEST_TOKEN_Path = "/authentication/token/new";
         public const string VALIDATE_REQUEST_TOKEN_W_LOGIN_Path = "/authentication/token/validate_with_login";
         public const string CREATE_SESSION_ID_Path = "/authentication/session/new";
+        public const string DELETE_SESSION_Path = "/authentication/session";
     }
 }

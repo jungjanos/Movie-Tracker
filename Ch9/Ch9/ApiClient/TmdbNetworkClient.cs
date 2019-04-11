@@ -296,6 +296,54 @@ namespace Ch9.ApiClient
             return result;
         }
 
+        public async Task<DeleteSessionResult> DeleteSession(string sessionId, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            string baseUrl = BASE_Address + BASE_Path + DELETE_SESSION_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            var jsonObj = new { session_id = sessionId };
+            string json = JsonConvert.SerializeObject(jsonObj);
+            var content = new StringContent(json, encoding: Encoding.UTF8, mediaType: "application/json");
+
+            HttpRequestMessage request = new HttpRequestMessage
+            {
+                 Content = content,
+                 Method =  HttpMethod.Delete,
+                 RequestUri = new Uri(requestUri)                  
+            };
+
+            HttpResponseMessage response = null;
+            int counter = retryCount;
+
+            try
+            {
+                response = await HttpClient.SendAsync(request);
+            }
+            catch { }
+            while (response?.IsSuccessStatusCode != true && counter > 0)
+            {
+                await Task.Delay(delayMilliseconds);
+                try
+                {
+                    --counter;
+                    response = await HttpClient.SendAsync(request);
+                }
+                catch { }
+            }
+
+            DeleteSessionResult result = new DeleteSessionResult {
+                HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
+            };
+
+            if (response.IsSuccessStatusCode)
+                result.Json = await response.Content.ReadAsStringAsync();
+            return result;
+        }
+
         private async Task<T> GetResponse<T>(int retryCount, int delayMilliseconds, string requestUri) where T : TmdbResponseBase, new()
         {
             HttpResponseMessage response = null;

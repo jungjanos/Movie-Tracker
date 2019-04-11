@@ -19,8 +19,8 @@ namespace Ch9.Test.TmdbNetworkClientTests
         Task<Task<RequestToken>> _validateToken;
 
         // Setup:
-        // First step: set up a new unused request token
-        // Validate the request token
+        // -(1) set up a new unused request token
+        // -(2) Validate the request token
         public CreateSessionIdTests(ITestOutputHelper output)
         {
             _output = output;

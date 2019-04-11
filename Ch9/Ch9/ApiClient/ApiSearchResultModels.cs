@@ -55,8 +55,11 @@ namespace Ch9.ApiClient
     {}
 
     public class CreateSessionIdResult : TmdbResponseBase
-    { }
+    {}
 
     public class DeleteSessionResult : TmdbResponseBase
-    { }
+    {}
+
+    public class GetAccountDetailsResult : TmdbResponseBase
+    {}
 }

@@ -344,6 +344,21 @@ namespace Ch9.ApiClient
             return result;
         }
 
+        public async Task<GetAccountDetailsResult> GetAccountDetails(string sessionId, int retryCount, int delayMilliseconds)
+        {
+            string baseUrl = BASE_Address + BASE_Path + ACCOUNT_DETAILS_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+            query.Add(SESSION_ID_Key, sessionId);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            GetAccountDetailsResult result = await GetResponse<GetAccountDetailsResult>(retryCount, delayMilliseconds, requestUri);
+
+            return result;            
+        }
+
         private async Task<T> GetResponse<T>(int retryCount, int delayMilliseconds, string requestUri) where T : TmdbResponseBase, new()
         {
             HttpResponseMessage response = null;

@@ -9,9 +9,9 @@ namespace Ch9.Models
     {
         private IDictionary<string, object> appDictionary;
 
-        public Settings()
-        {
-            appDictionary = Application.Current.Properties;
+        public Settings(IDictionary<string, object> settingsDictionary = null)
+        {            
+            appDictionary =  settingsDictionary ?? Application.Current.Properties;
         }
 
         public string ApiKey

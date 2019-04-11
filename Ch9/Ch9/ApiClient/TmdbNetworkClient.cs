@@ -12,9 +12,8 @@ using System.Text;
 namespace Ch9.ApiClient
 {
     public class TmdbNetworkClient : ITmdbNetworkClient
-    {
-        private string apiKeyValue;
-        private readonly ISettings settings;
+    {        
+        private readonly ISettings _settings;
         private static Lazy<HttpClient> httpClient = new Lazy<HttpClient>(
             () =>
             {
@@ -26,8 +25,8 @@ namespace Ch9.ApiClient
 
         public TmdbNetworkClient(ISettings settings)
         {
-            this.settings = settings;
-            apiKeyValue = settings.ApiKey;
+            this._settings = settings;
+            settings.ApiKey = settings.ApiKey;
         }
 
         public async Task<TmdbConfigurationModelResult> GetTmdbConfiguration(int retryCount = 0, int delayMilliseconds = 1000)
@@ -35,7 +34,7 @@ namespace Ch9.ApiClient
             string baseUrl = BASE_Address + BASE_Path + CONFIG_Path;
 
             var query = new Dictionary<string, string>();
-            query.Add(API_KEY_Key, apiKeyValue);
+            query.Add(API_KEY_Key, _settings.ApiKey);
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
@@ -53,7 +52,7 @@ namespace Ch9.ApiClient
             string baseUrl = BASE_Address + BASE_Path + GENRE_LIST_Path;
 
             var query = new Dictionary<string, string>();
-            query.Add(API_KEY_Key, apiKeyValue);
+            query.Add(API_KEY_Key, _settings.ApiKey);
 
             if (!string.IsNullOrEmpty(language))
                 query.Add(LANGUAGE_Key, language);
@@ -73,7 +72,7 @@ namespace Ch9.ApiClient
             string baseUrl = BASE_Address + BASE_Path + SEARCH_MOVIE_Path;
 
             var query = new Dictionary<string, string>();
-            query.Add(API_KEY_Key, apiKeyValue);
+            query.Add(API_KEY_Key, _settings.ApiKey);
             query.Add(SEARCH_QUERY_Key, searchString);
 
             if (!string.IsNullOrEmpty(language))
@@ -104,7 +103,7 @@ namespace Ch9.ApiClient
             string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id;
 
             var query = new Dictionary<string, string>();
-            query.Add(API_KEY_Key, apiKeyValue);
+            query.Add(API_KEY_Key, _settings.ApiKey);
 
             if (!string.IsNullOrEmpty(language))
                 query.Add(LANGUAGE_Key, language);
@@ -123,7 +122,7 @@ namespace Ch9.ApiClient
             string baseUrl = BASE_Address + BASE_Path + TRENDING_Path + TRENDING_MOVIE_Selector + (week ? WEEK_Path : DAY_Path);
 
             var query = new Dictionary<string, string>();
-            query.Add(API_KEY_Key, apiKeyValue);
+            query.Add(API_KEY_Key, _settings.ApiKey);
 
             if (!string.IsNullOrEmpty(language))
                 query.Add(LANGUAGE_Key, language);
@@ -152,7 +151,7 @@ namespace Ch9.ApiClient
         {
             string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id + IMAGE_DETAIL_Path;
             var query = new Dictionary<string, string>();
-            query.Add(API_KEY_Key, apiKeyValue);
+            query.Add(API_KEY_Key, _settings.ApiKey);
 
             if (!string.IsNullOrEmpty(language))
                 query.Add(LANGUAGE_Key, language);
@@ -181,7 +180,7 @@ namespace Ch9.ApiClient
             string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id + RECOMMENDATIONS_Path;
 
             var query = new Dictionary<string, string>();
-            query.Add(API_KEY_Key, apiKeyValue);
+            query.Add(API_KEY_Key, _settings.ApiKey);
 
             if (!string.IsNullOrEmpty(language))
                 query.Add(LANGUAGE_Key, language);
@@ -198,7 +197,7 @@ namespace Ch9.ApiClient
             string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id + SIMILARS_Path;
 
             var query = new Dictionary<string, string>();
-            query.Add(API_KEY_Key, apiKeyValue);
+            query.Add(API_KEY_Key, _settings.ApiKey);
 
             if (!string.IsNullOrEmpty(language))
                 query.Add(LANGUAGE_Key, language);
@@ -208,16 +207,14 @@ namespace Ch9.ApiClient
             GetSimilarMoviesResult result = await GetResponse<GetSimilarMoviesResult>(retryCount, delayMilliseconds, requestUri);
 
             return result;
-        }
+        }        
 
-        // WORING HERE
-
-        public async Task<CreateRequestTokenResult> CreateRequestToken(int retryCount, int delayMilliseconds)
+        public async Task<CreateRequestTokenResult> CreateRequestToken(int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + REQUEST_TOKEN_Path;
 
             var query = new Dictionary<string, string>();
-            query.Add(API_KEY_Key, apiKeyValue);
+            query.Add(API_KEY_Key, _settings.ApiKey);
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
@@ -226,12 +223,12 @@ namespace Ch9.ApiClient
             return result;
         }
 
-        public async Task<CreateRequestTokenResult> ValidateRequestTokenWithLogin(string username, string password, string requestToken, int retryCount, int delayMilliseconds)
+        public async Task<CreateRequestTokenResult> ValidateRequestTokenWithLogin(string username, string password, string requestToken, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + VALIDATE_REQUEST_TOKEN_W_LOGIN_Path;
 
             var query = new Dictionary<string, string>();
-            query.Add(API_KEY_Key, apiKeyValue);
+            query.Add(API_KEY_Key, _settings.ApiKey);
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
             var jsonObj = new { username = username, password = password, request_token = requestToken };
@@ -251,6 +248,7 @@ namespace Ch9.ApiClient
                 await Task.Delay(delayMilliseconds);
                 try
                 {
+                    --counter;
                     response = await HttpClient.PostAsync(requestUri, content);
                 }
                 catch { }
@@ -261,12 +259,12 @@ namespace Ch9.ApiClient
             return result;
         }
 
-        public async Task<CreateSessionIdResult> CreateSessionId(string requestToken, int retryCount, int delayMilliseconds)
+        public async Task<CreateSessionIdResult> CreateSessionId(string requestToken, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + CREATE_SESSION_ID_Path;
 
             var query = new Dictionary<string, string>();
-            query.Add(API_KEY_Key, apiKeyValue);
+            query.Add(API_KEY_Key, _settings.ApiKey);
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
@@ -287,6 +285,7 @@ namespace Ch9.ApiClient
                 await Task.Delay(delayMilliseconds);
                 try
                 {
+                    --counter;
                     response = await HttpClient.PostAsync(requestUri, content);
                 }
                 catch { }
@@ -296,8 +295,6 @@ namespace Ch9.ApiClient
                 result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }
-
-        //
 
         private async Task<T> GetResponse<T>(int retryCount, int delayMilliseconds, string requestUri) where T : TmdbResponseBase, new()
         {
@@ -315,6 +312,7 @@ namespace Ch9.ApiClient
 
                 try
                 {
+                    --counter;
                     response = await HttpClient.GetAsync(requestUri);
                 }
                 catch { }

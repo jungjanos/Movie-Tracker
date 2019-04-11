@@ -10,8 +10,9 @@ namespace Ch9.Authentication
         [JsonProperty("success")]
         public bool Success { get; set; }
 
-        [JsonProperty("expires_at")]
-        public DateTime ExpiresAt { get; set; }
+        // To use this field would require a custom DateTime conversion        
+        //[JsonProperty("expires_at")]
+        //public DateTime ExpiresAt { get; set; }
 
         [JsonProperty("request_token")]
         public string Token { get; set; }

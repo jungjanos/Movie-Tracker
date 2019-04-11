@@ -234,21 +234,16 @@ namespace Ch9.ApiClient
             query.Add(API_KEY_Key, apiKeyValue);
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+            var jsonObj = new { username = username, password = password, request_token = requestToken };
+            string json = JsonConvert.SerializeObject(jsonObj);
+            var content = new StringContent(json, encoding: Encoding.UTF8, mediaType: "application/json");
 
             HttpResponseMessage response = null;
             int counter = retryCount;
-
-            //dynamic jsonObj = new ExpandoObject();
-            //jsonObj.username = username;
-            //jsonObj.password = password;
-            //jsonObj.request_token = requestToken;
-
-            var jsonObj = new { username = username, password = password, request_token = requestToken };         
-           
-            string json = JsonConvert.SerializeObject(jsonObj);
+            
             try
             {
-               response = await HttpClient.PostAsync(requestUri, new StringContent(json, encoding: Encoding.UTF8, mediaType: "application/json"));
+               response = await HttpClient.PostAsync(requestUri, content);
             }
             catch { }
             while (response?.IsSuccessStatusCode != true && counter > 0)
@@ -256,7 +251,7 @@ namespace Ch9.ApiClient
                 await Task.Delay(delayMilliseconds);
                 try
                 {
-                    response = await HttpClient.GetAsync(requestUri);
+                    response = await HttpClient.PostAsync(requestUri, content);
                 }
                 catch { }
             }
@@ -268,25 +263,23 @@ namespace Ch9.ApiClient
 
         public async Task<CreateSessionIdResult> CreateSessionId(string requestToken, int retryCount, int delayMilliseconds)
         {
-            string baseUrl = BASE_Address + BASE_Path + VALIDATE_REQUEST_TOKEN_W_LOGIN_Path;
+            string baseUrl = BASE_Address + BASE_Path + CREATE_SESSION_ID_Path;
 
             var query = new Dictionary<string, string>();
             query.Add(API_KEY_Key, apiKeyValue);
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
-            HttpResponseMessage response = null;
-            int counter = retryCount;
-
-            //dynamic jsonObj = new ExpandoObject();
-            //jsonObj.request_token = requestToken;
-
             var jsonObj = new { request_token = requestToken };
-
             string json = JsonConvert.SerializeObject(jsonObj);
+            var content = new StringContent(json, encoding: Encoding.UTF8, mediaType: "application/json");
+
+            HttpResponseMessage response = null;
+            int counter = retryCount;           
+
             try
             {
-                response = await HttpClient.PostAsync(requestUri, new StringContent(json, encoding: Encoding.UTF8, mediaType: "application/json"));
+                response = await HttpClient.PostAsync(requestUri, content);
             }
             catch { }
             while (response?.IsSuccessStatusCode != true && counter > 0)
@@ -294,7 +287,7 @@ namespace Ch9.ApiClient
                 await Task.Delay(delayMilliseconds);
                 try
                 {
-                    response = await HttpClient.GetAsync(requestUri);
+                    response = await HttpClient.PostAsync(requestUri, content);
                 }
                 catch { }
             }

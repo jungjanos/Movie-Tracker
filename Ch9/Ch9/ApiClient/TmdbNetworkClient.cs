@@ -344,7 +344,7 @@ namespace Ch9.ApiClient
             return result;
         }
 
-        public async Task<GetAccountDetailsResult> GetAccountDetails(string sessionId, int retryCount, int delayMilliseconds)
+        public async Task<GetAccountDetailsResult> GetAccountDetails(string sessionId, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + ACCOUNT_DETAILS_Path;
 

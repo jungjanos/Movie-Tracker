@@ -9,6 +9,11 @@ using Xunit.Abstractions;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
+    // INTEGRATION TESTS
+
+    // for the critical TmdbNetworkClient.CreateSessionId(...) function accessing the TMDB WebAPI
+    // No intention to achieve full coverage for all paths:
+    // WebAPI Http 404 error conditions is unclear (when should we receive code 404 ? )
     public class CreateSessionIdTests
     {
         private readonly ITestOutputHelper _output;
@@ -96,7 +101,8 @@ namespace Ch9.Test.TmdbNetworkClientTests
         }
 
         [Fact]
-        public async void WhenTokenInvalid_ReturnsErrorCode()
+        // error path
+        public async void WhenTokenInvalid_ReturnsErrorCode401()
         {
             // Arrange
             string requestToken = "thisisaninvalidrequesttoken";

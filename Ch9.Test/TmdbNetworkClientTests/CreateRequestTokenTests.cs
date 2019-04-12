@@ -6,7 +6,7 @@ using Xunit;
 using Newtonsoft.Json;
 using System.Diagnostics;
 
-namespace Ch9.Test
+namespace Ch9.Test.TmdbNetworkClientTests
 {
     // INTEGRATION TESTS
 

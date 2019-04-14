@@ -359,6 +359,22 @@ namespace Ch9.ApiClient
             return result;            
         }
 
+        //public async Task<GetListsResult> GetLists(string sessionId, string language = null, int? page = null, int retryCount = 0,  int delayMilliseconds = 1000)
+        //{
+        //    string baseUrl = BASE_Address + BASE_Path + ACCOUNT_DETAILS_Path;
+
+        //    var query = new Dictionary<string, string>();
+        //    query.Add(API_KEY_Key, _settings.ApiKey);
+        //    query.Add(SESSION_ID_Key, sessionId);
+
+        //    string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+        //    GetListsResult result = await GetResponse<GetListsResult>(retryCount, delayMilliseconds, requestUri);
+
+        //    return result;
+        //}
+
+
         private async Task<T> GetResponse<T>(int retryCount, int delayMilliseconds, string requestUri) where T : TmdbResponseBase, new()
         {
             HttpResponseMessage response = null;

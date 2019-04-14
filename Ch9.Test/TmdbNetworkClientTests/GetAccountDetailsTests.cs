@@ -15,7 +15,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
     // for the critical TmdbNetworkClient.GetAccountDetails(...) function accessing the TMDB WebAPI
     // No intention to achieve full coverage for all paths:
     // WebAPI Http 404 error conditions is unclear (when should we receive code 404 ? )
-    public class GetAccountDetailsTests : IDisposable
+    public class GetAccountDetailsTests : IAsyncLifetime
     {
         private readonly ITestOutputHelper _output;
         Dictionary<string, object> _settingsKeyValues;
@@ -70,8 +70,10 @@ namespace Ch9.Test.TmdbNetworkClientTests
             });
         }
 
-        // Teardown
-        public async void Dispose()
+        public async Task InitializeAsync()
+        {}
+
+        public async Task DisposeAsync()
         {
             var sessionId = (await await _getSession).SessionId;
             _output.WriteLine($"Teardown: DeleteSession({sessionId}) called...");

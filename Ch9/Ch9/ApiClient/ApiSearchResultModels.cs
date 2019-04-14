@@ -62,4 +62,7 @@ namespace Ch9.ApiClient
 
     public class GetAccountDetailsResult : TmdbResponseBase
     {}
+
+    public class GetListsResult : TmdbResponseBase
+    {}
 }

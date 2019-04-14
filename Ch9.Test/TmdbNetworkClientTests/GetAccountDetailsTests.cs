@@ -17,18 +17,13 @@ namespace Ch9.Test.TmdbNetworkClientTests
     // WebAPI Http 404 error conditions is unclear (when should we receive code 404 ? )
     public class GetAccountDetailsTests : IAsyncLifetime
     {
+        private string SessionId { get; set; }
+
         private readonly ITestOutputHelper _output;
         Dictionary<string, object> _settingsKeyValues;
         Settings _settings;
-        TmdbNetworkClient _client;
-        Task<RequestToken> _getToken;
-        Task<Task<RequestToken>> _validateToken;
-        Task<Task<SessionIdResponseModel>> _getSession;
+        TmdbNetworkClient _client;        
 
-        // Setup steps:
-        // -(1) set up a new unused request token
-        // -(2) Validate the request token
-        // -(3) Create a new session
         public GetAccountDetailsTests(ITestOutputHelper output)
         {
             _output = output;
@@ -39,62 +34,41 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settingsKeyValues[nameof(Settings.Password)] = "awx123.";
             _settings = new Settings(_settingsKeyValues);
             _client = new TmdbNetworkClient(_settings);
-
-            Task<CreateRequestTokenResult> result = _client.CreateRequestToken();
-
-            _getToken = result.ContinueWith(t =>
-            {
-                var json = t.Result;
-                RequestToken token = JsonConvert.DeserializeObject<RequestToken>(json.Json);
-                return token;
-            });
-
-            _validateToken = _getToken.ContinueWith(async t =>
-            {
-                var token = t.Result.Token;
-
-                var validationResponse = await _client.ValidateRequestTokenWithLogin(
-                           _settings.AccountName,
-                           _settings.Password,
-                           token);
-
-                return JsonConvert.DeserializeObject<RequestToken>(validationResponse.Json);
-            });
-
-            _getSession = _validateToken.ContinueWith(async t =>
-            {
-                var token = t.Result.Result.Token;
-
-                var createSessionIdResult = await _client.CreateSessionId(token);
-                return JsonConvert.DeserializeObject<SessionIdResponseModel>(createSessionIdResult.Json);
-            });
         }
 
+        // Setup steps:
+        // -(1) set up a new unused request token
+        // -(2) Validate the request token
+        // -(3) Create a new session
         public async Task InitializeAsync()
-        {}
+        {
+            var tokenResponse = await _client.CreateRequestToken();
+            var token = JsonConvert.DeserializeObject<RequestToken>(tokenResponse.Json);
+            await _client.ValidateRequestTokenWithLogin
+                (_settings.AccountName, _settings.Password, token.Token);
+
+            var createSessionIdResult = await _client.CreateSessionId(token.Token);
+            SessionId = JsonConvert.DeserializeObject<SessionIdResponseModel>(createSessionIdResult.Json).SessionId;
+        }
 
         public async Task DisposeAsync()
         {
-            var sessionId = (await await _getSession).SessionId;
-            _output.WriteLine($"Teardown: DeleteSession({sessionId}) called...");
-            var result = await _client.DeleteSession(sessionId);
-            var code = result == null ? "ERROR" : result.HttpStatusCode.ToString();
-            _output.WriteLine($"Teardown: DeleteSession(...) returned with {code}");
+            _output.WriteLine($"{nameof(DisposeAsync)}: DeleteSession({SessionId}) called...");
+            var result = await _client.DeleteSession(SessionId);
+            var code = result.HttpStatusCode.ToString();
+            _output.WriteLine($"{nameof(DisposeAsync)}: DeleteSession(...) returned with {code}");
         }
 
         [Fact]
         // happy path
-        public async void WhenValidArguments_ReturnsAccountDetails()
+        public async Task WhenValidArguments_ReturnsAccountDetails()
         {
-            // Arrange
-            var sessionId = (await await _getSession).SessionId;
-
             try
             {
                 // Act
-                var result = await _client.GetAccountDetails(sessionId);
+                var result = await _client.GetAccountDetails(SessionId);
                 {
-                    _output.WriteLine($"GetAccountDetails(sessionId: {sessionId}) returned:");
+                    _output.WriteLine($"GetAccountDetails(sessionId: {SessionId}) returned:");
                     _output.WriteLine($"{result.Json}");
                     _output.WriteLine(Environment.NewLine);
                 }
@@ -123,17 +97,14 @@ namespace Ch9.Test.TmdbNetworkClientTests
         [Theory]
         [InlineData(3, 1000)]
         // happy path
-        public async void WhenValidArgumentsAndCalledWithRetryOption_ReturnsAccountDetails(int retryCount, int delayMilliseconds)
+        public async Task WhenValidArgumentsAndCalledWithRetryOption_ReturnsAccountDetails(int retryCount, int delayMilliseconds)
         {
-            // Arrange
-            var sessionId = (await await _getSession).SessionId;
-
             try
             {
                 // Act
-                var result = await _client.GetAccountDetails(sessionId, retryCount, delayMilliseconds);
+                var result = await _client.GetAccountDetails(SessionId, retryCount, delayMilliseconds);
                 {
-                    _output.WriteLine($"GetAccountDetails(sessionId: {sessionId}) returned:");
+                    _output.WriteLine($"GetAccountDetails(sessionId: {SessionId}) returned:");
                     _output.WriteLine($"{result.Json}");
                     _output.WriteLine(Environment.NewLine);
                 }
@@ -163,17 +134,17 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
         [Fact]
         // error path
-        public async void WhenValidInvalidSessionId_ReturnsErrorCode401()
+        public async Task WhenValidInvalidSessionId_ReturnsErrorCode401()
         {
             // Arrange
-            var sessionId = "someinvalidsessionid";
+            var invalidSessionId = "someinvalidsessionid";
 
             try
             {
                 // Act
-                var result = await _client.GetAccountDetails(sessionId);
+                var result = await _client.GetAccountDetails(invalidSessionId);
                 {
-                    _output.WriteLine($"GetAccountDetails(sessionId: {sessionId}) returned:");
+                    _output.WriteLine($"GetAccountDetails(sessionId: {invalidSessionId}) returned:");
                     _output.WriteLine($"Error code: {result.HttpStatusCode}");
                     _output.WriteLine(Environment.NewLine);
                 }

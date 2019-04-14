@@ -6,6 +6,7 @@ using Xunit;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
+using System;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -14,18 +15,19 @@ namespace Ch9.Test.TmdbNetworkClientTests
     // for the critical/fragile TmdbNetworkClient.ValidateRequestTokenWithLogin(...) function accessing the TMDB WebAPI
     // No intention to achieve full coverage for all paths:
     // WebAPI Http 404 error conditions is unclear (when should we receive code 404 ? )
-    public class ValidateRequestTokenWithLoginTests
+    public class ValidateRequestTokenWithLoginTests : IAsyncLifetime
     {
+        private string RequestToken { get; set; }
+
         Dictionary<string, object> _settingsKeyValues;
         Settings _settings;
-        TmdbNetworkClient _client;
-        Task<RequestToken> _token;
+        TmdbNetworkClient _client;        
         private readonly ITestOutputHelper _output;
 
         // We create a fresh request token for each test
         public ValidateRequestTokenWithLoginTests(ITestOutputHelper output)
         {
-            this._output = output;
+            _output = output;
 
             _settingsKeyValues = new Dictionary<string, object>();
             _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";
@@ -33,29 +35,41 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settingsKeyValues[nameof(Settings.Password)] = "awx123.";
             _settings = new Settings(_settingsKeyValues);
             _client = new TmdbNetworkClient(_settings);
-
-            Task<CreateRequestTokenResult> result = _client.CreateRequestToken();
-
-            _token = result.ContinueWith(t =>
-            {
-                var json = t.Result;
-                RequestToken token = JsonConvert.DeserializeObject<RequestToken>(json.Json);
-                return token;
-            });
         }
+
+        public async Task InitializeAsync()
+        {
+            try
+            {
+                _output.WriteLine($"{nameof(InitializeAsync)}: called {nameof(_client.CreateRequestToken)}");
+                var createRequestTokenResult = await _client.CreateRequestToken();
+
+                _output.WriteLine($"Server responded: {createRequestTokenResult.HttpStatusCode}, message: {createRequestTokenResult?.Json ?? "null"}");
+                var token = JsonConvert.DeserializeObject<RequestToken>(createRequestTokenResult.Json);
+                _output.WriteLine($"token created: {token.Token}");
+                RequestToken = token.Token;
+            }
+            catch (Exception ex)
+            {
+                _output.WriteLine(ex.Message);
+                _output.WriteLine(ex.StackTrace);
+            }            
+        }
+
+        public Task DisposeAsync()
+        { return Task.CompletedTask; }
+
 
         [Fact]
         // Happy path
-        public async void WhenCalledWithValidArguments_ReturnsSuccessAndRequestToken()
+        public async Task WhenCalledWithValidArguments_ReturnsSuccessAndRequestToken()
         {
-            // Arrange
-            string requestToken = (await _token).Token;
-
             // Act
             var result = await _client.ValidateRequestTokenWithLogin(
                 _settings.AccountName,
                 _settings.Password,
-                requestToken);
+                RequestToken
+                );
 
             _output.WriteLine($"response from server: {result.Json}");
             RequestToken token = JsonConvert.DeserializeObject<RequestToken>(result.Json);
@@ -63,62 +77,65 @@ namespace Ch9.Test.TmdbNetworkClientTests
             // Assert
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
             Assert.True(token.Success);
-            Assert.True(token.Token == requestToken);
+            Assert.True(token.Token == RequestToken);
         }
 
         [Fact]
         // Happy path
-        public async void WhenCalledWhenAlreadyAuthorized_ReturnsSuccessAndRequestTokenAndDoesNotBreak()
+        public async Task WhenCalledWhenAlreadyAuthorized_ReturnsSuccessAndRequestTokenAndDoesNotBreak()
         {
-            // Arrange (do a first successfull authorization)
-
-            string requestToken = (await _token).Token;
-
-            var result = await _client.ValidateRequestTokenWithLogin(
-                _settings.AccountName,
-                _settings.Password,
-                requestToken
-            );
-
-            RequestToken token = JsonConvert.DeserializeObject<RequestToken>(result.Json);
-            if (result.HttpStatusCode != System.Net.HttpStatusCode.OK 
-                || !token.Success  || token.Token != requestToken)
+            try
             {
-                _output.WriteLine($"Problem at test setup, first call returned unexpected result");
-                throw new System.Exception("Problem at test setup, first call returned unexpected result");
+                // Arrange (do first a successfull authorization)
+                var result = await _client.ValidateRequestTokenWithLogin(
+                    _settings.AccountName,
+                    _settings.Password,
+                    RequestToken
+                );
+
+                RequestToken token = JsonConvert.DeserializeObject<RequestToken>(result.Json);
+                if (result.HttpStatusCode != System.Net.HttpStatusCode.OK
+                    || !token.Success || token.Token != RequestToken)
+                {
+                    _output.WriteLine($"Problem at test setup, first call returned unexpected result");
+                    throw new System.Exception("Problem at test setup, first call returned unexpected result");
+                }
+
+                // Act (try to authorize again)
+                var result2 = await _client.ValidateRequestTokenWithLogin(
+                    _settings.AccountName,
+                    _settings.Password,
+                    RequestToken
+                );
+                RequestToken token2 = JsonConvert.DeserializeObject<RequestToken>(result2.Json);
+                _output.WriteLine($"response from server: {result2.Json}");
+
+                // Assert
+                Assert.True(result2.HttpStatusCode == System.Net.HttpStatusCode.OK);
+                Assert.True(token2.Success);
+                Assert.True(token2.Token == RequestToken);
             }
-
-            // Act (try to authorize again)
-
-            var result2 = await _client.ValidateRequestTokenWithLogin(
-                _settings.AccountName,
-                _settings.Password,
-                requestToken
-            );
-            RequestToken token2 = JsonConvert.DeserializeObject<RequestToken>(result2.Json);
-            _output.WriteLine($"response from server: {result2.Json}");
-
-            // Assert
-            Assert.True(result2.HttpStatusCode == System.Net.HttpStatusCode.OK);
-            Assert.True(token2.Success);
-            Assert.True(token2.Token == requestToken);
+            catch (Exception ex)
+            {
+                _output.WriteLine(ex.Message);
+                _output.WriteLine(ex.StackTrace);
+            }            
         }
 
         [Theory]
         [InlineData(0, 1000)]
         [InlineData(3, 1000)]
         // error path
-        public async void WhenCalledWithInValidApiKeyAndRetryOption_ReturnsCode401AndDoesNotBreak(int retryCount, int delayMilliseconds)
+        public async Task WhenCalledWithInValidApiKeyAndRetryOption_ReturnsCode401AndDoesNotBreak(int retryCount, int delayMilliseconds)
         {
             // Arrange
             _settings.ApiKey = "invalidkeytestcase";
-            string requestToken = (await _token).Token;
 
             // Act
             var result = await _client.ValidateRequestTokenWithLogin(
                 _settings.AccountName,
                 _settings.Password,
-                requestToken,
+                RequestToken,
                 retryCount,
                 delayMilliseconds
                 );
@@ -129,17 +146,16 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
         [Fact]
         // error path
-        public async void WhenCalledWithInvalidUserName_ReturnsErrorCode_()
+        public async Task WhenCalledWithInvalidUserName_ReturnsErrorCode_()
         {
             // Arrange
             _settings.AccountName = "InvalidName";
-            string requestToken = (await _token).Token;
 
             // Act
             var result = await _client.ValidateRequestTokenWithLogin(
                 _settings.AccountName,
                 _settings.Password,
-                requestToken
+                RequestToken
                 );
 
             _output.WriteLine($"Server responded with Http code: {result.HttpStatusCode}");

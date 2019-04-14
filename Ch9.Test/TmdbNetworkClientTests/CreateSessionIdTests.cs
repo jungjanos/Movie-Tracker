@@ -6,6 +6,7 @@ using Xunit;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
+using System;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -14,14 +15,15 @@ namespace Ch9.Test.TmdbNetworkClientTests
     // for the critical TmdbNetworkClient.CreateSessionId(...) function accessing the TMDB WebAPI
     // No intention to achieve full coverage for all paths:
     // WebAPI Http 404 error conditions is unclear (when should we receive code 404 ? )
-    public class CreateSessionIdTests
+    public class CreateSessionIdTests : IAsyncLifetime
     {
+        private string SessionToDispose { get; set; }
+        private string ValidatedToken { get; set; }
+
         private readonly ITestOutputHelper _output;
         Dictionary<string, object> _settingsKeyValues;
         Settings _settings;
         TmdbNetworkClient _client;
-        Task<RequestToken> _getToken;
-        Task<Task<RequestToken>> _validateToken;
 
         // Setup:
         // -(1) set up a new unused request token
@@ -36,73 +38,85 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settingsKeyValues[nameof(Settings.Password)] = "awx123.";
             _settings = new Settings(_settingsKeyValues);
             _client = new TmdbNetworkClient(_settings);
+        }
 
-            Task<CreateRequestTokenResult> result = _client.CreateRequestToken();
+        public async Task InitializeAsync()
+        {
+            _output.WriteLine("Creating request token: ");
+            var createRequestTokenResult = await _client.CreateRequestToken();
+            _output.WriteLine($"Server response: {createRequestTokenResult.HttpStatusCode}");
+            var token = JsonConvert.DeserializeObject<RequestToken>(createRequestTokenResult.Json);
+            _output.WriteLine("Request token validation: ");
+            var validateTokenResult = await _client.ValidateRequestTokenWithLogin
+                (_settings.AccountName, _settings.Password, token.Token);
+            _output.WriteLine($"Server response: {validateTokenResult.HttpStatusCode}");
 
-            _getToken = result.ContinueWith(t =>
-            {
-                var json = t.Result;
-                RequestToken token = JsonConvert.DeserializeObject<RequestToken>(json.Json);
-                return token;
-            });
+            string validatedToken = JsonConvert.DeserializeObject<RequestToken>(validateTokenResult.Json).Token;
+            ValidatedToken = validatedToken;
+        }
 
-            _validateToken = _getToken.ContinueWith(async t =>
-            {
-                var token = t.Result.Token;
-
-                var validationResponse = await _client.ValidateRequestTokenWithLogin(
-                           _settings.AccountName,
-                           _settings.Password,
-                           token);
-
-                return JsonConvert.DeserializeObject<RequestToken>(validationResponse.Json);
-            });
+        public async Task DisposeAsync()
+        {
+            _output.WriteLine($"{nameof(DisposeAsync)}: DeleteSession({SessionToDispose}) called...");
+            var result = await _client.DeleteSession(SessionToDispose);
+            var code = result.HttpStatusCode.ToString();
+            _output.WriteLine($"{nameof(DisposeAsync)}: DeleteSession(...) returned with {code}");
         }
 
         [Fact]
         // happy path
-        public async void WhenArgumentsValid_ReturnsNewSessionId()
+        public async Task WhenArgumentsValid_ReturnsNewSessionId()
         {
-            // Arrange
-            string requestToken = (await (await _validateToken)).Token;
-            _output.WriteLine($"Request token successfully {requestToken} created and validated");
+            try
+            {
+                // Act
+                var result = await _client.CreateSessionId(ValidatedToken);
+                var session = JsonConvert.DeserializeObject<SessionIdResponseModel>(result.Json);
+                SessionToDispose = session.SessionId;
 
-            // Act
-            var result = await _client.CreateSessionId(requestToken);
-            var session = JsonConvert.DeserializeObject<SessionIdResponseModel>(result.Json);            
+                // Assert
+                Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
+                Assert.True(session.Success);
+                Assert.False(string.IsNullOrWhiteSpace(session.SessionId));
 
-            // Assert
-            Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
-            Assert.True(session.Success);
-            Assert.False(string.IsNullOrWhiteSpace(session.SessionId));
-
-            _output.WriteLine($"Session id created: {session.SessionId}");
+                _output.WriteLine($"Session id created: {session.SessionId}");
+            }
+            catch (Exception ex)
+            {
+                _output.WriteLine(ex.Message);
+                _output.WriteLine(ex.StackTrace);
+            }
         }
 
         [Theory]
         // happy path
         [InlineData(3, 1000)]
-        public async void WhenArgumentsValidAndCalledWithRetryOption_ReturnsNewSessionId(int retryCount, int delayMilliseconds)
+        public async Task WhenArgumentsValidAndCalledWithRetryOption_ReturnsNewSessionId(int retryCount, int delayMilliseconds)
         {
-            // Arrange
-            string requestToken = (await (await _validateToken)).Token;
-            _output.WriteLine($"Request token successfully {requestToken} created and validated");
+            try
+            {
+                // Act            
+                var result = await _client.CreateSessionId(ValidatedToken, retryCount, delayMilliseconds);
+                var session = JsonConvert.DeserializeObject<SessionIdResponseModel>(result.Json);
+                SessionToDispose = session.SessionId;
 
-            // Act
-            var result = await _client.CreateSessionId(requestToken, retryCount, delayMilliseconds);
-            var session = JsonConvert.DeserializeObject<SessionIdResponseModel>(result.Json);
+                // Assert
+                Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
+                Assert.True(session.Success);
+                Assert.False(string.IsNullOrWhiteSpace(session.SessionId));
 
-            // Assert
-            Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
-            Assert.True(session.Success);
-            Assert.False(string.IsNullOrWhiteSpace(session.SessionId));
-
-            _output.WriteLine($"Session id created: {session.SessionId}");
+                _output.WriteLine($"Session id created: {session.SessionId}");
+            }
+            catch (Exception ex)
+            {
+                _output.WriteLine(ex.Message);
+                _output.WriteLine(ex.StackTrace);
+            }
         }
 
         [Fact]
         // error path
-        public async void WhenTokenInvalid_ReturnsErrorCode401()
+        public async Task WhenTokenInvalid_ReturnsErrorCode401()
         {
             // Arrange
             string requestToken = "thisisaninvalidrequesttoken";
@@ -115,8 +129,6 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
             _output.WriteLine($"Server responded with status code: {result.HttpStatusCode}");
         }
-
-
     }
 
 }

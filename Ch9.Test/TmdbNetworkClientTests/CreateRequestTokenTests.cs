@@ -5,6 +5,7 @@ using Ch9.ApiClient;
 using Xunit;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -30,9 +31,8 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
         [Fact]
         // Happy path /wo retry option
-        public async void WhenApiKeyIsValid_CreatesRequestToken()
-        {                        
-
+        public async Task WhenApiKeyIsValid_CreatesRequestToken()
+        {
             //Act
             CreateRequestTokenResult result = await _client.CreateRequestToken();
             RequestToken token = JsonConvert.DeserializeObject<RequestToken>(result.Json);
@@ -45,7 +45,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         [Fact]
         // Happy path with retry option set 
         // (will only retry when code is manually set for that)
-        public async void WhenApiKeyIsValid_AndWithRetryOptionSet_CreatesRequestToken()
+        public async Task WhenApiKeyIsValid_AndWithRetryOptionSet_CreatesRequestToken()
         {
             //Act
             CreateRequestTokenResult result = await _client.CreateRequestToken(3, 1000);
@@ -58,7 +58,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         }
 
         [Fact]
-        public async void WhenApiKeyIsInvalid_DoesNotBreakAndGivesErrorCode()
+        public async Task WhenApiKeyIsInvalid_DoesNotBreakAndGivesErrorCode()
         {
             //Arrange            
             _settingsKeyValues[nameof(Settings.ApiKey)] = "invalidkeytest1012";            
@@ -71,7 +71,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         }
 
         [Fact]
-        public async void WhenApiKeyIsInvalidAndCalledMultipleTimes_DoesNotBreakAndGivesErrorCode()
+        public async Task WhenApiKeyIsInvalidAndCalledMultipleTimes_DoesNotBreakAndGivesErrorCode()
         {
             //Arrange
             _settingsKeyValues[nameof(Settings.ApiKey)] = "invalidkeytest1012";

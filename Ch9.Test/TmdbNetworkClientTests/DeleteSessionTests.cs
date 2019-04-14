@@ -6,20 +6,20 @@ using Xunit;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
+using System;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
     // INTEGRATION TESTS
-
-    public class DeleteSessionTests
+    // for the critical TmdbNetworkClient.DeleteSession(...) function accessing the TMDB WebAPI
+    public class DeleteSessionTests : IAsyncLifetime
     {
+        private string SessionId { get; set; }
+
         private readonly ITestOutputHelper _output;
         Dictionary<string, object> _settingsKeyValues;
         Settings _settings;
         TmdbNetworkClient _client;
-        Task<RequestToken> _getToken;
-        Task<Task<RequestToken>> _validateToken;
-        Task<Task<SessionIdResponseModel>> _getSession;
 
         // Setup steps:
         // -(1) set up a new unused request token
@@ -35,53 +35,44 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settingsKeyValues[nameof(Settings.AccountName)] = "j4nitest";
             _settingsKeyValues[nameof(Settings.Password)] = "awx123.";
             _settings = new Settings(_settingsKeyValues);
-            _client = new TmdbNetworkClient(_settings);
+            _client = new TmdbNetworkClient(_settings);            
+        }
 
-            Task<CreateRequestTokenResult> result = _client.CreateRequestToken();
-
-            _getToken = result.ContinueWith(t =>
+        public async Task InitializeAsync()
+        {
+            try
             {
-                var json = t.Result;
-                RequestToken token = JsonConvert.DeserializeObject<RequestToken>(json.Json);
-                return token;
-            });
+                var tokenResponse = await _client.CreateRequestToken();
+                var token = JsonConvert.DeserializeObject<RequestToken>(tokenResponse.Json);
+                await _client.ValidateRequestTokenWithLogin
+                    (_settings.AccountName, _settings.Password, token.Token);
 
-            _validateToken = _getToken.ContinueWith(async t =>
+                var createSessionIdResult = await _client.CreateSessionId(token.Token);
+                SessionId = JsonConvert.DeserializeObject<SessionIdResponseModel>(createSessionIdResult.Json).SessionId;
+                _output.WriteLine($"{nameof(InitializeAsync)}: Session \"{SessionId}\" created");
+            }
+            catch (Exception ex)
             {
-                var token = t.Result.Token;
+                _output.WriteLine(ex.Message);
+                _output.WriteLine(ex.StackTrace);
+            }            
+        }
 
-                var validationResponse = await _client.ValidateRequestTokenWithLogin(
-                           _settings.AccountName,
-                           _settings.Password,
-                           token);
-
-                return JsonConvert.DeserializeObject<RequestToken>(validationResponse.Json);
-            });
-
-            _getSession = _validateToken.ContinueWith(async t =>
-            {
-                var token = t.Result.Result.Token;
-
-                var createSessionIdResult = await _client.CreateSessionId(token);
-                return JsonConvert.DeserializeObject<SessionIdResponseModel>(createSessionIdResult.Json);
-            });
+        public async Task DisposeAsync()
+        {
+            _output.WriteLine($"{nameof(DisposeAsync)}: DeleteSession({SessionId}) called...");
+            var result = await _client.DeleteSession(SessionId);
+            var code = result.HttpStatusCode.ToString();
+            _output.WriteLine($"{nameof(DisposeAsync)}: DeleteSession(...) returned with {code}");
         }
 
         [Theory]
         [InlineData(0, 1000)]
         [InlineData(3, 1000)]
-        public async void WhenSessionIsValid_DeletesSession(int retryCount, int delayMilliseconds)
+        public async Task WhenSessionIsValid_DeletesSession(int retryCount, int delayMilliseconds)
         {
-            // Arrange
-            string requestToken = (await await _validateToken).Token;
-            _output.WriteLine($"Request token {requestToken} successfully created and validated");
-
-            string sessionId = (await await _getSession).SessionId;
-            if (!(await await _getSession).Success) throw new System.Exception($"Error at arranging test, {nameof(TmdbNetworkClient.CreateSessionId)} failed");
-            _output.WriteLine($"Session id {sessionId} successfully created and validated");
-
             // Act
-            var result = await _client.DeleteSession(sessionId, retryCount, delayMilliseconds );
+            var result = await _client.DeleteSession(SessionId, retryCount, delayMilliseconds );
 
             // Assert
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
@@ -91,19 +82,8 @@ namespace Ch9.Test.TmdbNetworkClientTests
         [Fact]
         // failure path
         // RESULT IS NOT INTUITIVE!!!
-        public async void WhenSessionIsInValid_Returns200Code()
+        public async Task WhenSessionIsInvalid_Returns200Code()
         {
-            // Teardown (was created in the ctor needs to be torn down)
-            await await _validateToken;
-            string sessionId = (await await _getSession).SessionId;
-            var result2 = await _client.DeleteSession(sessionId);
-            if (result2.HttpStatusCode == System.Net.HttpStatusCode.OK)
-                _output.WriteLine($"Teardown successfull");
-            else
-            {
-                _output.WriteLine($"Teardown failure, error code {result2.HttpStatusCode}");
-                _output.WriteLine(result2?.Json);
-            }
 
             // Act
             var result = await _client.DeleteSession("thisisaninvalidsessionid");            
@@ -111,7 +91,5 @@ namespace Ch9.Test.TmdbNetworkClientTests
             // Assert
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);   
         }
-
-
     }
 }

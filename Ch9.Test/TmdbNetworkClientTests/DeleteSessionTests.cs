@@ -84,7 +84,6 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // RESULT IS NOT INTUITIVE!!!
         public async Task WhenSessionIsInvalid_Returns200Code()
         {
-
             // Act
             var result = await _client.DeleteSession("thisisaninvalidsessionid");            
             _output.WriteLine($"Server returned {result.HttpStatusCode}, {result.Json}");

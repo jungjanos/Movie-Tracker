@@ -356,24 +356,26 @@ namespace Ch9.ApiClient
 
             GetAccountDetailsResult result = await GetResponse<GetAccountDetailsResult>(retryCount, delayMilliseconds, requestUri);
 
-            return result;            
+            return result;                 
         }
+        public async Task<GetListsResult> GetLists(int? accountId= null, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            // no mistake here: missing "account_id" parameter add the string literal "{account_id}" as paths segment            
+            string baseUrl = BASE_Address + BASE_Path + ACCOUNT_DETAILS_Path + "/" + (accountId.HasValue ? accountId.Value.ToString() : "{account_id}") + LISTS_path;
 
-        //public async Task<GetListsResult> GetLists(string sessionId, string language = null, int? page = null, int retryCount = 0,  int delayMilliseconds = 1000)
-        //{
-        //    string baseUrl = BASE_Address + BASE_Path + ACCOUNT_DETAILS_Path;
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+            if (!string.IsNullOrEmpty(language))
+                query.Add(LANGUAGE_Key, language);
+            if (page > 0)
+                query.Add(PAGE_Key, page.Value.ToString());
+            query.Add(SESSION_ID_Key, _settings.SessionId);
 
-        //    var query = new Dictionary<string, string>();
-        //    query.Add(API_KEY_Key, _settings.ApiKey);
-        //    query.Add(SESSION_ID_Key, sessionId);
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
-        //    string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
-
-        //    GetListsResult result = await GetResponse<GetListsResult>(retryCount, delayMilliseconds, requestUri);
-
-        //    return result;
-        //}
-
+            GetListsResult result = await GetResponse<GetListsResult>(retryCount, delayMilliseconds, requestUri);
+            return result;
+        }
 
         private async Task<T> GetResponse<T>(int retryCount, int delayMilliseconds, string requestUri) where T : TmdbResponseBase, new()
         {

@@ -21,7 +21,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
         Dictionary<string, object> _settingsKeyValues;
         Settings _settings;
-        TmdbNetworkClient _client;        
+        TmdbNetworkClient _client;
         private readonly ITestOutputHelper _output;
 
         // We create a fresh request token for each test
@@ -53,7 +53,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             {
                 _output.WriteLine(ex.Message);
                 _output.WriteLine(ex.StackTrace);
-            }            
+            }
         }
 
         public Task DisposeAsync()
@@ -84,42 +84,34 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // Happy path
         public async Task WhenCalledWhenAlreadyAuthorized_ReturnsSuccessAndRequestTokenAndDoesNotBreak()
         {
-            try
+            // Arrange (do first a successfull authorization)
+            var result = await _client.ValidateRequestTokenWithLogin(
+                _settings.AccountName,
+                _settings.Password,
+                RequestToken
+            );
+
+            RequestToken token = JsonConvert.DeserializeObject<RequestToken>(result.Json);
+            if (result.HttpStatusCode != System.Net.HttpStatusCode.OK
+                || !token.Success || token.Token != RequestToken)
             {
-                // Arrange (do first a successfull authorization)
-                var result = await _client.ValidateRequestTokenWithLogin(
-                    _settings.AccountName,
-                    _settings.Password,
-                    RequestToken
-                );
-
-                RequestToken token = JsonConvert.DeserializeObject<RequestToken>(result.Json);
-                if (result.HttpStatusCode != System.Net.HttpStatusCode.OK
-                    || !token.Success || token.Token != RequestToken)
-                {
-                    _output.WriteLine($"Problem at test setup, first call returned unexpected result");
-                    throw new System.Exception("Problem at test setup, first call returned unexpected result");
-                }
-
-                // Act (try to authorize again)
-                var result2 = await _client.ValidateRequestTokenWithLogin(
-                    _settings.AccountName,
-                    _settings.Password,
-                    RequestToken
-                );
-                RequestToken token2 = JsonConvert.DeserializeObject<RequestToken>(result2.Json);
-                _output.WriteLine($"response from server: {result2.Json}");
-
-                // Assert
-                Assert.True(result2.HttpStatusCode == System.Net.HttpStatusCode.OK);
-                Assert.True(token2.Success);
-                Assert.True(token2.Token == RequestToken);
+                _output.WriteLine($"Problem at test setup, first call returned unexpected result");
+                throw new System.Exception("Problem at test setup, first call returned unexpected result");
             }
-            catch (Exception ex)
-            {
-                _output.WriteLine(ex.Message);
-                _output.WriteLine(ex.StackTrace);
-            }            
+
+            // Act (try to authorize again)
+            var result2 = await _client.ValidateRequestTokenWithLogin(
+                _settings.AccountName,
+                _settings.Password,
+                RequestToken
+            );
+            RequestToken token2 = JsonConvert.DeserializeObject<RequestToken>(result2.Json);
+            _output.WriteLine($"response from server: {result2.Json}");
+
+            // Assert
+            Assert.True(result2.HttpStatusCode == System.Net.HttpStatusCode.OK);
+            Assert.True(token2.Success);
+            Assert.True(token2.Token == RequestToken);
         }
 
         [Theory]

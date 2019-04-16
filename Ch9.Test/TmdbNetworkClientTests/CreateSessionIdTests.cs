@@ -67,25 +67,16 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // happy path
         public async Task WhenArgumentsValid_ReturnsNewSessionId()
         {
-            try
-            {
-                // Act
-                var result = await _client.CreateSessionId(ValidatedToken);
-                var session = JsonConvert.DeserializeObject<SessionIdResponseModel>(result.Json);
-                SessionToDispose = session.SessionId;
+            // Act
+            var result = await _client.CreateSessionId(ValidatedToken);
+            var session = JsonConvert.DeserializeObject<SessionIdResponseModel>(result.Json);
+            SessionToDispose = session.SessionId;
 
-                // Assert
-                Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
-                Assert.True(session.Success);
-                Assert.False(string.IsNullOrWhiteSpace(session.SessionId));
-
-                _output.WriteLine($"Session id created: {session.SessionId}");
-            }
-            catch (Exception ex)
-            {
-                _output.WriteLine(ex.Message);
-                _output.WriteLine(ex.StackTrace);
-            }
+            // Assert
+            Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
+            Assert.True(session.Success);
+            Assert.False(string.IsNullOrWhiteSpace(session.SessionId));
+            _output.WriteLine($"Session id created: {session.SessionId}");
         }
 
         [Theory]
@@ -93,25 +84,17 @@ namespace Ch9.Test.TmdbNetworkClientTests
         [InlineData(3, 1000)]
         public async Task WhenArgumentsValidAndCalledWithRetryOption_ReturnsNewSessionId(int retryCount, int delayMilliseconds)
         {
-            try
-            {
-                // Act            
-                var result = await _client.CreateSessionId(ValidatedToken, retryCount, delayMilliseconds);
-                var session = JsonConvert.DeserializeObject<SessionIdResponseModel>(result.Json);
-                SessionToDispose = session.SessionId;
 
-                // Assert
-                Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
-                Assert.True(session.Success);
-                Assert.False(string.IsNullOrWhiteSpace(session.SessionId));
+            // Act            
+            var result = await _client.CreateSessionId(ValidatedToken, retryCount, delayMilliseconds);
+            var session = JsonConvert.DeserializeObject<SessionIdResponseModel>(result.Json);
+            SessionToDispose = session.SessionId;
 
-                _output.WriteLine($"Session id created: {session.SessionId}");
-            }
-            catch (Exception ex)
-            {
-                _output.WriteLine(ex.Message);
-                _output.WriteLine(ex.StackTrace);
-            }
+            // Assert
+            Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
+            Assert.True(session.Success);
+            Assert.False(string.IsNullOrWhiteSpace(session.SessionId));
+            _output.WriteLine($"Session id created: {session.SessionId}");
         }
 
         [Fact]

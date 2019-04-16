@@ -22,7 +22,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         private readonly ITestOutputHelper _output;
         Dictionary<string, object> _settingsKeyValues;
         Settings _settings;
-        TmdbNetworkClient _client;        
+        TmdbNetworkClient _client;
 
         public GetAccountDetailsTests(ITestOutputHelper output)
         {
@@ -63,35 +63,16 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // happy path
         public async Task WhenValidArguments_ReturnsAccountDetails()
         {
-            try
-            {
-                // Act
-                var result = await _client.GetAccountDetails(SessionId);
-                {
-                    _output.WriteLine($"GetAccountDetails(sessionId: {SessionId}) returned:");
-                    _output.WriteLine($"{result.Json}");
-                    _output.WriteLine(Environment.NewLine);
-                }
+            // Act
+            var result = await _client.GetAccountDetails(SessionId);
+            PrintResultStatusToLog(result);
 
-                AccountDetailsModel account = JsonConvert.DeserializeObject<AccountDetailsModel>(result.Json);
-                {
-                    _output.WriteLine($"Account details:");
-                    _output.WriteLine($"id: \t\t{account?.Id}");
-                    _output.WriteLine($"account: \t\t{account?.AccountName}");
-                    _output.WriteLine($"Name: \t\t{account?.Name}");
-                    _output.WriteLine($"include adult: \t{account?.IncludeAdult}");
-                    _output.WriteLine($"ISO639: \t\t{account?.Iso639}");
-                    _output.WriteLine($"ISO3166: \t{account?.Iso3166}");
-                }
-                // Assert
-                Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
-                Assert.True(account.AccountName == _settings.AccountName);
-            }
-            catch (Exception ex)
-            {
-                _output.WriteLine(ex.Message);
-                _output.WriteLine(ex.StackTrace);
-            }
+            AccountDetailsModel account = JsonConvert.DeserializeObject<AccountDetailsModel>(result?.Json);
+            PrintAccountDetailsToLog(account);
+
+            // Assert
+            Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
+            Assert.True(account.AccountName == _settings.AccountName);
         }
 
         [Theory]
@@ -99,38 +80,17 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // happy path
         public async Task WhenValidArgumentsAndCalledWithRetryOption_ReturnsAccountDetails(int retryCount, int delayMilliseconds)
         {
-            try
-            {
-                // Act
-                var result = await _client.GetAccountDetails(SessionId, retryCount, delayMilliseconds);
-                {
-                    _output.WriteLine($"GetAccountDetails(sessionId: {SessionId}) returned:");
-                    _output.WriteLine($"{result.Json}");
-                    _output.WriteLine(Environment.NewLine);
-                }
+            // Act
+            var result = await _client.GetAccountDetails(SessionId, retryCount, delayMilliseconds);
+            PrintResultStatusToLog(result);
 
-                AccountDetailsModel account = JsonConvert.DeserializeObject<AccountDetailsModel>(result.Json);
-                {
-                    _output.WriteLine($"Account details:");
-                    _output.WriteLine($"id: \t\t{account?.Id}");
-                    _output.WriteLine($"account: \t\t{account?.AccountName}");
-                    _output.WriteLine($"Name: \t\t{account?.Name}");
-                    _output.WriteLine($"include adult: \t{account?.IncludeAdult}");
-                    _output.WriteLine($"ISO639: \t\t{account?.Iso639}");
-                    _output.WriteLine($"ISO3166: \t{account?.Iso3166}");
-                }
+            AccountDetailsModel account = JsonConvert.DeserializeObject<AccountDetailsModel>(result?.Json);
+            PrintAccountDetailsToLog(account);
 
-                // Assert
-                Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
-                Assert.True(account.AccountName == _settings.AccountName);
-            }
-            catch (Exception ex)
-            {
-                _output.WriteLine(ex.Message);
-                _output.WriteLine(ex.StackTrace);
-            }
+            // Assert
+            Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
+            Assert.True(account.AccountName == _settings.AccountName);
         }
-
 
         [Fact]
         // error path
@@ -139,24 +99,29 @@ namespace Ch9.Test.TmdbNetworkClientTests
             // Arrange
             var invalidSessionId = "someinvalidsessionid";
 
-            try
-            {
-                // Act
-                var result = await _client.GetAccountDetails(invalidSessionId);
-                {
-                    _output.WriteLine($"GetAccountDetails(sessionId: {invalidSessionId}) returned:");
-                    _output.WriteLine($"Error code: {result.HttpStatusCode}");
-                    _output.WriteLine(Environment.NewLine);
-                }
+            // Act
+            var result = await _client.GetAccountDetails(invalidSessionId);
+            PrintResultStatusToLog(result);
 
-                // Assert
-                Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.Unauthorized);                
-            }
-            catch (Exception ex)
-            {
-                _output.WriteLine(ex.Message);
-                _output.WriteLine(ex.StackTrace);
-            }
+            // Assert
+            Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.Unauthorized);
+        }
+
+        private void PrintResultStatusToLog(GetAccountDetailsResult result)
+        {
+            _output.WriteLine($"GetAccountDetails(sessionId: {SessionId}) returned:");
+            _output.WriteLine($"{result?.Json}");
+            _output.WriteLine(Environment.NewLine);
+        }
+        private void PrintAccountDetailsToLog(AccountDetailsModel account)
+        {
+            _output.WriteLine($"Account details:");
+            _output.WriteLine($"id: \t\t{account?.Id}");
+            _output.WriteLine($"account: \t\t{account?.AccountName}");
+            _output.WriteLine($"Name: \t\t{account?.Name}");
+            _output.WriteLine($"include adult: \t{account?.IncludeAdult}");
+            _output.WriteLine($"ISO639: \t\t{account?.Iso639}");
+            _output.WriteLine($"ISO3166: \t{account?.Iso3166}");
         }
     }
 }

@@ -35,5 +35,6 @@ namespace Ch9.ApiClient
         public const string ACCOUNT_DETAILS_Path = "/account";
         public const string SESSION_ID_Key = "session_id";
         public const string LISTS_path = "/lists";
+        public const string LIST_path = "/list";
     }
 }

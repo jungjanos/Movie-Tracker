@@ -65,4 +65,7 @@ namespace Ch9.ApiClient
 
     public class GetListsResult : TmdbResponseBase
     {}
+
+    public class CreateListResult : TmdbResponseBase
+    { }
 }

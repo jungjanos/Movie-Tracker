@@ -67,5 +67,8 @@ namespace Ch9.ApiClient
     {}
 
     public class CreateListResult : TmdbResponseBase
-    { }
+    {}
+
+    public class DeleteListResult : TmdbResponseBase
+    {}
 }

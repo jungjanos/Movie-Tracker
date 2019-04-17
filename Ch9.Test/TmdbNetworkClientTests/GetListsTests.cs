@@ -9,7 +9,6 @@ using Xunit.Abstractions;
 namespace Ch9.Test.TmdbNetworkClientTests
 {
     // INTEGRATION TESTS
-
     // for the critical TmdbNetworkClient.GetLists(...) function accessing the TMDB WebAPI
     public class GetListsTests
     {

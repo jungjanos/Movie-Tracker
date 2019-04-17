@@ -44,4 +44,18 @@ namespace Ch9.Models
         public string PosterPath { get; set; }
     }
 
+    public class ListCrudResponseModel
+    {
+        [JsonProperty("status_message")]
+        public string StatusMessage { get; set; }
+
+        [JsonProperty("success")]
+        public bool Success { get; set; }
+
+        [JsonProperty("status_code")]
+        public int StatusCode { get; set; }
+
+        [JsonProperty("list_id")]
+        public int ListId { get; set; }
+    }
 }

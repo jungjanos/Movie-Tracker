@@ -12,7 +12,7 @@ using System.Text;
 namespace Ch9.ApiClient
 {
     public class TmdbNetworkClient : ITmdbNetworkClient
-    {        
+    {
         private readonly ISettings _settings;
         private static Lazy<HttpClient> httpClient = new Lazy<HttpClient>(
             () =>
@@ -174,7 +174,7 @@ namespace Ch9.ApiClient
 
             return result;
         }
-        
+
         public async Task<GetMovieRecommendationsResult> GetMovieRecommendations(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id + RECOMMENDATIONS_Path;
@@ -207,7 +207,7 @@ namespace Ch9.ApiClient
             GetSimilarMoviesResult result = await GetResponse<GetSimilarMoviesResult>(retryCount, delayMilliseconds, requestUri);
 
             return result;
-        }        
+        }
 
         public async Task<CreateRequestTokenResult> CreateRequestToken(int retryCount = 0, int delayMilliseconds = 1000)
         {
@@ -237,10 +237,10 @@ namespace Ch9.ApiClient
 
             HttpResponseMessage response = null;
             int counter = retryCount;
-            
+
             try
             {
-               response = await HttpClient.PostAsync(requestUri, content);
+                response = await HttpClient.PostAsync(requestUri, content);
             }
             catch { }
             while (response?.IsSuccessStatusCode != true && counter > 0)
@@ -273,7 +273,7 @@ namespace Ch9.ApiClient
             var content = new StringContent(json, encoding: Encoding.UTF8, mediaType: "application/json");
 
             HttpResponseMessage response = null;
-            int counter = retryCount;           
+            int counter = retryCount;
 
             try
             {
@@ -311,9 +311,9 @@ namespace Ch9.ApiClient
 
             HttpRequestMessage request = new HttpRequestMessage
             {
-                 Content = content,
-                 Method =  HttpMethod.Delete,
-                 RequestUri = new Uri(requestUri)                  
+                Content = content,
+                Method = HttpMethod.Delete,
+                RequestUri = new Uri(requestUri)
             };
 
             HttpResponseMessage response = null;
@@ -335,7 +335,8 @@ namespace Ch9.ApiClient
                 catch { }
             }
 
-            DeleteSessionResult result = new DeleteSessionResult {
+            DeleteSessionResult result = new DeleteSessionResult
+            {
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
@@ -356,9 +357,9 @@ namespace Ch9.ApiClient
 
             GetAccountDetailsResult result = await GetResponse<GetAccountDetailsResult>(retryCount, delayMilliseconds, requestUri);
 
-            return result;                 
+            return result;
         }
-        public async Task<GetListsResult> GetLists(int? accountId= null, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<GetListsResult> GetLists(int? accountId = null, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             // no mistake here: missing "account_id" parameter add the string literal "{account_id}" as paths segment            
             string baseUrl = BASE_Address + BASE_Path + ACCOUNT_DETAILS_Path + "/" + (accountId.HasValue ? accountId.Value.ToString() : "{account_id}") + LISTS_path;
@@ -377,8 +378,7 @@ namespace Ch9.ApiClient
             return result;
         }
 
-        #region WORKING_HERE
-        public async Task<CreateListResult> CreateList(string name, string description, string language= "en", int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<CreateListResult> CreateList(string name, string description, string language = "en", int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + LIST_path;
 
@@ -389,7 +389,8 @@ namespace Ch9.ApiClient
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
-            var jsonObj = new {
+            var jsonObj = new
+            {
                 name = name,
                 description = description,
                 language = language
@@ -424,6 +425,45 @@ namespace Ch9.ApiClient
             }
 
             CreateListResult result = new CreateListResult
+            {
+                HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
+            };
+
+            if (response.IsSuccessStatusCode)
+                result.Json = await response.Content.ReadAsStringAsync();
+            return result;
+        }
+        #region WORKING_HERE
+        public async Task<DeleteListResult> DeleteList(int listId, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            string baseUrl = BASE_Address + BASE_Path + LIST_path + "/" + listId;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+            query.Add(SESSION_ID_Key, _settings.SessionId);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            HttpResponseMessage response = null;
+            int counter = retryCount;
+
+            try
+            {
+                response = await HttpClient.DeleteAsync(requestUri);
+            }
+            catch { }
+            while (response?.IsSuccessStatusCode != true && counter > 0)
+            {
+                await Task.Delay(delayMilliseconds);
+                try
+                {
+                    --counter;
+                    response = await HttpClient.DeleteAsync(requestUri);
+                }
+                catch { }
+            }
+
+            DeleteListResult result = new DeleteListResult
             {
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };

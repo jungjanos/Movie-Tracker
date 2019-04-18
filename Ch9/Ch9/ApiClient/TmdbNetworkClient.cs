@@ -473,7 +473,6 @@ namespace Ch9.ApiClient
             return result;
         }
 
-        #region WORKING_HERE
         public async Task<GetListDetailsResult> GetListDetails(int listId, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + LIST_path + "/" + listId;
@@ -489,6 +488,62 @@ namespace Ch9.ApiClient
             GetListDetailsResult result = await GetResponse<GetListDetailsResult>(retryCount, delayMilliseconds, requestUri);
 
             return result;
+        }
+        #region WORKING_HERE
+        public async Task<AddMovieResult> AddMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            string baseUrl = BASE_Address + BASE_Path + LIST_path + "/" + listId + ADD_MEDIA_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+            query.Add(SESSION_ID_Key, _settings.SessionId);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            var jsonObj = new
+            {
+                media_id = mediaId
+            };
+
+            string json = JsonConvert.SerializeObject(jsonObj);
+            var content = new StringContent(json, encoding: Encoding.UTF8, mediaType: "application/json");
+
+            HttpRequestMessage request = new HttpRequestMessage
+            {
+                Content = content,
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(requestUri)
+            };
+
+            HttpResponseMessage response = null;
+            int counter = retryCount;
+
+            try
+            {
+                response = await HttpClient.SendAsync(request);
+            }
+            catch { }
+            while (response?.IsSuccessStatusCode != true && counter > 0)
+            {
+                await Task.Delay(delayMilliseconds);
+                try
+                {
+                    --counter;
+                    response = await HttpClient.SendAsync(request);
+                }
+                catch { }
+            }
+
+            AddMovieResult result = new AddMovieResult
+            {
+                HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
+            };
+
+            if (response.IsSuccessStatusCode)
+                result.Json = await response.Content.ReadAsStringAsync();
+            return result;
+
+
         }
         #endregion
 

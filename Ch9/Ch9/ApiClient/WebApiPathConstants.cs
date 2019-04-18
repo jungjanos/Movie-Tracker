@@ -36,5 +36,6 @@ namespace Ch9.ApiClient
         public const string SESSION_ID_Key = "session_id";
         public const string LISTS_path = "/lists";
         public const string LIST_path = "/list";
+        public const string ADD_MEDIA_Path = "/add_item";
     }
 }

@@ -73,8 +73,6 @@ namespace Ch9.Test.TmdbNetworkClientTests
             if (result1.HttpStatusCode == System.Net.HttpStatusCode.Created)
                 _listIdsToDispose.Add(JsonConvert.DeserializeObject<ListCrudResponseModel>(result1.Json).ListId);
 
-
-
             // Act
             var result2 = await _client.CreateList(name, description, language);
             _output.WriteLine($"TMDB server responded: {result2.HttpStatusCode.ToString()}");
@@ -87,13 +85,33 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
         [Fact]
         // failure path        
-        public async Task WhenListCalledWithInvalidSessionId_RespondsWithErrorCode401()
+        public async Task WhenCalledWithInvalidSessionId_RespondsWithErrorCode401()
         {
             // Arrange
             string name = "New list 3";
             string description = "description";
             string language = "en";
+            var temp = _settings.SessionId;
             _settings.SessionId = "thisisaninvalidsessionid";
+
+            // Act
+            var result = await _client.CreateList(name, description, language);
+            _settings.SessionId = temp;            
+            
+            _output.WriteLine($"TMDB server responded: {result.HttpStatusCode.ToString()}");
+
+            // Assert
+            Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        // failure path        
+        public async Task WhenCalledWithInvalidCharacters_RespondsWithErrorCode422()
+        {
+            // Arrange
+            string name = "New list ( )  ";
+            string description = "description";
+            string language = "en";            
 
             await _client.CreateList(name, description, language);
 
@@ -102,7 +120,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _output.WriteLine($"TMDB server responded: {result.HttpStatusCode.ToString()}");
 
             // Assert
-            Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.Unauthorized);
+            Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.UnprocessableEntity);
         }
 
 

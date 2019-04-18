@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
 using System.Linq;
+using Ch9.Utils;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -13,7 +14,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
     // While the code here works as expected, targeted TMDB WebAPI function is EXTREMELY FRAGILE!!!
     // DO NOT RUN TESTS IN PARALLEL, IT BREAKS THE EXPECTED SERVER BEVAVIOR
     // for the critical TmdbNetworkClient.AddMovie(...) function accessing the TMDB WebAPI
-    public class AddMovieTests :IAsyncLifetime
+    public class AddMovieTests : IAsyncLifetime
     {
         private int _listId;
         private List<int> _validMovieIds; 
@@ -39,7 +40,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             };
         }
 
-        // Setup: create a temporary list to us for tests
+        // Setup: create a temporary list for the tests
         public async Task InitializeAsync()
         {
             var createListResult = await _client.CreateList("Test list 2", "some test list tralalala la í ő ű z ");
@@ -67,7 +68,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             var result = await _client.AddMovie(_listId, mediaId);
             _output.WriteLine($"{nameof(_client.AddMovie)}(list: {_listId}, mediaId: {mediaId}) responded with: {result.HttpStatusCode}");
 
-            if (result.HttpStatusCode == System.Net.HttpStatusCode.Created)
+            if (result.HttpStatusCode.IsSuccessCode())
                 _output.WriteLine($"TMDB server's response message {result.Json}");
 
             // Assert
@@ -89,7 +90,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
             var listDetailResult = await _client.GetListDetails(_listId);
             MovieListModel listDetails = null;
-            if (listDetailResult.HttpStatusCode == System.Net.HttpStatusCode.OK)
+            if (listDetailResult.HttpStatusCode.IsSuccessCode())
             {
                  listDetails = JsonConvert.DeserializeObject<MovieListModel>(listDetailResult.Json);
                 _output.WriteLine($"After update list contains {listDetails.Movies.Length}");
@@ -110,9 +111,6 @@ namespace Ch9.Test.TmdbNetworkClientTests
             var result = await _client.AddMovie(_listId, mediaId);
             _output.WriteLine($"{nameof(_client.AddMovie)}(list: {_listId}, mediaId: {mediaId}) responded with: {result.HttpStatusCode}");
 
-            if (result.HttpStatusCode == System.Net.HttpStatusCode.Created)
-                _output.WriteLine($"TMDB server's response message {result.Json}");
-
             // Assert
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.NotFound);
         }
@@ -130,9 +128,6 @@ namespace Ch9.Test.TmdbNetworkClientTests
             var result = await _client.AddMovie(_listId, mediaId);
             _settings.SessionId = temp;
             _output.WriteLine($"{nameof(_client.AddMovie)}(list: {_listId}, mediaId: {mediaId}) responded with: {result.HttpStatusCode}");
-
-            if (result.HttpStatusCode == System.Net.HttpStatusCode.Created)
-                _output.WriteLine($"TMDB server's response message {result.Json}");
 
             // Assert
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.Unauthorized);

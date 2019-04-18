@@ -77,4 +77,7 @@ namespace Ch9.ApiClient
 
     public class AddMovieResult : TmdbResponseBase
     {}
+
+    public class RemoveMovieResult : TmdbResponseBase
+    {}
 }

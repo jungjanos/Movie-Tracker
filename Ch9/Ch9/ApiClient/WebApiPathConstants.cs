@@ -37,5 +37,6 @@ namespace Ch9.ApiClient
         public const string LISTS_path = "/lists";
         public const string LIST_path = "/list";
         public const string ADD_MEDIA_Path = "/add_item";
+        public const string REMOVE_MEDIA_Path = "/remove_item";
     }
 }

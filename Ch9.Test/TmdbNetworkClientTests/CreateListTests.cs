@@ -8,6 +8,9 @@ using Xunit.Abstractions;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
+    // INTEGRATION TESTS    
+    // DO NOT RUN TESTS IN PARALLEL
+    // for the critical TmdbNetworkClient.CreateList(...) function accessing the TMDB WebAPI
     public class CreateListTests : IAsyncLifetime
     {
         private readonly ITestOutputHelper _output;

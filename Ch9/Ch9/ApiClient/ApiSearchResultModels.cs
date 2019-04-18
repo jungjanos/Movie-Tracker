@@ -71,4 +71,7 @@ namespace Ch9.ApiClient
 
     public class DeleteListResult : TmdbResponseBase
     {}
+
+    public class GetListDetailsResult : TmdbResponseBase
+    {}
 }

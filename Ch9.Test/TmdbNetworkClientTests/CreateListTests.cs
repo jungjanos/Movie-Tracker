@@ -15,12 +15,12 @@ namespace Ch9.Test.TmdbNetworkClientTests
         Settings _settings;
         TmdbNetworkClient _client;
 
-        List<int> listIdsToDispose;
+        List<int> _listIdsToDispose;
 
         public CreateListTests(ITestOutputHelper output)
         {
             _output = output;
-            listIdsToDispose = new List<int>();
+            _listIdsToDispose = new List<int>();
             _settingsKeyValues = new Dictionary<string, object>();
             _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";
             _settingsKeyValues[nameof(Settings.SessionId)] = "563636d0e4a0b41b775ba7703cc5c985f36cffaf"; // !!!! correct it !!!!!
@@ -30,7 +30,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
         public async Task DisposeAsync()
         {
-            foreach (int id in listIdsToDispose)
+            foreach (int id in _listIdsToDispose)
                 await _client.DeleteList(id);
         }
 
@@ -53,7 +53,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _output.WriteLine($"TMDB server responded: {result.HttpStatusCode.ToString()}");
 
             if (result.HttpStatusCode == System.Net.HttpStatusCode.Created)
-                listIdsToDispose.Add(JsonConvert.DeserializeObject<ListCrudResponseModel>(result.Json).ListId);
+                _listIdsToDispose.Add(JsonConvert.DeserializeObject<ListCrudResponseModel>(result.Json).ListId);
 
             // Assert
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.Created);
@@ -71,7 +71,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
             var result1 = await _client.CreateList(name, description, language);
             if (result1.HttpStatusCode == System.Net.HttpStatusCode.Created)
-                listIdsToDispose.Add(JsonConvert.DeserializeObject<ListCrudResponseModel>(result1.Json).ListId);
+                _listIdsToDispose.Add(JsonConvert.DeserializeObject<ListCrudResponseModel>(result1.Json).ListId);
 
 
 
@@ -79,7 +79,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             var result2 = await _client.CreateList(name, description, language);
             _output.WriteLine($"TMDB server responded: {result2.HttpStatusCode.ToString()}");
             if (result2.HttpStatusCode == System.Net.HttpStatusCode.Created)
-                listIdsToDispose.Add(JsonConvert.DeserializeObject<ListCrudResponseModel>(result2.Json).ListId);
+                _listIdsToDispose.Add(JsonConvert.DeserializeObject<ListCrudResponseModel>(result2.Json).ListId);
 
             // Assert
             Assert.True(result2.HttpStatusCode == System.Net.HttpStatusCode.Created);

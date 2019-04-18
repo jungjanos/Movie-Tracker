@@ -29,7 +29,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
         [Fact]
         // happy path
-        // NOT INTUITIVE: glitch on server side, HTTP response code is 500 (Internal Server Error)
+        // NOT INTUITIVE: glitch on server side, HTTP response code for success is 500 (Internal Server Error)
         public async Task WhenListExists_Deletes()
         {
             // Arrange
@@ -45,7 +45,6 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _output.WriteLine($"{nameof(_client.CreateList)}({name}, .., ..) called");
             _output.WriteLine($"TMDB server responded: {createListResult.HttpStatusCode}");
             _output.WriteLine($"with id: {id}");
-
 
             // Act
             var deleteResult = await _client.DeleteList(id.Value);            
@@ -73,7 +72,5 @@ namespace Ch9.Test.TmdbNetworkClientTests
             // Assert
             Assert.True(deleteResult.HttpStatusCode == System.Net.HttpStatusCode.NotFound);
         }
-
-
     }
 }

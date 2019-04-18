@@ -433,7 +433,7 @@ namespace Ch9.ApiClient
                 result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }
-        #region WORKING_HERE
+
         public async Task<DeleteListResult> DeleteList(int listId, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + LIST_path + "/" + listId;
@@ -470,6 +470,24 @@ namespace Ch9.ApiClient
 
             if (response.IsSuccessStatusCode)
                 result.Json = await response.Content.ReadAsStringAsync();
+            return result;
+        }
+
+        #region WORKING_HERE
+        public async Task<GetListDetailsResult> GetListDetails(int listId, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            string baseUrl = BASE_Address + BASE_Path + LIST_path + "/" + listId;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+            query.Add(SESSION_ID_Key, _settings.SessionId);
+            if (!string.IsNullOrWhiteSpace(language))
+                query.Add(LANGUAGE_Key, language);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            GetListDetailsResult result = await GetResponse<GetListDetailsResult>(retryCount, delayMilliseconds, requestUri);
+
             return result;
         }
         #endregion

@@ -121,8 +121,6 @@ namespace Ch9.Test.TmdbNetworkClientTests
             var result = await _client.RemoveMovie(_listId, mediaId);
             _settings.SessionId = temp;
             _output.WriteLine($"{nameof(_client.RemoveMovie)}(list: {_listId}, mediaId: {mediaId}) responded with: {result.HttpStatusCode}");
-            if (result.HttpStatusCode.IsSuccessCode())
-                _output.WriteLine($"TMDB server's response message {result.Json}");
 
             // Assert
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.Unauthorized);

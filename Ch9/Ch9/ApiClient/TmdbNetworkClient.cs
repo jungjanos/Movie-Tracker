@@ -25,8 +25,7 @@ namespace Ch9.ApiClient
 
         public TmdbNetworkClient(ISettings settings)
         {
-            this._settings = settings;
-            //settings.ApiKey = settings.ApiKey; 
+            _settings = settings;
         }
 
         public async Task<TmdbConfigurationModelResult> GetTmdbConfiguration(int retryCount = 0, int delayMilliseconds = 1000)

@@ -84,7 +84,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             {
                 var result = await _client.AddMovie(_listId, mediaId);
                 _output.WriteLine($"{nameof(_client.AddMovie)}(list: {_listId}, mediaId: {mediaId}) responded with: {result.HttpStatusCode}");
-                if (result.HttpStatusCode == System.Net.HttpStatusCode.Created)
+                if (result.HttpStatusCode.IsSuccessCode())
                     _output.WriteLine($"TMDB server's response message {result.Json}");
             }
 

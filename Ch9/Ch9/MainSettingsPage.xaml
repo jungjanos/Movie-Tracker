@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Ch9.MainSettingsPage"
+             NavigationPage.HasNavigationBar="False"
              Padding="5,5,5,5">
     <ContentPage.Content>
         <TableView Intent="Settings">

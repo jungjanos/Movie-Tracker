@@ -18,6 +18,7 @@ namespace Ch9
         public TmdbConfigurationModel TmdbConfiguration { get; private set; }
         public MovieDetailModelConfigurator MovieDetailModelConfigurator { get; private set; }
         public SearchResultFilter ResultFilter { get; private set; }
+        public ITmdbNetworkClient TmdbNetworkClient { get; private set; }
         public ITmdbCachedSearchClient CachedSearchClient { get; private set; }
         
 
@@ -26,7 +27,8 @@ namespace Ch9
             Settings = new Settings();
             MovieGenreSettings = new MovieGenreSettings();
             ResultFilter = new SearchResultFilter(Settings, MovieGenreSettings);
-            CachedSearchClient = new TmdbCachedSearchClient(new TmdbNetworkClient(Settings));            
+            TmdbNetworkClient = new TmdbNetworkClient(Settings);
+            CachedSearchClient = new TmdbCachedSearchClient(TmdbNetworkClient);
 
             InitializeComponent();
 

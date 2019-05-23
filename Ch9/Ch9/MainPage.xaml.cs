@@ -33,11 +33,6 @@ namespace Ch9
             listView.ItemsSource = _movies;
         }
 
-        private async void OnSettingsButton_Clicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new MainSettingsPage());
-        }
-
         private async void SearchBar_TextChanged(object sender, TextChangedEventArgs e)
         {
             var searchText = (e.NewTextValue as string).Trim();
@@ -71,11 +66,6 @@ namespace Ch9
             MovieDetailModel movie = e.Item as MovieDetailModel;
 
             Navigation.PushAsync(new MovieDetailPage(movie));
-        }
-
-        private async void Trending_Clicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new TrendingPage());
         }
     }
 }

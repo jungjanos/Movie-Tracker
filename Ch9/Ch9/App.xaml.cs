@@ -32,7 +32,7 @@ namespace Ch9
 
             InitializeComponent();
 
-            MainPage = new NavigationPage(new MainPage());
+            MainPage = new NavigationPage(new MainTabbedPage());
         }
 
         protected override async void OnStart()

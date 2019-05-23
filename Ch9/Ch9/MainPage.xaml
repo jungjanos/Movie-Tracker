@@ -7,10 +7,6 @@
              x:Name="mainPage"
              >
 
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Icon="settings2.png" Order="Primary" Text="Settings" Clicked="OnSettingsButton_Clicked"/>
-    </ContentPage.ToolbarItems>
-
     <StackLayout x:Name="mainPageStackLayout" Orientation="Vertical" Padding="5,0,5,5">
         
 
@@ -44,19 +40,7 @@
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
-        </ListView>
-
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
-
-            <Button Grid.Column="0" Grid.Row="0" Text="Trending" TextColor="White" BackgroundColor="Blue" FontAttributes="Bold" FontSize="Large" Clicked="Trending_Clicked" />
-        </Grid>
-        
+        </ListView>        
     </StackLayout>
 
 </ContentPage>

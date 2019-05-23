@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Ch9.ListsPage">
+    <ContentPage.Content>
+
+        <StackLayout x:Name="mainPageStackLayout" Orientation="Vertical" Padding="5,0,5,5">
+
+            <ListView x:Name="listView" HasUnevenRows="True"> 
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal" Padding="5">
+
+                                <Image>
+                                    <Image.Source>
+                                        <UriImageSource Uri="{Binding ImgSmSrc}"
+                                                    CacheValidity="0"
+                                                    CachingEnabled="False"                                                    
+                                                    />
+                                    </Image.Source>
+                                </Image>
+
+                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical">
+                                    <Label Text="{Binding Title}" TextColor="Black"/>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>
+                                        <Label TextColor="Gray" Text="{Binding Genre}" FontSize="Micro"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+
+
+    </ContentPage.Content>
+</ContentPage>

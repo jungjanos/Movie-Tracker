@@ -25,7 +25,8 @@ namespace Ch9
     public class ListsPageViewModel : INotifyPropertyChanged
     {
         private ISettings _settings;
-        public ITmdbCachedSearchClient _cachedSearchClient;
+        private ITmdbCachedSearchClient _cachedSearchClient;
+        private bool _initialized = false;
 
         private ObservableCollection<MovieListModel> _movieLists;
         public ObservableCollection<MovieListModel> MovieLists
@@ -34,9 +35,7 @@ namespace Ch9
             set
             {
                 if (SetProperty(ref _movieLists, value))
-                {
                     SelectedList = _movieLists.FirstOrDefault();
-                }
             } 
         }
 
@@ -56,12 +55,13 @@ namespace Ch9
 
         public async Task Initialize()
         {
+            if (_initialized)
+                return;
+
             if (MovieLists.Count == 0)
             {
                 MovieListModel[] fetchedUserLists = await GetUsersLists(3, 1000);
 
-                //foreach (var list in fetchedUserLists)
-                //    MovieLists.Add(list);
                 if (fetchedUserLists != null)
                     MovieLists = new ObservableCollection<MovieListModel>(fetchedUserLists);
 

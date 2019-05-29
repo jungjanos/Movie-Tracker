@@ -7,6 +7,8 @@ using LazyCache;
 using System.Threading.Tasks;
 using Ch9.Models;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Ch9
@@ -20,15 +22,16 @@ namespace Ch9
         public SearchResultFilter ResultFilter { get; private set; }
         public ITmdbNetworkClient TmdbNetworkClient { get; private set; }
         public ITmdbCachedSearchClient CachedSearchClient { get; private set; }
-        
+        public Task<MovieListModel[]> UserLists { get; private set; }
 
         public App()
-        {            
+        {
             Settings = new Settings();
             MovieGenreSettings = new MovieGenreSettings();
             ResultFilter = new SearchResultFilter(Settings, MovieGenreSettings);
             TmdbNetworkClient = new TmdbNetworkClient(Settings);
             CachedSearchClient = new TmdbCachedSearchClient(TmdbNetworkClient);
+            UserLists = GetUsersLists(3, 1000);
 
             InitializeComponent();
 
@@ -36,7 +39,7 @@ namespace Ch9
         }
 
         protected override async void OnStart()
-        {            
+        {
             TmdbConfiguration = await GetTmdbConfiguration(3, 1000);
             MovieDetailModelConfigurator = new MovieDetailModelConfigurator(TmdbConfiguration, MovieGenreSettings);
         }
@@ -62,5 +65,44 @@ namespace Ch9
             }
             else throw new TimeoutException($"Could not connect TMDB Server to fetch configuration data at application start, retried {retries}-times");
         }
+
+        // We refresh the cache containing the users movie lists if the user has a validated Tmdb account
+        private async Task<MovieListModel[]> GetUsersLists(int retries, int retryDelay)
+        {
+            List<MovieListModel> result = new List<MovieListModel>();
+
+            if (Settings.HasTmdbAccount)
+            {
+                MovieListModel[] movieLists;
+
+                try
+                {
+                    GetListsResult getLists = await CachedSearchClient.GetLists(retryCount: 3, delayMilliseconds: 1000, fromCache: true);
+
+                    if (!getLists.HttpStatusCode.IsSuccessCode())
+                        return null;
+
+                    movieLists = JsonConvert.DeserializeObject<GetListsModel>(getLists.Json).MovieLists;
+                }
+                catch { return null; };
+
+                foreach (var list in movieLists)
+                {
+                    GetListDetailsResult getListDetails = await CachedSearchClient.GetListDetails(list.Id, retryCount: 3, delayMilliseconds: 1000, fromCache: true);
+
+                    if (getListDetails.HttpStatusCode.IsSuccessCode())
+                    {
+                        try
+                        {
+                            list.Movies = JsonConvert.DeserializeObject<MovieListModel>(getListDetails.Json).Movies;
+                            result.Add(list);
+                        }
+                        catch { }
+                    }
+                }
+            }
+            return result.ToArray();
+        }
+
     }
 }

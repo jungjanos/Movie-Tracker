@@ -52,6 +52,26 @@ namespace Ch9.ApiClient
 
                     () => _networkClient.GetSimilarMovies(id, language, retryCount, delayMilliseconds));
         }
+
+        public async Task<GetListsResult> GetLists(int? accountId = null, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        {
+            string key = "$" + nameof(GetLists) + (accountId?.ToString() ?? "") + (language ?? "") + (page?.ToString() ?? "");
+
+            if (!fromCache)
+                _cache.Remove(key);
+
+            return await _cache.GetOrAddAsync(key, () => _networkClient.GetLists(accountId, language, page, retryCount,delayMilliseconds));
+        }
+
+        public async Task<GetListDetailsResult> GetListDetails(int listId, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        {
+            string key = "$" + nameof(GetListDetails) + listId + (language ?? "") + (language ?? "");
+
+            if (!fromCache)
+                _cache.Remove(key);
+
+            return await _cache.GetOrAddAsync(key, () => _networkClient.GetListDetails(listId, language, retryCount, delayMilliseconds));
+        }
         #endregion
 
         #region UncachedQueries

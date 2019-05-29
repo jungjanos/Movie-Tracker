@@ -17,6 +17,6 @@
     <local:MainPage/>
     <local:TrendingPage/>
 
-    <ContentPage Title="Watch list" />
+    <local:ListsPage/>
 
 </TabbedPage>

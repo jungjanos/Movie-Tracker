@@ -8,28 +8,28 @@
              x:Class="Ch9.ListsPage">
     <ContentPage.Content>
 
-        <StackLayout x:Name="mainPageStackLayout" Orientation="Vertical" Padding="5,0,5,5">
-            <TableView Intent="Menu">
-                <TableRoot>
-                    <TableSection>
+        <StackLayout Orientation="Vertical" 
+                     VerticalOptions="StartAndExpand"
+                     Padding="5,0,5,5">
 
-                        <ViewCell>
-                            <StackLayout Orientation="Horizontal" Padding="13,0" HorizontalOptions="FillAndExpand">
-                                <Label Text="Select list " VerticalTextAlignment="Center"/>
-                                <Picker x:Name="viewedListPicker"
-                                    ItemsSource="{Binding value}"
-                                                                         
-                                        
-                                    HorizontalOptions="EndAndExpand"/>
-                            </StackLayout>
-                        </ViewCell>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" BackgroundColor="Accent">
+                <Label Text="Select list " VerticalTextAlignment="Center"/>
+                
+                <Picker x:Name="viewedListPicker"
+                                    ItemsSource="{Binding MovieLists, Mode=TwoWay}"
+                                    ItemDisplayBinding="{Binding Name}"
+                                    SelectedItem="{Binding SelectedList}"
+                                    HorizontalOptions="FillAndExpand"
+                                    BackgroundColor="Beige"/>
+            </StackLayout>
 
-                    </TableSection>
-                </TableRoot>
-            </TableView>
-            <Label x:Name="label"/>
 
-            <!--<ListView x:Name="listView" HasUnevenRows="True">
+            <ListView HasUnevenRows="True"
+                      HorizontalOptions="Start"
+                      VerticalOptions="StartAndExpand"
+                      BackgroundColor="Aqua"
+                      ItemsSource="{Binding Source={x:Reference viewedListPicker}, Path=SelectedItem.Movies}">
+
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -55,9 +55,9 @@
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>-->
+            </ListView>            
+
         </StackLayout>
-
-
+        
     </ContentPage.Content>
 </ContentPage>

@@ -22,37 +22,51 @@ namespace Ch9
     // to be able to develop and test page behavior separatelly from Xamarin framework as POCO
     // classes
     // The goal is to make the development more rapid and not to achieve MVVM purism
-    class ListsPageViewModel : INotifyPropertyChanged
+    public class ListsPageViewModel : INotifyPropertyChanged
     {
         private ISettings _settings;
         public ITmdbCachedSearchClient _cachedSearchClient;
 
-        public ObservableCollection<MovieListModel> UserLists;
-        public MovieListModel SelectedList;
+        private ObservableCollection<MovieListModel> _movieLists;
+        public ObservableCollection<MovieListModel> MovieLists
+        {
+            get => _movieLists;
+            set
+            {
+                if (SetProperty(ref _movieLists, value))
+                {
+                    SelectedList = _movieLists.FirstOrDefault();
+                }
+            } 
+        }
+
+        private MovieListModel _selectedList;       
+        public MovieListModel SelectedList
+        {
+            get => _selectedList;
+            set => SetProperty(ref _selectedList, value);
+        }
 
         public ListsPageViewModel(ISettings settings, ITmdbCachedSearchClient cachedSearchClient)
         {
-            UserLists = new ObservableCollection<MovieListModel>();
+            MovieLists = new ObservableCollection<MovieListModel>();
             _settings = settings;
             _cachedSearchClient = cachedSearchClient;
         }
 
         public async Task Initialize()
         {
-            if (UserLists.Count == 0)
+            if (MovieLists.Count == 0)
             {
                 MovieListModel[] fetchedUserLists = await GetUsersLists(3, 1000);
 
-                foreach (var list in fetchedUserLists)
-                    UserLists.Add(list);
+                //foreach (var list in fetchedUserLists)
+                //    MovieLists.Add(list);
+                if (fetchedUserLists != null)
+                    MovieLists = new ObservableCollection<MovieListModel>(fetchedUserLists);
 
-                SelectedList = UserLists.FirstOrDefault();
             }
         }
-
-
-
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 

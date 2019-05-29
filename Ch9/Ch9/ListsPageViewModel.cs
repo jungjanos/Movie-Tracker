@@ -2,9 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
+using Ch9.ApiClient;
 using Ch9.Models;
+using Ch9.Utils;
+using Newtonsoft.Json;
 
 namespace Ch9
 {
@@ -19,6 +24,36 @@ namespace Ch9
     // The goal is to make the development more rapid and not to achieve MVVM purism
     class ListsPageViewModel : INotifyPropertyChanged
     {
+        private ISettings _settings;
+        public ITmdbCachedSearchClient _cachedSearchClient;
+
+        public ObservableCollection<MovieListModel> UserLists;
+        public MovieListModel SelectedList;
+
+        public ListsPageViewModel(ISettings settings, ITmdbCachedSearchClient cachedSearchClient)
+        {
+            UserLists = new ObservableCollection<MovieListModel>();
+            _settings = settings;
+            _cachedSearchClient = cachedSearchClient;
+        }
+
+        public async Task Initialize()
+        {
+            if (UserLists.Count == 0)
+            {
+                MovieListModel[] fetchedUserLists = await GetUsersLists(3, 1000);
+
+                foreach (var list in fetchedUserLists)
+                    UserLists.Add(list);
+
+                SelectedList = UserLists.FirstOrDefault();
+            }
+        }
+
+
+
+
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged([CallerMemberName]string propertyName = null)
@@ -34,6 +69,45 @@ namespace Ch9
             storage = value;
             OnPropertyChanged(propertyName);
             return true;
+        }
+
+        // TODO : Refactor this method into a API Call Orchestrator 
+        // We refresh the cache containing the users movie lists if the user has a validated Tmdb account
+        private async Task<MovieListModel[]> GetUsersLists(int retries, int retryDelay)
+        {
+            List<MovieListModel> result = new List<MovieListModel>();
+
+            if (_settings.HasTmdbAccount)
+            {
+                MovieListModel[] movieLists;
+
+                try
+                {
+                    GetListsResult getLists = await _cachedSearchClient.GetLists(retryCount: 3, delayMilliseconds: 1000, fromCache: true);
+
+                    if (!getLists.HttpStatusCode.IsSuccessCode())
+                        return null;
+
+                    movieLists = JsonConvert.DeserializeObject<GetListsModel>(getLists.Json).MovieLists;
+                }
+                catch { return null; };
+
+                foreach (var list in movieLists)
+                {
+                    GetListDetailsResult getListDetails = await _cachedSearchClient.GetListDetails(list.Id, retryCount: 3, delayMilliseconds: 1000, fromCache: true);
+
+                    if (getListDetails.HttpStatusCode.IsSuccessCode())
+                    {
+                        try
+                        {
+                            list.Movies = JsonConvert.DeserializeObject<MovieListModel>(getListDetails.Json).Movies;
+                            result.Add(list);
+                        }
+                        catch { }
+                    }
+                }
+            }
+            return result.ToArray();
         }
     }
 }

@@ -145,7 +145,7 @@ namespace Ch9
             var movieToRemove = SelectedMovie;                
 
             SelectedMovie = null;
-            SelectedList.Movies = SelectedList.Movies.Except(new MovieDetailModel[] { movieToRemove }).ToArray();
+            SelectedList.Movies.Remove(movieToRemove);
             await _cachedSearchClient.RemoveMovie(SelectedList.Id, movieToRemove.Id, 3, 1000);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.ObjectModel;
 
 namespace Ch9.Models
 {    
@@ -32,7 +33,7 @@ namespace Ch9.Models
         public int ItemCount { get; set; }
 
         [JsonProperty("items")]
-        public MovieDetailModel[] Movies { get; set; }
+        public ObservableCollection<MovieDetailModel> Movies { get; set; }
 
         [JsonProperty("iso_639_1")]
         public string Iso639 { get; set; }

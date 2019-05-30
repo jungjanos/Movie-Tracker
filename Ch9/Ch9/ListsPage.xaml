@@ -28,7 +28,7 @@
                       HorizontalOptions="Start"
                       VerticalOptions="StartAndExpand"
                       BackgroundColor="Aqua"
-                      ItemsSource="{Binding Source={x:Reference viewedListPicker}, Path=SelectedItem.Movies}"
+                      ItemsSource="{Binding Source={x:Reference viewedListPicker}, Path=SelectedItem.Movies, Mode=TwoWay}"
                       SelectedItem="{Binding SelectedMovie, Mode=TwoWay}">
 
                 <ListView.ItemTemplate>

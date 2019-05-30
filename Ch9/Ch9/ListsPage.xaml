@@ -55,7 +55,65 @@
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>            
+            </ListView>
+
+
+            <Grid VerticalOptions="End" BackgroundColor="LightGray">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Row="0" Grid.Column="0"                        
+                        BackgroundColor="Transparent">
+                    <Button.ImageSource>
+                        <!--<ion-icon name="information-circle"></ion-icon>-->
+                        <FontImageSource Glyph="&#xf1a0;"
+                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                         Size="44" 
+                         Color="Black"/>
+                    </Button.ImageSource>
+                </Button>
+
+                <Button Grid.Row="0" Grid.Column="1"
+                        BackgroundColor="Transparent">
+                    <Button.ImageSource>
+                        <!--checkmark-circle-->
+                        <FontImageSource Glyph="&#xf2bb;"
+                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                         Size="44" 
+                         Color="Black"/>
+                    </Button.ImageSource>
+                </Button>
+
+                <Button Grid.Row="0" Grid.Column="2"                        
+                        BackgroundColor="Transparent">
+                    <Button.ImageSource>
+                        <!--trash-->
+                        <FontImageSource Glyph="&#xf398;"
+                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                         Size="44" 
+                         Color="Black"/>
+                    </Button.ImageSource>
+                </Button>
+
+                <Button Grid.Row="0" Grid.Column="3"                        
+                        BackgroundColor="Transparent">
+                    <Button.ImageSource>
+                        <!--help-circle-->
+                        <FontImageSource Glyph="&#xf198;"
+                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                         Size="44" 
+                         Color="Black"/>
+                    </Button.ImageSource>
+                </Button>
+
+            </Grid>
 
         </StackLayout>
         

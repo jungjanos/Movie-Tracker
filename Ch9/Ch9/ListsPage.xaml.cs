@@ -28,5 +28,9 @@ namespace Ch9
             await ViewModel.Initialize();            
         }
 
+        private async void OnRemoveClicked(object sender, System.EventArgs e)
+        {
+            await ViewModel.RemoveMovieFromList();
+        }
     }
 }

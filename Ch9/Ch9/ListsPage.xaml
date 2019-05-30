@@ -28,7 +28,8 @@
                       HorizontalOptions="Start"
                       VerticalOptions="StartAndExpand"
                       BackgroundColor="Aqua"
-                      ItemsSource="{Binding Source={x:Reference viewedListPicker}, Path=SelectedItem.Movies}">
+                      ItemsSource="{Binding Source={x:Reference viewedListPicker}, Path=SelectedItem.Movies}"
+                      SelectedItem="{Binding SelectedMovie, Mode=TwoWay}">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -91,7 +92,8 @@
                     </Button.ImageSource>
                 </Button>
 
-                <Button Grid.Row="0" Grid.Column="2"                        
+                <Button Grid.Row="0" Grid.Column="2"
+                        Clicked="OnRemoveClicked"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
                         <!--trash-->

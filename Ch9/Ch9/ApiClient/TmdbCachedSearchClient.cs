@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 
 namespace Ch9.ApiClient
 {
+    // TODO : evaluate whether to remove empty async-await from calls
+    // remark: whitepaper of Cleary
     public class TmdbCachedSearchClient : ITmdbCachedSearchClient
     {
         private IAppCache _cache;
@@ -79,10 +81,14 @@ namespace Ch9.ApiClient
         {
             return await _networkClient.FetchGenreIdsWithNames(language, retryCount, delayMilliseconds);
         }
-
+                
         public async Task<TmdbConfigurationModelResult> GetTmdbConfiguration(int retryCount = 0, int delayMilliseconds = 1000)
         {
             return await _networkClient.GetTmdbConfiguration(retryCount, delayMilliseconds);
+        }
+        public Task<RemoveMovieResult> RemoveMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            return _networkClient.RemoveMovie(listId, mediaId, retryCount, delayMilliseconds);
         }
         #endregion
     }

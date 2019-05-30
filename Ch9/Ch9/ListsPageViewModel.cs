@@ -47,6 +47,12 @@ namespace Ch9
             set => SetProperty(ref _selectedList, value);
         }
 
+        private MovieDetailModel _selectedMovie;
+        public MovieDetailModel SelectedMovie {
+            get => _selectedMovie;
+            set => SetProperty(ref _selectedMovie, value);
+        }
+
         public ListsPageViewModel(ISettings settings, ITmdbCachedSearchClient cachedSearchClient, IMovieDetailModelConfigurator movieDeatilConfigurator)
         {
             MovieLists = new ObservableCollection<MovieListModel>();
@@ -129,6 +135,18 @@ namespace Ch9
                 }
             }
             return result.ToArray();
+        }
+
+        public async Task RemoveMovieFromList()
+        {           
+            if (SelectedMovie == null || SelectedList == null)
+                return;
+
+            var movieToRemove = SelectedMovie;                
+
+            SelectedMovie = null;
+            SelectedList.Movies = SelectedList.Movies.Except(new MovieDetailModel[] { movieToRemove }).ToArray();
+            await _cachedSearchClient.RemoveMovie(SelectedList.Id, movieToRemove.Id, 3, 1000);
         }
     }
 }

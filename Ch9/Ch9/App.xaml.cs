@@ -18,7 +18,7 @@ namespace Ch9
         public ISettings Settings { get; private set; }
         public MovieGenreSettings MovieGenreSettings { get; private set; }
         public TmdbConfigurationModel TmdbConfiguration { get; private set; }
-        public MovieDetailModelConfigurator MovieDetailModelConfigurator { get; private set; }
+        public IMovieDetailModelConfigurator MovieDetailModelConfigurator { get; private set; }
         public SearchResultFilter ResultFilter { get; private set; }
         public ITmdbNetworkClient TmdbNetworkClient { get; private set; }
         public ITmdbCachedSearchClient CachedSearchClient { get; private set; }
@@ -32,14 +32,16 @@ namespace Ch9
             CachedSearchClient = new TmdbCachedSearchClient(TmdbNetworkClient);
 
             InitializeComponent();
+            // TODO : Add content to loading page
+            MainPage = new LoadingPage();
 
-            MainPage = new NavigationPage(new MainTabbedPage());
         }
 
         protected override async void OnStart()
         {
             TmdbConfiguration = await GetTmdbConfiguration(3, 1000);
             MovieDetailModelConfigurator = new MovieDetailModelConfigurator(TmdbConfiguration, MovieGenreSettings);
+            MainPage = new NavigationPage(new MainTabbedPage());
         }
 
         protected override void OnSleep()

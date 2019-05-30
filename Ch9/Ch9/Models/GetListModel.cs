@@ -32,7 +32,7 @@ namespace Ch9.Models
         public int ItemCount { get; set; }
 
         [JsonProperty("items")]
-        public MovieModel[] Movies { get; set; }
+        public MovieDetailModel[] Movies { get; set; }
 
         [JsonProperty("iso_639_1")]
         public string Iso639 { get; set; }

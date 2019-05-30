@@ -8,6 +8,7 @@ using System.Text;
 
 namespace Ch9.Models
 {
+    // TODO : replace references to MovieModel to MovieDetailModel in code
     public class MovieModel
     {
         [JsonProperty("id")]

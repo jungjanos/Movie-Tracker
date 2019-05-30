@@ -24,8 +24,9 @@ namespace Ch9
     // The goal is to make the development more rapid and not to achieve MVVM purism
     public class ListsPageViewModel : INotifyPropertyChanged
     {
-        private ISettings _settings;
-        private ITmdbCachedSearchClient _cachedSearchClient;
+        private readonly ISettings _settings;
+        private readonly ITmdbCachedSearchClient _cachedSearchClient;
+        private readonly IMovieDetailModelConfigurator _movieDeatilConfigurator;
         private bool _initialized = false;
 
         private ObservableCollection<MovieListModel> _movieLists;
@@ -46,11 +47,12 @@ namespace Ch9
             set => SetProperty(ref _selectedList, value);
         }
 
-        public ListsPageViewModel(ISettings settings, ITmdbCachedSearchClient cachedSearchClient)
+        public ListsPageViewModel(ISettings settings, ITmdbCachedSearchClient cachedSearchClient, IMovieDetailModelConfigurator movieDeatilConfigurator)
         {
             MovieLists = new ObservableCollection<MovieListModel>();
             _settings = settings;
             _cachedSearchClient = cachedSearchClient;
+            _movieDeatilConfigurator = movieDeatilConfigurator;
         }
 
         public async Task Initialize()
@@ -60,11 +62,13 @@ namespace Ch9
 
             if (MovieLists.Count == 0)
             {
-                MovieListModel[] fetchedUserLists = await GetUsersLists(3, 1000);
+                MovieListModel[] fetchedUserLists = await GetUsersLists(3, 1000);                
 
                 if (fetchedUserLists != null)
+                {
                     MovieLists = new ObservableCollection<MovieListModel>(fetchedUserLists);
-
+                    _initialized = true;
+                }                    
             }
         }
 
@@ -97,7 +101,7 @@ namespace Ch9
 
                 try
                 {
-                    GetListsResult getLists = await _cachedSearchClient.GetLists(retryCount: 3, delayMilliseconds: 1000, fromCache: true);
+                    GetListsResult getLists = await _cachedSearchClient.GetLists(retryCount: retries, delayMilliseconds: retryDelay, fromCache: true);
 
                     if (!getLists.HttpStatusCode.IsSuccessCode())
                         return null;
@@ -115,6 +119,9 @@ namespace Ch9
                         try
                         {
                             list.Movies = JsonConvert.DeserializeObject<MovieListModel>(getListDetails.Json).Movies;
+
+                            _movieDeatilConfigurator.SetImageSrc(list.Movies);
+                            _movieDeatilConfigurator.SetGenreNamesFromGenreIds(list.Movies);
                             result.Add(list);
                         }
                         catch { }

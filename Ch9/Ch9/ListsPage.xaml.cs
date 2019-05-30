@@ -16,7 +16,8 @@ namespace Ch9
         {
             ViewModel = new ListsPageViewModel(
                 ((App)Application.Current).Settings,
-                ((App)Application.Current).CachedSearchClient);
+                ((App)Application.Current).CachedSearchClient,
+                ((App)Application.Current).MovieDetailModelConfigurator);
 
             InitializeComponent();
         }

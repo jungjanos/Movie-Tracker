@@ -11,6 +11,8 @@ using System.Text;
 
 namespace Ch9.ApiClient
 {
+    // TODO : SessionId should be injected into the public methods via parameter instead of grabbing it from ISettings
+    // This will help with caching (SessionId needs to be used as part of the caching key to differentiate between users)
     public class TmdbNetworkClient : ITmdbNetworkClient
     {
         private readonly ISettings _settings;

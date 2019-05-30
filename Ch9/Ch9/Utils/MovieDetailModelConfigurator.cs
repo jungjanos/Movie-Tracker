@@ -7,7 +7,15 @@ using System.Text;
 
 namespace Ch9.Utils
 {
-    public class MovieDetailModelConfigurator
+    public interface IMovieDetailModelConfigurator
+    {
+        void SetGalleryImageSources(MovieDetailModel movie);
+        void SetGenreNamesFromGenreIds(IEnumerable<MovieDetailModel> movies);
+        void SetImageSrc(IEnumerable<MovieDetailModel> movies);
+    }
+
+    // TODO : This class should be composed into MovieDetailModel (static field ?)
+    public class MovieDetailModelConfigurator : IMovieDetailModelConfigurator
     {
         private readonly TmdbConfigurationModel tmdbConfiguration;
         private readonly MovieGenreSettings movieGenreSettings;

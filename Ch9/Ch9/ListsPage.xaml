@@ -12,13 +12,14 @@
                      VerticalOptions="StartAndExpand"
                      Padding="5,0,5,5">
 
+            <Label Text="{Binding DebugVerison}"/>
             <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" BackgroundColor="Accent">
                 <Label Text="Select list " VerticalTextAlignment="Center"/>
                 
                 <Picker x:Name="viewedListPicker"
                                     ItemsSource="{Binding MovieLists, Mode=TwoWay}"
                                     ItemDisplayBinding="{Binding Name}"
-                                    SelectedItem="{Binding SelectedList}"
+                                    SelectedItem="{Binding SelectedList, Mode=TwoWay}"
                                     HorizontalOptions="FillAndExpand"
                                     BackgroundColor="Beige"/>
             </StackLayout>
@@ -29,7 +30,10 @@
                       VerticalOptions="StartAndExpand"
                       BackgroundColor="Aqua"
                       ItemsSource="{Binding Source={x:Reference viewedListPicker}, Path=SelectedItem.Movies, Mode=TwoWay}"
-                      SelectedItem="{Binding SelectedMovie, Mode=TwoWay}">
+                      SelectedItem="{Binding SelectedMovie, Mode=TwoWay}"
+                      IsPullToRefreshEnabled="True"
+                      IsRefreshing="{Binding IsRefreshing}"
+                      RefreshCommand="{Binding RefreshCommand}">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>

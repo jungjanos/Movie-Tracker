@@ -23,8 +23,7 @@ namespace Ch9
     // The goal is to make the development more rapid and not to achieve MVVM purism
     public class ListsPageViewModel : INotifyPropertyChanged
     {
-
-        public string DebugVerison { get; } = "0.0.7";
+        public string DebugVerison { get; } = "0.0.8";
 
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
@@ -145,7 +144,6 @@ namespace Ch9
             return result.ToArray();
         }
 
-        // TODO : Selected movie is currently not retained!!!
         public async Task RefreshMovieList()
         {
             var selectedListId = SelectedList?.Id;
@@ -155,7 +153,6 @@ namespace Ch9
 
             if (fetchedUserLists != null)
             {
-                SelectedMovie = null;
                 MovieLists.Clear();
                 foreach (var list in fetchedUserLists)
                     MovieLists.Add(list);
@@ -163,9 +160,7 @@ namespace Ch9
 
                 SelectedList = MovieLists.FirstOrDefault(list => list.Id == selectedListId);
                 SelectedMovie = SelectedList.Movies.FirstOrDefault(movie => movie.Id == selectedMovieId);
-            }
-            
-
+            }            
             IsRefreshing = false;
         }
 
@@ -174,7 +169,7 @@ namespace Ch9
             if (SelectedMovie == null || SelectedList == null)
                 return;
 
-            var movieToRemove = SelectedMovie;                
+            var movieToRemove = SelectedMovie;             
 
             SelectedMovie = null;
             SelectedList.Movies.Remove(movieToRemove);

@@ -145,11 +145,9 @@ namespace Ch9
             return result.ToArray();
         }
 
+        // TODO : Selected movie is currently not retained!!!
         public async Task RefreshMovieList()
         {
-            //if (SelectedList == null)
-            //    return;
-
             var selectedListId = SelectedList?.Id;
             var selectedMovieId = SelectedMovie?.Id;
 

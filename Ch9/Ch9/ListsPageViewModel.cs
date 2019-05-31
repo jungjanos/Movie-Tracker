@@ -24,7 +24,7 @@ namespace Ch9
     public class ListsPageViewModel : INotifyPropertyChanged
     {
 
-        public string DebugVerison { get; } = "0.0.4";
+        public string DebugVerison { get; } = "0.0.7";
 
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
@@ -153,17 +153,20 @@ namespace Ch9
             var selectedListId = SelectedList?.Id;
             var selectedMovieId = SelectedMovie?.Id;
 
-            //SelectedMovie = null;
-
             MovieListModel[] fetchedUserLists = await GetUsersLists(retries: 3, retryDelay: 1000, fromCache: false);
 
             if (fetchedUserLists != null)
             {
-                MovieLists = new ObservableCollection<MovieListModel>(fetchedUserLists);
+                SelectedMovie = null;
+                MovieLists.Clear();
+                foreach (var list in fetchedUserLists)
+                    MovieLists.Add(list);
                 _initialized = true;
+
+                SelectedList = MovieLists.FirstOrDefault(list => list.Id == selectedListId);
+                SelectedMovie = SelectedList.Movies.FirstOrDefault(movie => movie.Id == selectedMovieId);
             }
-            SelectedList = MovieLists.FirstOrDefault(list => list.Id == selectedListId);
-            SelectedMovie = SelectedList.Movies.FirstOrDefault(movie => movie.Id == selectedMovieId);
+            
 
             IsRefreshing = false;
         }

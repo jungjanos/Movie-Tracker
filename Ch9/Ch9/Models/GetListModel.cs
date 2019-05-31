@@ -1,5 +1,8 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Ch9.Models
 {    
@@ -18,7 +21,8 @@ namespace Ch9.Models
         public int TotalResults { get; set; }
     }
 
-    public class MovieListModel
+    // TODO: check whether INotifyPropertyCahnged interface can be removed
+    public class MovieListModel : INotifyPropertyChanged
     {
         [JsonProperty("description")]
         public string Description { get; set; }
@@ -32,8 +36,13 @@ namespace Ch9.Models
         [JsonProperty("item_count")]
         public int ItemCount { get; set; }
 
+        private ObservableCollection<MovieDetailModel> _movies;
         [JsonProperty("items")]
-        public ObservableCollection<MovieDetailModel> Movies { get; set; }
+        public ObservableCollection<MovieDetailModel> Movies
+        {
+            get => _movies;
+            set => SetProperty(ref _movies, value);
+        }
 
         [JsonProperty("iso_639_1")]
         public string Iso639 { get; set; }
@@ -46,6 +55,23 @@ namespace Ch9.Models
 
         [JsonProperty("poster_path")]
         public string PosterPath { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName]string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(storage, value))
+                return false;
+
+            storage = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
     }
 
     public class ListCrudResponseModel

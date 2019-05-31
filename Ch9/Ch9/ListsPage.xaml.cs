@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using System.Threading.Tasks;
+using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace Ch9
@@ -12,6 +13,8 @@ namespace Ch9
             set => BindingContext = value;
         }
 
+        Task vMInitializer; 
+
         public ListsPage()
         {
             ViewModel = new ListsPageViewModel(
@@ -19,13 +22,14 @@ namespace Ch9
                 ((App)Application.Current).CachedSearchClient,
                 ((App)Application.Current).MovieDetailModelConfigurator);
 
+            vMInitializer = ViewModel.Initialize();
             InitializeComponent();
         }
 
         protected override async void OnAppearing()
         {            
             base.OnAppearing();
-            await ViewModel.Initialize();            
+            await vMInitializer;  
         }
 
         private async void OnRemoveClicked(object sender, System.EventArgs e)

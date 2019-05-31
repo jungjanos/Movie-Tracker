@@ -74,7 +74,8 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <Button Grid.Row="0" Grid.Column="0"                        
+                <Button Grid.Row="0" Grid.Column="0"
+                        Command="{Binding MovieInfoCommand}"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
                         <!--<ion-icon name="information-circle"></ion-icon>-->
@@ -85,7 +86,7 @@
                     </Button.ImageSource>
                 </Button>
 
-                <Button Grid.Row="0" Grid.Column="1"
+                <Button Grid.Row="0" Grid.Column="1"                        
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
                         <!--checkmark-circle-->

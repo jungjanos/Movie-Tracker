@@ -23,11 +23,12 @@ namespace Ch9
     // The goal is to make the development more rapid and not to achieve MVVM purism
     public class ListsPageViewModel : INotifyPropertyChanged
     {
-        public string DebugVerison { get; } = "0.0.9";
+        public string DebugVerison { get; } = "0.0.11";
 
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
         private readonly IMovieDetailModelConfigurator _movieDeatilConfigurator;
+        private readonly IPageService _pageService;
         private bool _initialized = false;
 
         private ObservableCollection<MovieListModel> _movieLists;
@@ -57,14 +58,21 @@ namespace Ch9
             set => SetProperty(ref _isRefreshing, value);
         }
         public Command RefreshCommand { get; private set; }
+        public Command MovieInfoCommand { get; private set; }
 
-        public ListsPageViewModel(ISettings settings, ITmdbCachedSearchClient cachedSearchClient, IMovieDetailModelConfigurator movieDeatilConfigurator)
+        public ListsPageViewModel(
+            ISettings settings, 
+            ITmdbCachedSearchClient cachedSearchClient, 
+            IMovieDetailModelConfigurator movieDeatilConfigurator,
+            IPageService pageService)
         {
             MovieLists = new ObservableCollection<MovieListModel>();
             _settings = settings;
             _cachedSearchClient = cachedSearchClient;
             _movieDeatilConfigurator = movieDeatilConfigurator;
+            _pageService = pageService;
             RefreshCommand = new Command(async () => await RefreshMovieList());
+            MovieInfoCommand = new Command(async () => await OpenMovieDetailPage());
         }
 
         public async Task Initialize()
@@ -142,6 +150,14 @@ namespace Ch9
                 }
             }
             return result.ToArray();
+        }
+
+        public async Task OpenMovieDetailPage()
+        {
+            if (SelectedMovie == null)
+                return;
+
+            await _pageService.PushAsync(SelectedMovie);
         }
 
         public async Task RefreshMovieList()

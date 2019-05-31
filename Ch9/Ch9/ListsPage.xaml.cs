@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using Ch9.Utils;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -20,7 +21,8 @@ namespace Ch9
             ViewModel = new ListsPageViewModel(
                 ((App)Application.Current).Settings,
                 ((App)Application.Current).CachedSearchClient,
-                ((App)Application.Current).MovieDetailModelConfigurator);
+                ((App)Application.Current).MovieDetailModelConfigurator,
+                new PageService(this));
 
             vMInitializer = ViewModel.Initialize();
             InitializeComponent();

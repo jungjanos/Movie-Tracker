@@ -50,7 +50,8 @@
                     </Button.ImageSource>
                 </Button>
 
-                <Button Grid.Row="0" Grid.Column="3">
+                <Button Grid.Row="0" Grid.Column="3"
+                        Command="{Binding RefreshCommand}">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xf366;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"

@@ -34,7 +34,8 @@
                                     SelectedItem="{Binding SelectedList, Mode=TwoWay}"                                    
                                     BackgroundColor="Beige"/>
 
-                <Button Grid.Row="0" Grid.Column="1">
+                <Button Grid.Row="0" Grid.Column="1"
+                        Command="{Binding RemoveListCommand}">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xf398;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"

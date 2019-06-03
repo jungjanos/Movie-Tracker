@@ -86,9 +86,14 @@ namespace Ch9.ApiClient
         {
             return await _networkClient.GetTmdbConfiguration(retryCount, delayMilliseconds);
         }
-        public Task<RemoveMovieResult> RemoveMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<RemoveMovieResult> RemoveMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            return _networkClient.RemoveMovie(listId, mediaId, retryCount, delayMilliseconds);
+            return await _networkClient.RemoveMovie(listId, mediaId, retryCount, delayMilliseconds);
+        }
+
+        public async Task<DeleteListResult> DeleteList(int listId, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            return await _networkClient.DeleteList(listId, retryCount, delayMilliseconds);
         }
         #endregion
     }

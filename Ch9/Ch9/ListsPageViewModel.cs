@@ -23,7 +23,7 @@ namespace Ch9
     // The goal is to make the development more rapid and not to achieve MVVM purism
     public class ListsPageViewModel : INotifyPropertyChanged
     {
-        public string DebugVerison { get; } = "0.0.15 test";
+        public string DebugVerison { get; } = "0.0.17";
 
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
@@ -75,6 +75,7 @@ namespace Ch9
             _pageService = pageService;
             RefreshCommand = new Command(async () => await RefreshMovieList());
             MovieInfoCommand = new Command(async () => await OpenMovieDetailPage());
+            RemoveListCommand = new Command(async () => await RemoveList());
         }
 
         public async Task Initialize()
@@ -177,7 +178,7 @@ namespace Ch9
                 _initialized = true;
 
                 SelectedList = MovieLists.FirstOrDefault(list => list.Id == selectedListId);
-                SelectedMovie = SelectedList.Movies.FirstOrDefault(movie => movie.Id == selectedMovieId);
+                SelectedMovie = SelectedList?.Movies?.FirstOrDefault(movie => movie.Id == selectedMovieId);
             }            
             IsRefreshing = false;
         }
@@ -192,6 +193,27 @@ namespace Ch9
             SelectedMovie = null;
             SelectedList.Movies.Remove(movieToRemove);
             await _cachedSearchClient.RemoveMovie(SelectedList.Id, movieToRemove.Id, 3, 1000);
+        }
+
+        public async Task RemoveList()
+        {
+            if (SelectedList == null)
+                return;
+
+            MovieListModel listToDelete = SelectedList;
+            SelectedList = null;
+
+            DeleteListResult result = await _cachedSearchClient.DeleteList(listToDelete.Id, retryCount: 3, delayMilliseconds: 1000);
+
+            // Tmdb Web API has a glitch here: Http.500 denotes "success" here...
+            bool success = result.HttpStatusCode.Is500Code();
+            if (success)
+            {
+                MovieLists.Remove(listToDelete);
+                SelectedList = MovieLists.FirstOrDefault();
+            }            
+            string statusMessge = success ? "successfully removed" : $"delete error, status code: {result.HttpStatusCode}. Try deleting directly over www.themoviedb.org";
+            await _pageService.DisplayAlert("", $"{listToDelete.Name} : {statusMessge}", "Ok");
         }
     }
 }

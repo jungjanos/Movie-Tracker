@@ -36,5 +36,10 @@ namespace Ch9.Utils
         {
             return (200 <= (int)httpStatusCode && (int)httpStatusCode < 300);
         }
+
+        public static bool Is500Code(this HttpStatusCode httpStatusCode)
+        {
+            return 500 == (int)httpStatusCode;
+        }
     }
 }

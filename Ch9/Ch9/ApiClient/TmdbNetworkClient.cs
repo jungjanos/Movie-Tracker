@@ -435,6 +435,8 @@ namespace Ch9.ApiClient
             return result;
         }
 
+        // The TMDB WebAPI Has a glitch here:
+        // when removing an existing list, Http.500 denotes 'success'
         public async Task<DeleteListResult> DeleteList(int listId, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + LIST_path + "/" + listId;
@@ -453,7 +455,7 @@ namespace Ch9.ApiClient
                 response = await HttpClient.DeleteAsync(requestUri);
             }
             catch { }
-            while (response?.IsSuccessStatusCode != true && counter > 0)
+            while (response?.StatusCode != HttpStatusCode.InternalServerError && counter > 0)
             {
                 await Task.Delay(delayMilliseconds);
                 try
@@ -469,8 +471,7 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            if (response.IsSuccessStatusCode)
-                result.Json = await response.Content.ReadAsStringAsync();
+            result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }
 

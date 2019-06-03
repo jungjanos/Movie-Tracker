@@ -79,7 +79,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
 
             var listDetailsResult = await _client.GetListDetails(_listId);
-            var remainingMovieCount = JsonConvert.DeserializeObject<MovieListModel>(listDetailsResult.Json).Movies.Length;
+            var remainingMovieCount = JsonConvert.DeserializeObject<MovieListModel>(listDetailsResult.Json).Movies.Count;
 
             // Assert
             Assert.True(remainingMovieCount == _validMovieIds.Count - 1);
@@ -103,7 +103,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
 
             var listDetailsResult = await _client.GetListDetails(_listId);
-            var remainingMovieCount = JsonConvert.DeserializeObject<MovieListModel>(listDetailsResult.Json).Movies.Length;
+            var remainingMovieCount = JsonConvert.DeserializeObject<MovieListModel>(listDetailsResult.Json).Movies.Count;
 
             Assert.True(remainingMovieCount == _validMovieIds.Count);
         }
@@ -126,7 +126,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.Unauthorized);
 
             var listDetailsResult = await _client.GetListDetails(_listId);
-            var remainingMovieCount = JsonConvert.DeserializeObject<MovieListModel>(listDetailsResult.Json).Movies.Length;
+            var remainingMovieCount = JsonConvert.DeserializeObject<MovieListModel>(listDetailsResult.Json).Movies.Count;
 
             // Assert
             Assert.True(remainingMovieCount == _validMovieIds.Count);

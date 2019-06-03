@@ -23,7 +23,7 @@ namespace Ch9
     // The goal is to make the development more rapid and not to achieve MVVM purism
     public class ListsPageViewModel : INotifyPropertyChanged
     {
-        public string DebugVerison { get; } = "0.0.11";
+        public string DebugVerison { get; } = "0.0.15 test";
 
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
@@ -59,6 +59,8 @@ namespace Ch9
         }
         public Command RefreshCommand { get; private set; }
         public Command MovieInfoCommand { get; private set; }
+        public Command RemoveListCommand { get; private set; }
+        public Command AddListCommand { get; private set; }
 
         public ListsPageViewModel(
             ISettings settings, 

@@ -13,16 +13,55 @@
                      Padding="5,0,5,5">
 
             <Label Text="{Binding DebugVerison}"/>
-            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" BackgroundColor="Accent">
-                <Label Text="Select list " VerticalTextAlignment="Center"/>
-                
-                <Picker x:Name="viewedListPicker"
+            
+            <Label Text="Select list " VerticalTextAlignment="Center"/>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="50" />
+                </Grid.ColumnDefinitions>
+
+                <Picker Grid.Row="0" Grid.Column="0"
+                    x:Name="viewedListPicker"
                                     ItemsSource="{Binding MovieLists, Mode=TwoWay}"
                                     ItemDisplayBinding="{Binding Name}"
-                                    SelectedItem="{Binding SelectedList, Mode=TwoWay}"
-                                    HorizontalOptions="FillAndExpand"
+                                    SelectedItem="{Binding SelectedList, Mode=TwoWay}"                                    
                                     BackgroundColor="Beige"/>
-            </StackLayout>
+
+                <Button Grid.Row="0" Grid.Column="1">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xf398;"
+                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                         Color="Black"/>
+                    </Button.ImageSource>
+                </Button>
+
+                <Button Grid.Row="0" Grid.Column="2">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xf273;"
+                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                         Color="Black" />
+                    </Button.ImageSource>
+                </Button>
+
+                <Button Grid.Row="0" Grid.Column="3">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xf366;"
+                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                         Color="Black" />
+                    </Button.ImageSource>
+                </Button>
+
+            </Grid>
+
+
+            
 
 
             <ListView HasUnevenRows="True"

@@ -93,11 +93,11 @@ namespace Ch9.Test.TmdbNetworkClientTests
             if (listDetailResult.HttpStatusCode.IsSuccessCode())
             {
                  listDetails = JsonConvert.DeserializeObject<MovieListModel>(listDetailResult.Json);
-                _output.WriteLine($"After update list contains {listDetails.Movies.Length}");
+                _output.WriteLine($"After update list contains {listDetails.Movies.Count}");
             }
 
              // Assert
-            Assert.True(listDetails.Movies.Length == _validMovieIds.Count);
+            Assert.True(listDetails.Movies.Count == _validMovieIds.Count);
         }
 
         [Fact]

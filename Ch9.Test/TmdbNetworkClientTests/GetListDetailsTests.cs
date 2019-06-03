@@ -37,7 +37,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             PrintTrace(listId, result);
 
             var movieListResponse = JsonConvert.DeserializeObject<MovieListModel>(result?.Json);
-            _output.WriteLine($"List contains {movieListResponse.Movies.Length} movies");
+            _output.WriteLine($"List contains {movieListResponse.Movies.Count} movies");
 
             // Assert
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
@@ -56,11 +56,11 @@ namespace Ch9.Test.TmdbNetworkClientTests
             PrintTrace(listId, result);
 
             var movieListResponse = JsonConvert.DeserializeObject<MovieListModel>(result?.Json);
-            _output.WriteLine($"List contains {movieListResponse.Movies.Length} movies");
+            _output.WriteLine($"List contains {movieListResponse.Movies.Count} movies");
 
             // Assert
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
-            Assert.True(movieListResponse.Movies.Length == 0);
+            Assert.True(movieListResponse.Movies.Count == 0);
         }
 
         [Fact]

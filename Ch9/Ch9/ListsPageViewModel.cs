@@ -23,7 +23,7 @@ namespace Ch9
     // The goal is to make the development more rapid and not to achieve MVVM purism
     public class ListsPageViewModel : INotifyPropertyChanged
     {
-        public string DebugVerison { get; } = "0.0.17";
+        public string DebugVerison { get; } = "0.0.18";
 
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
@@ -200,7 +200,14 @@ namespace Ch9
             if (SelectedList == null)
                 return;
 
-            MovieListModel listToDelete = SelectedList;
+            MovieListModel listToDelete = SelectedList;            
+
+            if (listToDelete.Movies.Count > 0)
+            {
+                string dialogResult = await _pageService.DisplayActionSheet("List is not empty, confirm delete", "Cancel", "Ok");
+                if (dialogResult == "Cancel")
+                    return;
+            }
             SelectedList = null;
 
             DeleteListResult result = await _cachedSearchClient.DeleteList(listToDelete.Id, retryCount: 3, delayMilliseconds: 1000);
@@ -211,9 +218,9 @@ namespace Ch9
             {
                 MovieLists.Remove(listToDelete);
                 SelectedList = MovieLists.FirstOrDefault();
-            }            
-            string statusMessge = success ? "successfully removed" : $"delete error, status code: {result.HttpStatusCode}. Try deleting directly over www.themoviedb.org";
-            await _pageService.DisplayAlert("", $"{listToDelete.Name} : {statusMessge}", "Ok");
+            }
+            else
+                await _pageService.DisplayAlert("Error", $"{listToDelete.Name} : delete error, status code: {result.HttpStatusCode}", "Ok");
         }
     }
 }

@@ -11,9 +11,9 @@ namespace Ch9.Test.TmdbNetworkClientTests
     public class GetListDetailsTests
     {
         private readonly ITestOutputHelper _output;
-        Dictionary<string, object> _settingsKeyValues;
-        Settings _settings;
-        TmdbNetworkClient _client;
+        readonly Dictionary<string, object> _settingsKeyValues;
+        readonly Settings _settings;
+        readonly TmdbNetworkClient _client;
 
         public GetListDetailsTests(ITestOutputHelper output)
         {

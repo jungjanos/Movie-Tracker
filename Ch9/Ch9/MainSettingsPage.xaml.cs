@@ -13,27 +13,27 @@ namespace Ch9
     [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class MainSettingsPage : ContentPage
 	{
-        private ISettings settings;
-        private MovieGenreSettings movieGenreSettings;
-        private ITmdbNetworkClient tmdbClient;  
+        private readonly ISettings _settings;
+        private readonly MovieGenreSettings _movieGenreSettings;
+        private readonly ITmdbNetworkClient _tmdbClient;  
 
         private string initialAccountName;
         private string initialPassword;
 
 		public MainSettingsPage ()
 		{
-            settings = ((App)Application.Current).Settings;
-            movieGenreSettings = ((App)Application.Current).MovieGenreSettings;
-            tmdbClient = ((App)Application.Current).TmdbNetworkClient;
+            _settings = ((App)Application.Current).Settings;
+            _movieGenreSettings = ((App)Application.Current).MovieGenreSettings;
+            _tmdbClient = ((App)Application.Current).TmdbNetworkClient;
             InitializeComponent ();
-            BindingContext = settings;
+            BindingContext = _settings;
 		}
 
         private async void OnSearchLanguage_Changed(object sender, EventArgs e)
         {
-            settings.SearchLanguage =  searchLanguagePicker.Items[searchLanguagePicker.SelectedIndex];
+            _settings.SearchLanguage =  searchLanguagePicker.Items[searchLanguagePicker.SelectedIndex];
 
-            await movieGenreSettings.OnSearchLanguageChanged(settings.SearchLanguage);           
+            await _movieGenreSettings.OnSearchLanguageChanged(_settings.SearchLanguage);           
 
         }
 
@@ -44,8 +44,8 @@ namespace Ch9
 
         protected override void OnAppearing()
         {
-            initialAccountName = settings.AccountName;
-            initialPassword = settings.Password;
+            initialAccountName = _settings.AccountName;
+            initialPassword = _settings.Password;
         }
 
         protected override async void OnDisappearing()
@@ -53,7 +53,7 @@ namespace Ch9
             await ValidateSettings();
             await Application.Current.SavePropertiesAsync();
 
-            if (initialAccountName != settings.AccountName || initialPassword !=settings.Password)
+            if (initialAccountName != _settings.AccountName || initialPassword !=_settings.Password)
             {
                 string result = await TryTmdbSignin();
 
@@ -76,7 +76,7 @@ namespace Ch9
         {
             // Validation fails, if the HasAccount switch is set but the username or password are empty
             bool validationResult =
-            settings.HasTmdbAccount ? !(string.IsNullOrWhiteSpace(settings.AccountName) || string.IsNullOrWhiteSpace(settings.Password)) : true;
+            _settings.HasTmdbAccount ? !(string.IsNullOrWhiteSpace(_settings.AccountName) || string.IsNullOrWhiteSpace(_settings.Password)) : true;
 
             if (!validationResult)
             {
@@ -92,11 +92,11 @@ namespace Ch9
         // Returns error message is failed
         private async Task<string> TryTmdbSignin()
         {           
-            if (!string.IsNullOrEmpty(settings.SessionId))
-                await tmdbClient.DeleteSession(settings.SessionId);
+            if (!string.IsNullOrEmpty(_settings.SessionId))
+                await _tmdbClient.DeleteSession(_settings.SessionId);
 
 
-            var createRequestTokenResult = await tmdbClient.CreateRequestToken(3, 1000);
+            var createRequestTokenResult = await _tmdbClient.CreateRequestToken(3, 1000);
 
             try
             {
@@ -106,21 +106,21 @@ namespace Ch9
                     return "Error getting request token from TMDB server";
 
                 var validateTokenResult = 
-                    await tmdbClient.ValidateRequestTokenWithLogin(settings.AccountName, settings.Password, token.Token, 3, 1000);
+                    await _tmdbClient.ValidateRequestTokenWithLogin(_settings.AccountName, _settings.Password, token.Token, 3, 1000);
 
                 if (!validateTokenResult.HttpStatusCode.IsSuccessCode())
                     return "Error validating request token";
 
                 string validatedToken = JsonConvert.DeserializeObject<RequestToken>(validateTokenResult.Json).Token;
 
-                var sessionIdResult = await tmdbClient.CreateSessionId(validatedToken, 3, 1000);
+                var sessionIdResult = await _tmdbClient.CreateSessionId(validatedToken, 3, 1000);
 
                 if (!sessionIdResult.HttpStatusCode.IsSuccessCode())
                     return "Server failed to return a valid Session Id";
 
                 var session = JsonConvert.DeserializeObject<SessionIdResponseModel>(sessionIdResult.Json);
                 
-                settings.SessionId = session.SessionId;
+                _settings.SessionId = session.SessionId;
             }
             catch (Exception ex)
             {

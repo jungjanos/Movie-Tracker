@@ -17,12 +17,12 @@ namespace Ch9.Test.TmdbNetworkClientTests
     public class AddMovieTests : IAsyncLifetime
     {
         private int _listId;
-        private List<int> _validMovieIds; 
+        private readonly List<int> _validMovieIds; 
 
         private readonly ITestOutputHelper _output;
-        Dictionary<string, object> _settingsKeyValues;
-        Settings _settings;
-        TmdbNetworkClient _client;
+        readonly Dictionary<string, object> _settingsKeyValues;
+        readonly Settings _settings;
+        readonly TmdbNetworkClient _client;
         public AddMovieTests(ITestOutputHelper output)
         {
             _output = output;

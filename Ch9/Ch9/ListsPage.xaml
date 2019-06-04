@@ -43,7 +43,8 @@
                     </Button.ImageSource>
                 </Button>
 
-                <Button Grid.Row="0" Grid.Column="2">
+                <Button Grid.Row="0" Grid.Column="2"
+                        Command="{Binding AddListCommand}">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xf273;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"

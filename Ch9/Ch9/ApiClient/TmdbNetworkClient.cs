@@ -546,7 +546,6 @@ namespace Ch9.ApiClient
             return result;
         }
 
-        #region WORKING_HERE
         public async Task<RemoveMovieResult> RemoveMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + LIST_path + "/" + listId + REMOVE_MEDIA_Path;
@@ -600,7 +599,6 @@ namespace Ch9.ApiClient
                 result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }
-        #endregion
 
         private async Task<T> GetResponse<T>(int retryCount, int delayMilliseconds, string requestUri) where T : TmdbResponseBase, new()
         {

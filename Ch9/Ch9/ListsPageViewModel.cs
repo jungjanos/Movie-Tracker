@@ -23,7 +23,7 @@ namespace Ch9
     // The goal is to make the development more rapid and not to achieve MVVM purism
     public class ListsPageViewModel : INotifyPropertyChanged
     {
-        public string DebugVerison { get; } = "0.0.18";
+        public string DebugVerison { get; } = "0.0.20";
 
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
@@ -73,6 +73,7 @@ namespace Ch9
             _cachedSearchClient = cachedSearchClient;
             _movieDeatilConfigurator = movieDeatilConfigurator;
             _pageService = pageService;
+            AddListCommand = new Command(async () => await _pageService.PushAsync(new AddListPageViewModel(this)));
             RefreshCommand = new Command(async () => await RefreshMovieList());
             MovieInfoCommand = new Command(async () => await OpenMovieDetailPage());
             RemoveListCommand = new Command(async () => await RemoveList());
@@ -222,5 +223,21 @@ namespace Ch9
             else
                 await _pageService.DisplayAlert("Error", $"{listToDelete.Name} : delete error, status code: {result.HttpStatusCode}", "Ok");
         }
+
+        public async Task AddList(AddListPageViewModel addListPageViewModel)
+        {
+            CreateListResult result = await _cachedSearchClient.CreateList(addListPageViewModel.Name, addListPageViewModel.Description, retryCount: 3, delayMilliseconds: 1000);
+            if (result.HttpStatusCode.IsSuccessCode())
+            {
+                await RefreshMovieList();
+                int newListId = JsonConvert.DeserializeObject<ListCrudResponseModel>(result.Json).ListId;
+                SelectedList = MovieLists.FirstOrDefault(x => x.Id == newListId);
+            }
+                
+            else
+                await _pageService.DisplayAlert("Error", $"Error adding list. Server responded with: {result.HttpStatusCode}", "Ok");            
+        }
+
+
     }
 }

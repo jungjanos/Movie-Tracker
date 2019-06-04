@@ -95,6 +95,11 @@ namespace Ch9.ApiClient
         {
             return await _networkClient.DeleteList(listId, retryCount, delayMilliseconds);
         }
+
+        public async Task<CreateListResult> CreateList(string name, string description, string language = "en", int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            return await _networkClient.CreateList(name, description, language, retryCount, delayMilliseconds);
+        }
         #endregion
     }
 }

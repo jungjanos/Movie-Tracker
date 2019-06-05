@@ -37,7 +37,7 @@ namespace Ch9
         private void OnRecommendationsListView_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             MovieDetailModel movie = e.Item as MovieDetailModel;
-            Navigation.PushAsync(new MovieDetailPage2(movie));
+            Navigation.PushAsync(new MovieDetailPage(movie));
         }
 
         private void AssembleListViewForUi(TmdbResponseBase result)

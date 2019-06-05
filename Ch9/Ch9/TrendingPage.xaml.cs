@@ -48,7 +48,7 @@ namespace Ch9
         private void ListView_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             MovieDetailModel movie = e.Item as MovieDetailModel;
-            Navigation.PushAsync(new MovieDetailPage2(movie));
+            Navigation.PushAsync(new MovieDetailPage(movie));
         }
 
         private async void OnWeekOrDaySwitch_Toggled(object sender, ToggledEventArgs e)

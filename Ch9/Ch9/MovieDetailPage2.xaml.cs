@@ -12,7 +12,7 @@ using Xamarin.Forms.Xaml;
 namespace Ch9
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MovieDetailPage2 : ContentPage
+    public partial class MovieDetailPage : ContentPage
     {
         public MovieDetailPageViewModel ViewModel
         {
@@ -22,7 +22,7 @@ namespace Ch9
 
         Task vMInitializer;
 
-        public MovieDetailPage2(MovieDetailModel movie)
+        public MovieDetailPage(MovieDetailModel movie)
         {
             ViewModel = new MovieDetailPageViewModel(
                 movie,

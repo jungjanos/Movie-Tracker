@@ -29,7 +29,7 @@ namespace Ch9.Utils
 
         public async Task PushAsync(MovieDetailModel movie)
         {
-            await _currentPage.Navigation.PushAsync(new MovieDetailPage(movie));
+            await _currentPage.Navigation.PushAsync(new MovieDetailPage2(movie));
         }
 
         public async Task PushAsync(AddListPageViewModel viewModel)

@@ -14,7 +14,7 @@
 
             <Label Text="{Binding DebugVerison}"/>
             
-            <Label Text="Select list " VerticalTextAlignment="Center"/>
+            <Label Text="Active list " VerticalTextAlignment="Center"/>
 
             <Grid>
                 <Grid.RowDefinitions>

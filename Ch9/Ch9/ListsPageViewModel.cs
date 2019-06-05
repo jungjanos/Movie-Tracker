@@ -23,7 +23,7 @@ namespace Ch9
     // The goal is to make the development more rapid and not to achieve MVVM purism
     public class ListsPageViewModel : INotifyPropertyChanged
     {
-        public string DebugVerison { get; } = "0.0.20";
+        public string DebugVerison { get; } = "0.0.23";
 
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
@@ -38,11 +38,15 @@ namespace Ch9
             set => SetProperty(ref _movieLists, value);            
         }
 
-        private MovieListModel _selectedList;       
+        private MovieListModel _selectedList;
         public MovieListModel SelectedList
         {
             get => _selectedList;
-            set => SetProperty(ref _selectedList, value);
+            set
+            {
+                if (SetProperty(ref _selectedList, value))
+                    _settings.ActiveMovieListId = SelectedList?.Id;
+            }                
         }
 
         private MovieDetailModel _selectedMovie;
@@ -91,7 +95,10 @@ namespace Ch9
                 if (fetchedUserLists != null)
                 {
                     MovieLists = new ObservableCollection<MovieListModel>(fetchedUserLists);
-                    SelectedList = MovieLists.FirstOrDefault();
+
+                    SelectedList = MovieLists.FirstOrDefault(x => x.Id == _settings.ActiveMovieListId) ??
+                        MovieLists.FirstOrDefault();
+
                     _initialized = true;
                 }                    
             }
@@ -166,7 +173,7 @@ namespace Ch9
 
         public async Task RefreshMovieList()
         {
-            var selectedListId = SelectedList?.Id;
+            var selectedMovieListId = SelectedList?.Id;
             var selectedMovieId = SelectedMovie?.Id;
 
             MovieListModel[] fetchedUserLists = await GetUsersLists(retries: 3, retryDelay: 1000, fromCache: false);
@@ -178,7 +185,9 @@ namespace Ch9
                     MovieLists.Add(list);
                 _initialized = true;
 
-                SelectedList = MovieLists.FirstOrDefault(list => list.Id == selectedListId);
+                SelectedList = MovieLists.FirstOrDefault(list => list.Id == selectedMovieListId) ??                
+                    MovieLists.FirstOrDefault();
+
                 SelectedMovie = SelectedList?.Movies?.FirstOrDefault(movie => movie.Id == selectedMovieId);
             }            
             IsRefreshing = false;
@@ -237,7 +246,5 @@ namespace Ch9
             else
                 await _pageService.DisplayAlert("Error", $"Error adding list. Server responded with: {result.HttpStatusCode}", "Ok");            
         }
-
-
     }
 }

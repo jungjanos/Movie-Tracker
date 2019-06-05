@@ -10,5 +10,6 @@
         string SearchLanguage { get; set; }
         int SearchPeriod { get; set; }
         string SessionId { get; set; }
+        int? ActiveMovieListId { get; set; }
     }
 }

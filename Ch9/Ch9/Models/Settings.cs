@@ -109,5 +109,21 @@ namespace Ch9.Models
             }
             set => _appDictionary[nameof(SearchLanguage)] = value;
         }
+
+
+        // This item will hold the MovieList id which has been selected as the primary MovieList
+        // Where all the single-click Movie add operations will place the user added movies.
+        public int? ActiveMovieListId
+        {
+            get
+            {
+                if (_appDictionary.ContainsKey(nameof(ActiveMovieListId)))
+                    return (int?)_appDictionary[nameof(ActiveMovieListId)];
+                else
+                    return null;
+            }
+            set => _appDictionary[nameof(ActiveMovieListId)] = value;
+        }
+
     }
 }

@@ -65,7 +65,7 @@ namespace Ch9
         {
             MovieDetailModel movie = e.Item as MovieDetailModel;
 
-            Navigation.PushAsync(new MovieDetailPage(movie));
+            Navigation.PushAsync(new MovieDetailPage2(movie));
         }
     }
 }

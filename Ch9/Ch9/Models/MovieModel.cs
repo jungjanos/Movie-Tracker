@@ -56,7 +56,7 @@ namespace Ch9.Models
     {
         public MovieDetailModel()
         {
-            imageDetailCollection = new ImageDetailCollection();
+            _imageDetailCollection = new ImageDetailCollection();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -67,44 +67,43 @@ namespace Ch9.Models
         protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(storage, value))
-            {
                 return false;
-            }
+
             storage = value;
             OnPropertyChanged(propertyName);
             return true;
         }
 
-        private int budget;
+        private int _budget;
         [JsonProperty("budget")]
         public int Budget
         {
-            get => budget;
-            set => SetProperty(ref budget, value);
+            get => _budget;
+            set => SetProperty(ref _budget, value);
 
         }
 
-        private string homepage;
+        private string _homepage;
         [JsonProperty("homepage")]
         public string Homepage
         {
-            get => homepage;
-            set => SetProperty(ref homepage, value);
+            get => _homepage;
+            set => SetProperty(ref _homepage, value);
         }
 
         [JsonProperty("imdb_id")]
         public string ImdbId { get; set; }
 
 
-        private ProductionCountry[] productionCountries;
+        private ProductionCountry[] _productionCountries;
         [JsonProperty("production_countries")]
         public ProductionCountry[] ProductionCountries
         {
-            get => productionCountries;
+            get => _productionCountries;
             set
             {
-                SetProperty(ref productionCountries, value);
-                Countries = string.Join(", ", productionCountries.Select(x => x.Iso/* == "US" ? "USA" : x.Name*/));
+                SetProperty(ref _productionCountries, value);
+                Countries = string.Join(", ", _productionCountries.Select(x => x.Iso/* == "US" ? "USA" : x.Name*/));
                 OnPropertyChanged(nameof(Countries));
             }
         }
@@ -112,38 +111,35 @@ namespace Ch9.Models
         public string Countries { get; set; }
 
 
-        private int? duration;
+        private int? _duration;
         [JsonProperty("runtime")]
         public int? Duration
         {
-            get => duration;
-            set => SetProperty(ref duration, value);
+            get => _duration;
+            set => SetProperty(ref _duration, value);
         }
 
 
-        private string tagline;
+        private string _tagline;
         [JsonProperty("tagline")]
         public string Tagline
         {
-            get => tagline;
-            set => SetProperty(ref tagline, value);
+            get => _tagline;
+            set => SetProperty(ref _tagline, value);
         }
 
-        private ImageDetailCollection imageDetailCollection;
+        private ImageDetailCollection _imageDetailCollection;
         public ImageDetailCollection ImageDetailCollection
         {
-            get => imageDetailCollection;
-            set => SetProperty(ref imageDetailCollection, value);
+            get => _imageDetailCollection;
+            set => SetProperty(ref _imageDetailCollection, value);
         }
 
-        private string[] galleryDisplayImages;
+        private string[] _galleryDisplayImages;
         public string[] GalleryDisplayImages
         {
-            get => galleryDisplayImages;
-            set
-            {
-                SetProperty(ref galleryDisplayImages, value);
-            }
+            get => _galleryDisplayImages;
+            set => SetProperty(ref _galleryDisplayImages, value);
         }
 
         // this is a counter which always displays one more than it stores!
@@ -166,11 +162,11 @@ namespace Ch9.Models
             }
         }
 
-        private string galleryDisplayImage;
+        private string _galleryDisplayImage;
         public string GalleryDisplayImage
         {
-            get => galleryDisplayImage;
-            set => SetProperty(ref galleryDisplayImage, value);
+            get => _galleryDisplayImage;
+            set => SetProperty(ref _galleryDisplayImage, value);
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using Ch9.Models;
+﻿using Ch9.ApiClient;
+using Ch9.Models;
 using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -11,8 +12,10 @@ namespace Ch9.Utils
         Task DisplayAlert(string title, string message, string cancel);
         Task<bool> DisplayAlert(string title, string message, string accept, string cancel);
         Task<object> PopCurrent();
+        Task PopToRootAsync();
         Task PushAsync(MovieDetailModel movie);
         Task PushAsync(AddListPageViewModel viewModel);
+        Task PushRecommendationsPageAsync(MovieDetailModel movie, Task<GetMovieRecommendationsResult> getMovieRecommendations, Task<GetSimilarMoviesResult> getSimilarMovies);
     }
 
     public class PageService : IPageService
@@ -32,6 +35,11 @@ namespace Ch9.Utils
         public async Task PushAsync(AddListPageViewModel viewModel)
         {
             await _currentPage.Navigation.PushAsync(new AddListPage(viewModel));
+        }
+
+        public async Task PushRecommendationsPageAsync(MovieDetailModel movie, Task<GetMovieRecommendationsResult> getMovieRecommendations, Task<GetSimilarMoviesResult> getSimilarMovies)
+        {
+            await _currentPage.Navigation.PushAsync(new RecommendationsPage(movie, getMovieRecommendations, getSimilarMovies));
         }
 
 
@@ -56,5 +64,9 @@ namespace Ch9.Utils
             return _currentPage.BindingContext;
         }
 
+        public async Task PopToRootAsync()
+        {
+            await _currentPage.Navigation.PopToRootAsync();
+        }
     }
 }

@@ -29,6 +29,7 @@ namespace Ch9
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
         private readonly IMovieDetailModelConfigurator _movieDeatilConfigurator;
         private readonly IPageService _pageService;
+        // TODO : this field should be removed (not necessary with current initialization model)
         private bool _initialized = false;
 
         private ObservableCollection<MovieListModel> _movieLists;

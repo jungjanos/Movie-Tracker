@@ -13,7 +13,7 @@
     <ContentPage.Content>
         <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
 
-            <ScrollView>
+            <ScrollView VerticalOptions="FillAndExpand">
                 <StackLayout>
 
                     <ImageButton HorizontalOptions="FillAndExpand" Aspect="AspectFill" 

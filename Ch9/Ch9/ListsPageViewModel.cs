@@ -40,13 +40,21 @@ namespace Ch9
         }
 
         private MovieListModel _selectedList;
+        // When the user changes the active list on the UI, the
+        // Id of the active list and the Id-s of the Movies on the active list have to be 
+        // updated in the local store
+
+        // TODO : investigate whether Application.SavePropertiesAsync() call makes sense here...
         public MovieListModel SelectedList
         {
             get => _selectedList;
             set
             {
                 if (SetProperty(ref _selectedList, value))
+                {
                     _settings.ActiveMovieListId = SelectedList?.Id;
+                    _settings.MovieIdsOnActiveList = SelectedList?.Movies?.Select(movie => movie.Id)?.ToArray();
+                }                    
             }                
         }
 
@@ -203,7 +211,10 @@ namespace Ch9
 
             SelectedMovie = null;
             SelectedList.Movies.Remove(movieToRemove);
-            await _cachedSearchClient.RemoveMovie(SelectedList.Id, movieToRemove.Id, 3, 1000);
+            RemoveMovieResult result = await _cachedSearchClient.RemoveMovie(SelectedList.Id, movieToRemove.Id, 3, 1000);
+            if (result.HttpStatusCode.IsSuccessCode())
+                _settings.MovieIdsOnActiveList = SelectedList?.Movies?.Select(movie => movie.Id)?.ToArray();
+
         }
 
         public async Task RemoveList()

@@ -11,5 +11,6 @@
         int SearchPeriod { get; set; }
         string SessionId { get; set; }
         int? ActiveMovieListId { get; set; }
+        int[] MovieIdsOnActiveList { get; set; }
     }
 }

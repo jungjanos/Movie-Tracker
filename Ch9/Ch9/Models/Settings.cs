@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using Xamarin.Forms;
 
 namespace Ch9.Models
@@ -10,8 +11,8 @@ namespace Ch9.Models
         private readonly IDictionary<string, object> _appDictionary;
 
         public Settings(IDictionary<string, object> settingsDictionary = null)
-        {            
-            _appDictionary =  settingsDictionary ?? Application.Current.Properties;
+        {
+            _appDictionary = settingsDictionary ?? Application.Current.Properties;
         }
 
         public string ApiKey
@@ -125,5 +126,22 @@ namespace Ch9.Models
             set => _appDictionary[nameof(ActiveMovieListId)] = value;
         }
 
+        // This item holds the Id-s of the Movies on the active MovieList
+        // returns null if there is no active MovieList
+        // returns empty if the active MovieList does not contain movies
+        public int[] MovieIdsOnActiveList
+        {
+            get
+            {
+                if (_appDictionary.ContainsKey(nameof(MovieIdsOnActiveList)))
+                {
+                    var json = (string)_appDictionary[nameof(MovieIdsOnActiveList)];
+                    return JsonConvert.DeserializeObject<int[]>(json);
+                }
+                else
+                    return null;
+            }
+            set => _appDictionary[nameof(MovieIdsOnActiveList)] = JsonConvert.SerializeObject(value);
+        }
     }
 }

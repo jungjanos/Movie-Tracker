@@ -19,6 +19,7 @@ namespace Ch9
 
         public ICommand HomeCommand { get; private set; }
         public ICommand RecommendationsCommand { get; private set; }
+        public ICommand AddToListCommand { get; set; }
         public ICommand ImageStepCommand { get; private set; }
 
 
@@ -35,10 +36,11 @@ namespace Ch9
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _pageService = pageService;
             _fetchGallery = UpdateImageDetailCollection();
-
-            RecommendationsCommand = new Command(async () => await OnRecommendationsCommand());
+            
             ImageStepCommand = new Command(async () => { await _fetchGallery; Movie.GalleryPositionCounter++; });
             HomeCommand = new Command(async () => await _pageService.PopToRootAsync());
+            RecommendationsCommand = new Command(async () => await OnRecommendationsCommand());
+            AddToListCommand = new Command(async () => await OnAddToListCommand());
         }
 
         public async Task Initialize()
@@ -74,6 +76,11 @@ namespace Ch9
 
             if (movieRecommendationsResult.HttpStatusCode.IsSuccessCode())
                 await _pageService.PushRecommendationsPageAsync(Movie, getMovieRecommendations, getSimilarMovies);
+        }
+
+        public async Task OnAddToListCommand()
+        {
+
         }
 
     }

@@ -86,6 +86,7 @@
                 </Button>
 
                 <Button Grid.Row="0" Grid.Column="2"
+                        Command="{Binding AddToListCommand}"                        
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
                         <!--<ion-icon name="ion-md-bookmark"></ion-icon>-->

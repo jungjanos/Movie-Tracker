@@ -47,8 +47,6 @@ namespace Ch9
             HomeCommand = new Command(async () => await _pageService.PopToRootAsync());
             RecommendationsCommand = new Command(async () => await OnRecommendationsCommand());
             AddToListCommand = new Command(async () => await OnAddToListCommand());
-
-            //MovieIsAlreadyOnActiveList = _settings.MovieIdsOnActiveList?.Contains(Movie.Id);
         }
 
         public async Task Initialize()
@@ -90,7 +88,7 @@ namespace Ch9
         {
             if (MovieIsAlreadyOnActiveList == null || _settings.ActiveMovieListId == null)
             {
-                await _pageService.DisplayAlert("Error", "You have to select a list to be able to add movies to it", "Cancel");
+                await _pageService.DisplayAlert("Info", "You have to select a list to be able to add movies to it", "Cancel");
                 return;
             }                
 

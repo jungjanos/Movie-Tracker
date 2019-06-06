@@ -56,15 +56,12 @@ namespace Ch9
         private readonly Color _invalidColor = Color.DarkSlateGray;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {           
-            if (value is bool?)
+        {
+            switch ((bool?)value)
             {
-                switch (value)
-                {
-                    case true: return _negativeColor;
-                    case false: return _positiveColor;
-                    case null: return _invalidColor;
-                }
+                case true: return _negativeColor;
+                case false: return _positiveColor;
+                case null: return _invalidColor;
             }
             throw new ArgumentException();
         }

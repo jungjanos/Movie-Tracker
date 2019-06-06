@@ -36,7 +36,7 @@ namespace Ch9
         public ObservableCollection<MovieListModel> MovieLists
         {
             get => _movieLists;
-            set => SetProperty(ref _movieLists, value);            
+            set => SetProperty(ref _movieLists, value);
         }
 
         private MovieListModel _selectedList;
@@ -54,12 +54,13 @@ namespace Ch9
                 {
                     _settings.ActiveMovieListId = SelectedList?.Id;
                     _settings.MovieIdsOnActiveList = SelectedList?.Movies?.Select(movie => movie.Id)?.ToArray();
-                }                    
-            }                
+                }
+            }
         }
 
         private MovieDetailModel _selectedMovie;
-        public MovieDetailModel SelectedMovie {
+        public MovieDetailModel SelectedMovie
+        {
             get => _selectedMovie;
             set => SetProperty(ref _selectedMovie, value);
         }
@@ -76,8 +77,8 @@ namespace Ch9
         public Command AddListCommand { get; private set; }
 
         public ListsPageViewModel(
-            ISettings settings, 
-            ITmdbCachedSearchClient cachedSearchClient, 
+            ISettings settings,
+            ITmdbCachedSearchClient cachedSearchClient,
             IMovieDetailModelConfigurator movieDeatilConfigurator,
             IPageService pageService)
         {
@@ -86,7 +87,19 @@ namespace Ch9
             _cachedSearchClient = cachedSearchClient;
             _movieDeatilConfigurator = movieDeatilConfigurator;
             _pageService = pageService;
-            AddListCommand = new Command(async () => await _pageService.PushAsync(new AddListPageViewModel(this)));
+
+            AddListCommand = new Command(async () =>
+            {
+                if (!_settings.HasTmdbAccount)
+                {
+                    await _pageService.DisplayAlert(
+                        "Authentication error", 
+                        "To use this feature, you need to sign in with your TMDB account", 
+                        "Ok");
+                    return;
+                }
+                await _pageService.PushAsync(new AddListPageViewModel(this));
+            });
             RefreshCommand = new Command(async () => await RefreshMovieList());
             MovieInfoCommand = new Command(async () => await OpenMovieDetailPage());
             RemoveListCommand = new Command(async () => await RemoveList());
@@ -99,7 +112,7 @@ namespace Ch9
 
             if (MovieLists.Count == 0)
             {
-                MovieListModel[] fetchedUserLists = await GetUsersLists(retries: 3, retryDelay: 1000, fromCache: true);                
+                MovieListModel[] fetchedUserLists = await GetUsersLists(retries: 3, retryDelay: 1000, fromCache: true);
 
                 if (fetchedUserLists != null)
                 {
@@ -109,7 +122,7 @@ namespace Ch9
                         MovieLists.FirstOrDefault();
 
                     _initialized = true;
-                }                    
+                }
             }
         }
 
@@ -194,27 +207,26 @@ namespace Ch9
                     MovieLists.Add(list);
                 _initialized = true;
 
-                SelectedList = MovieLists.FirstOrDefault(list => list.Id == selectedMovieListId) ??                
+                SelectedList = MovieLists.FirstOrDefault(list => list.Id == selectedMovieListId) ??
                     MovieLists.FirstOrDefault();
 
                 SelectedMovie = SelectedList?.Movies?.FirstOrDefault(movie => movie.Id == selectedMovieId);
-            }            
+            }
             IsRefreshing = false;
         }
 
         public async Task RemoveMovieFromList()
-        {           
+        {
             if (SelectedMovie == null || SelectedList == null)
                 return;
 
-            var movieToRemove = SelectedMovie;             
+            var movieToRemove = SelectedMovie;
 
             SelectedMovie = null;
             SelectedList.Movies.Remove(movieToRemove);
             RemoveMovieResult result = await _cachedSearchClient.RemoveMovie(SelectedList.Id, movieToRemove.Id, 3, 1000);
             if (result.HttpStatusCode.IsSuccessCode())
                 _settings.MovieIdsOnActiveList = SelectedList?.Movies?.Select(movie => movie.Id)?.ToArray();
-
         }
 
         public async Task RemoveList()
@@ -222,7 +234,7 @@ namespace Ch9
             if (SelectedList == null)
                 return;
 
-            MovieListModel listToDelete = SelectedList;            
+            MovieListModel listToDelete = SelectedList;
 
             if (listToDelete.Movies.Count > 0)
             {
@@ -254,9 +266,7 @@ namespace Ch9
                 int newListId = JsonConvert.DeserializeObject<ListCrudResponseModel>(result.Json).ListId;
                 SelectedList = MovieLists.FirstOrDefault(x => x.Id == newListId);
             }
-                
-            else
-                await _pageService.DisplayAlert("Error", $"Error adding list. Server responded with: {result.HttpStatusCode}", "Ok");            
+            else await _pageService.DisplayAlert("Error", $"Error adding list. Server responded with: {result.HttpStatusCode}", "Ok");
         }
     }
 }

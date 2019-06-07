@@ -97,6 +97,34 @@ namespace Ch9.ApiClient
             return result;
         }
 
+        public async Task<GetMovieWatchlist> GetMovieWatchlist(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            //TODO : Recheck this!
+            // no mistake here: missing "account_id" parameter add the string literal "{account_id}" as paths segment                        
+            string baseUrl = BASE_Address + BASE_Path + ACCOUNT_DETAILS_Path + "/" + (accountId.HasValue ? accountId.Value.ToString() : "{account_id}") + WATCHLIST_Path + MOVIES_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+
+            if (!string.IsNullOrEmpty(language))
+                query.Add(LANGUAGE_Key, language);
+
+            if (page > 0)
+                query.Add(PAGE_Key, page.Value.ToString());
+
+            if (!string.IsNullOrEmpty(sortBy))
+                query.Add(SORTBY_Key, sortBy);
+
+            query.Add(SESSION_ID_Key, _settings.SessionId);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            GetMovieWatchlist result = await GetResponse<GetMovieWatchlist>(retryCount, delayMilliseconds, requestUri);
+
+            return result;
+
+        }
+
         // Fetches movie details, swallows exceptions
         // retries as needed
         public async Task<FetchMovieDetailsResult> FetchMovieDetails(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
@@ -229,7 +257,6 @@ namespace Ch9.ApiClient
 
             return result;
         }
-
 
         public async Task<CreateRequestTokenResult> CreateRequestToken(int retryCount = 0, int delayMilliseconds = 1000)
         {

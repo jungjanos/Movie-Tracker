@@ -39,5 +39,8 @@ namespace Ch9.ApiClient
         public const string ADD_MEDIA_Path = "/add_item";
         public const string REMOVE_MEDIA_Path = "/remove_item";
         public const string REVIEWS_Path = "/reviews";
+        public const string WATCHLIST_Path = "/watchlist";
+        public const string MOVIES_Path = "/movies";
+        public const string SORTBY_Key = "sort_by";
     }
 }

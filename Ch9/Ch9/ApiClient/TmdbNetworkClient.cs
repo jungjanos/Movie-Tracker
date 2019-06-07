@@ -210,6 +210,27 @@ namespace Ch9.ApiClient
             return result;
         }
 
+        public async Task<GetMovieReviewsResult> GetMovieReviews(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id + REVIEWS_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+
+            if (!string.IsNullOrEmpty(language))
+                query.Add(LANGUAGE_Key, language);
+
+            if (page > 0)
+                query.Add(PAGE_Key, page.Value.ToString());
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            GetMovieReviewsResult result = await GetResponse<GetMovieReviewsResult>(retryCount, delayMilliseconds, requestUri);
+
+            return result;
+        }
+
+
         public async Task<CreateRequestTokenResult> CreateRequestToken(int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + REQUEST_TOKEN_Path;
@@ -431,7 +452,7 @@ namespace Ch9.ApiClient
             };
 
             if (response.IsSuccessStatusCode)
-                result.Json = await response.Content.ReadAsStringAsync();            
+                result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }
 
@@ -491,7 +512,7 @@ namespace Ch9.ApiClient
 
             return result;
         }
-        
+
         public async Task<AddMovieResult> AddMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + LIST_path + "/" + listId + ADD_MEDIA_Path;
@@ -627,5 +648,7 @@ namespace Ch9.ApiClient
                 result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }
+
+
     }
 }

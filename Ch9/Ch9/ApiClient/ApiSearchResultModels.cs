@@ -80,4 +80,7 @@ namespace Ch9.ApiClient
 
     public class RemoveMovieResult : TmdbResponseBase
     {}
+
+    public class GetMovieReviewsResult : TmdbResponseBase
+    {}
 }

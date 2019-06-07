@@ -93,8 +93,8 @@ namespace Ch9
                 if (!_settings.HasTmdbAccount)
                 {
                     await _pageService.DisplayAlert(
-                        "Authentication error", 
-                        "To use this feature, you need to sign in with your TMDB account", 
+                        "Authentication error",
+                        "To use this feature, you need to sign in with your TMDB account",
                         "Ok");
                     return;
                 }
@@ -163,20 +163,45 @@ namespace Ch9
                     movieLists = JsonConvert.DeserializeObject<GetListsModel>(getLists.Json).MovieLists;
                 }
                 catch { return null; };
-
-                foreach (var list in movieLists)
                 {
-                    GetListDetailsResult getListDetails = await _cachedSearchClient.GetListDetails(list.Id, retryCount: 3, delayMilliseconds: 1000, fromCache: fromCache);
+                    //foreach (var list in movieLists)
+                    //{
+                    //    GetListDetailsResult getListDetails = await _cachedSearchClient.GetListDetails(list.Id, retryCount: 3, delayMilliseconds: 1000, fromCache: fromCache);
 
-                    if (getListDetails.HttpStatusCode.IsSuccessCode())
+                    //    if (getListDetails.HttpStatusCode.IsSuccessCode())
+                    //    {
+                    //        try
+                    //        {
+                    //            list.Movies = JsonConvert.DeserializeObject<MovieListModel>(getListDetails.Json).Movies;
+
+                    //            _movieDeatilConfigurator.SetImageSrc(list.Movies);
+                    //            _movieDeatilConfigurator.SetGenreNamesFromGenreIds(list.Movies);
+                    //            result.Add(list);
+                    //        }
+                    //        catch { }
+                    //    }
+                    //}
+                }
+                
+                var getListDetailsCollection = movieLists.Select(list => new
+                { List = list,
+                  ListDetailTask = _cachedSearchClient.GetListDetails(list.Id, retryCount: 3, delayMilliseconds: 1000, fromCache: fromCache)
+                }).ToArray();
+
+                await Task.WhenAll(getListDetailsCollection.Select(element => element.ListDetailTask));
+
+                foreach (var listDetail in getListDetailsCollection)
+                {
+                    var detailResult = await listDetail.ListDetailTask;
+                    if (detailResult.HttpStatusCode.IsSuccessCode())
                     {
                         try
                         {
-                            list.Movies = JsonConvert.DeserializeObject<MovieListModel>(getListDetails.Json).Movies;
+                            listDetail.List.Movies = JsonConvert.DeserializeObject<MovieListModel>(detailResult.Json).Movies;
 
-                            _movieDeatilConfigurator.SetImageSrc(list.Movies);
-                            _movieDeatilConfigurator.SetGenreNamesFromGenreIds(list.Movies);
-                            result.Add(list);
+                            _movieDeatilConfigurator.SetImageSrc(listDetail.List.Movies);
+                            _movieDeatilConfigurator.SetGenreNamesFromGenreIds(listDetail.List.Movies);
+                            result.Add(listDetail.List);
                         }
                         catch { }
                     }

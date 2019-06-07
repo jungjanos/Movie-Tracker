@@ -163,30 +163,13 @@ namespace Ch9
                     movieLists = JsonConvert.DeserializeObject<GetListsModel>(getLists.Json).MovieLists;
                 }
                 catch { return null; };
-                {
-                    //foreach (var list in movieLists)
-                    //{
-                    //    GetListDetailsResult getListDetails = await _cachedSearchClient.GetListDetails(list.Id, retryCount: 3, delayMilliseconds: 1000, fromCache: fromCache);
 
-                    //    if (getListDetails.HttpStatusCode.IsSuccessCode())
-                    //    {
-                    //        try
-                    //        {
-                    //            list.Movies = JsonConvert.DeserializeObject<MovieListModel>(getListDetails.Json).Movies;
-
-                    //            _movieDeatilConfigurator.SetImageSrc(list.Movies);
-                    //            _movieDeatilConfigurator.SetGenreNamesFromGenreIds(list.Movies);
-                    //            result.Add(list);
-                    //        }
-                    //        catch { }
-                    //    }
-                    //}
-                }
-                
                 var getListDetailsCollection = movieLists.Select(list => new
-                { List = list,
-                  ListDetailTask = _cachedSearchClient.GetListDetails(list.Id, retryCount: 3, delayMilliseconds: 1000, fromCache: fromCache)
-                }).ToArray();
+                                                {
+                                                    List = list,
+                                                    ListDetailTask = _cachedSearchClient
+                                                    .GetListDetails(list.Id, retryCount: 3, delayMilliseconds: 1000, fromCache: fromCache)
+                                                }).ToArray();
 
                 await Task.WhenAll(getListDetailsCollection.Select(element => element.ListDetailTask));
 

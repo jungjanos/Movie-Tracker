@@ -96,8 +96,8 @@ namespace Ch9.ApiClient
 
             return result;
         }
-
-        public async Task<GetMovieWatchlist> GetMovieWatchlist(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        //TODO : Make search option to enum 
+        public async Task<GetMovieWatchlistResult> GetMovieWatchlist(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             //TODO : Recheck this!
             // no mistake here: missing "account_id" parameter add the string literal "{account_id}" as paths segment                        
@@ -119,7 +119,7 @@ namespace Ch9.ApiClient
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
-            GetMovieWatchlist result = await GetResponse<GetMovieWatchlist>(retryCount, delayMilliseconds, requestUri);
+            GetMovieWatchlistResult result = await GetResponse<GetMovieWatchlistResult>(retryCount, delayMilliseconds, requestUri);
 
             return result;
 

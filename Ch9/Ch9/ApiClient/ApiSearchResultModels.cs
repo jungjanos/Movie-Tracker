@@ -86,4 +86,7 @@ namespace Ch9.ApiClient
 
     public class GetMovieWatchlistResult : TmdbResponseBase
     {}
+
+    public class UpdateWatchlistResult : TmdbResponseBase
+    {}
 }

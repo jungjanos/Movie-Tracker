@@ -594,6 +594,66 @@ namespace Ch9.ApiClient
             return result;
         }
 
+        // adds or removes media from watchlist
+        // media type: "movie" OR "tv"
+        //TODO refactor media type to enum
+        public async Task<UpdateWatchlistResult> UpdateWatchlist(string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            //TODO : Recheck this!
+            // no mistake here: missing "account_id" parameter add the string literal "{account_id}" as paths segment                        
+            string baseUrl = BASE_Address + BASE_Path + "/" + (accountId.HasValue ? accountId.Value.ToString() : "{account_id}") + WATCHLIST_Path ;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+            query.Add(SESSION_ID_Key, _settings.SessionId);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            var jsonObj = new
+            {
+                media_type = mediaType,
+                media_id = mediaId,
+                watchlist = add
+            };
+
+            string json = JsonConvert.SerializeObject(jsonObj);
+            var content = new StringContent(json, encoding: Encoding.UTF8, mediaType: "application/json");
+
+            HttpRequestMessage request = new HttpRequestMessage
+            {
+                Content = content,
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(requestUri)
+            };
+
+            HttpResponseMessage response = null;
+            int counter = retryCount;
+
+            try
+            {
+                response = await HttpClient.SendAsync(request);
+            }
+            catch { }
+            while (response?.IsSuccessStatusCode != true && counter > 0)
+            {
+                await Task.Delay(delayMilliseconds);
+                try
+                {
+                    --counter;
+                    response = await HttpClient.SendAsync(request);
+                }
+                catch { }
+            }
+            UpdateWatchlistResult result = new UpdateWatchlistResult
+            {
+                HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
+            };
+
+            if (response.IsSuccessStatusCode)
+                result.Json = await response.Content.ReadAsStringAsync();
+            return result;
+        }
+
         public async Task<RemoveMovieResult> RemoveMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + LIST_path + "/" + listId + REMOVE_MEDIA_Path;

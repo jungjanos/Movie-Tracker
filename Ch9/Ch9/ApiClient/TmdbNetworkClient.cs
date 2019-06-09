@@ -96,7 +96,7 @@ namespace Ch9.ApiClient
 
             return result;
         }
-        //TODO : Make search option to enum 
+        //TODO : Make sort option to enum 
         public async Task<GetMovieWatchlistResult> GetMovieWatchlist(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             //TODO : Recheck this!
@@ -123,6 +123,34 @@ namespace Ch9.ApiClient
 
             return result;
 
+        }
+
+        //TODO : Make sort option to enum 
+        public async Task<GetFavoriteMoviesResult> GetFavoriteMovies(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            //TODO : Recheck this!
+            // no mistake here: missing "account_id" parameter add the string literal "{account_id}" as paths segment                        
+            string baseUrl = BASE_Address + BASE_Path + ACCOUNT_DETAILS_Path + "/" + (accountId.HasValue ? accountId.Value.ToString() : "{account_id}") + FAVORITE_Path + MOVIES_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+
+            if (!string.IsNullOrEmpty(language))
+                query.Add(LANGUAGE_Key, language);
+
+            if (page > 0)
+                query.Add(PAGE_Key, page.Value.ToString());
+
+            if (!string.IsNullOrEmpty(sortBy))
+                query.Add(SORTBY_Key, sortBy);
+
+            query.Add(SESSION_ID_Key, _settings.SessionId);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            GetFavoriteMoviesResult result = await GetResponse<GetFavoriteMoviesResult>(retryCount, delayMilliseconds, requestUri);
+
+            return result;
         }
 
         // Fetches movie details, swallows exceptions

@@ -601,7 +601,7 @@ namespace Ch9.ApiClient
         {
             //TODO : Recheck this!
             // no mistake here: missing "account_id" parameter add the string literal "{account_id}" as paths segment                        
-            string baseUrl = BASE_Address + BASE_Path + "/" + (accountId.HasValue ? accountId.Value.ToString() : "{account_id}") + WATCHLIST_Path ;
+            string baseUrl = BASE_Address + BASE_Path + ACCOUNT_DETAILS_Path + "/" + (accountId.HasValue ? accountId.Value.ToString() : "{account_id}") + WATCHLIST_Path ;
 
             var query = new Dictionary<string, string>();
             query.Add(API_KEY_Key, _settings.ApiKey);

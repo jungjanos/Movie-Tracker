@@ -20,8 +20,8 @@ namespace Ch9.Test.TmdbNetworkClientTests
         TmdbNetworkClient _client;
 
         int _movie1 = 297761;
-        int _movie2 = 60800; // Macskafogó
-        int _invalidMovieId = 99999999;
+        //int _movie2 = 60800; // Macskafogó
+        //int _invalidMovieId = 99999999;
 
         public UpdateWatchlistTests(ITestOutputHelper output)
         {

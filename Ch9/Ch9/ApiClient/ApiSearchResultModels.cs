@@ -89,4 +89,7 @@ namespace Ch9.ApiClient
 
     public class UpdateWatchlistResult : TmdbResponseBase
     {}
+
+    public class UpdateFavoriteListResult : TmdbResponseBase
+    {}
 }

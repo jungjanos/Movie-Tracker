@@ -626,8 +626,7 @@ namespace Ch9.ApiClient
         // media type: "movie" OR "tv"
         //TODO refactor media type to enum
         public async Task<UpdateWatchlistResult> UpdateWatchlist(string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)
-        {
-            //TODO : Recheck this!
+        {            
             // no mistake here: missing "account_id" parameter add the string literal "{account_id}" as paths segment                        
             string baseUrl = BASE_Address + BASE_Path + ACCOUNT_DETAILS_Path + "/" + (accountId.HasValue ? accountId.Value.ToString() : "{account_id}") + WATCHLIST_Path ;
 

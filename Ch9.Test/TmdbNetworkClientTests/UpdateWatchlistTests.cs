@@ -12,7 +12,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 {
     // INTEGRATION TESTS
     // for the critical TmdbNetworkClient.UpdateWatchlist(...) function accessing the TMDB WebAPI
-    public class UpdateWatchlistTests
+    public class UpdateWatchlistTests : IAsyncLifetime
     {
         private readonly ITestOutputHelper _output;
         Dictionary<string, object> _settingsKeyValues;
@@ -20,7 +20,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         TmdbNetworkClient _client;
 
         int _movie1 = 297761;
-        //int _movie2 = 60800; // Macskafogó
+        int _movie2 = 60800; // Macskafogó
         //int _invalidMovieId = 99999999;
 
         public UpdateWatchlistTests(ITestOutputHelper output)
@@ -34,20 +34,53 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _client = new TmdbNetworkClient(_settings);
         }
 
+        // empty the watchlist if not yet empty
+        public async Task InitializeAsync()
+        {
+            GetMovieWatchlistResult getWatchlist = await _client.GetMovieWatchlist();
+            SearchResult moviesOnWatchlist = JsonConvert.DeserializeObject<SearchResult>(getWatchlist.Json);
+
+            foreach (var movie in moviesOnWatchlist.MovieDetailModels)
+                await _client.UpdateWatchlist("movie", false, movie.Id);
+        }
+
+        public Task DisposeAsync() => Task.CompletedTask;
+
         [Fact]
         //happy path
         public async Task WhenAddingMovieNotOnWatchlist_AddsMovie()
         {
-            var response = await  _client.UpdateWatchlist(mediaType: "movie", add: true, mediaId: _movie1, accountId: null, retryCount: 0);
+            var response = await _client.UpdateWatchlist(mediaType: "movie", add: true, mediaId: _movie1, accountId: null, retryCount: 0);
             _output.WriteLine($"Server responded: {response.HttpStatusCode}");
             _output.WriteLine(response.Json);
 
             var watchlistResponse = await _client.GetMovieWatchlist();
 
-             Assert.Contains(_movie1.ToString(), watchlistResponse.Json);
+            Assert.Contains(_movie1.ToString(), watchlistResponse.Json);
         }
+
         [Fact]
-        public async Task WhenRemovinggMovieNotOnWatchlist_RemovesMovie()
+        // happy path
+        public async Task WhenRemovingMovieOnWatchlist_RemovesMovie()
+        {
+            // adding 
+            await _client.UpdateWatchlist(mediaType: "movie", add: true, mediaId: _movie1, accountId: null, retryCount: 0);
+            await _client.UpdateWatchlist(mediaType: "movie", add: true, mediaId: _movie2, accountId: null, retryCount: 0);
+
+            // removing 
+            var response = await _client.UpdateWatchlist(mediaType: "movie", add: false, mediaId: _movie1, accountId: null, retryCount: 0);
+            _output.WriteLine($"Server responded: {response.HttpStatusCode}");
+            _output.WriteLine(response.Json);
+
+            var watchlistResponse = await _client.GetMovieWatchlist();
+
+            Assert.DoesNotContain(_movie1.ToString(), watchlistResponse.Json);
+            Assert.Contains(_movie2.ToString(), watchlistResponse.Json);
+        }
+
+        [Fact]
+        // happy path
+        public async Task WhenRemovingMovieNotOnWatchlist_RemovesMovie()
         {
             // adding 
             await _client.UpdateWatchlist(mediaType: "movie", add: true, mediaId: _movie1, accountId: null, retryCount: 0);
@@ -61,6 +94,5 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
             Assert.DoesNotContain(_movie1.ToString(), watchlistResponse.Json);
         }
-
     }
 }

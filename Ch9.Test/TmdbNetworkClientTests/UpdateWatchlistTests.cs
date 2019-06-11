@@ -1,9 +1,7 @@
 ﻿using Ch9.ApiClient;
 using Ch9.Models;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -21,7 +19,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
         int _movie1 = 297761;
         int _movie2 = 60800; // Macskafogó
-        //int _invalidMovieId = 99999999;
+        int _invalidMovieId = 99999999;
 
         public UpdateWatchlistTests(ITestOutputHelper output)
         {
@@ -57,6 +55,26 @@ namespace Ch9.Test.TmdbNetworkClientTests
             var watchlistResponse = await _client.GetMovieWatchlist();
 
             Assert.Contains(_movie1.ToString(), watchlistResponse.Json);
+        }
+
+        [Fact]
+        // failure path
+        public async Task WhenAddingInvalidMovie_ReturnsError()
+        {
+            var response = await _client.UpdateWatchlist(mediaType: "movie", add: true, mediaId: _invalidMovieId, accountId: null, retryCount: 0);
+            _output.WriteLine($"Server responded: {response.HttpStatusCode}");
+
+            Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        // failure path
+        public async Task WhenRemovingInvalidMovie_ReturnsError()
+        {
+            var response = await _client.UpdateWatchlist(mediaType: "movie", add: false, mediaId: _invalidMovieId, accountId: null, retryCount: 0);
+            _output.WriteLine($"Server responded: {response.HttpStatusCode}");
+
+            Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.NotFound);
         }
 
         [Fact]

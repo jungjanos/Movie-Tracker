@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -13,12 +12,15 @@ namespace Ch9.Test.TmdbNetworkClientTests
 {
     // INTEGRATION TESTS
     // for the critical TmdbNetworkClient.GetMovieWatchlist(...) function accessing the TMDB WebAPI
-    public class GetMovieWatchlistTests
+    public class GetMovieWatchlistTests : IAsyncLifetime
     {
         private readonly ITestOutputHelper _output;
         Dictionary<string, object> _settingsKeyValues;
         Settings _settings;
         TmdbNetworkClient _client;
+
+        int _movie1 = 297761;
+        int _movie2 = 60800; // Macskafogó
 
         public GetMovieWatchlistTests(ITestOutputHelper output)
         {
@@ -31,10 +33,24 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _client = new TmdbNetworkClient(_settings);
         }
 
+        // empty the watchlist if not yet empty
+        public async Task InitializeAsync()
+        {
+            GetMovieWatchlistResult getWatchlist = await _client.GetMovieWatchlist();
+            SearchResult moviesOnWatchlist = JsonConvert.DeserializeObject<SearchResult>(getWatchlist.Json);
+
+            foreach(var movie in moviesOnWatchlist.MovieDetailModels)
+                await _client.UpdateWatchlist("movie", false, movie.Id);
+
+        }
+
+        public Task DisposeAsync() => Task.CompletedTask;
+
         [Fact]
         // happy path
-        public async Task WhenCalledOnNonemptyList_GivesBackList()
+        public async Task WhenCalledOnEmptyList_ReturnsEmptyCollection()
         {
+
             GetMovieWatchlistResult result = await _client.GetMovieWatchlist(accountId: null, language: null, sortBy: null, page: null, retryCount: 0);
             _output.WriteLine($"Server returned {result.HttpStatusCode}");
             _output.WriteLine($"Json: {result.Json}");
@@ -43,13 +59,36 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
             PrintWatchlist(watchlist);
 
-            Assert.True(watchlist.MovieDetailModels.Count > 0);
+            Assert.True(watchlist.MovieDetailModels.Count == 0);
+        }
+
+
+        [Fact]
+        // happy path
+        public async Task WhenCalledOnNonemptyList_GivesBackList()
+        {
+            await _client.UpdateWatchlist("movie", true, _movie1);
+            await _client.UpdateWatchlist("movie", true, _movie2);
+
+            GetMovieWatchlistResult result = await _client.GetMovieWatchlist(accountId: null, language: null, sortBy: null, page: null, retryCount: 0);
+            _output.WriteLine($"Server returned {result.HttpStatusCode}");
+            _output.WriteLine($"Json: {result.Json}");
+
+            var watchlist = JsonConvert.DeserializeObject<SearchResult>(result.Json);
+
+            PrintWatchlist(watchlist);
+
+            Assert.True(watchlist.MovieDetailModels.Count > 0);            
         }
 
         [Fact]
         // happy path
         public async Task WhenCalledWithSortOption_RespectsSortRequest()
         {
+            await _client.UpdateWatchlist("movie", true, _movie1);
+            await _client.UpdateWatchlist("movie", true, _movie2);
+
+
             GetMovieWatchlistResult resultAsc = await _client.GetMovieWatchlist(accountId: null, language: null, sortBy: "created_at.asc", page: null, retryCount: 0);
             var watchlistAsc = JsonConvert.DeserializeObject<SearchResult>(resultAsc.Json);
             var movieIdsAsc = watchlistAsc.MovieDetailModels.Select(movie => movie.Id);

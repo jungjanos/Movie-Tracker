@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
+using Ch9.Utils;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -59,7 +60,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
         [Fact]
         // failure path
-        public async Task WhenAddingInvalidMovie_ReturnsError()
+        public async Task WhenAddingInvalidMovie_Returns404()
         {
             var response = await _client.UpdateWatchlist(mediaType: "movie", add: true, mediaId: _invalidMovieId, accountId: null, retryCount: 0);
             _output.WriteLine($"Server responded: {response.HttpStatusCode}");
@@ -69,7 +70,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
         [Fact]
         // failure path
-        public async Task WhenRemovingInvalidMovie_ReturnsError()
+        public async Task WhenRemovingInvalidMovie_Returns404()
         {
             var response = await _client.UpdateWatchlist(mediaType: "movie", add: false, mediaId: _invalidMovieId, accountId: null, retryCount: 0);
             _output.WriteLine($"Server responded: {response.HttpStatusCode}");
@@ -98,19 +99,20 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
         [Fact]
         // happy path
-        public async Task WhenRemovingMovieNotOnWatchlist_RemovesMovie()
+        public async Task WhenRemovingMovieNotOnWatchlist_ReturnsSuccess()
         {
-            // adding 
+            // adding movie
             await _client.UpdateWatchlist(mediaType: "movie", add: true, mediaId: _movie1, accountId: null, retryCount: 0);
 
-            // removing
-            var response = await _client.UpdateWatchlist(mediaType: "movie", add: false, mediaId: _movie1, accountId: null, retryCount: 0);
+            // removing other movie not on list
+            var response = await _client.UpdateWatchlist(mediaType: "movie", add: false, mediaId: _movie2, accountId: null, retryCount: 0);
             _output.WriteLine($"Server responded: {response.HttpStatusCode}");
             _output.WriteLine(response.Json);
 
             var watchlistResponse = await _client.GetMovieWatchlist();
 
-            Assert.DoesNotContain(_movie1.ToString(), watchlistResponse.Json);
+            Assert.DoesNotContain(_movie2.ToString(), watchlistResponse.Json);
+            Assert.True(response.HttpStatusCode.IsSuccessCode());
         }
     }
 }

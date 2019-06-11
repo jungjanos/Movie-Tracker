@@ -700,7 +700,7 @@ namespace Ch9.ApiClient
             {
                 media_type = mediaType,
                 media_id = mediaId,
-                watchlist = add
+                favorite = add
             };
 
             string json = JsonConvert.SerializeObject(jsonObj);

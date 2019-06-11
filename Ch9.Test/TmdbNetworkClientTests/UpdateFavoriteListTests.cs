@@ -14,13 +14,12 @@ namespace Ch9.Test.TmdbNetworkClientTests
     public class UpdateFavoriteListTests : IAsyncLifetime
     {
         private readonly ITestOutputHelper _output;
-        Dictionary<string, object> _settingsKeyValues;
-        Settings _settings;
-        TmdbNetworkClient _client;
-
-        int _movie1 = 297761;
-        int _movie2 = 60800; // Macskafogó
-        int _invalidMovieId = 99999999;
+        readonly Dictionary<string, object> _settingsKeyValues;
+        readonly Settings _settings;
+        readonly TmdbNetworkClient _client;
+        readonly int _movie1 = 297761;
+        readonly int _movie2 = 60800; // Macskafogó
+        readonly int _invalidMovieId = 99999999;
 
         public UpdateFavoriteListTests(ITestOutputHelper output)
         {
@@ -117,27 +116,6 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
             Assert.DoesNotContain(_movie2.ToString(), favoriteListResponse.Json);
             Assert.True(response.HttpStatusCode.IsSuccessCode());
-        }
-
-
-        void PrintMovieList(SearchResult result)
-        {
-            _output.WriteLine($"Returned {result.MovieDetailModels.Count} results");
-            _output.WriteLine($"page: {result.Page}");
-            _output.WriteLine($"total pages: {result.TotalPages}");
-            _output.WriteLine($"total results: {result.TotalResults}");
-
-            if (result.MovieDetailModels.Count == 0)
-                return;
-            _output.WriteLine("=======MOVIES=======");
-
-            foreach (MovieDetailModel movie in result.MovieDetailModels)
-            {
-                _output.WriteLine($"movie id: {movie.Id}");
-                _output.WriteLine($"title: {movie.Title}");
-                _output.WriteLine("----------------------");
-            }
-            _output.WriteLine("=====MOVIES END=====");
         }
     }
 }

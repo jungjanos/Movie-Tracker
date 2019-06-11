@@ -14,13 +14,12 @@ namespace Ch9.Test.TmdbNetworkClientTests
     public class UpdateWatchlistTests : IAsyncLifetime
     {
         private readonly ITestOutputHelper _output;
-        Dictionary<string, object> _settingsKeyValues;
-        Settings _settings;
-        TmdbNetworkClient _client;
-
-        int _movie1 = 297761;
-        int _movie2 = 60800; // Macskafogó
-        int _invalidMovieId = 99999999;
+        readonly Dictionary<string, object> _settingsKeyValues;
+        readonly Settings _settings;
+        readonly TmdbNetworkClient _client;
+        readonly int _movie1 = 297761;
+        readonly int _movie2 = 60800; // Macskafogó
+        readonly int _invalidMovieId = 99999999;
 
         public UpdateWatchlistTests(ITestOutputHelper output)
         {

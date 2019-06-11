@@ -41,7 +41,6 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
             foreach(var movie in moviesOnWatchlist.MovieDetailModels)
                 await _client.UpdateWatchlist("movie", false, movie.Id);
-
         }
 
         public Task DisposeAsync() => Task.CompletedTask;
@@ -78,7 +77,9 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
             PrintWatchlist(watchlist);
 
-            Assert.True(watchlist.MovieDetailModels.Count > 0);            
+            Assert.True(watchlist.MovieDetailModels.Count > 0);
+            Assert.Contains(watchlist.MovieDetailModels, movie => movie.Id == _movie1);
+            Assert.Contains(watchlist.MovieDetailModels, movie => movie.Id == _movie2);
         }
 
         [Fact]
@@ -122,7 +123,5 @@ namespace Ch9.Test.TmdbNetworkClientTests
             }
             _output.WriteLine("=====MOVIES END=====");
         }
-
-
     }
 }

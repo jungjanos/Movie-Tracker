@@ -35,6 +35,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
         public Task DisposeAsync() => Task.CompletedTask;
 
+        // empty the favorite list if not yet empty
         public async Task InitializeAsync()
         {
             GetFavoriteMoviesResult getFavoriteList = await _client.GetFavoriteMovies();

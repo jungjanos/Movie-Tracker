@@ -100,6 +100,17 @@ namespace Ch9.Test.TmdbNetworkClientTests
             Assert.True(movieIdsAsc.Reverse().SequenceEqual(movieIdsDesc));
         }
 
+        [Fact]
+        // failure path
+        public async Task WhenCalledWithInvalidSessionId_ReturnsUnauthorized401()
+        {
+            _settings.SessionId = "invalidSessionId";
+
+            GetFavoriteMoviesResult result = await _client.GetFavoriteMovies(accountId: null, language: null, sortBy: null, page: null, retryCount: 0);
+            _output.WriteLine($"Server returned {result.HttpStatusCode}");
+
+            Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.Unauthorized);
+        }
 
         void PrintMovieList(SearchResult result)
         {

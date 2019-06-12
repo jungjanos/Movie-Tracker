@@ -67,28 +67,4 @@ namespace Ch9
             throw new NotImplementedException();
         }
     }
-    public class MovieHasReviewsBoolToColorConverter : IValueConverter
-    {
-        private readonly Color _positiveColor = Color.DarkGreen;
-        private readonly Color _negativeColor = Color.LightSlateGray;
-        private readonly Color _invalidColor = Color.LightGray;
-
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            switch ((bool?)value)
-            {
-                case true: return _positiveColor;
-                case false: return _negativeColor;
-                case null: return _invalidColor;
-            }
-            throw new ArgumentException();
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-
 }

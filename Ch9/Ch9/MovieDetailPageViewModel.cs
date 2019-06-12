@@ -38,7 +38,6 @@ namespace Ch9
         public ICommand AddToListCommand { get; private set; }
         public ICommand ImageStepCommand { get; private set; }
 
-
         public MovieDetailPageViewModel(
             MovieDetailModel movie,
             ISettings settings,
@@ -52,6 +51,7 @@ namespace Ch9
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _pageService = pageService;
             _fetchGallery = UpdateImageDetailCollection();
+            MovieHasReviews = false;
             _reviewsPageViewModel = new ReviewsPageViewModel(this, _cachedSearchClient);
 
             

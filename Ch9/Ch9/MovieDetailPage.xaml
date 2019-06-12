@@ -11,7 +11,6 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <local:MovieOnListBoolToColorConverter x:Key="movieOnListBoolToColor"/>
-            <local:MovieHasReviewsBoolToColorConverter x:Key="movieHasReviewsBoolToColor"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -93,14 +92,15 @@
                 </Button>
 
                 <Button Grid.Row="0" Grid.Column="2"
-                        Command="{Binding ReviewsCommand}"                        
+                        Command="{Binding ReviewsCommand}"
+                        IsVisible="{Binding MovieHasReviews}"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
                         <!--<ion-icon name="ion-md-paper"></ion-icon>-->
                         <FontImageSource Glyph="&#xf33f;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="44" 
-                         Color="{Binding MovieHasReviews, Converter={StaticResource Key=movieHasReviewsBoolToColor}, Mode=OneWay}"/>
+                         Color="Black"/>
                     </Button.ImageSource>
                 </Button>
 

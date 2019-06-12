@@ -15,6 +15,7 @@ namespace Ch9.Utils
         Task PopToRootAsync();
         Task PushAsync(MovieDetailModel movie);
         Task PushAsync(AddListPageViewModel viewModel);
+        Task PushAsync(ReviewsPageViewModel reviewsPageViewModel);
         Task PushRecommendationsPageAsync(MovieDetailModel movie, Task<GetMovieRecommendationsResult> getMovieRecommendations, Task<GetSimilarMoviesResult> getSimilarMovies);
     }
 
@@ -31,6 +32,12 @@ namespace Ch9.Utils
         {
             await _currentPage.Navigation.PushAsync(new MovieDetailPage(movie));
         }
+
+        public async Task PushAsync(ReviewsPageViewModel reviewsPageViewModel)
+        {
+            await _currentPage.Navigation.PushAsync(new ReviewsPage(reviewsPageViewModel));
+        }
+
 
         public async Task PushAsync(AddListPageViewModel viewModel)
         {

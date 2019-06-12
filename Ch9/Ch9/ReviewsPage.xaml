@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:Ch9;assembly=Ch9"
+             mc:Ignorable="d"
+             x:Class="Ch9.ReviewsPage">
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical" Padding="5,0,5,5">
+
+            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10">
+                <Label Text="{Binding Path=Movie.Title}" FontSize="Large" LineBreakMode="WordWrap" HorizontalOptions="Start"/>
+                <Label Text="{Binding Path=Movie.Year}" FontSize="Large" LineBreakMode="NoWrap" MaxLines="1"  HorizontalOptions="EndAndExpand" MinimumWidthRequest="150"/>
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal">
+                <Label Text="{Binding Path=Movie.Genre}" FontSize="Small"/>
+                <Label Text="{Binding Path=Movie.Tagline}"/>
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal">
+                <Label Text="{Binding Path= Movie.Duration, StringFormat='{0} mins'}" IsVisible="{Binding Path=Movie.Duration.HasValue}"/>
+                <Label Text="{Binding Path= Movie.VoteAverage, StringFormat='Score: {0:F1}'}"/>
+                <Label Text="{Binding Path= Movie.VoteCount, StringFormat='Votes: {0}'}"/>
+                <Label Text="{Binding Path= Movie.Countries}"/>
+            </StackLayout>
+            <Label Text="Reviews" FontSize="Large"/>
+
+            <ListView HasUnevenRows="True"
+                      ItemsSource="{Binding Reviews}"
+                      SeparatorVisibility="Default"
+                      SeparatorColor="DarkSeaGreen">
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+
+                            <StackLayout Orientation="Vertical" Padding="5" Margin="10">
+                                <Label Text="{Binding Author}" FontSize="Large"/>
+                                <local:ExtendedLabel Text="{Binding Content}" FontSize="Small"  Visual="Material" JustifyText="True"/>
+                                <!--<Label Text="{Binding Url}" FontSize="Small"/>-->
+                            </StackLayout>
+
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+            </ListView>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

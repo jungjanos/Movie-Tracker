@@ -5,7 +5,7 @@
              Title="Trending"
              x:Name="trendingPage">
     <ContentPage.Content>
-        <StackLayout  Orientation="Vertical" Padding="5,0,5,5">
+        <StackLayout Orientation="Vertical" Padding="5,0,5,5">
             <StackLayout Orientation="Horizontal" Padding="5">
                 <Label x:Name="weekOrDayLabel" Text="Week" VerticalTextAlignment="Center"/>
                 <Switch IsToggled="{Binding Source={x:Reference trendingPage}, Path=QueryTheWeek}" Toggled="OnWeekOrDaySwitch_Toggled"/>

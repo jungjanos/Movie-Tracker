@@ -3,7 +3,6 @@ using Ch9.Models;
 using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -53,6 +52,7 @@ namespace Ch9
             
             ImageStepCommand = new Command(async () => { await _fetchGallery; Movie.GalleryPositionCounter++; });
             HomeCommand = new Command(async () => await _pageService.PopToRootAsync());
+            ReviewsCommand = new Command(async () => await _pageService.PushAsync(new ReviewsPageViewModel(Movie, Reviews)));
             RecommendationsCommand = new Command(async () => await OnRecommendationsCommand());
             AddToListCommand = new Command(async () => await OnAddToListCommand());
         }

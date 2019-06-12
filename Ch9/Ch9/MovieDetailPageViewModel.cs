@@ -2,7 +2,9 @@
 using Ch9.Models;
 using Ch9.Utils;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -21,7 +23,11 @@ namespace Ch9
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IPageService _pageService;
         private readonly Task _fetchGallery;
+        private readonly Task _fetchReviews;
+        public ObservableCollection<Review> Reviews { get; } = new ObservableCollection<Review>(); 
         public bool? MovieIsAlreadyOnActiveList => _settings.MovieIdsOnActiveList?.Contains(Movie.Id);
+        public bool? MovieHasReviews => _fetchReviews.IsCompleted ? (Reviews.Count > 0 ? true : false) : (bool?)null;
+         
 
         public ICommand HomeCommand { get; private set; }
         public ICommand RecommendationsCommand { get; private set; }
@@ -43,6 +49,7 @@ namespace Ch9
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _pageService = pageService;
             _fetchGallery = UpdateImageDetailCollection();
+            _fetchReviews = UpdateReviewCollection();
             
             ImageStepCommand = new Command(async () => { await _fetchGallery; Movie.GalleryPositionCounter++; });
             HomeCommand = new Command(async () => await _pageService.PopToRootAsync());
@@ -72,6 +79,22 @@ namespace Ch9
                 }
             });
             return galleryCollectionReady;
+        }
+
+        private async Task UpdateReviewCollection()
+        {
+            var getReviewResult = await _cachedSearchClient.GetMovieReviews(Movie.Id, language: null, page: null, retryCount: 3, delayMilliseconds: 1000, fromCache: false);
+            if (getReviewResult.HttpStatusCode.IsSuccessCode())
+            {
+                GetReviewsModel reviewsWrapper = JsonConvert.DeserializeObject<GetReviewsModel>(getReviewResult.Json);
+
+                foreach (Review review in reviewsWrapper.Reviews)
+                {
+                    if (Reviews.FirstOrDefault(r => r.Id == review.Id) == null)
+                        Reviews.Add(review);
+                }
+            }
+            OnPropertyChanged(nameof(MovieHasReviews));
         }
 
         public async Task OnRecommendationsCommand()

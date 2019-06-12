@@ -67,13 +67,24 @@ namespace Ch9.ApiClient
 
         public async Task<GetListDetailsResult> GetListDetails(int listId, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            string key = "$" + nameof(GetListDetails) + listId + (language ?? "") + (language ?? "");
+            string key = "$" + nameof(GetListDetails) + listId + (language ?? "");
 
             if (!fromCache)
                 _cache.Remove(key);
 
             return await _cache.GetOrAddAsync(key, () => _networkClient.GetListDetails(listId, language, retryCount, delayMilliseconds));
         }
+
+        public async Task<GetMovieReviewsResult> GetMovieReviews(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        {
+            string key = "$" + nameof(GetMovieReviews) + id + (language ?? "") + (page?.ToString() ?? "");
+
+            if (!fromCache)
+                _cache.Remove(key);
+
+            return await _cache.GetOrAddAsync(key, () => _networkClient.GetMovieReviews(id, language, page, retryCount, delayMilliseconds));
+        }
+
         #endregion
 
         #region UncachedQueries

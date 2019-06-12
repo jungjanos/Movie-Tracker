@@ -10,7 +10,8 @@
              BackgroundColor="WhiteSmoke" NavigationPage.HasNavigationBar="False">
     <ContentPage.Resources>
         <ResourceDictionary>
-            <local:BoolToColorConverter x:Key="boolToColor"/>
+            <local:MovieOnListBoolToColorConverter x:Key="movieOnListBoolToColor"/>
+            <local:MovieHasReviewsBoolToColorConverter x:Key="movieHasReviewsBoolToColor"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -99,7 +100,7 @@
                         <FontImageSource Glyph="&#xf33f;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="44" 
-                         Color="Black"/>
+                         Color="{Binding MovieHasReviews, Converter={StaticResource Key=movieHasReviewsBoolToColor}, Mode=OneWay}"/>
                     </Button.ImageSource>
                 </Button>
 
@@ -111,7 +112,7 @@
                         <FontImageSource Glyph="&#xf29f;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="44" 
-                         Color="{Binding MovieIsAlreadyOnActiveList, Converter={StaticResource Key=boolToColor}, Mode=OneWay}"/>
+                         Color="{Binding MovieIsAlreadyOnActiveList, Converter={StaticResource Key=movieOnListBoolToColor}, Mode=OneWay}"/>
                     </Button.ImageSource>
                 </Button>
 

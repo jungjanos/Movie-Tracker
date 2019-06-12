@@ -49,7 +49,7 @@ namespace Ch9
     // false => Movie is not yet on the list, hitting the btn will add the Movie from the list => _positiveColor
     // null => no MovieList is selected as active => _invalidColor
     // Only one-way-binding is requred
-    public class BoolToColorConverter : IValueConverter
+    public class MovieOnListBoolToColorConverter : IValueConverter
     {
         private readonly Color _positiveColor = Color.Green;
         private readonly Color _negativeColor = Color.Red;
@@ -71,5 +71,28 @@ namespace Ch9
             throw new NotImplementedException();
         }
     }
+    public class MovieHasReviewsBoolToColorConverter : IValueConverter
+    {
+        private readonly Color _positiveColor = Color.DarkGreen;
+        private readonly Color _negativeColor = Color.LightSlateGray;
+        private readonly Color _invalidColor = Color.LightGray;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            switch ((bool?)value)
+            {
+                case true: return _positiveColor;
+                case false: return _negativeColor;
+                case null: return _invalidColor;
+            }
+            throw new ArgumentException();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 
 }

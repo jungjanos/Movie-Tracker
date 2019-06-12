@@ -3,7 +3,7 @@ using Ch9.Models;
 using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -22,11 +22,15 @@ namespace Ch9
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IPageService _pageService;
         private readonly Task _fetchGallery;
-        private readonly Task _fetchReviews;
-        public ObservableCollection<Review> Reviews { get; } = new ObservableCollection<Review>(); 
+        private readonly ReviewsPageViewModel _reviewsPageViewModel;
+
         public bool? MovieIsAlreadyOnActiveList => _settings.MovieIdsOnActiveList?.Contains(Movie.Id);
-        public bool? MovieHasReviews => _fetchReviews.IsCompleted ? (Reviews.Count > 0 ? true : false) : (bool?)null;
-         
+        private bool _movieHasReviews;
+        public bool MovieHasReviews
+        {
+            get => _movieHasReviews;
+            set => SetProperty(ref _movieHasReviews, value);
+        }
 
         public ICommand HomeCommand { get; private set; }
         public ICommand RecommendationsCommand { get; private set; }
@@ -48,11 +52,12 @@ namespace Ch9
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _pageService = pageService;
             _fetchGallery = UpdateImageDetailCollection();
-            _fetchReviews = UpdateReviewCollection();
+            _reviewsPageViewModel = new ReviewsPageViewModel(this, _cachedSearchClient);
+
             
             ImageStepCommand = new Command(async () => { await _fetchGallery; Movie.GalleryPositionCounter++; });
             HomeCommand = new Command(async () => await _pageService.PopToRootAsync());
-            ReviewsCommand = new Command(async () => await _pageService.PushAsync(new ReviewsPageViewModel(Movie, Reviews)));
+            ReviewsCommand = new Command(async () => await _pageService.PushAsync(_reviewsPageViewModel));
             RecommendationsCommand = new Command(async () => await OnRecommendationsCommand());
             AddToListCommand = new Command(async () => await OnAddToListCommand());
         }
@@ -79,22 +84,6 @@ namespace Ch9
                 }
             });
             return galleryCollectionReady;
-        }
-
-        private async Task UpdateReviewCollection()
-        {
-            var getReviewResult = await _cachedSearchClient.GetMovieReviews(Movie.Id, language: null, page: null, retryCount: 3, delayMilliseconds: 1000, fromCache: false);
-            if (getReviewResult.HttpStatusCode.IsSuccessCode())
-            {
-                GetReviewsModel reviewsWrapper = JsonConvert.DeserializeObject<GetReviewsModel>(getReviewResult.Json);
-
-                foreach (Review review in reviewsWrapper.Reviews)
-                {
-                    if (Reviews.FirstOrDefault(r => r.Id == review.Id) == null)
-                        Reviews.Add(review);
-                }
-            }
-            OnPropertyChanged(nameof(MovieHasReviews));
         }
 
         public async Task OnRecommendationsCommand()
@@ -148,6 +137,15 @@ namespace Ch9
         private void OnPropertyChanged([CallerMemberName]string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(storage, value))
+                return false;
+
+            storage = value;
+            OnPropertyChanged(propertyName);
+            return true;
         }
     }
 }

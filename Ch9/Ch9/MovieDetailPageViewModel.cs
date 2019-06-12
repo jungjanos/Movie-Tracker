@@ -25,7 +25,8 @@ namespace Ch9
 
         public ICommand HomeCommand { get; private set; }
         public ICommand RecommendationsCommand { get; private set; }
-        public ICommand AddToListCommand { get; set; }
+        public ICommand ReviewsCommand { get; private set; }
+        public ICommand AddToListCommand { get; private set; }
         public ICommand ImageStepCommand { get; private set; }
 
 

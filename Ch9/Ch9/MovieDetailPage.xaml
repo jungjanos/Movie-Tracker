@@ -64,6 +64,7 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
                 <Button Grid.Row="0" Grid.Column="0"
@@ -91,6 +92,18 @@
                 </Button>
 
                 <Button Grid.Row="0" Grid.Column="2"
+                        Command="{Binding ReviewsCommand}"                        
+                        BackgroundColor="Transparent">
+                    <Button.ImageSource>
+                        <!--<ion-icon name="ion-md-paper"></ion-icon>-->
+                        <FontImageSource Glyph="&#xf33f;"
+                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                         Size="44" 
+                         Color="Black"/>
+                    </Button.ImageSource>
+                </Button>
+
+                <Button Grid.Row="0" Grid.Column="3"
                         Command="{Binding AddToListCommand}"                        
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
@@ -102,7 +115,7 @@
                     </Button.ImageSource>
                 </Button>
 
-                <Button Grid.Row="0" Grid.Column="3"                        
+                <Button Grid.Row="0" Grid.Column="4"                        
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
                         <!--<ion-icon name="ion-md-star"></ion-icon>-->

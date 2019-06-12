@@ -13,14 +13,13 @@ namespace Ch9.Test.TmdbNetworkClientTests
     public class GetMovieReviewsTests
     {
         private readonly ITestOutputHelper _output;
-        Dictionary<string, object> _settingsKeyValues;
-        Settings _settings;
-        TmdbNetworkClient _client;
-
-        int _movieWithReviews = 297761;
-        int _movieWithoutReviews = 60800; // Macskafogó
-        int _invalidMovieId = 99999999;
-        int _movieWithReviewsInDifferentLanguages = 299534; // Has english and spanish reviews
+        readonly Dictionary<string, object> _settingsKeyValues;
+        readonly Settings _settings;
+        readonly TmdbNetworkClient _client;
+        readonly int _movieWithReviews = 297761;
+        readonly int _movieWithoutReviews = 60800; // Macskafogó
+        readonly int _invalidMovieId = 99999999;
+        readonly int _movieWithReviewsInDifferentLanguages = 299534; // Has english and spanish reviews
         public GetMovieReviewsTests(ITestOutputHelper output)
         {
             _output = output;

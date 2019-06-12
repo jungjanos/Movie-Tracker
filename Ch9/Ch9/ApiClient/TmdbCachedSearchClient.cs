@@ -7,8 +7,8 @@ namespace Ch9.ApiClient
     // remark: whitepaper of Cleary
     public class TmdbCachedSearchClient : ITmdbCachedSearchClient
     {
-        private IAppCache _cache;
-        private ITmdbNetworkClient _networkClient;
+        private readonly IAppCache _cache;
+        private readonly ITmdbNetworkClient _networkClient;
 
         public TmdbCachedSearchClient(ITmdbNetworkClient theMovieDatabaseClient)
         {

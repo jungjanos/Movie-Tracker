@@ -21,7 +21,7 @@ namespace Ch9
             set => BindingContext = value;
         }
 
-        Task vMInitializer;
+        readonly Task vMInitializer;
 
         public MovieDetailPage(MovieDetailModel movie)
         {

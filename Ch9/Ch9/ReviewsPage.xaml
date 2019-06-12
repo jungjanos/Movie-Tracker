@@ -14,10 +14,9 @@
                 <Label Text="{Binding Path=Movie.Year}" FontSize="Large" LineBreakMode="NoWrap" MaxLines="1"  HorizontalOptions="EndAndExpand" MinimumWidthRequest="150"/>
             </StackLayout>
 
-            <StackLayout Orientation="Horizontal">
-                <Label Text="{Binding Path=Movie.Genre}" FontSize="Small"/>
-                <Label Text="{Binding Path=Movie.Tagline}"/>
-            </StackLayout>
+            <Label Text="{Binding Path=Movie.Tagline}"/>
+            <Label Text="{Binding Path=Movie.Genre}" FontSize="Small"/>
+            
 
             <StackLayout Orientation="Horizontal">
                 <Label Text="{Binding Path= Movie.Duration, StringFormat='{0} mins'}" IsVisible="{Binding Path=Movie.Duration.HasValue}"/>
@@ -25,7 +24,7 @@
                 <Label Text="{Binding Path= Movie.VoteCount, StringFormat='Votes: {0}'}"/>
                 <Label Text="{Binding Path= Movie.Countries}"/>
             </StackLayout>
-            <Label Text="Reviews" FontSize="Large"/>
+            <Label Text="Reviews" FontSize="Large" TextColor="DarkGray"/>
 
             <ListView HasUnevenRows="True"
                       ItemsSource="{Binding Reviews}"

@@ -99,6 +99,9 @@ namespace Ch9.ApiClient
     public class RateMovieResult : TmdbResponseBase
     { }
 
+    public class DeleteMovieRatingResult : TmdbResponseBase
+    { }
+
     public enum Rating
     {
         Half = 1,

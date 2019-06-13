@@ -1,6 +1,5 @@
 ﻿using Ch9.ApiClient;
 using Ch9.Models;
-using Ch9.Utils;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -10,15 +9,14 @@ namespace Ch9.Test.TmdbNetworkClientTests
 {
     // INTEGRATION TESTS
     // for the critical TmdbNetworkClient.RateMovie(...) function accessing the TMDB WebAPI
-    public class RateMovieTests
+    public class RateMovieTests : IAsyncLifetime
     {
         private readonly ITestOutputHelper _output;
         readonly Dictionary<string, object> _settingsKeyValues;
         readonly Settings _settings;
         readonly TmdbNetworkClient _client;
 
-        readonly int _movie1 = 297761;
-        readonly int _movie2 = 60800; // Macskafogó
+        readonly int _movie = 60800; // Macskafogó
         readonly int _invalidMovie = 99999999;
 
         public RateMovieTests(ITestOutputHelper output)
@@ -31,12 +29,19 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _client = new TmdbNetworkClient(_settings);
         }
 
+        public async Task InitializeAsync()
+        {
+            await _client.DeleteMovieRating(_movie);
+        }
+
+        public Task DisposeAsync() => Task.CompletedTask;
+
         [Fact]
         // happy path
         public async Task WhenCalledOnUnratedMovie_RatesMovie()
         {
             Rating rating = Rating.Ten;
-            RateMovieResult response = await _client.RateMovie(rating: rating, mediaId: _movie2, guestSessionId: null, retryCount: 0, delayMilliseconds: 1000);
+            RateMovieResult response = await _client.RateMovie(rating: rating, mediaId: _movie, guestSessionId: null, retryCount: 0, delayMilliseconds: 1000);
 
             _output.WriteLine($"TMDB server's response code {response.HttpStatusCode}");
             _output.WriteLine($"TMDB server's response message {response.Json}");
@@ -47,9 +52,9 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenCalledOnAlreadyRatedMovieWithSameRating_ReturnsSuccess()
         {
             Rating rating = Rating.Ten;
-            await _client.RateMovie(rating: rating, mediaId: _movie2, guestSessionId: null, retryCount: 0, delayMilliseconds: 1000);
+            await _client.RateMovie(rating: rating, mediaId: _movie, guestSessionId: null, retryCount: 0, delayMilliseconds: 1000);
 
-            RateMovieResult response = await _client.RateMovie(rating: rating, mediaId: _movie2, guestSessionId: null, retryCount: 0, delayMilliseconds: 1000);
+            RateMovieResult response = await _client.RateMovie(rating: rating, mediaId: _movie, guestSessionId: null, retryCount: 0, delayMilliseconds: 1000);
 
             _output.WriteLine($"TMDB server's response code {response.HttpStatusCode}");
             _output.WriteLine($"TMDB server's response message {response.Json}");
@@ -62,9 +67,9 @@ namespace Ch9.Test.TmdbNetworkClientTests
         {
             Rating rating1 = Rating.SevenAndHalf;
             Rating rating2 = Rating.NineAndHalf;
-            await _client.RateMovie(rating: rating1, mediaId: _movie2, guestSessionId: null, retryCount: 0, delayMilliseconds: 1000);
+            await _client.RateMovie(rating: rating1, mediaId: _movie, guestSessionId: null, retryCount: 0, delayMilliseconds: 1000);
 
-            RateMovieResult response = await _client.RateMovie(rating: rating2, mediaId: _movie2, guestSessionId: null, retryCount: 0, delayMilliseconds: 1000);
+            RateMovieResult response = await _client.RateMovie(rating: rating2, mediaId: _movie, guestSessionId: null, retryCount: 0, delayMilliseconds: 1000);
 
             _output.WriteLine($"TMDB server's response code {response.HttpStatusCode}");
             _output.WriteLine($"TMDB server's response message {response.Json}");
@@ -78,7 +83,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             Rating rating = Rating.Ten;
             _settings.SessionId = "invalidSessionId";
 
-            RateMovieResult response = await _client.RateMovie(rating: rating, mediaId: _movie2, guestSessionId: null, retryCount: 0, delayMilliseconds: 1000);
+            RateMovieResult response = await _client.RateMovie(rating: rating, mediaId: _movie, guestSessionId: null, retryCount: 0, delayMilliseconds: 1000);
 
             _output.WriteLine($"TMDB server's response code {response.HttpStatusCode}");
             Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.Unauthorized);

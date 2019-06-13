@@ -797,6 +797,53 @@ namespace Ch9.ApiClient
             return result;
         }
 
+        public async Task<DeleteMovieRatingResult> DeleteMovieRating(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            if (!string.IsNullOrEmpty(guestSessionId))
+                throw new NotImplementedException($"Deleting rating with guest session is not supported by the method: {nameof(DeleteMovieRating)}, parameter: {nameof(guestSessionId)}={guestSessionId}");
+
+            string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + mediaId + RATING_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+            query.Add(SESSION_ID_Key, _settings.SessionId);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            HttpRequestMessage request = new HttpRequestMessage
+            {                 
+                Method = HttpMethod.Delete,
+                RequestUri = new Uri(requestUri)
+            };
+
+            HttpResponseMessage response = null;
+            int counter = retryCount;
+
+            try
+            {
+                response = await HttpClient.SendAsync(request);
+            }
+            catch { }
+            while (response?.IsSuccessStatusCode != true && counter > 0)
+            {
+                await Task.Delay(delayMilliseconds);
+                try
+                {
+                    --counter;
+                    response = await HttpClient.SendAsync(request);
+                }
+                catch { }
+            }
+            DeleteMovieRatingResult result = new DeleteMovieRatingResult
+            {
+                HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
+            };
+
+            if (response.IsSuccessStatusCode)
+                result.Json = await response.Content.ReadAsStringAsync();
+            return result;
+        }
+
 
         public async Task<RemoveMovieResult> RemoveMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
         {

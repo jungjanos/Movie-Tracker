@@ -34,6 +34,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task InitializeAsync()
         {
             await _client.RateMovie(Rating.Ten, _movie);
+            await Task.Delay(500);
         }
 
         public Task DisposeAsync() => Task.CompletedTask;

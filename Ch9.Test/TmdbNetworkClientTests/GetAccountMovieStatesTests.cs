@@ -20,7 +20,6 @@ namespace Ch9.Test.TmdbNetworkClientTests
         readonly int _movie = 60800; // Macskafogó
         readonly int _invalidMovie = 99999999;
 
-
         public GetAccountMovieStatesTests(ITestOutputHelper output)
         {
             _output = output;
@@ -41,7 +40,6 @@ namespace Ch9.Test.TmdbNetworkClientTests
         }
 
         public Task DisposeAsync() => Task.CompletedTask;
-
 
         [Fact]        
         // happy path

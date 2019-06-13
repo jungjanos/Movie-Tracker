@@ -8,6 +8,7 @@ using System.Net;
 using static Ch9.ApiClient.WebApiPathConstants;
 using Newtonsoft.Json;
 using System.Text;
+using Ch9.Utils;
 
 namespace Ch9.ApiClient
 {
@@ -686,7 +687,6 @@ namespace Ch9.ApiClient
         //TODO refactor media type to enum
         public async Task<UpdateFavoriteListResult> UpdateFavoriteList(string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            //TODO : Recheck this!
             // no mistake here: missing "account_id" parameter add the string literal "{account_id}" as paths segment                        
             string baseUrl = BASE_Address + BASE_Path + ACCOUNT_DETAILS_Path + "/" + (accountId.HasValue ? accountId.Value.ToString() : "{account_id}") + FAVORITE_Path;
 
@@ -740,6 +740,63 @@ namespace Ch9.ApiClient
                 result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }
+
+        public async Task<RateMovieResult> RateMovie(Rating rating, int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            if (!string.IsNullOrEmpty(guestSessionId))
+                throw new NotImplementedException($"Rating with guest session is not supported by the method: {nameof(RateMovie)}, parameter: {nameof(guestSessionId)}={guestSessionId}");
+
+            string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + mediaId + RATING_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+            query.Add(SESSION_ID_Key, _settings.SessionId);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);            
+
+            var jsonObj = new
+            {
+                value = rating.GetValue()
+            };
+
+            string json = JsonConvert.SerializeObject(jsonObj);
+            var content = new StringContent(json, encoding: Encoding.UTF8, mediaType: "application/json");
+
+            HttpRequestMessage request = new HttpRequestMessage
+            {
+                Content = content,
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(requestUri)
+            };
+
+            HttpResponseMessage response = null;
+            int counter = retryCount;
+
+            try
+            {
+                response = await HttpClient.SendAsync(request);
+            }
+            catch { }
+            while (response?.IsSuccessStatusCode != true && counter > 0)
+            {
+                await Task.Delay(delayMilliseconds);
+                try
+                {
+                    --counter;
+                    response = await HttpClient.SendAsync(request);
+                }
+                catch { }
+            }
+            RateMovieResult result = new RateMovieResult
+            {
+                HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
+            };
+
+            if (response.IsSuccessStatusCode)
+                result.Json = await response.Content.ReadAsStringAsync();
+            return result;
+        }
+
 
         public async Task<RemoveMovieResult> RemoveMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
         {

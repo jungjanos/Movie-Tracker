@@ -1,4 +1,5 @@
-﻿using Ch9.Models;
+﻿using Ch9.ApiClient;
+using Ch9.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -41,5 +42,7 @@ namespace Ch9.Utils
         {
             return 500 == (int)httpStatusCode;
         }
+
+        public static decimal GetValue(this Rating rating) => (decimal)rating / 2;
     }
 }

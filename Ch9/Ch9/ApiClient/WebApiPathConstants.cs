@@ -43,5 +43,6 @@ namespace Ch9.ApiClient
         public const string FAVORITE_Path = "/favorite";
         public const string MOVIES_Path = "/movies";
         public const string SORTBY_Key = "sort_by";
+        public const string RATING_Path = "/rating";
     }
 }

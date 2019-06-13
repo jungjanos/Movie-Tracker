@@ -116,7 +116,9 @@
                     </Button.ImageSource>
                 </Button>
 
-                <Button Grid.Row="0" Grid.Column="4"                        
+                <Button Grid.Row="0" Grid.Column="4"
+                        Command="{Binding ToggleFavoriteCommand}"
+                        IsVisible="{Binding MovieStatesFetchFinished}"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
                         <!--<ion-icon name="ion-md-star"></ion-icon>-->

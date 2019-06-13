@@ -24,6 +24,8 @@ namespace Ch9
         private readonly Task _fetchGallery;
         private readonly ReviewsPageViewModel _reviewsPageViewModel;
 
+        private readonly Task _fetchMovieStates;
+
         public bool? MovieIsAlreadyOnActiveList => _settings.MovieIdsOnActiveList?.Contains(Movie.Id);
         private bool _movieHasReviews;
         public bool MovieHasReviews
@@ -32,11 +34,29 @@ namespace Ch9
             set => SetProperty(ref _movieHasReviews, value);
         }
 
+        private bool _movieStatesFetchFinished;
+        public bool MovieStatesFetchFinished
+        {
+            get => _movieStatesFetchFinished;
+            set => SetProperty(ref _movieStatesFetchFinished, value);
+        }
+
+
+        private AccountMovieStates _movieStates;
+        public AccountMovieStates MovieStates
+        {
+            get => _movieStates;
+            set => SetProperty(ref _movieStates, value);
+        }
+
+
         public ICommand HomeCommand { get; private set; }
         public ICommand RecommendationsCommand { get; private set; }
         public ICommand ReviewsCommand { get; private set; }
         public ICommand AddToListCommand { get; private set; }
         public ICommand ImageStepCommand { get; private set; }
+
+        public ICommand ToggleFavoriteCommand { get; private set; }
 
         public MovieDetailPageViewModel(
             MovieDetailModel movie,
@@ -52,6 +72,7 @@ namespace Ch9
             _pageService = pageService;
             _fetchGallery = UpdateImageDetailCollection();
             MovieHasReviews = false;
+            MovieStatesFetchFinished = false;
             _reviewsPageViewModel = new ReviewsPageViewModel(this, _cachedSearchClient);
 
             
@@ -64,9 +85,10 @@ namespace Ch9
 
         public async Task Initialize()
         {
+            FetchMovieStates();
             FetchMovieDetailsResult movieDetailsResult = await _cachedSearchClient.FetchMovieDetails(Movie.Id, _settings.SearchLanguage);
             if (movieDetailsResult.HttpStatusCode.IsSuccessCode())
-                JsonConvert.PopulateObject(movieDetailsResult.Json, Movie);
+                JsonConvert.PopulateObject(movieDetailsResult.Json, Movie);            
         }
 
         // starts a hot task to fetch and adjust gallery image paths as early as possible        
@@ -132,7 +154,17 @@ namespace Ch9
                 else
                     await _pageService.DisplayAlert("Error", "Could not add item to the active list. Try refreshing the lists first or use the TMDB webpage directly", "Ok");
             }
-        }        
+        }
+        
+        public async Task FetchMovieStates()
+        {
+            GetAccountMovieStatesResult response = await _cachedSearchClient.GetAccountMovieStates(Movie.Id, guestSessionId: null, retryCount: 3, delayMilliseconds: 1000);
+            if (response.HttpStatusCode.IsSuccessCode())
+            {
+                MovieStates = response.States;
+                MovieStatesFetchFinished = true;
+            }
+        }
 
         private void OnPropertyChanged([CallerMemberName]string propertyName = null)
         {

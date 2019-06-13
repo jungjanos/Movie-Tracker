@@ -117,6 +117,11 @@ namespace Ch9.ApiClient
         {
             return await _networkClient.CreateList(name, description, language, retryCount, delayMilliseconds);
         }
+
+        public async Task<GetAccountMovieStatesResult> GetAccountMovieStates(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            return await _networkClient.GetAccountMovieStates(mediaId, guestSessionId, retryCount, delayMilliseconds);
+        }
         #endregion
     }
 }

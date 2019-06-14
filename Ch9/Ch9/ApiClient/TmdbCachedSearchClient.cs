@@ -128,6 +128,11 @@ namespace Ch9.ApiClient
             return await _networkClient.UpdateFavoriteList(mediaType, add, mediaId, accountId, retryCount, delayMilliseconds);
         }
 
+        public async Task<UpdateWatchlistResult> UpdateWatchlist(string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            return await _networkClient.UpdateWatchlist(mediaType, add, mediaId, accountId, retryCount, delayMilliseconds);
+        }
+
         #endregion
     }
 }

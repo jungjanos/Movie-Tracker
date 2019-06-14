@@ -48,11 +48,12 @@ namespace Ch9
         }
 
 
+        public ICommand ImageStepCommand { get; private set; }
         public ICommand HomeCommand { get; private set; }
         public ICommand RecommendationsCommand { get; private set; }
         public ICommand ReviewsCommand { get; private set; }
-        public ICommand AddToListCommand { get; private set; }
-        public ICommand ImageStepCommand { get; private set; }
+        public ICommand ToggleWatchlistCommand { get; private set; }
+        public ICommand AddToListCommand { get; private set; }        
         public ICommand ToggleFavoriteCommand { get; private set; }
 
         public MovieDetailPageViewModel(
@@ -77,6 +78,7 @@ namespace Ch9
             HomeCommand = new Command(async () => await _pageService.PopToRootAsync());
             ReviewsCommand = new Command(async () => await _pageService.PushAsync(_reviewsPageViewModel));
             RecommendationsCommand = new Command(async () => await OnRecommendationsCommand());
+            ToggleWatchlistCommand = new Command(async () => await OnToggleWatchlistCommand());
             AddToListCommand = new Command(async () => await OnAddToListCommand());
             ToggleFavoriteCommand = new Command(async () => await OnToggleFavoriteCommand());
         }
@@ -116,6 +118,22 @@ namespace Ch9
             if (movieRecommendationsResult.HttpStatusCode.IsSuccessCode())
                 await _pageService.PushRecommendationsPageAsync(Movie, getMovieRecommendations, getSimilarMovies);
         }
+
+        public async Task OnToggleWatchlistCommand()
+        {
+            bool desiredState = !MovieStates.OnWatchlist;
+
+            UpdateWatchlistResult response = await _cachedSearchClient.UpdateWatchlist("movie", desiredState, Movie.Id, 3, 1000);
+
+            if (response.HttpStatusCode.IsSuccessCode())
+            {
+                MovieStates.OnWatchlist = desiredState;
+                OnPropertyChanged(nameof(MovieStates));
+            }
+            else
+                await _pageService.DisplayAlert("Network error", $"Could not change watchlist state, server responded with: {response.HttpStatusCode}", "Ok");
+        }
+
 
         public async Task OnAddToListCommand()
         {

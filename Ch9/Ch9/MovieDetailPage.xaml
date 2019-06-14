@@ -13,6 +13,7 @@
             <local:MovieOnListBoolToColorConverter x:Key="movieOnListBoolToColor"/>
             <local:MovieOnFavoriteListAccountMovieStatesToColorConverter  x:Key="movieOnFavoriteListAccountMovieStatesToColor"/>
             <local:MovieOnFavoriteListAccountMovieStatesToGlyphConverter  x:Key="movieOnFavoriteListAccountMovieStatesToGlyph"/>
+            <local:MovieOnWathlistAccountMovieStatesToColorConverter x:Key="movieOnWathlistAccountMovieStatesToColor"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -108,13 +109,15 @@
                 </Button>
 
                 <Button Grid.Row="0" Grid.Column="3"
+                        Command="{Binding ToggleWatchlistCommand}"
+                        IsVisible="{Binding MovieStatesFetchFinished}"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-bookmarks"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf2a0;"
+                        <!--<ion-icon name="ion-md-bookmark"></ion-icon>-->
+                        <FontImageSource Glyph="&#xf29f;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="44" 
-                         Color="{Binding MovieIsAlreadyOnActiveList, Converter={StaticResource Key=movieOnListBoolToColor}, Mode=OneWay}"/>
+                         Color="{Binding MovieStates, Converter={StaticResource Key=movieOnWathlistAccountMovieStatesToColor}, Mode=OneWay}"/>
                     </Button.ImageSource>
                 </Button>
 

@@ -1,7 +1,9 @@
 ﻿using Ch9.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Net;
+using System.Runtime.CompilerServices;
 
 namespace Ch9.ApiClient
 {
@@ -138,8 +140,10 @@ namespace Ch9.ApiClient
     {
         [JsonProperty("id")]
         public int MovieId { get; set; }
+
         [JsonProperty("favorite")]
         public bool IsFavorite { get; set; }
+
         [JsonProperty("rated")]
         public RatingWrapper Rating { get; set; }
         [JsonProperty("watchlist")]

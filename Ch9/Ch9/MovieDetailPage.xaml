@@ -11,6 +11,8 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <local:MovieOnListBoolToColorConverter x:Key="movieOnListBoolToColor"/>
+            <local:MovieOnFavoriteListAccountMovieStatesToColorConverter  x:Key="movieOnFavoriteListAccountMovieStatesToColor"/>
+            <local:MovieOnFavoriteListAccountMovieStatesToGlyphConverter  x:Key="movieOnFavoriteListAccountMovieStatesToGlyph"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -121,17 +123,15 @@
                         IsVisible="{Binding MovieStatesFetchFinished}"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-star"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf384;"
+                        <FontImageSource Glyph="{Binding MovieStates, Converter={StaticResource Key=movieOnFavoriteListAccountMovieStatesToGlyph}, Mode=OneWay}"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="44" 
-                         Color="Black"/>
+                         Color="{Binding MovieStates, Converter={StaticResource Key=movieOnFavoriteListAccountMovieStatesToColor}, Mode=OneWay}"/>
                     </Button.ImageSource>
                 </Button>
 
             </Grid>
-
-
+            
         </StackLayout>
     </ContentPage.Content>
     

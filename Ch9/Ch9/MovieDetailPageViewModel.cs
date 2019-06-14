@@ -24,8 +24,6 @@ namespace Ch9
         private readonly Task _fetchGallery;
         private readonly ReviewsPageViewModel _reviewsPageViewModel;
 
-        private readonly Task _fetchMovieStates;
-
         public bool? MovieIsAlreadyOnActiveList => _settings.MovieIdsOnActiveList?.Contains(Movie.Id);
         private bool _movieHasReviews;
         public bool MovieHasReviews
@@ -55,7 +53,6 @@ namespace Ch9
         public ICommand ReviewsCommand { get; private set; }
         public ICommand AddToListCommand { get; private set; }
         public ICommand ImageStepCommand { get; private set; }
-
         public ICommand ToggleFavoriteCommand { get; private set; }
 
         public MovieDetailPageViewModel(
@@ -81,6 +78,7 @@ namespace Ch9
             ReviewsCommand = new Command(async () => await _pageService.PushAsync(_reviewsPageViewModel));
             RecommendationsCommand = new Command(async () => await OnRecommendationsCommand());
             AddToListCommand = new Command(async () => await OnAddToListCommand());
+            ToggleFavoriteCommand = new Command(async () => await OnToggleFavoriteCommand());
         }
 
         public async Task Initialize()
@@ -154,6 +152,21 @@ namespace Ch9
                 else
                     await _pageService.DisplayAlert("Error", "Could not add item to the active list. Try refreshing the lists first or use the TMDB webpage directly", "Ok");
             }
+        }
+
+        public async Task OnToggleFavoriteCommand()
+        {
+            bool desiredState = !MovieStates.IsFavorite;
+
+            UpdateFavoriteListResult response = await _cachedSearchClient.UpdateFavoriteList("movie", desiredState, Movie.Id, 3, 1000);
+
+            if (response.HttpStatusCode.IsSuccessCode())
+            {
+                MovieStates.IsFavorite = desiredState;
+                OnPropertyChanged(nameof(MovieStates));
+            }
+            else
+                await _pageService.DisplayAlert("Network error", $"Could not change favorite state, server responded with: {response.HttpStatusCode}", "Ok");
         }
         
         public async Task FetchMovieStates()

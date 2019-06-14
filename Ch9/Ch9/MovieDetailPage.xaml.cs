@@ -73,7 +73,7 @@ namespace Ch9
     // color value to be used on the favorite button UI control.
     public class MovieOnFavoriteListAccountMovieStatesToColorConverter : IValueConverter
     {
-        private readonly Color _positiveColor = Color.DarkOrange;
+        private readonly Color _positiveColor = Color.DarkRed;
         private readonly Color _negativeColor = Color.Gray;
         private readonly Color _invalidColor = Color.DarkGray;
 

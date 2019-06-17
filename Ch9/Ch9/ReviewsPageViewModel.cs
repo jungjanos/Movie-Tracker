@@ -89,8 +89,6 @@ namespace Ch9
             bool success = await UpdateRating(targetRating);
             if (success)
                 UsersRating = targetRating;
-            else
-                await PageService.DisplayAlert("Error", "Could not update your rating", "Ok");
         }
 
         private async Task OnDecreaseRatingCommand()
@@ -104,8 +102,6 @@ namespace Ch9
 
             if (success)
                 UsersRating = newRating;
-            else
-                await PageService.DisplayAlert("Error", "Could not update your rating", "Ok");
         }
 
         private async Task OnIncreaseRatingCommand()
@@ -119,8 +115,6 @@ namespace Ch9
 
             if (success)
                 UsersRating = newRating;
-            else
-                await PageService.DisplayAlert("Error", "Could not update your rating", "Ok");
         }
 
         public async Task OnDeleteRatingCommand()
@@ -132,7 +126,7 @@ namespace Ch9
             if (response.HttpStatusCode.IsSuccessCode())
                 UsersRating = null;
             else
-                await PageService.DisplayAlert("Error", "Could not delete your rating", "Ok");
+                await PageService.DisplayAlert("Error", $"Could not delete your rating, server reponse: {response.HttpStatusCode}", "Ok");
         }
 
         private async Task<bool> UpdateRating(decimal targetRating)
@@ -141,6 +135,9 @@ namespace Ch9
             Rating rating = (Rating)enumValue;
 
             var response = await _cachedSearchClient.RateMovie(rating, Movie.Id, null, 3, 1000);
+
+            if (!response.HttpStatusCode.IsSuccessCode())
+                await PageService.DisplayAlert("Error", $"Could not update your rating, server response: {response.HttpStatusCode}", "Ok");
 
             return response.HttpStatusCode.IsSuccessCode();
         }

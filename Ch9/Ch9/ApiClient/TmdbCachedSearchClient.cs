@@ -133,6 +133,11 @@ namespace Ch9.ApiClient
             return await _networkClient.UpdateWatchlist(mediaType, add, mediaId, accountId, retryCount, delayMilliseconds);
         }
 
+        public async Task<RateMovieResult> RateMovie(Rating rating, int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            return await _networkClient.RateMovie(rating, mediaId, guestSessionId, retryCount, delayMilliseconds);
+        }
+
         #endregion
     }
 }

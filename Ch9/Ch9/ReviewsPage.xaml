@@ -6,6 +6,13 @@
              xmlns:local="clr-namespace:Ch9;assembly=Ch9"
              mc:Ignorable="d"
              x:Class="Ch9.ReviewsPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:RatingToGlyphConverter x:Key="ratingToGlyph"/>            
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <ContentPage.Content>
         <StackLayout Orientation="Vertical" Padding="5,0,5,5">
 
@@ -25,35 +32,17 @@
                 <Label Text="{Binding Path= Movie.Countries}"/>
             </StackLayout>
 
+            
             <Label Text="Rate it"/>
-            <Grid 
-                ColumnSpacing="0"
-                RowSpacing="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+            <Grid HorizontalOptions="End"
+                  ColumnSpacing="0"
+                  Padding="0">                
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="20" />
                 </Grid.ColumnDefinitions>
 
                 <Button Grid.Row="0" Grid.Column="0"
@@ -61,224 +50,57 @@
                         HorizontalOptions="Center">
                     <Button.ImageSource>
                         <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf308;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14" 
-                         Color="DarkRed"/>
+                        <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=0}"
+                         FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
+                         Size="20" 
+                         Color="Gold"/>
                     </Button.ImageSource>
                 </Button>
                 <Button Grid.Row="0" Grid.Column="1"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
                         <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf308;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14" 
-                         Color="DarkRed"/>
+                        <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=1}"
+                         FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
+                         Size="20" 
+                         Color="Gold"/>
                     </Button.ImageSource>
                 </Button>
                 <Button Grid.Row="0" Grid.Column="2"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
                         <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf308;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14" 
-                         Color="DarkRed"/>
+                        <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=2}"
+                         FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
+                         Size="20" 
+                         Color="Gold"/>
                     </Button.ImageSource>
                 </Button>
                 <Button Grid.Row="0" Grid.Column="3"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
                         <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf308;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14" 
-                         Color="DarkRed"/>
+                        <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=3}"
+                         FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
+                         Size="20" 
+                         Color="Gold"/>
                     </Button.ImageSource>
                 </Button>
                 <Button Grid.Row="0" Grid.Column="4"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
                         <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf308;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14"
-                         Color="DarkRed"/>
-                    </Button.ImageSource>
-                </Button>
-                <Button Grid.Row="0" Grid.Column="5"
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf308;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14"
-                         Color="DarkRed"/>
-                    </Button.ImageSource>
-                </Button>
-                <Button Grid.Row="0" Grid.Column="6"
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf308;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14"
-                         Color="DarkRed"/>
-                    </Button.ImageSource>
-                </Button>
-                <Button Grid.Row="0" Grid.Column="7"
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf308;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14"
-                         Color="DarkRed"/>
-                    </Button.ImageSource>
-                </Button>
-                <Button Grid.Row="0" Grid.Column="8"
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf308;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14"
-                         Color="DarkRed"/>
-                    </Button.ImageSource>
-                </Button>
-                <Button Grid.Row="0" Grid.Column="9"
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf308;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14"
-                         Color="DarkRed"/>
-                    </Button.ImageSource>
-                </Button>
-                <Button Grid.Row="0" Grid.Column="10"
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf308;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14"
-                         Color="DarkRed"/>
-                    </Button.ImageSource>
-                </Button>
-                <Button Grid.Row="0" Grid.Column="11"
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf308;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14"
-                         Color="DarkRed"/>
-                    </Button.ImageSource>
-                </Button>
-                <Button Grid.Row="0" Grid.Column="12"
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf308;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14"
-                         Color="DarkRed"/>
-                    </Button.ImageSource>
-                </Button>
-                <Button Grid.Row="0" Grid.Column="13"
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf308;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14"
-                         Color="DarkRed"/>
-                    </Button.ImageSource>
-                </Button>
-                <Button Grid.Row="0" Grid.Column="14"
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf1a2;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14"
-                         Color="DarkRed"/>
-                    </Button.ImageSource>
-                </Button>
-                <Button Grid.Row="0" Grid.Column="15"
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf1a1;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14"
-                         Color="DarkRed"/>
-                    </Button.ImageSource>
-                </Button>
-                <Button Grid.Row="0" Grid.Column="16"
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf1a1;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14"
-                         Color="DarkRed"/>
-                    </Button.ImageSource>
-                </Button>
-                <Button Grid.Row="0" Grid.Column="17"
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf1a1;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14"
-                         Color="DarkRed"/>
-                    </Button.ImageSource>
-                </Button>
-                <Button Grid.Row="0" Grid.Column="18"
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf1a1;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14"
-                         Color="DarkRed"/>
-                    </Button.ImageSource>
-                </Button>
-                <Button Grid.Row="0" Grid.Column="19"
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-heart"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf1a1;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="14"
-                         Color="DarkRed"/>
+                        <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=4}"
+                         FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
+                         Size="20"
+                         Color="Gold"/>
                     </Button.ImageSource>
                 </Button>
 
-                <Label Grid.Row="1" Grid.Column="1"
-                       Text="1"
-                       HorizontalTextAlignment="Center"/>
-                
-                <Label Grid.Row="1" Grid.Column="5"
-                       Text="3" 
-                       HorizontalTextAlignment="Center"/>
-                
-                <Label Grid.Row="1" Grid.Column="9"
-                       Text="5"
-                       HorizontalTextAlignment="Center"/>                
-                
-                <Label Grid.Row="1" Grid.Column="13"
-                       Text="7"
-                       HorizontalTextAlignment="Center"/>                
-                
-                <Label Grid.Row="1" Grid.Column="17"
-                       Text="9"
-                       HorizontalTextAlignment="Center"/>
 
             </Grid>
+            <Label Text=" Rating:"/> 
+            <Label Text="{Binding UsersRating}"/>
 
 
             <Label Text="Reviews" FontSize="Large" TextColor="DarkGray"/>

@@ -829,7 +829,7 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            if (response.IsSuccessStatusCode)
+            if (result.HttpStatusCode.IsSuccessCode())
                 result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }

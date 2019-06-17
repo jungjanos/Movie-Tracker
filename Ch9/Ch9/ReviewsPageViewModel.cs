@@ -21,6 +21,9 @@ namespace Ch9
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
         private readonly Task _initializer;
 
+        public IPageService PageService { get; set; }
+        public ICommand DeleteRatingCommand { get; private set; }
+        public ICommand SetRatingCommand { get; private set; }
         public ICommand DecreaseRatingCommand { get; private set; }
         public ICommand IncreaseRatingCommand { get; private set; }
 
@@ -31,8 +34,13 @@ namespace Ch9
             _parent = parent;
             _cachedSearchClient = tmdbCachedSearchClient;
 
-            Movie = _parent.Movie;            
+            Movie = _parent.Movie;
 
+            DeleteRatingCommand = new Command(async () => await OnDeleteRatingCommand());
+            SetRatingCommand = new Command<string>(async str => {
+                decimal targetRating = decimal.Parse(str);
+                await OnSetRatingCommand(targetRating);
+            });
             DecreaseRatingCommand = new Command(async () => await OnDecreaseRatingCommand());
             IncreaseRatingCommand = new Command(async () => await OnIncreaseRatingCommand());
 
@@ -58,8 +66,7 @@ namespace Ch9
                         _parent.MovieStates.Rating = new RatingWrapper();
 
                     _parent.MovieStates.Rating.Value = value.Value;
-                }   
-
+                }
                 OnPropertyChanged(nameof(UsersRating));
             }
         }
@@ -77,6 +84,15 @@ namespace Ch9
             }
         }
 
+        private async Task OnSetRatingCommand(decimal targetRating)
+        {
+            bool success = await UpdateRating(targetRating);
+            if (success)
+                UsersRating = targetRating;
+            else
+                await PageService.DisplayAlert("Error", "Could not update your rating", "Ok");
+        }
+
         private async Task OnDecreaseRatingCommand()
         {
             decimal newRating = UsersRating == null ? 4.5M : Math.Max(UsersRating.Value - 0.5M, 0.5M);
@@ -88,6 +104,8 @@ namespace Ch9
 
             if (success)
                 UsersRating = newRating;
+            else
+                await PageService.DisplayAlert("Error", "Could not update your rating", "Ok");
         }
 
         private async Task OnIncreaseRatingCommand()
@@ -101,12 +119,25 @@ namespace Ch9
 
             if (success)
                 UsersRating = newRating;
+            else
+                await PageService.DisplayAlert("Error", "Could not update your rating", "Ok");
+        }
+
+        public async Task OnDeleteRatingCommand()
+        {
+            if (UsersRating == null)
+                return;
+            var response = await _cachedSearchClient.DeleteMovieRating(Movie.Id, null, retryCount: 3, delayMilliseconds: 1000);
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                UsersRating = null;
+            else
+                await PageService.DisplayAlert("Error", "Could not delete your rating", "Ok");
         }
 
         private async Task<bool> UpdateRating(decimal targetRating)
         {
             int enumValue = (int)(targetRating * 2);
-
             Rating rating = (Rating)enumValue;
 
             var response = await _cachedSearchClient.RateMovie(rating, Movie.Id, null, 3, 1000);

@@ -138,6 +138,11 @@ namespace Ch9.ApiClient
             return await _networkClient.RateMovie(rating, mediaId, guestSessionId, retryCount, delayMilliseconds);
         }
 
+        public async Task<DeleteMovieRatingResult> DeleteMovieRating(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            return await _networkClient.DeleteMovieRating(mediaId, guestSessionId, retryCount, delayMilliseconds);
+        }
+
         #endregion
     }
 }

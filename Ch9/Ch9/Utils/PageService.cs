@@ -35,7 +35,8 @@ namespace Ch9.Utils
 
         public async Task PushAsync(ReviewsPageViewModel reviewsPageViewModel)
         {
-            await _currentPage.Navigation.PushAsync(new ReviewsPage(reviewsPageViewModel));
+            var reviewsPage = new ReviewsPage(reviewsPageViewModel);
+            await _currentPage.Navigation.PushAsync(reviewsPage);
         }
 
 

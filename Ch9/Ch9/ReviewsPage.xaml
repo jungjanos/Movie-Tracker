@@ -9,7 +9,9 @@
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <local:RatingToGlyphConverter x:Key="ratingToGlyph"/>            
+            <local:RatingToGlyphConverter x:Key="ratingToGlyph"/>
+            <local:NullableDecimalRatingToHasRatingConverter x:Key="nullableDecimalRatingToHasRating" />
+            <local:NullableDecimalRatingToRatingNoticeConverter x:Key="nullableDecimalRatingToRatingNotice"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -32,12 +34,15 @@
                 <Label Text="{Binding Path= Movie.Countries}"/>
             </StackLayout>
 
-            
-            <Label Text="Rate it"/>
-            <Grid HorizontalOptions="End"
+
+
+
+
+            <Grid HorizontalOptions="Start"
                   ColumnSpacing="0"
-                  Padding="0">                
+                  Padding="0">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="20" />
                     <ColumnDefinition Width="20" />
                     <ColumnDefinition Width="20" />
@@ -45,11 +50,32 @@
                     <ColumnDefinition Width="20" />
                     <ColumnDefinition Width="20" />
                     <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="25" />
                     <ColumnDefinition Width="20" />
                 </Grid.ColumnDefinitions>
 
+                <Label  Grid.Row="0" Grid.Column="0"
+                        Text="{Binding UsersRating,Converter={StaticResource Key=nullableDecimalRatingToRatingNotice}}" 
+                        FontSize="Small" TextColor="Black"
+                        VerticalTextAlignment="Center"/>
 
-                <Button Grid.Row="0" Grid.Column="0"
+
+
+                <Button Grid.Row="0" Grid.Column="1"
+                        Command="{Binding DeleteRatingCommand}"
+                        IsVisible="{Binding UsersRating, Converter={StaticResource Key=nullableDecimalRatingToHasRating}}"
+                        BackgroundColor="Transparent">
+                    <Button.ImageSource>
+                        <!--trash can-->
+                        <FontImageSource Glyph="&#xf398;"
+                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                         Size="20"                
+                         Color="DarkGray"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button Grid.Row="0" Grid.Column="2"
+                        Command="{Binding SetRatingCommand}"
+                        CommandParameter="2"
                         BackgroundColor="Transparent"
                         HorizontalOptions="Center">
                     <Button.ImageSource>
@@ -59,7 +85,9 @@
                          Color="Gold"/>
                     </Button.ImageSource>
                 </Button>
-                <Button Grid.Row="0" Grid.Column="1"
+                <Button Grid.Row="0" Grid.Column="3"
+                        Command="{Binding SetRatingCommand}"
+                        CommandParameter="4"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
                         <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=1}"
@@ -68,7 +96,9 @@
                          Color="Gold"/>
                     </Button.ImageSource>
                 </Button>
-                <Button Grid.Row="0" Grid.Column="2"
+                <Button Grid.Row="0" Grid.Column="4"
+                        Command="{Binding SetRatingCommand}"
+                        CommandParameter="6"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
                         <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=2}"
@@ -77,7 +107,9 @@
                          Color="Gold"/>
                     </Button.ImageSource>
                 </Button>
-                <Button Grid.Row="0" Grid.Column="3"
+                <Button Grid.Row="0" Grid.Column="5"
+                        Command="{Binding SetRatingCommand}"
+                        CommandParameter="8"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
                         <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=3}"
@@ -86,7 +118,9 @@
                          Color="Gold"/>
                     </Button.ImageSource>
                 </Button>
-                <Button Grid.Row="0" Grid.Column="4"
+                <Button Grid.Row="0" Grid.Column="6"
+                        Command="{Binding SetRatingCommand}"
+                        CommandParameter="10"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
                         <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=4}"
@@ -95,29 +129,35 @@
                          Color="Gold"/>
                     </Button.ImageSource>
                 </Button>
-                <Button Grid.Row="0" Grid.Column="5"
+                <Button Grid.Row="0" Grid.Column="7"
                         Command="{Binding DecreaseRatingCommand}"
+                        IsVisible="{Binding UsersRating, Converter={StaticResource Key=nullableDecimalRatingToHasRating}}"
                         BackgroundColor="Transparent"
                         HorizontalOptions="Center">
                     <Button.ImageSource>
+                        <!--down arrow-->
                         <FontImageSource Glyph="&#xf0ae;"
                          FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
                          Size="12" 
                          Color="Black"/>
                     </Button.ImageSource>
                 </Button>
-                
-                <Label Grid.Row="0" Grid.Column="6"
+
+                <Label Grid.Row="0" Grid.Column="8"
                     Text="{Binding UsersRating}"
+                       
+                       FontAttributes="Bold"
                        HorizontalTextAlignment="Center"
                        VerticalTextAlignment="Center"
                        />
-                
-                <Button Grid.Row="0" Grid.Column="7"
+
+                <Button Grid.Row="0" Grid.Column="9"
                         Command="{Binding IncreaseRatingCommand}"
+                        IsVisible="{Binding UsersRating, Converter={StaticResource Key=nullableDecimalRatingToHasRating}}"
                         BackgroundColor="Transparent"
                         HorizontalOptions="Center">
                     <Button.ImageSource>
+                        <!--up arrow-->
                         <FontImageSource Glyph="&#xf0ad;"
                          FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
                          Size="12" 
@@ -125,9 +165,8 @@
                     </Button.ImageSource>
                 </Button>
 
+            </Grid>
 
-            </Grid>          
-            
 
 
             <Label Text="Reviews" FontSize="Large" TextColor="DarkGray"/>
@@ -144,7 +183,6 @@
                             <StackLayout Orientation="Vertical" Padding="5" Margin="10">
                                 <Label Text="{Binding Author}" FontSize="Large"/>
                                 <local:ExtendedLabel Text="{Binding Content}" FontSize="Small"  Visual="Material" JustifyText="True"/>
-                                <!--<Label Text="{Binding Url}" FontSize="Small"/>-->
                             </StackLayout>
 
                         </ViewCell>

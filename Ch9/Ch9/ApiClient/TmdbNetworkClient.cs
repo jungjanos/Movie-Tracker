@@ -333,7 +333,7 @@ namespace Ch9.ApiClient
                 catch { }
             }
             CreateRequestTokenResult result = new CreateRequestTokenResult { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.ServiceUnavailable };
-            if (response.IsSuccessStatusCode)
+            if (result.HttpStatusCode.IsSuccessCode())
                 result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }
@@ -370,7 +370,7 @@ namespace Ch9.ApiClient
                 catch { }
             }
             CreateSessionIdResult result = new CreateSessionIdResult { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.ServiceUnavailable };
-            if (response.IsSuccessStatusCode)
+            if (result.HttpStatusCode.IsSuccessCode())
                 result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }
@@ -419,7 +419,7 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            if (response.IsSuccessStatusCode)
+            if (result.HttpStatusCode.IsSuccessCode())
                 result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }
@@ -544,7 +544,7 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            if (response.IsSuccessStatusCode)
+            if (result.HttpStatusCode.IsSuccessCode())
                 result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }
@@ -585,7 +585,8 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            result.Json = await response.Content.ReadAsStringAsync();
+            if (result.HttpStatusCode.IsSuccessCode())
+                result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }
 
@@ -655,7 +656,7 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            if (response.IsSuccessStatusCode)
+            if (result.HttpStatusCode.IsSuccessCode())
                 result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }
@@ -714,7 +715,7 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            if (response.IsSuccessStatusCode)
+            if (result.HttpStatusCode.IsSuccessCode())
                 result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }
@@ -773,7 +774,7 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            if (response.IsSuccessStatusCode)
+            if (result.HttpStatusCode.IsSuccessCode())
                 result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }
@@ -876,7 +877,7 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            if (response.IsSuccessStatusCode)
+            if (result.HttpStatusCode.IsSuccessCode())
                 result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }
@@ -931,7 +932,7 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            if (response.IsSuccessStatusCode)
+            if (result.HttpStatusCode.IsSuccessCode())
                 result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }
@@ -959,7 +960,7 @@ namespace Ch9.ApiClient
             }
             T result = new T { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout };
 
-            if (response.IsSuccessStatusCode)
+            if (result.HttpStatusCode.IsSuccessCode())
                 result.Json = await response.Content.ReadAsStringAsync();
             return result;
         }

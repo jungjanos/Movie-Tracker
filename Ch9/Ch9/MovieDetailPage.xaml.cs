@@ -49,8 +49,8 @@ namespace Ch9
     public class MovieOnListBoolToColorConverter : IValueConverter
     {
         private readonly Color _positiveColor = Color.DarkGreen;
-        private readonly Color _negativeColor = Color.Gray;
-        private readonly Color _invalidColor = Color.LightGray;
+        private readonly Color _negativeColor = Color.DarkGray;
+        private readonly Color _invalidColor = Color.Gray;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -74,8 +74,8 @@ namespace Ch9
     public class MovieOnFavoriteListAccountMovieStatesToColorConverter : IValueConverter
     {
         private readonly Color _positiveColor = Color.DarkRed;
-        private readonly Color _negativeColor = Color.Gray;
-        private readonly Color _invalidColor = Color.LightGray;
+        private readonly Color _negativeColor = Color.DarkGray;
+        private readonly Color _invalidColor = Color.Gray;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -122,8 +122,8 @@ namespace Ch9
     public class MovieOnWathlistAccountMovieStatesToColorConverter : IValueConverter
     {
         private readonly Color _positiveColor = Color.DarkGreen;
-        private readonly Color _negativeColor = Color.Gray;
-        private readonly Color _invalidColor = Color.LightGray;
+        private readonly Color _negativeColor = Color.DarkGray;
+        private readonly Color _invalidColor = Color.Gray;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

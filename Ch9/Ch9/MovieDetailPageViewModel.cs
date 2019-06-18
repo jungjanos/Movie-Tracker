@@ -76,11 +76,11 @@ namespace Ch9
             
             ImageStepCommand = new Command(async () => { await _fetchGallery; Movie.GalleryPositionCounter++; });
             HomeCommand = new Command(async () => await _pageService.PopToRootAsync());
-            ReviewsCommand = new Command(async () => await _pageService.PushAsync(_reviewsPageViewModel));
+            ReviewsCommand = new Command(async () => await _pageService.PushAsync(_reviewsPageViewModel), () => MovieStatesFetchFinished);
             RecommendationsCommand = new Command(async () => await OnRecommendationsCommand());
             ToggleWatchlistCommand = new Command(async () => await OnToggleWatchlistCommand());
             AddToListCommand = new Command(async () => await OnAddToListCommand());
-            ToggleFavoriteCommand = new Command(async () => await OnToggleFavoriteCommand());
+            ToggleFavoriteCommand = new Command(async () => await OnToggleFavoriteCommand(), () => MovieStatesFetchFinished);
         }
 
         public async Task Initialize()
@@ -194,7 +194,14 @@ namespace Ch9
             {
                 MovieStates = response.States;
                 MovieStatesFetchFinished = true;
+                RefreshCanExecutes();
             }
+        }
+
+        private void RefreshCanExecutes()
+        {
+            ((Command)ReviewsCommand).ChangeCanExecute();
+            ((Command)ToggleFavoriteCommand).ChangeCanExecute();
         }
 
         private void OnPropertyChanged([CallerMemberName]string propertyName = null)

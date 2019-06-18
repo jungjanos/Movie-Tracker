@@ -50,7 +50,7 @@ namespace Ch9
     {
         private readonly Color _positiveColor = Color.DarkGreen;
         private readonly Color _negativeColor = Color.Gray;
-        private readonly Color _invalidColor = Color.DarkSlateGray;
+        private readonly Color _invalidColor = Color.LightGray;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -75,7 +75,7 @@ namespace Ch9
     {
         private readonly Color _positiveColor = Color.DarkRed;
         private readonly Color _negativeColor = Color.Gray;
-        private readonly Color _invalidColor = Color.DarkGray;
+        private readonly Color _invalidColor = Color.LightGray;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -123,7 +123,7 @@ namespace Ch9
     {
         private readonly Color _positiveColor = Color.DarkGreen;
         private readonly Color _negativeColor = Color.Gray;
-        private readonly Color _invalidColor = Color.Gray;
+        private readonly Color _invalidColor = Color.LightGray;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

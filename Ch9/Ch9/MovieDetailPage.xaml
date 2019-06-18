@@ -135,7 +135,7 @@
 
                 <Button Grid.Row="0" Grid.Column="5"
                         Command="{Binding ToggleFavoriteCommand}"
-                        IsVisible="{Binding MovieStatesFetchFinished}"
+                        IsVisible="True"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
                         <FontImageSource Glyph="{Binding MovieStates, Converter={StaticResource Key=movieOnFavoriteListAccountMovieStatesToGlyph}, Mode=OneWay}"

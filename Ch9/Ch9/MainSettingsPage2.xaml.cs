@@ -27,18 +27,6 @@ namespace Ch9
             InitializeComponent();
         }
 
-        protected override void OnAppearing()
-        {
-            ViewModel.InitializeOnAppearing();
-            base.OnAppearing();
-        }
-
-        protected override async void OnDisappearing()
-        {
-            await ViewModel.ValidateOnDisappearing();
-            base.OnDisappearing();
-        }
-
 
         private void OnSearchLanguage_Changed(object sender, EventArgs e)
         {
@@ -48,6 +36,18 @@ namespace Ch9
         private void OnSelectGenres_Tapped(object sender, EventArgs e)
         {
 
+        }
+    }
+
+    public class InverseBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return !(bool)value;
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return !(bool)value;
         }
     }
 }

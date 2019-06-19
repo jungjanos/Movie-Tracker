@@ -3,10 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:Ch9;assembly=Ch9"
              mc:Ignorable="d"
              x:Class="Ch9.MainSettingsPage2"
              NavigationPage.HasNavigationBar="False"
              Padding="5,5,5,5">
+
+    <ContentPage.Resources>
+        <local:InverseBoolConverter x:Key="inverseBool"/>
+    </ContentPage.Resources>
     
     <ContentPage.Content>
         <TableView Intent="Settings">
@@ -15,18 +20,23 @@
                 <TableSection Title="Account">
                     
                     <EntryCell Text="{Binding Path=Settings.ApiKey}" 
-                               Label="Api key"/>
+                               Label="Api key"
+                               IsEnabled="False"/>
 
-                    <SwitchCell x:Name="hasAccountSwitch" 
-                                On="{Binding Path=Settings.HasTmdbAccount, Mode=TwoWay}" 
+                    <EntryCell Text="{Binding Path=Settings.SessionId, Mode=TwoWay}" 
+                               Label="Session id"                               
+                               IsEnabled="False"/>
+
+                    <SwitchCell On="{Binding ValidateAccountOnServerSwitch, Mode=TwoWay}"
+                                IsEnabled="{Binding UserProvidedAccountAndPasswordNotEmpty}"
                                 Text="I have an account on themoviedb.org"/>
                     <ViewCell>
-                        <StackLayout IsVisible="{Binding Source={x:Reference hasAccountSwitch}, Path=On}"
-                                     Orientation="Horizontal" 
+                        <StackLayout Orientation="Horizontal" 
                                      Padding="13,0" HorizontalOptions="StartAndExpand" Spacing="50">
                             
                             <Label Text="Username" VerticalTextAlignment="Center"/>
-                            <Entry Text="{Binding Path=Settings.AccountName}" 
+                            <Entry Text="{Binding UserProvidedAccountName}"
+                                   IsEnabled="{Binding ValidateAccountOnServerSwitch, Converter={StaticResource Key=inverseBool}}"
                                    Placeholder="enter account name..." 
                                    HorizontalOptions="StartAndExpand" 
                                    MinimumWidthRequest="300" 
@@ -34,12 +44,13 @@
                                    IsSpellCheckEnabled="False"/>
                         </StackLayout>
                     </ViewCell>
+                    
                     <ViewCell>
-                        <StackLayout IsVisible="{Binding Source={x:Reference hasAccountSwitch}, Path=On}"
-                                     Orientation="Horizontal"
+                        <StackLayout Orientation="Horizontal"
                                      Padding="13,0" HorizontalOptions="StartAndExpand" Spacing="20">
                             <Label Text="Password" VerticalTextAlignment="Center"/>
-                            <Entry Text="{Binding Path=Settings.Password}" 
+                            <Entry Text="{Binding UserProvidedPassword}" 
+                                   IsEnabled="{Binding ValidateAccountOnServerSwitch, Converter={StaticResource Key=inverseBool}}"
                                    Placeholder="enter TMDB passwd..." 
                                    HorizontalOptions="StartAndExpand" 
                                    MinimumWidthRequest="300" 
@@ -47,6 +58,7 @@
                                    IsSpellCheckEnabled="False"/>
                         </StackLayout>
                     </ViewCell>
+                    
                 </TableSection>
 
                 <TableSection Title="Search settings">

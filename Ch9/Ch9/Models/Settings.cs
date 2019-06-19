@@ -20,7 +20,7 @@ namespace Ch9.Models
             get
             {
                 if (_appDictionary.ContainsKey(nameof(ApiKey)))
-                    return _appDictionary[nameof(ApiKey)].ToString();
+                    return _appDictionary[nameof(ApiKey)]?.ToString();
                 else
                     return "764d596e888359d26c0dc49deffecbb3";
             }
@@ -44,7 +44,7 @@ namespace Ch9.Models
             get
             {
                 if (_appDictionary.ContainsKey(nameof(SessionId)))
-                    return _appDictionary[nameof(SessionId)].ToString();
+                    return _appDictionary[nameof(SessionId)]?.ToString();
                 else
                     return null;
             }
@@ -56,7 +56,7 @@ namespace Ch9.Models
             get
             {
                 if (_appDictionary.ContainsKey(nameof(AccountName)))
-                    return _appDictionary[nameof(AccountName)].ToString();
+                    return _appDictionary[nameof(AccountName)]?.ToString();
                 else
                     return null;
             }
@@ -68,7 +68,7 @@ namespace Ch9.Models
             get
             {
                 if (_appDictionary.ContainsKey(nameof(Password)))
-                    return _appDictionary[nameof(Password)].ToString();
+                    return _appDictionary[nameof(Password)]?.ToString();
                 else
                     return null;
             }
@@ -104,7 +104,7 @@ namespace Ch9.Models
             get
             {
                 if (_appDictionary.ContainsKey(nameof(SearchLanguage)))
-                    return _appDictionary[nameof(SearchLanguage)].ToString();
+                    return _appDictionary[nameof(SearchLanguage)]?.ToString();
                 else
                     return "en";
             }

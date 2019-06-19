@@ -23,16 +23,82 @@ namespace Ch9
         private readonly ITmdbNetworkClient _tmdbClient;
         private readonly IPageService _pageService;
 
-        private string initialAccountName;
-        private string initialPassword;
-
         public ISettings Settings
         {
             get => _settings;
             set => SetProperty(ref _settings, value);
         }
 
-        public ICommand SearchLanguageChangedCommand { get; private set; }            
+        private bool _notWaitingOnServer;
+        // This property indicates whether any server based task is still running
+        // governs IsActive and CanExecute properties of controls/commands  
+        public bool NotWaitingOnServer
+        {
+            get => _notWaitingOnServer;
+            set => SetProperty(ref _notWaitingOnServer, value);
+        }
+
+        private bool _validateAccountOnServerSwitch;
+        public bool ValidateAccountOnServerSwitch
+        {
+            get => _validateAccountOnServerSwitch;
+            set
+            {
+                if (value == false)
+                {
+                    // true -> false state change
+                    if (SetProperty(ref _validateAccountOnServerSwitch, value))
+                    {
+                        UserProvidedAccountName = null;
+                        UserProvidedPassword = null;
+
+                        Settings.AccountName = null;
+                        Settings.Password = null;
+
+                        Settings.HasTmdbAccount = false;
+                        OnPropertyChanged(nameof(Settings));
+                    }
+                }
+                else
+                {
+                    // false -> true state change
+                    if (SetProperty(ref _validateAccountOnServerSwitch, value))
+                    {
+                        (ValidateAccountOnServerCommand as Command).Execute(null);
+                    }
+                }
+            }
+        }
+
+        private string _userProvidedAccountName;
+        public string UserProvidedAccountName
+        {
+            get => _userProvidedAccountName;
+            set
+            {
+                if (SetProperty(ref _userProvidedAccountName, value))
+                    OnPropertyChanged(nameof(UserProvidedAccountAndPasswordNotEmpty));
+            }
+        }
+
+        private string _userProvidedPassword;       
+        public string UserProvidedPassword
+        {
+            get => _userProvidedPassword;
+            set
+            {
+                if (SetProperty(ref _userProvidedPassword, value))
+                    OnPropertyChanged(nameof(UserProvidedAccountAndPasswordNotEmpty));
+            }
+        }
+
+        public bool UserProvidedAccountAndPasswordNotEmpty
+        {
+            get => !string.IsNullOrWhiteSpace(UserProvidedAccountName) && !string.IsNullOrWhiteSpace(UserProvidedPassword);
+        }
+
+        private ICommand ValidateAccountOnServerCommand { get; set; }
+        public ICommand SearchLanguageChangedCommand { get; private set; }
 
         public MainSettingsPage2ViewModel(ISettings settings,
             MovieGenreSettings movieGenreSettings,
@@ -44,99 +110,109 @@ namespace Ch9
             _tmdbClient = tmdbClient;
             _pageService = pageService;
             SearchLanguageChangedCommand = new Command(async () => await OnSearchLanguageChanged());
+            ValidateAccountOnServerCommand = new Command(async () => await OnValidateAccountOnServer());
+
+            if (ValidateAccountOnServerSwitch = Settings.HasTmdbAccount)
+            {
+                UserProvidedAccountName = Settings.AccountName;
+                UserProvidedPassword = Settings.Password;
+            }
+            NotWaitingOnServer = true;
+
+        }
+
+        private async Task OnValidateAccountOnServer()
+        {
+            NotWaitingOnServer = false;
+            var result = await TryTmdbSignin();
+            if (result.Success)
+            {
+                Settings.HasTmdbAccount = true;
+                Settings.SessionId = result.NewSessionId;
+
+                Settings.AccountName = UserProvidedAccountName;
+                Settings.Password = UserProvidedPassword;                
+            }
+            else
+            {
+                Settings.SessionId = null;
+                ValidateAccountOnServerSwitch = false;
+            }
+            OnPropertyChanged(nameof(Settings));
+            NotWaitingOnServer = true;
         }
 
         // this method should be called when AccountName/Password has changed
         // should try to generate a new SessionId for the account
         // should try to dispose any previous SessionId if available (best effort)
-        // Returns error message is failed
-        private async Task<string> TryTmdbSignin()
+        // Returns bool: success status and the new string: Sessionid
+        //
+        // CALLER IS RESPONSIBLE TO SET Settings.SessionId according to the result.
+        // negative result CAN NOT be ignored (side effect on server)
+        private async Task<(bool Success, string NewSessionId)> TryTmdbSignin()
         {
-            if (!string.IsNullOrEmpty(Settings.SessionId))
-                await _tmdbClient.DeleteSession(Settings.SessionId);
+            string nullStr = null;
+            var result = (Success: false, NewSessionId: nullStr);
 
+            SessionIdResponseModel newSession = null;
 
-            var createRequestTokenResult = await _tmdbClient.CreateRequestToken(3, 1000);
+            string sessionIdToDelete = Settings.SessionId;
+
+            if (!string.IsNullOrEmpty(sessionIdToDelete))
+                await _tmdbClient.DeleteSession(sessionIdToDelete);
 
             try
             {
+                var createRequestTokenResult = await _tmdbClient.CreateRequestToken(3, 1000);
+                if (!createRequestTokenResult.HttpStatusCode.IsSuccessCode())
+                {
+                    await _pageService.DisplayAlert("Sign in error", $"Error getting request token from TMDB server, server response: {createRequestTokenResult.HttpStatusCode}", "Ok");
+                    return result;
+                }
+
                 var token = JsonConvert.DeserializeObject<RequestToken>(createRequestTokenResult.Json);
-
                 if (!token.Success)
-                    return "Error getting request token from TMDB server";
+                {
+                    await _pageService.DisplayAlert("Sign in error", "TMDB server indicated failure in request token", "Ok");
+                    return result;
+                }
 
-                var validateTokenResult =
-                    await _tmdbClient.ValidateRequestTokenWithLogin(Settings.AccountName, Settings.Password, token.Token, 3, 1000);
+                var validateTokenResult = await _tmdbClient.ValidateRequestTokenWithLogin(UserProvidedAccountName, UserProvidedPassword, token.Token, 3, 1000);
 
                 if (!validateTokenResult.HttpStatusCode.IsSuccessCode())
-                    return "Error validating request token";
+                {
+                    await _pageService.DisplayAlert("Sign in error", $"TMDB server reported error when authenticating with supplied credentials account credentials, response: {validateTokenResult.HttpStatusCode}", "Ok");
+                    return result;
+                }
 
                 string validatedToken = JsonConvert.DeserializeObject<RequestToken>(validateTokenResult.Json).Token;
 
                 var sessionIdResult = await _tmdbClient.CreateSessionId(validatedToken, 3, 1000);
 
                 if (!sessionIdResult.HttpStatusCode.IsSuccessCode())
-                    return "Server failed to return a valid Session Id";
+                {
+                    await _pageService.DisplayAlert("Sign in error", $"TMDB server reported error when creating a new session id, response: {sessionIdResult.HttpStatusCode}", "Ok");
+                    return result;
+                }
 
-                var session = JsonConvert.DeserializeObject<SessionIdResponseModel>(sessionIdResult.Json);
-
-                Settings.SessionId = session.SessionId;
+                newSession = JsonConvert.DeserializeObject<SessionIdResponseModel>(sessionIdResult.Json);
             }
             catch (Exception ex)
             {
-                return $"Failure at authenticating user, message: {ex.Message}";
+                await _pageService.DisplayAlert("Sign in error", $"Exception was thrown during sign in procedure. Details: {ex.Message}", "Ok");
+                return result;
             }
-            return string.Empty;
+
+            result.Success = !string.IsNullOrWhiteSpace(newSession?.SessionId);
+            result.NewSessionId = newSession?.SessionId;
+
+            return result;
         }
 
         private async Task OnSearchLanguageChanged()
-        {           
+        {
             await _movieGenreSettings.OnSearchLanguageChanged(Settings.SearchLanguage);
         }
-
-        public void InitializeOnAppearing()
-        {
-            initialAccountName = Settings.AccountName;
-            initialPassword = Settings.Password;
-        }
-
-        public async Task ValidateOnDisappearing()
-        {
-            await ValidateSettings();
-            await Application.Current.SavePropertiesAsync();
-
-            if (initialAccountName != Settings.AccountName || initialPassword != Settings.Password)
-            {
-                string result = await TryTmdbSignin();
-
-                if (string.IsNullOrEmpty(result))
-                {
-                    //   await App.Current.MainPage.DisplayAlert("Success", "Logon successfull", "Ok");
-                }
-                //else
-                //    await App.Current.MainPage.DisplayAlert("Logon error", $"Message: {result}", "Ok");
-            }            
-        }
-
-        private async Task<bool> ValidateSettings()
-        {
-            return await ValidateAccountSettings();
-        }
-
-        private async Task<bool> ValidateAccountSettings()
-        {
-            // Validation fails, if the HasAccount switch is set but the username or password are empty
-            bool validationResult =
-            Settings.HasTmdbAccount ? !(string.IsNullOrWhiteSpace(Settings.AccountName) || string.IsNullOrWhiteSpace(Settings.Password)) : true;
-
-            if (!validationResult)
-            {
-                Settings.HasTmdbAccount = false;
-                await _pageService.DisplayAlert("Error", "Account name and password must be set if account options are selected!", "Ok");
-            }
-            return validationResult;
-        }
-
 
         private void OnPropertyChanged([CallerMemberName]string propertyName = null)
         {

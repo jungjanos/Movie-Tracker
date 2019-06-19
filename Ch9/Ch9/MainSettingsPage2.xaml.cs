@@ -38,10 +38,10 @@ namespace Ch9
         {
             ViewModel.SearchLanguageChangedCommand.Execute(null);
         }
-
-        private void OnSelectGenres_Tapped(object sender, EventArgs e)
+        
+        private async void OnSelectGenres_Tapped(object sender, EventArgs e)
         {
-
+            await Navigation.PushAsync(new GenreSettingsPage());
         }
     }
 

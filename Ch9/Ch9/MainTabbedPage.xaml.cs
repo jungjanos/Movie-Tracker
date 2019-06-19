@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -18,7 +14,7 @@ namespace Ch9
         }
         private async void OnSettingsButton_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new MainSettingsPage());
+            await Navigation.PushAsync(new MainSettingsPage2());
         }
 
     }

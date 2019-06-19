@@ -47,6 +47,7 @@ namespace Ch9.Models
         }
     }
 
+    //TODO : extract interface
     // contains the movie genre preferences of the user to filter the results of WebAPI queries
     public class MovieGenreSettings
     {

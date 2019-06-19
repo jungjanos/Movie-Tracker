@@ -28,7 +28,7 @@
                                IsEnabled="False"/>
 
                     <SwitchCell On="{Binding ValidateAccountOnServerSwitch, Mode=TwoWay}"
-                                IsEnabled="{Binding UserProvidedAccountAndPasswordNotEmpty}"
+                                IsEnabled="{Binding UserProvidedAccountAndPasswordNotEmptyAndNotWaiting}"
                                 Text="I have an account on themoviedb.org"/>
                     <ViewCell>
                         <StackLayout Orientation="Horizontal" 

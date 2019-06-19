@@ -35,7 +35,11 @@ namespace Ch9
         public bool NotWaitingOnServer
         {
             get => _notWaitingOnServer;
-            set => SetProperty(ref _notWaitingOnServer, value);
+            set
+            {
+                if (SetProperty(ref _notWaitingOnServer, value))
+                    OnPropertyChanged(nameof(UserProvidedAccountAndPasswordNotEmptyAndNotWaiting));
+            }
         }
 
         private bool _validateAccountOnServerSwitch;
@@ -54,6 +58,10 @@ namespace Ch9
 
                         Settings.AccountName = null;
                         Settings.Password = null;
+
+                        string sessionIdToDelete = Settings.SessionId;
+                        DeleteSessionIdCommand.Execute(sessionIdToDelete);
+                        Settings.SessionId = null;
 
                         Settings.HasTmdbAccount = false;
                         OnPropertyChanged(nameof(Settings));
@@ -77,7 +85,7 @@ namespace Ch9
             set
             {
                 if (SetProperty(ref _userProvidedAccountName, value))
-                    OnPropertyChanged(nameof(UserProvidedAccountAndPasswordNotEmpty));
+                    OnPropertyChanged(nameof(UserProvidedAccountAndPasswordNotEmptyAndNotWaiting));
             }
         }
 
@@ -88,16 +96,17 @@ namespace Ch9
             set
             {
                 if (SetProperty(ref _userProvidedPassword, value))
-                    OnPropertyChanged(nameof(UserProvidedAccountAndPasswordNotEmpty));
+                    OnPropertyChanged(nameof(UserProvidedAccountAndPasswordNotEmptyAndNotWaiting));
             }
         }
 
-        public bool UserProvidedAccountAndPasswordNotEmpty
+        public bool UserProvidedAccountAndPasswordNotEmptyAndNotWaiting
         {
-            get => !string.IsNullOrWhiteSpace(UserProvidedAccountName) && !string.IsNullOrWhiteSpace(UserProvidedPassword);
+            get => !string.IsNullOrWhiteSpace(UserProvidedAccountName) && !string.IsNullOrWhiteSpace(UserProvidedPassword) && NotWaitingOnServer;
         }
 
         private ICommand ValidateAccountOnServerCommand { get; set; }
+        public Command<string> DeleteSessionIdCommand { get; private set; }
         public ICommand SearchLanguageChangedCommand { get; private set; }
 
         public MainSettingsPage2ViewModel(ISettings settings,
@@ -111,6 +120,7 @@ namespace Ch9
             _pageService = pageService;
             SearchLanguageChangedCommand = new Command(async () => await OnSearchLanguageChanged());
             ValidateAccountOnServerCommand = new Command(async () => await OnValidateAccountOnServer());
+            DeleteSessionIdCommand = new Command<string>(async sessionId => await OnDeleteSessionId(sessionId));
 
             if (ValidateAccountOnServerSwitch = Settings.HasTmdbAccount)
             {
@@ -119,6 +129,12 @@ namespace Ch9
             }
             NotWaitingOnServer = true;
 
+        }
+
+        private async Task OnDeleteSessionId(string sessionIdToDelete)
+        {                      
+            if (!string.IsNullOrEmpty(sessionIdToDelete))
+                await _tmdbClient.DeleteSession(sessionIdToDelete);
         }
 
         private async Task OnValidateAccountOnServer()
@@ -148,7 +164,7 @@ namespace Ch9
         // Returns bool: success status and the new string: Sessionid
         //
         // CALLER IS RESPONSIBLE TO SET Settings.SessionId according to the result.
-        // negative result CAN NOT be ignored (side effect on server)
+        // results CAN NOT be ignored (side effect on server)
         private async Task<(bool Success, string NewSessionId)> TryTmdbSignin()
         {
             string nullStr = null;
@@ -181,7 +197,7 @@ namespace Ch9
 
                 if (!validateTokenResult.HttpStatusCode.IsSuccessCode())
                 {
-                    await _pageService.DisplayAlert("Sign in error", $"TMDB server reported error when authenticating with supplied credentials account credentials, response: {validateTokenResult.HttpStatusCode}", "Ok");
+                    await _pageService.DisplayAlert("Sign in error", $"TMDB server reported error when authenticating with supplied account credentials, server response: {validateTokenResult.HttpStatusCode}", "Ok");
                     return result;
                 }
 
@@ -191,7 +207,7 @@ namespace Ch9
 
                 if (!sessionIdResult.HttpStatusCode.IsSuccessCode())
                 {
-                    await _pageService.DisplayAlert("Sign in error", $"TMDB server reported error when creating a new session id, response: {sessionIdResult.HttpStatusCode}", "Ok");
+                    await _pageService.DisplayAlert("Sign in error", $"TMDB server reported error when creating a new session id, server response: {sessionIdResult.HttpStatusCode}", "Ok");
                     return result;
                 }
 

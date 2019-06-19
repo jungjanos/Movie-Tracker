@@ -42,6 +42,11 @@ namespace Ch9
             }
         }
 
+        // Actions on account credentials (AccountName, Password, SessionId)
+        // and generating new SessionId is governed by the state changes of this object
+        // true -> false : All account credentials and current SessionId are deleted
+        // false -> true : The network client tries to generate a new SessionId based 
+        // on account credentials if it succeeds the Settings object is updated
         private bool _validateAccountOnServerSwitch;
         public bool ValidateAccountOnServerSwitch
         {
@@ -122,12 +127,12 @@ namespace Ch9
             ValidateAccountOnServerCommand = new Command(async () => await OnValidateAccountOnServer());
             DeleteSessionIdCommand = new Command<string>(async sessionId => await OnDeleteSessionId(sessionId));            
 
-            if (ValidateAccountOnServerSwitch = Settings.HasTmdbAccount)
+            if (_validateAccountOnServerSwitch = Settings.HasTmdbAccount)
             {
-                UserProvidedAccountName = Settings.AccountName;
-                UserProvidedPassword = Settings.Password;
+                _userProvidedAccountName = Settings.AccountName;
+                _userProvidedPassword = Settings.Password;
             }
-            NotWaitingOnServer = true;            
+            _notWaitingOnServer = true;            
         }
 
         public async Task SaveChanges() => await Settings.SavePropertiesAsync();

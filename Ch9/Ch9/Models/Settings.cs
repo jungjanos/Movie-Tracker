@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace Ch9.Models
@@ -142,5 +143,10 @@ namespace Ch9.Models
             }
             set => _appDictionary[nameof(MovieIdsOnActiveList)] = JsonConvert.SerializeObject(value);
         }
-    }
+
+        public async Task SavePropertiesAsync()
+        {
+            await Application.Current.SavePropertiesAsync();
+        }
+    }    
 }

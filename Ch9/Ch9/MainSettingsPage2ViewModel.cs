@@ -63,7 +63,7 @@ namespace Ch9
                         DeleteSessionIdCommand.Execute(sessionIdToDelete);
                         Settings.SessionId = null;
 
-                        Settings.HasTmdbAccount = false;
+                        Settings.HasTmdbAccount = false;                        
                         OnPropertyChanged(nameof(Settings));
                     }
                 }
@@ -106,7 +106,7 @@ namespace Ch9
         }
 
         private ICommand ValidateAccountOnServerCommand { get; set; }
-        public Command<string> DeleteSessionIdCommand { get; private set; }
+        public Command<string> DeleteSessionIdCommand { get; private set; }        
         public ICommand SearchLanguageChangedCommand { get; private set; }
 
         public MainSettingsPage2ViewModel(ISettings settings,
@@ -120,15 +120,14 @@ namespace Ch9
             _pageService = pageService;
             SearchLanguageChangedCommand = new Command(async () => await OnSearchLanguageChanged());
             ValidateAccountOnServerCommand = new Command(async () => await OnValidateAccountOnServer());
-            DeleteSessionIdCommand = new Command<string>(async sessionId => await OnDeleteSessionId(sessionId));
+            DeleteSessionIdCommand = new Command<string>(async sessionId => await OnDeleteSessionId(sessionId));            
 
             if (ValidateAccountOnServerSwitch = Settings.HasTmdbAccount)
             {
                 UserProvidedAccountName = Settings.AccountName;
                 UserProvidedPassword = Settings.Password;
             }
-            NotWaitingOnServer = true;
-
+            NotWaitingOnServer = true;            
         }
 
         private async Task OnDeleteSessionId(string sessionIdToDelete)
@@ -154,7 +153,7 @@ namespace Ch9
                 Settings.SessionId = null;
                 ValidateAccountOnServerSwitch = false;
             }
-            OnPropertyChanged(nameof(Settings));
+            OnPropertyChanged(nameof(Settings));            
             NotWaitingOnServer = true;
         }
 

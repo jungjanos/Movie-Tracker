@@ -1,4 +1,6 @@
-﻿namespace Ch9.Models
+﻿using System.Threading.Tasks;
+
+namespace Ch9.Models
 {
     public interface ISettings
     {
@@ -12,5 +14,6 @@
         string SessionId { get; set; }
         int? ActiveMovieListId { get; set; }
         int[] MovieIdsOnActiveList { get; set; }
+        Task SavePropertiesAsync();
     }
 }

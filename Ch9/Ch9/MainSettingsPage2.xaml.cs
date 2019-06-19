@@ -27,6 +27,12 @@ namespace Ch9
             InitializeComponent();
         }
 
+        protected override async void OnDisappearing()
+        {
+            await ViewModel.SaveChanges();
+            base.OnDisappearing();
+        }
+
 
         private void OnSearchLanguage_Changed(object sender, EventArgs e)
         {

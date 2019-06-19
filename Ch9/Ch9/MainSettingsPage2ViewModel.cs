@@ -130,6 +130,8 @@ namespace Ch9
             NotWaitingOnServer = true;            
         }
 
+        public async Task SaveChanges() => await Settings.SavePropertiesAsync();
+
         private async Task OnDeleteSessionId(string sessionIdToDelete)
         {                      
             if (!string.IsNullOrEmpty(sessionIdToDelete))
@@ -222,7 +224,7 @@ namespace Ch9
             result.NewSessionId = newSession?.SessionId;
 
             return result;
-        }
+        }        
 
         private async Task OnSearchLanguageChanged()
         {

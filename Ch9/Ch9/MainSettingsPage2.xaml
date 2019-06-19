@@ -68,13 +68,13 @@
                         <StackLayout Orientation="Horizontal" Padding="13,0" HorizontalOptions="FillAndExpand">
                             <Label Text="Search language " VerticalTextAlignment="Center"/>
                             
-                            <Picker x:Name="searchLanguagePicker" 
-                                     
+                            <Picker x:Name="searchLanguagePicker"                                      
                                     SelectedItem="{Binding Path=Settings.SearchLanguage}"
                                     SelectedIndexChanged="OnSearchLanguage_Changed"                                    
                                     HorizontalOptions="EndAndExpand">
                                 <Picker.Items>
                                     <x:String>en</x:String>
+                                    <x:String>de</x:String>
                                     <x:String>hu</x:String>
                                 </Picker.Items>
                             </Picker>

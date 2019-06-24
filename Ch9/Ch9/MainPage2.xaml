@@ -3,16 +3,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:Ch9"
              mc:Ignorable="d"
              x:Class="Ch9.MainPage2">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:TextLengthIsGreaterThanIntegerValueToBoolConverter x:Key="textLengthIsGreaterThanIntegerValueToBool"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    
     <ContentPage.Content>
         <StackLayout Padding="5,0,5,5">
             <SearchBar 
-                Text="{Binding SearchString}" 
+                Text="{Binding SearchString, Mode=TwoWay}"
+                SearchCommand="{Binding SearchCommand}"
                 Placeholder="Title" 
                 FontSize="Medium"/>
             
-            <Label Text="type at least five characters" IsVisible="False"/>
+            <Label Text="type at least four characters" 
+                   IsVisible="{Binding SearchString, Converter={StaticResource Key=textLengthIsGreaterThanIntegerValueToBool},ConverterParameter={Binding MinimumSearchStringLenth}}"/>
 
             <ListView 
                 ItemsSource="{Binding SearchResults}"

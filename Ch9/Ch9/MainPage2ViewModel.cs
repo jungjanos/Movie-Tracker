@@ -16,7 +16,7 @@ using Xamarin.Forms;
 namespace Ch9
 {
     public class MainPage2ViewModel : INotifyPropertyChanged
-    {   
+    {
         private const int MINIMUM_Search_Str_Length = 4;
 
         private readonly ISettings _settings;
@@ -41,14 +41,14 @@ namespace Ch9
                     if (string.IsNullOrEmpty(SearchString))
                         SearchResults.Clear();
                 }
-            } 
+            }
         }
 
         public ICommand SearchCommand { get; private set; }
         public ICommand ItemTappedCommand { get; private set; }
 
         public MainPage2ViewModel(
-            ISettings settings, 
+            ISettings settings,
             ITmdbCachedSearchClient cachedSearchClient,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPageService pageService)
@@ -59,16 +59,19 @@ namespace Ch9
             _pageService = pageService;
 
             SearchCommand = new Command(async () => await OnSearchCommand());
-            ItemTappedCommand = new Command<int>(async id => await OnItemTappedCommand(id));
+            ItemTappedCommand = new Command<MovieDetailModel>(async movie => await OnItemTapped(movie));
         }
 
-        private async Task OnItemTappedCommand(int movieId)
+        private async Task OnItemTapped(MovieDetailModel movie)
         {
-            await _pageService.PushAsync(SearchResults.First(movie => movie.Id == movieId));
+            await _pageService.PushAsync(movie);
         }
 
         private async Task OnSearchCommand()
         {
+            if (SearchString?.Length < MINIMUM_Search_Str_Length)
+                return;
+
             var searchResult = await _cachedSearchClient.SearchByMovie(SearchString, _settings.SearchLanguage, _settings.IncludeAdult);
 
             if (searchResult.HttpStatusCode.IsSuccessCode())

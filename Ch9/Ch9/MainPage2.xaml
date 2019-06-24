@@ -39,18 +39,13 @@
 
             <ListView
                 ItemsSource="{Binding SearchResults}"
-                HasUnevenRows="True">
+                HasUnevenRows="True"
+                ItemTapped="SearchResult_ItemTapped">
                 
                 <ListView.ItemTemplate>
                     <DataTemplate>                        
                         <ViewCell>
-                            <StackLayout Orientation="Horizontal" Padding="5" InputTransparent="False" BackgroundColor="Accent">
-                                <StackLayout.GestureRecognizers>
-                                    <TapGestureRecognizer 
-                                        BindingContext="{x:Reference page}"                                        
-                                        Command="{Binding Path=ViewModel.ItemTappedCommand}" CommandParameter="{Binding Id}"  NumberOfTapsRequired="1"/>
-                                </StackLayout.GestureRecognizers>
-
+                            <StackLayout Orientation="Horizontal" Padding="5" InputTransparent="False">
                                 <Image InputTransparent="True">
                                     <Image.Source>
                                         <UriImageSource Uri="{Binding ImgSmSrc}"

@@ -24,6 +24,11 @@ namespace Ch9
                 ((App)Application.Current).MovieDetailModelConfigurator,
                 new PageService(this));
         }
+
+        private void SearchResult_ItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            ViewModel.ItemTappedCommand.Execute(e.Item);
+        }
     }
 
     // returns whether or not the search text info (e.g. type at least # characters) should be displayed

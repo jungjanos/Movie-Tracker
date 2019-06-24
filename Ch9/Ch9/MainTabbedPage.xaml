@@ -14,7 +14,7 @@
 
 
     <!--Pages can be added as references or inline-->
-    <local:MainPage/>
+    <local:MainPage2/>
     <local:TrendingPage/>
 
     <local:ListsPage/>

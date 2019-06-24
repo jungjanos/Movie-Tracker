@@ -5,11 +5,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Ch9"
              mc:Ignorable="d"
-             x:Class="Ch9.MainPage2">
+             x:Class="Ch9.MainPage2"
+             Title="Movies">
     
     <ContentPage.Resources>
         <ResourceDictionary>
-            <local:TextLengthIsGreaterThanIntegerValueToBoolConverter x:Key="textLengthIsGreaterThanIntegerValueToBool"/>
+            <local:SearchStringToIsVisibleBoolConverter x:Key="searchStringToIsVisibleBool"/>
         </ResourceDictionary>
     </ContentPage.Resources>
     
@@ -19,11 +20,20 @@
             <SearchBar 
                 Text="{Binding SearchString, Mode=TwoWay}"
                 SearchCommand="{Binding SearchCommand}"
-                Placeholder="Title" 
-                FontSize="Medium"/>
+                Placeholder="Search..." 
+                FontSize="Medium"/>            
+
+            <Label Text="type at least four characters"
+                   Margin="50,0,0,0">
+                <Label.IsVisible>
+                    <Binding Path="SearchString" Converter="{StaticResource Key=searchStringToIsVisibleBool}">
+                        <Binding.ConverterParameter>
+                            <x:Int32>4</x:Int32>
+                        </Binding.ConverterParameter>
+                    </Binding>
+                </Label.IsVisible>
+            </Label>
             
-            <Label Text="type at least four characters" 
-                   IsVisible="{Binding SearchString, Converter={StaticResource Key=textLengthIsGreaterThanIntegerValueToBool},ConverterParameter={Binding MinimumSearchStringLenth}}"/>
 
             <ListView 
                 ItemsSource="{Binding SearchResults}"

@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 
 namespace Ch9.ApiClient
 {
+    //TODO : ONLY RESULTS Which have HTTP.Success as result code should be added!!!
+    
     // TODO : evaluate whether to remove empty async-await from calls
     // remark: whitepaper of Cleary
     public class TmdbCachedSearchClient : ITmdbCachedSearchClient

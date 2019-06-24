@@ -45,6 +45,7 @@ namespace Ch9
         }
 
         public ICommand SearchCommand { get; private set; }
+        public ICommand ItemTappedCommand { get; private set; }
 
         public MainPage2ViewModel(
             ISettings settings, 
@@ -56,8 +57,14 @@ namespace Ch9
             _cachedSearchClient = cachedSearchClient;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _pageService = pageService;
-            SearchCommand = new Command(async () => await OnSearchCommand());
 
+            SearchCommand = new Command(async () => await OnSearchCommand());
+            ItemTappedCommand = new Command<int>(async id => await OnItemTappedCommand(id));
+        }
+
+        private async Task OnItemTappedCommand(int movieId)
+        {
+            await _pageService.PushAsync(SearchResults.First(movie => movie.Id == movieId));
         }
 
         private async Task OnSearchCommand()

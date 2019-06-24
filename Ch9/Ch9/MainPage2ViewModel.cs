@@ -59,12 +59,7 @@ namespace Ch9
             _pageService = pageService;
 
             SearchCommand = new Command(async () => await OnSearchCommand());
-            ItemTappedCommand = new Command<MovieDetailModel>(async movie => await OnItemTapped(movie));
-        }
-
-        private async Task OnItemTapped(MovieDetailModel movie)
-        {
-            await _pageService.PushAsync(movie);
+            ItemTappedCommand = new Command<MovieDetailModel>(async movie => await _pageService.PushAsync(movie));
         }
 
         private async Task OnSearchCommand()

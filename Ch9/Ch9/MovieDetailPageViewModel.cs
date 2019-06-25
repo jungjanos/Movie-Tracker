@@ -39,14 +39,12 @@ namespace Ch9
             set => SetProperty(ref _movieStatesFetchFinished, value);
         }
 
-
         private AccountMovieStates _movieStates;
         public AccountMovieStates MovieStates
         {
             get => _movieStates;
             set => SetProperty(ref _movieStates, value);
         }
-
 
         public ICommand ImageStepCommand { get; private set; }
         public ICommand HomeCommand { get; private set; }

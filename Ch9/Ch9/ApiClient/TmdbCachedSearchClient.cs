@@ -40,8 +40,6 @@ namespace Ch9.ApiClient
                 _cache.Add(key, result);
 
             return result;
-
-            //return await _cache.GetOrAddAsync("$" + nameof(FetchMovieDetails) + id.ToString() + (language ?? ""), () => _networkClient.FetchMovieDetails(id, language, retryCount, delayMilliseconds));
         }
 
         public async Task<TrendingMoviesResult> GetTrendingMovies(bool week = true, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
@@ -54,9 +52,6 @@ namespace Ch9.ApiClient
                 _cache.Add(key, result);
 
             return result;
-
-            //return await _cache.GetOrAddAsync("$" + nameof(GetTrendingMovies) + week + (language ?? "") + (includeAdult?.ToString() ?? "") + (page?.ToString() ?? ""), () =>
-            //   _networkClient.GetTrendingMovies(week, language, includeAdult, page, retryCount, delayMilliseconds));
         }
 
         public async Task<GetMovieImagesResult> UpdateMovieImages(int id, string language = null, string otherLanguage = null, bool? includeLanguageless = true, int retryCount = 0, int delayMilliseconds = 1000)
@@ -69,10 +64,6 @@ namespace Ch9.ApiClient
                 _cache.Add(key, result);
 
             return result;
-
-            //return await _cache.GetOrAddAsync("$" + nameof(UpdateMovieImages) + id.ToString() + (language ?? "") + (otherLanguage ?? "") + (includeLanguageless == null ? "" : includeLanguageless.Value.ToString()),
-
-            //        () => _networkClient.UpdateMovieImages(id, language, otherLanguage, includeLanguageless, retryCount, delayMilliseconds));
         }
 
         public async Task<GetMovieRecommendationsResult> GetMovieRecommendations(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
@@ -85,10 +76,6 @@ namespace Ch9.ApiClient
                 _cache.Add(key, result);
 
             return result;
-
-            //return await _cache.GetOrAddAsync("$" + nameof(GetMovieRecommendations) + id.ToString() + (language ?? ""),
-
-            //        () => _networkClient.GetMovieRecommendations(id, language, retryCount, delayMilliseconds));
         }
 
         public async Task<GetSimilarMoviesResult> GetSimilarMovies(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
@@ -101,10 +88,6 @@ namespace Ch9.ApiClient
                 _cache.Add(key, result);
 
             return result;
-
-            //return await _cache.GetOrAddAsync("$" + nameof(GetSimilarMovies) + id.ToString() + (language ?? ""),
-
-            //        () => _networkClient.GetSimilarMovies(id, language, retryCount, delayMilliseconds));
         }
 
         public async Task<GetListsResult> GetLists(int? accountId = null, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
@@ -120,8 +103,6 @@ namespace Ch9.ApiClient
                 _cache.Add(key, result);
 
             return result;
-
-            //return await _cache.GetOrAddAsync(key, () => _networkClient.GetLists(accountId, language, page, retryCount, delayMilliseconds));
         }
 
         public async Task<GetListDetailsResult> GetListDetails(int listId, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
@@ -137,8 +118,6 @@ namespace Ch9.ApiClient
                 _cache.Add(key, result);
 
             return result;
-
-            //return await _cache.GetOrAddAsync(key, () => _networkClient.GetListDetails(listId, language, retryCount, delayMilliseconds));
         }
 
         public async Task<GetMovieReviewsResult> GetMovieReviews(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
@@ -154,8 +133,6 @@ namespace Ch9.ApiClient
                 _cache.Add(key, result);
 
             return result;
-
-            //return await _cache.GetOrAddAsync(key, () => _networkClient.GetMovieReviews(id, language, page, retryCount, delayMilliseconds));
         }
 
         #endregion

@@ -14,6 +14,9 @@ using Xamarin.Forms;
 
 namespace Ch9
 {
+    // Maintains a collection for the actual trending movies
+    // The bool switch controls whether the trending movies for the week (=true) or day (=false)
+    // are displayed. 
     public class TrendingPage2ViewModel : INotifyPropertyChanged
     {
         private readonly ISettings _settings;

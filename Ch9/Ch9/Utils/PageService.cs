@@ -6,6 +6,8 @@ using Xamarin.Forms;
 
 namespace Ch9.Utils
 {
+    // IPageService is injected into the ViewModel objects in order to access 
+    // UI-page functions (navigation, page instantiation)
     public interface IPageService
     {
         Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons);
@@ -16,62 +18,34 @@ namespace Ch9.Utils
         Task PushAsync(MovieDetailModel movie);
         Task PushAsync(AddListPageViewModel viewModel);
         Task PushAsync(ReviewsPageViewModel reviewsPageViewModel);
-        Task PushRecommendationsPageAsync(MovieDetailModel movie);
-        Task PushRecommendationsPageAsync(MovieDetailModel movie, Task<GetMovieRecommendationsResult> getMovieRecommendations, Task<GetSimilarMoviesResult> getSimilarMovies);
+        Task PushRecommendationsPageAsync(MovieDetailModel movie);        
     }
-
+    
     public class PageService : IPageService
     {
         private readonly Page _currentPage;
 
-        public PageService(Page current)
-        {
-            _currentPage = current;
-        }
+        public PageService(Page current) => _currentPage = current;        
 
-        public async Task PushAsync(MovieDetailModel movie)
-        {
-            await _currentPage.Navigation.PushAsync(new MovieDetailPage(movie));
-        }
+        public async Task PushAsync(MovieDetailModel movie) => await _currentPage.Navigation.PushAsync(new MovieDetailPage(movie));        
 
-        public async Task PushAsync(ReviewsPageViewModel reviewsPageViewModel)
-        {
-            var reviewsPage = new ReviewsPage(reviewsPageViewModel);
-            await _currentPage.Navigation.PushAsync(reviewsPage);
-        }
+        public async Task PushAsync(ReviewsPageViewModel reviewsPageViewModel) =>            
+            await _currentPage.Navigation.PushAsync(new ReviewsPage(reviewsPageViewModel));       
 
-
-        public async Task PushAsync(AddListPageViewModel viewModel)
-        {
+        public async Task PushAsync(AddListPageViewModel viewModel) =>        
             await _currentPage.Navigation.PushAsync(new AddListPage(viewModel));
-        }
 
-        public async Task PushRecommendationsPageAsync(MovieDetailModel movie)
-        {
-            await _currentPage.Navigation.PushAsync(new RecommendationsPage2(movie));
-        }
+        public async Task PushRecommendationsPageAsync(MovieDetailModel movie) =>        
+            await _currentPage.Navigation.PushAsync(new RecommendationsPage2(movie));        
 
-        public async Task PushRecommendationsPageAsync(MovieDetailModel movie, Task<GetMovieRecommendationsResult> getMovieRecommendations, Task<GetSimilarMoviesResult> getSimilarMovies)       
-        {
-            await _currentPage.Navigation.PushAsync(new RecommendationsPage(movie, getMovieRecommendations, getSimilarMovies));            
-        }
+        public async Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons) =>        
+             await _currentPage.DisplayActionSheet(title, cancel, destruction, buttons);        
 
+        public async Task DisplayAlert(string title, string message, string cancel)=>
+            await _currentPage.DisplayAlert(title, message, cancel);        
 
-
-        public async Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons)
-        {
-            return await _currentPage.DisplayActionSheet(title, cancel, destruction, buttons);
-        }
-
-        public async Task DisplayAlert(string title, string message, string cancel)
-        {
-            await _currentPage.DisplayAlert(title, message, cancel);
-        }
-
-        public async Task<bool> DisplayAlert(string title, string message, string accept, string cancel)
-        {
-            return await _currentPage.DisplayAlert(title, message, accept, cancel);
-        }
+        public async Task<bool> DisplayAlert(string title, string message, string accept, string cancel) => 
+            await _currentPage.DisplayAlert(title, message, accept, cancel);        
 
         public async Task<object> PopCurrent()
         {
@@ -79,9 +53,6 @@ namespace Ch9.Utils
             return _currentPage.BindingContext;
         }
 
-        public async Task PopToRootAsync()
-        {
-            await _currentPage.Navigation.PopToRootAsync();
-        }
+        public async Task PopToRootAsync() => await _currentPage.Navigation.PopToRootAsync();
     }
 }

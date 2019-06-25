@@ -1,10 +1,11 @@
-﻿using LazyCache;
+﻿using Ch9.Utils;
+using LazyCache;
 using System.Threading.Tasks;
 
 namespace Ch9.ApiClient
 {
     //TODO : ONLY RESULTS Which have HTTP.Success as result code should be added!!!
-    
+
     // TODO : evaluate whether to remove empty async-await from calls
     // remark: whitepaper of Cleary
     public class TmdbCachedSearchClient : ITmdbCachedSearchClient
@@ -21,8 +22,17 @@ namespace Ch9.ApiClient
         #region CachedQueries
         public async Task<SearchByMovieResult> SearchByMovie(string searchString, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            return await _cache.GetOrAddAsync("$" + nameof(SearchByMovie) + searchString + (language ?? "") +
-                (includeAdult?.ToString() ?? ""), () => _networkClient.SearchByMovie(searchString, language, includeAdult, page, retryCount, delayMilliseconds));
+            string key = "$" + nameof(SearchByMovie) + searchString + (language ?? "") + (includeAdult?.ToString() ?? "");
+
+            var result =  _cache.Get<SearchByMovieResult>(key);
+
+            if (result == null)
+                result = await _networkClient.SearchByMovie(searchString, language, includeAdult, page, retryCount, delayMilliseconds);
+
+            if (result.HttpStatusCode.IsSuccessCode())
+                _cache.Add(key, result);
+
+            return result;
         }
 
         public async Task<FetchMovieDetailsResult> FetchMovieDetails(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
@@ -64,7 +74,7 @@ namespace Ch9.ApiClient
             if (!fromCache)
                 _cache.Remove(key);
 
-            return await _cache.GetOrAddAsync(key, () => _networkClient.GetLists(accountId, language, page, retryCount,delayMilliseconds));
+            return await _cache.GetOrAddAsync(key, () => _networkClient.GetLists(accountId, language, page, retryCount, delayMilliseconds));
         }
 
         public async Task<GetListDetailsResult> GetListDetails(int listId, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
@@ -94,7 +104,7 @@ namespace Ch9.ApiClient
         {
             return await _networkClient.FetchGenreIdsWithNames(language, retryCount, delayMilliseconds);
         }
-                
+
         public async Task<TmdbConfigurationModelResult> GetTmdbConfiguration(int retryCount = 0, int delayMilliseconds = 1000)
         {
             return await _networkClient.GetTmdbConfiguration(retryCount, delayMilliseconds);

@@ -960,6 +960,7 @@ namespace Ch9.ApiClient
             }
             T result = new T { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout };
 
+            //TODO : THIS NEEDS TO BE WRAPPED INTO TRY-CATCH
             if (result.HttpStatusCode.IsSuccessCode())
                 result.Json = await response.Content.ReadAsStringAsync();
             return result;

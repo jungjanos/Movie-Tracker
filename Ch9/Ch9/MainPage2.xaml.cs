@@ -25,11 +25,10 @@ namespace Ch9
                 new PageService(this));
         }
 
-        private void SearchResult_ItemTapped(object sender, ItemTappedEventArgs e)
-        {
-            ViewModel.ItemTappedCommand.Execute(e.Item);
-        }
+        private void SearchResult_ItemTapped(object sender, ItemTappedEventArgs e) => ViewModel.ItemTappedCommand.Execute(e.Item);
+
     }
+
 
     // returns whether or not the search text info (e.g. type at least # characters) should be displayed
     // search test info should be displayed if the user has already typed some characters, 

@@ -5,10 +5,15 @@ using System.Linq;
 
 namespace Ch9.Utils
 {
+    public interface ISearchResultFilter
+    {
+        IEnumerable<MovieDetailModel> FilterBySearchSettings(IEnumerable<MovieDetailModel> movies);
+    }
+
     // Aims to provide filtering of the TMDB WebAPI response based on user 
     // movie preferences (genre setting, timeframe) 
     // Adult filter is implemented on server side
-    public class SearchResultFilter
+    public class SearchResultFilter : ISearchResultFilter
     {
         private readonly ISettings settings;
         private readonly MovieGenreSettings genreSettings;

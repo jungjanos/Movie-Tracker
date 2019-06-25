@@ -5,49 +5,38 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Ch9"
              mc:Ignorable="d"
-             x:Class="Ch9.MainPage2"
-             Title="Movies"
-             x:Name="page"
-             >
-    
+             x:Class="Ch9.TrendingPage2"
+             Title="Trending">
+
     <ContentPage.Resources>
         <ResourceDictionary>
-            <local:SearchStringToIsVisibleBoolConverter x:Key="searchStringToIsVisibleBool"/>
-        </ResourceDictionary>
+            <local:WeekOrDayBoolToStringConverter x:Key="weekOrDayBoolToString"/>
+        </ResourceDictionary>        
     </ContentPage.Resources>
     
-    
     <ContentPage.Content>
-        <StackLayout Padding="5,0,5,5">
-            <SearchBar 
-                Text="{Binding SearchString, Mode=TwoWay}"
-                SearchCommand="{Binding SearchCommand}"
-                Placeholder="Search..." 
-                FontSize="Medium"/>            
+        <StackLayout>
 
-            <Label Text="type at least four characters"
-                   Margin="50,0,0,0">
-                <Label.IsVisible>
-                    <Binding Path="SearchString" Converter="{StaticResource Key=searchStringToIsVisibleBool}">
-                        <Binding.ConverterParameter>
-                            <x:Int32>4</x:Int32>
-                        </Binding.ConverterParameter>
-                    </Binding>
-                </Label.IsVisible>
-            </Label>
-            
+            <StackLayout Orientation="Horizontal" Padding="5">
+                <Label Text="{Binding WeekOrDaySwitch, Converter={StaticResource Key=weekOrDayBoolToString}}" VerticalTextAlignment="Center"/>
+                <Switch IsToggled="{Binding WeekOrDaySwitch}"/>
+            </StackLayout>
 
-            <ListView
-                ItemsSource="{Binding SearchResults}"
-                HasUnevenRows="True"
-                ItemTapped="SearchResult_ItemTapped"               
-                CachingStrategy="RecycleElement">
-                
+            <ListView   ItemsSource="{Binding TrendingMovies}"                
+                        ItemTapped="TrendingMovies_ItemTapped"
+                        IsPullToRefreshEnabled="True"            
+                        IsRefreshing="{Binding IsRefreshing}"
+                        RefreshCommand="{Binding RefreshCommand}" 
+                        CachingStrategy="RecycleElement"
+                        HasUnevenRows="True" >  
+
                 <ListView.ItemTemplate>
-                    <DataTemplate>                        
+                    <DataTemplate>
                         <ViewCell>
-                            <StackLayout Orientation="Horizontal" Padding="5" InputTransparent="False">
-                                <Image InputTransparent="True">
+
+                            <StackLayout Orientation="Horizontal" Padding="5">
+
+                                <Image>
                                     <Image.Source>
                                         <UriImageSource Uri="{Binding ImgSmSrc}"
                                                     CacheValidity="0"
@@ -56,7 +45,7 @@
                                     </Image.Source>
                                 </Image>
 
-                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical" InputTransparent="True">
+                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical">
                                     <Label Text="{Binding Title}" TextColor="Black"/>
                                     <StackLayout Orientation="Horizontal">
                                         <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>
@@ -68,6 +57,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

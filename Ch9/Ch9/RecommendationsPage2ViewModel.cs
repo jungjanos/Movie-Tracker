@@ -15,6 +15,8 @@ using Xamarin.Forms;
 
 namespace Ch9
 {
+    // Based on the state of the control switch (bool)
+    // gets for the particular movie other recommended / similar movies 
     public class RecommendationsPage2ViewModel : INotifyPropertyChanged
     {
         private readonly ISettings _settings;
@@ -25,13 +27,11 @@ namespace Ch9
         private readonly ICommand _updateMoviesListCommand;
 
         Task<GetMovieRecommendationsResult> _getMovieRecommendations;
-        Task<GetSimilarMoviesResult> _getSimilarMovies;
-        
+        Task<GetSimilarMoviesResult> _getSimilarMovies;        
 
         public MovieDetailModel Movie { get; private set; }
 
         private ObservableCollection<MovieDetailModel> _movies;
-
         public ObservableCollection<MovieDetailModel> Movies
         {
             get => _movies;
@@ -46,9 +46,7 @@ namespace Ch9
             {
                 if (SetProperty(ref _recommendationsOrSimilars, value))
                     _updateMoviesListCommand.Execute(null);
-            }
-                
-                
+            }                              
         }
 
         private bool _isRefreshing;
@@ -57,6 +55,8 @@ namespace Ch9
             get => _isRefreshing;
             set => SetProperty(ref _isRefreshing, value);
         }
+
+        public ICommand ItemTappedCommand { get; private set; }
 
         public RecommendationsPage2ViewModel(
             MovieDetailModel movie,
@@ -71,11 +71,14 @@ namespace Ch9
             _searchResultFilter = searchResultFilter;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _pageService = pageService;
+            _recommendationsOrSimilars = true;
 
             Movie = movie;
+            Movies = new ObservableCollection<MovieDetailModel>();
             IsRefreshing = false;
 
             _updateMoviesListCommand = new Command(async () => await UpdateMoviesList());
+            ItemTappedCommand = new Command<MovieDetailModel>(async movieItem => await _pageService.PushAsync(movieItem));
 
             AssignGetRecommendationsTasks();
         }

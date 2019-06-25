@@ -21,8 +21,7 @@
             </StackLayout>
 
             <ListView   ItemsSource="{Binding Movies}"
-                        ItemTapped="OnRecommendationsListView_ItemTapped"
-                        IsPullToRefreshEnabled="True"            
+                        ItemTapped="OnRecommendationsListView_ItemTapped"                            
                         IsRefreshing="{Binding IsRefreshing}"                        
                         CachingStrategy="RecycleElement"
                         HasUnevenRows="True" >

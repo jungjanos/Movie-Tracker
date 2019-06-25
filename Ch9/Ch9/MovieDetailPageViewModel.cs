@@ -77,7 +77,7 @@ namespace Ch9
             ImageStepCommand = new Command(async () => { await _fetchGallery; Movie.GalleryPositionCounter++; });
             HomeCommand = new Command(async () => await _pageService.PopToRootAsync());
             ReviewsCommand = new Command(async () => await _pageService.PushAsync(_reviewsPageViewModel), () => MovieStatesFetchFinished);
-            RecommendationsCommand = new Command(async () => await OnRecommendationsCommand());
+            RecommendationsCommand = new Command(async () => await _pageService.PushRecommendationsPageAsync(Movie));
             ToggleWatchlistCommand = new Command(async () => await OnToggleWatchlistCommand());
             AddToListCommand = new Command(async () => await OnAddToListCommand());
             ToggleFavoriteCommand = new Command(async () => await OnToggleFavoriteCommand(), () => MovieStatesFetchFinished);
@@ -106,19 +106,8 @@ namespace Ch9
                 }
             });
             return galleryCollectionReady;
-        }
-
-        public async Task OnRecommendationsCommand()
-        {
-            Task<GetMovieRecommendationsResult> getMovieRecommendations = _cachedSearchClient.GetMovieRecommendations(Movie.Id, _settings.SearchLanguage);
-            Task<GetSimilarMoviesResult> getSimilarMovies = _cachedSearchClient.GetSimilarMovies(Movie.Id, _settings.SearchLanguage);
-
-            GetMovieRecommendationsResult movieRecommendationsResult = await getMovieRecommendations;
-
-            if (movieRecommendationsResult.HttpStatusCode.IsSuccessCode())
-                await _pageService.PushRecommendationsPageAsync(Movie, getMovieRecommendations, getSimilarMovies);
-        }
-
+        }      
+        
         public async Task OnToggleWatchlistCommand()
         {
             bool desiredState = !MovieStates.OnWatchlist;
@@ -133,7 +122,6 @@ namespace Ch9
             else
                 await _pageService.DisplayAlert("Network error", $"Could not change watchlist state, server responded with: {response.HttpStatusCode}", "Ok");
         }
-
 
         public async Task OnAddToListCommand()
         {

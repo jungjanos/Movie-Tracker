@@ -16,6 +16,7 @@ namespace Ch9.Utils
         Task PushAsync(MovieDetailModel movie);
         Task PushAsync(AddListPageViewModel viewModel);
         Task PushAsync(ReviewsPageViewModel reviewsPageViewModel);
+        Task PushRecommendationsPageAsync(MovieDetailModel movie);
         Task PushRecommendationsPageAsync(MovieDetailModel movie, Task<GetMovieRecommendationsResult> getMovieRecommendations, Task<GetSimilarMoviesResult> getSimilarMovies);
     }
 
@@ -45,10 +46,16 @@ namespace Ch9.Utils
             await _currentPage.Navigation.PushAsync(new AddListPage(viewModel));
         }
 
-        public async Task PushRecommendationsPageAsync(MovieDetailModel movie, Task<GetMovieRecommendationsResult> getMovieRecommendations, Task<GetSimilarMoviesResult> getSimilarMovies)
+        public async Task PushRecommendationsPageAsync(MovieDetailModel movie)
         {
-            await _currentPage.Navigation.PushAsync(new RecommendationsPage(movie, getMovieRecommendations, getSimilarMovies));
+            await _currentPage.Navigation.PushAsync(new RecommendationsPage2(movie));
         }
+
+        public async Task PushRecommendationsPageAsync(MovieDetailModel movie, Task<GetMovieRecommendationsResult> getMovieRecommendations, Task<GetSimilarMoviesResult> getSimilarMovies)       
+        {
+            await _currentPage.Navigation.PushAsync(new RecommendationsPage(movie, getMovieRecommendations, getSimilarMovies));            
+        }
+
 
 
         public async Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons)

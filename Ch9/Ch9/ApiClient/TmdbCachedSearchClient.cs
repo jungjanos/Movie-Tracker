@@ -24,10 +24,7 @@ namespace Ch9.ApiClient
         {
             string key = "$" + nameof(SearchByMovie) + searchString + (language ?? "") + (includeAdult?.ToString() ?? "");
 
-            var result =  _cache.Get<SearchByMovieResult>(key);
-
-            if (result == null)
-                result = await _networkClient.SearchByMovie(searchString, language, includeAdult, page, retryCount, delayMilliseconds);
+            var result =  _cache.Get<SearchByMovieResult>(key) ?? await _networkClient.SearchByMovie(searchString, language, includeAdult, page, retryCount, delayMilliseconds);
 
             if (result.HttpStatusCode.IsSuccessCode())
                 _cache.Add(key, result);
@@ -37,34 +34,79 @@ namespace Ch9.ApiClient
 
         public async Task<FetchMovieDetailsResult> FetchMovieDetails(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            return await _cache.GetOrAddAsync("$" + nameof(FetchMovieDetails) + id.ToString() + (language ?? ""), () => _networkClient.FetchMovieDetails(id, language, retryCount, delayMilliseconds));
+            string key = "$" + nameof(FetchMovieDetails) + id.ToString() + (language ?? "");
+
+            var result = _cache.Get<FetchMovieDetailsResult>(key) ?? await _networkClient.FetchMovieDetails(id, language, retryCount, delayMilliseconds);
+
+            if (result.HttpStatusCode.IsSuccessCode())
+                _cache.Add(key, result);
+
+            return result;
+
+            //return await _cache.GetOrAddAsync("$" + nameof(FetchMovieDetails) + id.ToString() + (language ?? ""), () => _networkClient.FetchMovieDetails(id, language, retryCount, delayMilliseconds));
         }
 
         public async Task<TrendingMoviesResult> GetTrendingMovies(bool week = true, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            return await _cache.GetOrAddAsync("$" + nameof(GetTrendingMovies) + week + (language ?? "") + (includeAdult?.ToString() ?? "") + (page?.ToString() ?? ""), () =>
-               _networkClient.GetTrendingMovies(week, language, includeAdult, page, retryCount, delayMilliseconds));
+            string key = "$" + nameof(GetTrendingMovies) + week + (language ?? "") + (includeAdult?.ToString() ?? "") + (page?.ToString() ?? "");
+
+            var result = _cache.Get<TrendingMoviesResult>(key) ?? await _networkClient.GetTrendingMovies(week, language, includeAdult, page, retryCount, delayMilliseconds);
+
+            if (result.HttpStatusCode.IsSuccessCode())
+                _cache.Add(key, result);
+
+            return result;
+
+            //return await _cache.GetOrAddAsync("$" + nameof(GetTrendingMovies) + week + (language ?? "") + (includeAdult?.ToString() ?? "") + (page?.ToString() ?? ""), () =>
+            //   _networkClient.GetTrendingMovies(week, language, includeAdult, page, retryCount, delayMilliseconds));
         }
 
         public async Task<GetMovieImagesResult> UpdateMovieImages(int id, string language = null, string otherLanguage = null, bool? includeLanguageless = true, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            return await _cache.GetOrAddAsync("$" + nameof(UpdateMovieImages) + id.ToString() + (language ?? "") + (otherLanguage ?? "") + (includeLanguageless == null ? "" : includeLanguageless.Value.ToString()),
+            string key = "$" + nameof(UpdateMovieImages) + id + (language ?? "") + (otherLanguage ?? "") + (includeLanguageless == null ? "" : includeLanguageless.Value.ToString());
 
-                    () => _networkClient.UpdateMovieImages(id, language, otherLanguage, includeLanguageless, retryCount, delayMilliseconds));
+            var result = _cache.Get<GetMovieImagesResult>(key) ?? await _networkClient.UpdateMovieImages(id, language, otherLanguage, includeLanguageless, retryCount, delayMilliseconds);
+
+            if (result.HttpStatusCode.IsSuccessCode())
+                _cache.Add(key, result);
+
+            return result;
+
+            //return await _cache.GetOrAddAsync("$" + nameof(UpdateMovieImages) + id.ToString() + (language ?? "") + (otherLanguage ?? "") + (includeLanguageless == null ? "" : includeLanguageless.Value.ToString()),
+
+            //        () => _networkClient.UpdateMovieImages(id, language, otherLanguage, includeLanguageless, retryCount, delayMilliseconds));
         }
 
         public async Task<GetMovieRecommendationsResult> GetMovieRecommendations(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            return await _cache.GetOrAddAsync("$" + nameof(GetMovieRecommendations) + id.ToString() + (language ?? ""),
+            string key = "$" + nameof(GetMovieRecommendations) + id + (language ?? "");
 
-                    () => _networkClient.GetMovieRecommendations(id, language, retryCount, delayMilliseconds));
+            var result = _cache.Get<GetMovieRecommendationsResult>(key) ?? await _networkClient.GetMovieRecommendations(id, language, retryCount, delayMilliseconds);
+
+            if (result.HttpStatusCode.IsSuccessCode())
+                _cache.Add(key, result);
+
+            return result;
+
+            //return await _cache.GetOrAddAsync("$" + nameof(GetMovieRecommendations) + id.ToString() + (language ?? ""),
+
+            //        () => _networkClient.GetMovieRecommendations(id, language, retryCount, delayMilliseconds));
         }
 
         public async Task<GetSimilarMoviesResult> GetSimilarMovies(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            return await _cache.GetOrAddAsync("$" + nameof(GetSimilarMovies) + id.ToString() + (language ?? ""),
+            string key = "$" + nameof(GetSimilarMovies) + id + (language ?? "");
 
-                    () => _networkClient.GetSimilarMovies(id, language, retryCount, delayMilliseconds));
+            var result = _cache.Get<GetSimilarMoviesResult>(key) ?? await _networkClient.GetSimilarMovies(id, language, retryCount, delayMilliseconds);
+
+            if (result.HttpStatusCode.IsSuccessCode())
+                _cache.Add(key, result);
+
+            return result;
+
+            //return await _cache.GetOrAddAsync("$" + nameof(GetSimilarMovies) + id.ToString() + (language ?? ""),
+
+            //        () => _networkClient.GetSimilarMovies(id, language, retryCount, delayMilliseconds));
         }
 
         public async Task<GetListsResult> GetLists(int? accountId = null, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)

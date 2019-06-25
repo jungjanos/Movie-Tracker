@@ -41,7 +41,6 @@ namespace Ch9
                 if (SetProperty(ref _weekOrDaySwitch, value))
                     _updateTrendingMoviesListCommand.Execute(null);
             }
-
         }
 
         private ObservableCollection<MovieDetailModel> _trendingMovies;

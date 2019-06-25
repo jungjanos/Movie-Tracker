@@ -3,9 +3,7 @@ using LazyCache;
 using System.Threading.Tasks;
 
 namespace Ch9.ApiClient
-{
-    //TODO : ONLY RESULTS Which have HTTP.Success as result code should be added!!!
-
+{    
     // TODO : evaluate whether to remove empty async-await from calls
     // remark: whitepaper of Cleary
     public class TmdbCachedSearchClient : ITmdbCachedSearchClient
@@ -116,7 +114,14 @@ namespace Ch9.ApiClient
             if (!fromCache)
                 _cache.Remove(key);
 
-            return await _cache.GetOrAddAsync(key, () => _networkClient.GetLists(accountId, language, page, retryCount, delayMilliseconds));
+            var result = _cache.Get<GetListsResult>(key) ?? await _networkClient.GetLists(accountId, language, page, retryCount, delayMilliseconds);
+
+            if (result.HttpStatusCode.IsSuccessCode())
+                _cache.Add(key, result);
+
+            return result;
+
+            //return await _cache.GetOrAddAsync(key, () => _networkClient.GetLists(accountId, language, page, retryCount, delayMilliseconds));
         }
 
         public async Task<GetListDetailsResult> GetListDetails(int listId, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
@@ -126,7 +131,14 @@ namespace Ch9.ApiClient
             if (!fromCache)
                 _cache.Remove(key);
 
-            return await _cache.GetOrAddAsync(key, () => _networkClient.GetListDetails(listId, language, retryCount, delayMilliseconds));
+            var result = _cache.Get<GetListDetailsResult>(key) ?? await _networkClient.GetListDetails(listId, language, retryCount, delayMilliseconds);
+
+            if (result.HttpStatusCode.IsSuccessCode())
+                _cache.Add(key, result);
+
+            return result;
+
+            //return await _cache.GetOrAddAsync(key, () => _networkClient.GetListDetails(listId, language, retryCount, delayMilliseconds));
         }
 
         public async Task<GetMovieReviewsResult> GetMovieReviews(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
@@ -136,7 +148,14 @@ namespace Ch9.ApiClient
             if (!fromCache)
                 _cache.Remove(key);
 
-            return await _cache.GetOrAddAsync(key, () => _networkClient.GetMovieReviews(id, language, page, retryCount, delayMilliseconds));
+            var result = _cache.Get<GetMovieReviewsResult>(key) ?? await _networkClient.GetMovieReviews(id, language, page, retryCount, delayMilliseconds);
+
+            if (result.HttpStatusCode.IsSuccessCode())
+                _cache.Add(key, result);
+
+            return result;
+
+            //return await _cache.GetOrAddAsync(key, () => _networkClient.GetMovieReviews(id, language, page, retryCount, delayMilliseconds));
         }
 
         #endregion

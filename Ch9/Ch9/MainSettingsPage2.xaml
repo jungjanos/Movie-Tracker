@@ -7,6 +7,7 @@
              mc:Ignorable="d"
              x:Class="Ch9.MainSettingsPage2"
              NavigationPage.HasNavigationBar="False"
+             Title="Settings"
              Padding="5,5,5,5">
 
     <ContentPage.Resources>

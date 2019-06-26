@@ -159,12 +159,10 @@ namespace Ch9.Utils
                 return _settings.MovieIdsOnActiveList?.Contains(movieId);
         }
 
-
         public async Task AddMovieToUsersActiveCustomList(MovieDetailModel movie)
         {
             if (CheckIfMovieIsAlreadyOnActiveList(movie.Id) != false)
                 return;
-
 
             AddMovieResult result = await _tmdbCachedSearchClient.AddMovie(_settings.ActiveMovieListId.Value, movie.Id, retryCount: 3, delayMilliseconds: 1000);
 
@@ -173,7 +171,6 @@ namespace Ch9.Utils
                 _settings.MovieIdsOnActiveList = _settings.MovieIdsOnActiveList.Union(Enumerable.Repeat(movie.Id, 1)).ToArray();
                 SelectedCustomList.Movies.Add(movie); //TODO : OnPropertyChanged required, or does it propagete?? 
             }
-
         }
 
         public async Task RemoveMovieFromUsersActiveCustomList(int movieId)
@@ -190,6 +187,37 @@ namespace Ch9.Utils
             if (result.HttpStatusCode.IsSuccessCode())
                 _settings.MovieIdsOnActiveList = SelectedCustomList?.Movies?.Select(movie => movie.Id)?.ToArray();
         }
+
+        public async Task RemoveSelectedMovieList()
+        {
+            if (SelectedCustomList == null)
+                return;
+
+            var listToDelete = SelectedCustomList;
+            SelectedCustomList = null;                                 
+
+            DeleteListResult result = await _tmdbCachedSearchClient.DeleteList(listToDelete.Id, retryCount: 3, delayMilliseconds: 1000);
+
+            // Tmdb Web API has a glitch here: Http.500 denotes "success" here...
+            bool success = result.HttpStatusCode.Is500Code();
+            if (success)
+            {
+                UsersCustomLists.Remove(listToDelete);
+                SelectedCustomList = UsersCustomLists.FirstOrDefault();
+            }
+        }
+
+        public async Task AddList(string name, string description)
+        {
+            CreateListResult result = await _tmdbCachedSearchClient.CreateList(name, description, retryCount: 3, delayMilliseconds: 1000);
+            if (result.HttpStatusCode.IsSuccessCode())
+            {
+                await RefreshUsersCustomLists();
+                int newListId = JsonConvert.DeserializeObject<ListCrudResponseModel>(result.Json).ListId;
+                SelectedCustomList = UsersCustomLists.FirstOrDefault(x => x.Id == newListId);
+            }           
+        }
+
 
         public async Task ResetState()
         {

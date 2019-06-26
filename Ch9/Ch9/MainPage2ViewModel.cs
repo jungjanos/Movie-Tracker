@@ -39,7 +39,7 @@ namespace Ch9
                 if (SetProperty(ref _searchString, value))
                 {
                     if (string.IsNullOrEmpty(SearchString))
-                        SearchResults.Clear();
+                        SearchResults?.Clear();
                 }
             }
         }

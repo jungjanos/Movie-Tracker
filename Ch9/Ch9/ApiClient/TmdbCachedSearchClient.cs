@@ -18,6 +18,22 @@ namespace Ch9.ApiClient
         }
 
         #region CachedQueries
+        public async Task<TmdbConfigurationModelResult> GetTmdbConfiguration(int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        {
+            string key = "$" + nameof(GetTmdbConfiguration);
+
+            if (!fromCache)
+                _cache.Remove(key);
+
+            var result = _cache.Get<TmdbConfigurationModelResult>(key) ?? await _networkClient.GetTmdbConfiguration(retryCount, delayMilliseconds);
+
+            if (result.HttpStatusCode.IsSuccessCode())
+                _cache.Add(key, result, System.TimeSpan.FromDays(1));
+
+            return result;
+
+            //return await _networkClient.GetTmdbConfiguration(retryCount, delayMilliseconds);
+        }
         public async Task<SearchByMovieResult> SearchByMovie(string searchString, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string key = "$" + nameof(SearchByMovie) + searchString + (language ?? "") + (includeAdult?.ToString() ?? "");
@@ -141,11 +157,6 @@ namespace Ch9.ApiClient
         public async Task<GenreNameFetchResult> FetchGenreIdsWithNames(string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             return await _networkClient.FetchGenreIdsWithNames(language, retryCount, delayMilliseconds);
-        }
-
-        public async Task<TmdbConfigurationModelResult> GetTmdbConfiguration(int retryCount = 0, int delayMilliseconds = 1000)
-        {
-            return await _networkClient.GetTmdbConfiguration(retryCount, delayMilliseconds);
         }
 
         public async Task<AddMovieResult> AddMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)

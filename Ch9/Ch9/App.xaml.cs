@@ -39,7 +39,9 @@ namespace Ch9
 
         protected override async void OnStart()
         {
-            TmdbConfiguration = await GetTmdbConfiguration(3, 1000);
+            var tmdbConfigurationCache = new TmdbConfigurationCache(CachedSearchClient, Properties, this);
+            TmdbConfiguration = await tmdbConfigurationCache.FetchTmdbConfiguration();
+
             MovieDetailModelConfigurator = new MovieDetailModelConfigurator(TmdbConfiguration, MovieGenreSettings);
             MainPage = new NavigationPage(new MainTabbedPage());
         }
@@ -56,7 +58,7 @@ namespace Ch9
 
         private async Task<TmdbConfigurationModel> GetTmdbConfiguration(int retries, int retryDelay)
         {
-            var response = await CachedSearchClient.GetTmdbConfiguration(retries, retryDelay);
+            var response = await CachedSearchClient.GetTmdbConfiguration(retries, retryDelay, fromCache: true);
 
             if (response.HttpStatusCode.IsSuccessCode())
             {

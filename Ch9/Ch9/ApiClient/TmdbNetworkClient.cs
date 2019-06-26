@@ -333,8 +333,11 @@ namespace Ch9.ApiClient
                 catch { }
             }
             CreateRequestTokenResult result = new CreateRequestTokenResult { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.ServiceUnavailable };
-            if (result.HttpStatusCode.IsSuccessCode())
-                result.Json = await response.Content.ReadAsStringAsync();
+            //if (result.HttpStatusCode.IsSuccessCode())
+            //    result.Json = await response.Content.ReadAsStringAsync();
+
+            await ReadResponseAsStringIntoResultWhenSafe(result, response);
+
             return result;
         }
 
@@ -370,8 +373,11 @@ namespace Ch9.ApiClient
                 catch { }
             }
             CreateSessionIdResult result = new CreateSessionIdResult { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.ServiceUnavailable };
-            if (result.HttpStatusCode.IsSuccessCode())
-                result.Json = await response.Content.ReadAsStringAsync();
+            //if (result.HttpStatusCode.IsSuccessCode())
+            //    result.Json = await response.Content.ReadAsStringAsync();
+
+            await ReadResponseAsStringIntoResultWhenSafe(result, response);
+
             return result;
         }
 
@@ -419,8 +425,11 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            if (result.HttpStatusCode.IsSuccessCode())
-                result.Json = await response.Content.ReadAsStringAsync();
+            //if (result.HttpStatusCode.IsSuccessCode())
+            //    result.Json = await response.Content.ReadAsStringAsync();
+
+            await ReadResponseAsStringIntoResultWhenSafe(result, response);
+
             return result;
         }
 
@@ -544,8 +553,11 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            if (result.HttpStatusCode.IsSuccessCode())
-                result.Json = await response.Content.ReadAsStringAsync();
+            //if (result.HttpStatusCode.IsSuccessCode())
+            //    result.Json = await response.Content.ReadAsStringAsync();
+
+            await ReadResponseAsStringIntoResultWhenSafe(result, response);
+
             return result;
         }
 
@@ -585,8 +597,11 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            if (result.HttpStatusCode.IsSuccessCode())
-                result.Json = await response.Content.ReadAsStringAsync();
+            //if (result.HttpStatusCode.IsSuccessCode())
+            //    result.Json = await response.Content.ReadAsStringAsync();
+
+            await ReadResponseAsStringIntoResultWhenSafe(result, response);
+
             return result;
         }
 
@@ -656,8 +671,11 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            if (result.HttpStatusCode.IsSuccessCode())
-                result.Json = await response.Content.ReadAsStringAsync();
+            //if (result.HttpStatusCode.IsSuccessCode())
+            //    result.Json = await response.Content.ReadAsStringAsync();
+
+            await ReadResponseAsStringIntoResultWhenSafe(result, response);
+
             return result;
         }
 
@@ -715,8 +733,11 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            if (result.HttpStatusCode.IsSuccessCode())
-                result.Json = await response.Content.ReadAsStringAsync();
+            //if (result.HttpStatusCode.IsSuccessCode())
+            //    result.Json = await response.Content.ReadAsStringAsync();
+
+            await ReadResponseAsStringIntoResultWhenSafe(result, response);
+
             return result;
         }
 
@@ -774,8 +795,11 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            if (result.HttpStatusCode.IsSuccessCode())
-                result.Json = await response.Content.ReadAsStringAsync();
+            //if (result.HttpStatusCode.IsSuccessCode())
+            //    result.Json = await response.Content.ReadAsStringAsync();
+
+            await ReadResponseAsStringIntoResultWhenSafe(result, response);
+
             return result;
         }
 
@@ -830,8 +854,11 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            if (result.HttpStatusCode.IsSuccessCode())
-                result.Json = await response.Content.ReadAsStringAsync();
+            //if (result.HttpStatusCode.IsSuccessCode())
+            //    result.Json = await response.Content.ReadAsStringAsync();
+
+            await ReadResponseAsStringIntoResultWhenSafe(result, response);
+
             return result;
         }
 
@@ -877,8 +904,11 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            if (result.HttpStatusCode.IsSuccessCode())
-                result.Json = await response.Content.ReadAsStringAsync();
+            //if (result.HttpStatusCode.IsSuccessCode())
+            //    result.Json = await response.Content.ReadAsStringAsync();
+
+            await ReadResponseAsStringIntoResultWhenSafe(result, response);
+
             return result;
         }
 
@@ -932,8 +962,11 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            if (result.HttpStatusCode.IsSuccessCode())
-                result.Json = await response.Content.ReadAsStringAsync();
+            //if (result.HttpStatusCode.IsSuccessCode())
+            //    result.Json = await response.Content.ReadAsStringAsync();
+
+            await ReadResponseAsStringIntoResultWhenSafe(result, response);
+
             return result;
         }
 
@@ -960,12 +993,32 @@ namespace Ch9.ApiClient
             }
             T result = new T { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout };
 
-            //TODO : THIS NEEDS TO BE WRAPPED INTO TRY-CATCH
-            if (result.HttpStatusCode.IsSuccessCode())
-                result.Json = await response.Content.ReadAsStringAsync();
+            //try
+            //{
+            //    if (result.HttpStatusCode.IsSuccessCode())
+            //        result.Json = await response.Content.ReadAsStringAsync();
+            //}
+            //catch
+            //{
+            //    result.HttpStatusCode = HttpStatusCode.RequestTimeout;
+            //}
+
+            await ReadResponseAsStringIntoResultWhenSafe(result, response);
+            
             return result;
         }
 
-
+        private async Task ReadResponseAsStringIntoResultWhenSafe<T>(T result, HttpResponseMessage response)  where T : TmdbResponseBase
+        {
+            try
+            {
+                if (result.HttpStatusCode.IsSuccessCode())
+                    result.Json = await response.Content.ReadAsStringAsync();
+            }
+            catch
+            {
+                result.HttpStatusCode = HttpStatusCode.RequestTimeout;
+            }
+        }
     }
 }

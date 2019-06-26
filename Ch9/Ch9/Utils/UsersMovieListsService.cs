@@ -25,13 +25,11 @@ namespace Ch9.Utils
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
         private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;        
-        private readonly Application _xamarinApplication;
-
-        private ObservableCollection<MovieListModel> _usersCustomLists;
-
+        private readonly Application _xamarinApplication;       
 
         public Task<bool> Initializer { get; private set; }
 
+        private ObservableCollection<MovieListModel> _usersCustomLists;
         public ObservableCollection<MovieListModel> UsersCustomLists
         {
             get => _usersCustomLists;
@@ -82,6 +80,9 @@ namespace Ch9.Utils
                     UsersCustomLists.FirstOrDefault();
                 return true;
             }
+
+            UsersCustomLists = null;
+            SelectedCustomList = null;
             return false;
         }
 
@@ -164,6 +165,14 @@ namespace Ch9.Utils
             if (CheckIfMovieIsAlreadyOnActiveList(movie.Id) != false)
                 return;
 
+            if (!_settings.HasTmdbAccount)
+                return;
+
+            await Initializer;
+
+            if (_settings.ActiveMovieListId == null)
+                return;
+
             AddMovieResult result = await _tmdbCachedSearchClient.AddMovie(_settings.ActiveMovieListId.Value, movie.Id, retryCount: 3, delayMilliseconds: 1000);
 
             if (result.HttpStatusCode.IsSuccessCode())
@@ -174,29 +183,38 @@ namespace Ch9.Utils
         }
 
         public async Task RemoveMovieFromUsersActiveCustomList(int movieId)
-        {
-            await Initializer;
-
-            if (SelectedCustomList == null)
+        {           
+            if (!_settings.HasTmdbAccount)
                 return;
 
-            var toRemove = SelectedCustomList.Movies.FirstOrDefault(movie => movie.Id == movieId);
-            SelectedCustomList.Movies.Remove(toRemove); //TODO : OnPropertyChanged required, or does it propagete?? 
+            await Initializer;
 
-            RemoveMovieResult result = await _tmdbCachedSearchClient.RemoveMovie(SelectedCustomList.Id, movieId, 3, 1000);
+            if (_settings.ActiveMovieListId == null)
+                return;
+
+            RemoveMovieResult result = await _tmdbCachedSearchClient.RemoveMovie(_settings.ActiveMovieListId.Value, movieId, 3, 1000);
             if (result.HttpStatusCode.IsSuccessCode())
+            {
                 _settings.MovieIdsOnActiveList = SelectedCustomList?.Movies?.Select(movie => movie.Id)?.ToArray();
+                var toRemove = SelectedCustomList?.Movies?.FirstOrDefault(movie => movie.Id == movieId);
+                SelectedCustomList?.Movies?.Remove(toRemove); //TODO : OnPropertyChanged required, or does it propagete?? 
+            }
         }
 
         public async Task RemoveSelectedMovieList()
         {
-            if (SelectedCustomList == null)
+            if (!_settings.HasTmdbAccount)
+                return;
+
+            await Initializer;
+
+            if (_settings.ActiveMovieListId == null)
                 return;
 
             var listToDelete = SelectedCustomList;
             SelectedCustomList = null;                                 
 
-            DeleteListResult result = await _tmdbCachedSearchClient.DeleteList(listToDelete.Id, retryCount: 3, delayMilliseconds: 1000);
+            DeleteListResult result = await _tmdbCachedSearchClient.DeleteList(_settings.ActiveMovieListId.Value, retryCount: 3, delayMilliseconds: 1000);
 
             // Tmdb Web API has a glitch here: Http.500 denotes "success" here...
             bool success = result.HttpStatusCode.Is500Code();
@@ -209,6 +227,11 @@ namespace Ch9.Utils
 
         public async Task AddList(string name, string description)
         {
+            if (!_settings.HasTmdbAccount)
+                return;
+
+            await Initializer;
+
             CreateListResult result = await _tmdbCachedSearchClient.CreateList(name, description, retryCount: 3, delayMilliseconds: 1000);
             if (result.HttpStatusCode.IsSuccessCode())
             {

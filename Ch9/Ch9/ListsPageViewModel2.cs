@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Ch9.ApiClient;
 using Ch9.Models;
 using Ch9.Utils;
-using Newtonsoft.Json;
 using Xamarin.Forms;
 
 namespace Ch9
@@ -15,24 +12,32 @@ namespace Ch9
     public class ListsPageViewModel2 : INotifyPropertyChanged
     {
         public string DebugVerison { get; } = "0.0.26";
-        
-        private readonly ITmdbCachedSearchClient _cachedSearchClient;
-        private readonly IPageService _pageService;
-        private readonly UsersMovieListsService _usersMovieListsService;
 
-        private ObservableCollection<MovieListModel> _movieLists;
-        public ObservableCollection<MovieListModel> MovieLists
+        public IPageService PageService
         {
-            get => _movieLists;
-            set => SetProperty(ref _movieLists, value);
+            get => _pageService;
+            private set => SetProperty(ref _pageService, value);
         }
+        private UsersMovieListsService _usersMovieListsService;
+        public UsersMovieListsService UsersMovieListsService
+        {
+            get => _usersMovieListsService;
+            set => SetProperty(ref _usersMovieListsService, value);
+        }
+        private readonly ISettings _settings;
+        //private ObservableCollection<MovieListModel> _movieLists;
+        //public ObservableCollection<MovieListModel> MovieLists
+        //{
+        //    get => _movieLists;
+        //    set => SetProperty(ref _movieLists, value);
+        //}
 
-        private MovieListModel _selectedList;
-        public MovieListModel SelectedList
-        {
-            get => _selectedList;
-            set => SetProperty(ref _selectedList, value);               
-        }
+        //private MovieListModel _selectedList;
+        //public MovieListModel SelectedList
+        //{
+        //    get => _selectedList;
+        //    set => SetProperty(ref _selectedList, value);               
+        //}
 
         private MovieDetailModel _selectedMovie;
         public MovieDetailModel SelectedMovie
@@ -42,6 +47,8 @@ namespace Ch9
         }
 
         private bool _isRefreshing = false;
+        private IPageService _pageService;
+
         public bool IsRefreshing
         {
             get => _isRefreshing;
@@ -53,27 +60,49 @@ namespace Ch9
         public Command AddListCommand { get; private set; }
 
         public ListsPageViewModel2(
+            UsersMovieListsService usersMovieListsService,
+            ISettings settings,
             ITmdbCachedSearchClient cachedSearchClient,
-            IPageService pageService,
-            UsersMovieListsService usersMovieListsService
+            IPageService pageService
             )
-        {                       
-            _cachedSearchClient = cachedSearchClient;
-            _pageService = pageService;
-            _usersMovieListsService = usersMovieListsService;
-            AddListCommand = new Command(async () =>{ });
-            RefreshCommand = new Command(async () => { });
-            MovieInfoCommand = new Command(async () => { });
-            RemoveListCommand = new Command(async () => { });         
+        {
+            PageService = pageService;
+            UsersMovieListsService = usersMovieListsService;
+            _settings = settings;
+            AddListCommand = new Command(async () =>
+            {
+                if (!_settings.HasTmdbAccount)
+                {
+                    await PageService.DisplayAlert(
+                        "Authentication error",
+                        "To use this feature, you need to sign in with your TMDB account",
+                        "Ok");
+                    return;
+                }
+                await PageService.PushAsync(new AddListPageViewModel(this));
+            });
+            RefreshCommand = new Command(async () => 
+            {
+                await UsersMovieListsService.RefreshLists();
+                OnPropertyChanged(nameof(UsersMovieListsService));
+                OnPropertyChanged(nameof(UsersMovieListsService.SelectedCustomList));
+            });
+            //MovieInfoCommand = new Command(async () => { });
+            RemoveListCommand = new Command(async () => await UsersMovieListsService.RemoveSelectedMovieList());         
         }
 
         public async Task Initialize()
         {
-            await _usersMovieListsService.Initializer;
-            MovieLists = _usersMovieListsService.UsersCustomLists;
-            SelectedList = _usersMovieListsService.SelectedCustomList;
+            await UsersMovieListsService.Initializer;
+            OnPropertyChanged(nameof(UsersMovieListsService));
+            OnPropertyChanged(nameof(UsersMovieListsService));
         }
 
+
+        public async Task AddList(AddListPageViewModel addListPageViewModel)
+        {
+            await UsersMovieListsService.AddList(addListPageViewModel.Name, addListPageViewModel.Description);                                    
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -90,6 +119,6 @@ namespace Ch9
             storage = value;
             OnPropertyChanged(propertyName);
             return true;
-        }        
+        }
     }
 }

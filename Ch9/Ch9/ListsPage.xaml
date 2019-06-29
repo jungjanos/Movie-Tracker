@@ -29,9 +29,9 @@
 
                 <Picker Grid.Row="0" Grid.Column="0"
                     x:Name="viewedListPicker"
-                                    ItemsSource="{Binding MovieLists, Mode=TwoWay}"
-                                    ItemDisplayBinding="{Binding Name}"
-                                    SelectedItem="{Binding SelectedList, Mode=TwoWay}"                                    
+                                    ItemsSource="{Binding Path=UsersMovieListsService2.UsersCustomLists, Mode=TwoWay}"
+                                    ItemDisplayBinding="{Binding Name, Mode=TwoWay}"
+                                    SelectedItem="{Binding Path=UsersMovieListsService2.SelectedCustomList, Mode=TwoWay}"
                                     BackgroundColor="Beige"/>
 
                 <Button Grid.Row="0" Grid.Column="1"
@@ -61,10 +61,7 @@
                     </Button.ImageSource>
                 </Button>
 
-            </Grid>
-
-
-            
+            </Grid>           
 
 
             <ListView HasUnevenRows="True"
@@ -75,7 +72,7 @@
                       SelectedItem="{Binding SelectedMovie, Mode=TwoWay}"
                       IsPullToRefreshEnabled="True"
                       IsRefreshing="{Binding IsRefreshing}"
-                      RefreshCommand="{Binding RefreshCommand}">
+                      RefreshCommand="{Binding RefreshListCommand}">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>

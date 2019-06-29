@@ -30,11 +30,14 @@ namespace Ch9
 
         public bool Accepted { get; private set; }
 
+        // TODO remove this
         private readonly ListsPageViewModel _prevoiusPageViewModel;
+        private readonly ListsPageViewModel2 _prevoiusPageViewModel2;
 
 
         public ICommand OkCommand { get; set; }
 
+        // TODO remove this
         public AddListPageViewModel(ListsPageViewModel previousPageViewModel)
         {
             _prevoiusPageViewModel = previousPageViewModel;
@@ -46,7 +49,19 @@ namespace Ch9
                 await _prevoiusPageViewModel.AddList(this);
             });
         }
-        
+
+        public AddListPageViewModel(ListsPageViewModel2 previousPageViewModel2)
+        {
+            _prevoiusPageViewModel2 = previousPageViewModel2;
+            Description = string.Empty;
+            Accepted = false;
+            OkCommand = new Command(async () =>
+            {
+                await PageService.PopCurrent();
+                await _prevoiusPageViewModel2.AddList(this);
+            });
+        }
+
         private void OnPropertyChanged([CallerMemberName]string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

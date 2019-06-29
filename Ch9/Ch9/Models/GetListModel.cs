@@ -33,10 +33,15 @@ namespace Ch9.Models
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        private int _itemCount;
         [JsonProperty("item_count")]
-        public int ItemCount { get; set; }
+        public int ItemCount
+        {
+            get => _itemCount;
+            set => SetProperty(ref _itemCount, value);
+        }
 
-        private ObservableCollection<MovieDetailModel> _movies;
+        private ObservableCollection<MovieDetailModel> _movies;       
         [JsonProperty("items")]
         public ObservableCollection<MovieDetailModel> Movies
         {
@@ -88,4 +93,18 @@ namespace Ch9.Models
         [JsonProperty("list_id")]
         public int ListId { get; set; }
     }
+
+    public class MovieListModelComparer : IEqualityComparer<MovieListModel>
+    {
+        public bool Equals(MovieListModel x, MovieListModel y)
+        {
+            if (x == null || y == null)
+                return false;
+            else
+                return x.Id == y.Id;
+        }
+
+        public int GetHashCode(MovieListModel obj) => obj.Id;
+    }
+
 }

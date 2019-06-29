@@ -22,6 +22,7 @@ namespace Ch9
         public SearchResultFilter ResultFilter { get; private set; }
         public ITmdbNetworkClient TmdbNetworkClient { get; private set; }
         public ITmdbCachedSearchClient CachedSearchClient { get; private set; }
+        public UsersMovieListsService2 UsersMovieListsService2 { get; private set; }
 
         public App()
         {
@@ -29,7 +30,7 @@ namespace Ch9
             MovieGenreSettings = new MovieGenreSettings();
             ResultFilter = new SearchResultFilter(Settings, MovieGenreSettings);
             TmdbNetworkClient = new TmdbNetworkClient(Settings);
-            CachedSearchClient = new TmdbCachedSearchClient(TmdbNetworkClient);
+            CachedSearchClient = new TmdbCachedSearchClient(TmdbNetworkClient);            
 
             InitializeComponent();
             // TODO : Add content to loading page
@@ -43,6 +44,7 @@ namespace Ch9
             TmdbConfiguration = await tmdbConfigurationCache.FetchTmdbConfiguration();
 
             MovieDetailModelConfigurator = new MovieDetailModelConfigurator(TmdbConfiguration, MovieGenreSettings);
+            UsersMovieListsService2 = new UsersMovieListsService2(Settings, CachedSearchClient, MovieDetailModelConfigurator, this);
             MainPage = new NavigationPage(new MainTabbedPage());
         }
 

@@ -7,7 +7,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -24,8 +23,8 @@ namespace Ch9.Utils
     {
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
-        private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;        
-        private readonly Application _xamarinApplication;       
+        private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
+        private readonly Application _xamarinApplication;
 
         public Task<bool> Initializer { get; private set; }
 
@@ -54,34 +53,50 @@ namespace Ch9.Utils
             ISettings settings,
             ITmdbCachedSearchClient tmdbCachedSearchClient,
             IMovieDetailModelConfigurator movieDetailConfigurator,
-            IDictionary<string, object> appDictionary = null,
             Application xamarinApplication = null
             )
         {
             _settings = settings;
             _tmdbCachedSearchClient = tmdbCachedSearchClient;
-            _movieDetailConfigurator = movieDetailConfigurator;            
+            _movieDetailConfigurator = movieDetailConfigurator;
             _xamarinApplication = xamarinApplication;
+            UsersCustomLists = new ObservableCollection<MovieListModel>();
 
             Initializer = Initialize();
         }
 
-        private async Task<bool> Initialize() => await RefreshUsersCustomLists();     
+        private async Task<bool> Initialize() => await RefreshUsersCustomLists();
 
+        public async Task RefreshLists() => await RefreshUsersCustomLists();
         private async Task<bool> RefreshUsersCustomLists()
         {
             MovieListModel[] fetchedUserLists = await GetUsersLists(retries: 3, retryDelay: 1000, fromCache: false);
 
             if (fetchedUserLists != null)
             {
-                UsersCustomLists = new ObservableCollection<MovieListModel>(fetchedUserLists);
+                foreach (var list in fetchedUserLists)
+                {
+                    if (!UsersCustomLists.Select(l => l.Id).Contains(list.Id))
+                        UsersCustomLists.Add(list);
+                }
 
-                SelectedCustomList = UsersCustomLists.FirstOrDefault(x => x.Id == _settings.ActiveMovieListId) ??
-                    UsersCustomLists.FirstOrDefault();
+                foreach (var list in UsersCustomLists)
+                {
+                    if (!fetchedUserLists.Select(l => l.Id).Contains(list.Id))
+                    {
+                        if (list == SelectedCustomList)
+                            SelectedCustomList = null;
+
+                        UsersCustomLists.Remove(list);
+                    }
+                }
+
+                if (SelectedCustomList == null)
+                    SelectedCustomList = UsersCustomLists.FirstOrDefault();
                 return true;
             }
 
-            UsersCustomLists = null;
+            UsersCustomLists = new ObservableCollection<MovieListModel>();
             SelectedCustomList = null;
             return false;
         }
@@ -107,7 +122,8 @@ namespace Ch9.Utils
                         return null;
 
                     movieLists = JsonConvert.DeserializeObject<GetListsModel>(getLists.Json).MovieLists;
-                } catch { return null; };
+                }
+                catch { return null; };
 
                 var getListDetailsCollection = movieLists.Select(list => new
                 {
@@ -118,7 +134,8 @@ namespace Ch9.Utils
                 try
                 {
                     await Task.WhenAll(getListDetailsCollection.Select(element => element.ListDetailTask));
-                } catch { return null; }                
+                }
+                catch { return null; }
 
                 foreach (var listDetail in getListDetailsCollection)
                 {
@@ -140,7 +157,7 @@ namespace Ch9.Utils
                 return result.ToArray();
             }
             else
-                return null;            
+                return null;
         }
 
 
@@ -157,7 +174,7 @@ namespace Ch9.Utils
             if (!_settings.HasTmdbAccount)
                 return null;
 
-                return _settings.MovieIdsOnActiveList?.Contains(movieId);
+            return _settings.MovieIdsOnActiveList?.Contains(movieId);
         }
 
         public async Task AddMovieToUsersActiveCustomList(MovieDetailModel movie)
@@ -183,7 +200,7 @@ namespace Ch9.Utils
         }
 
         public async Task RemoveMovieFromUsersActiveCustomList(int movieId)
-        {           
+        {
             if (!_settings.HasTmdbAccount)
                 return;
 
@@ -212,7 +229,7 @@ namespace Ch9.Utils
                 return;
 
             var listToDelete = SelectedCustomList;
-            SelectedCustomList = null;                                 
+            
 
             DeleteListResult result = await _tmdbCachedSearchClient.DeleteList(_settings.ActiveMovieListId.Value, retryCount: 3, delayMilliseconds: 1000);
 
@@ -220,6 +237,7 @@ namespace Ch9.Utils
             bool success = result.HttpStatusCode.Is500Code();
             if (success)
             {
+                SelectedCustomList = null;
                 UsersCustomLists.Remove(listToDelete);
                 SelectedCustomList = UsersCustomLists.FirstOrDefault();
             }
@@ -238,7 +256,7 @@ namespace Ch9.Utils
                 await RefreshUsersCustomLists();
                 int newListId = JsonConvert.DeserializeObject<ListCrudResponseModel>(result.Json).ListId;
                 SelectedCustomList = UsersCustomLists.FirstOrDefault(x => x.Id == newListId);
-            }           
+            }
         }
 
 

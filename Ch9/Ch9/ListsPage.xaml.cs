@@ -8,35 +8,49 @@ namespace Ch9
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ListsPage : ContentPage
     {
-        public ListsPageViewModel ViewModel
+        public ListsPageViewModel3 ViewModel
         {
-            get => BindingContext as ListsPageViewModel;
+            get => BindingContext as ListsPageViewModel3;
             set => BindingContext = value;
         }
 
-        Task vMInitializer; 
+        Task vMInitializer;
 
         public ListsPage()
         {
-            ViewModel = new ListsPageViewModel(
-                ((App)Application.Current).Settings,
-                ((App)Application.Current).CachedSearchClient,
-                ((App)Application.Current).MovieDetailModelConfigurator,
-                new PageService(this));
+            //ViewModel = new ListsPageViewModel(
+            //    ((App)Application.Current).Settings,
+            //    ((App)Application.Current).CachedSearchClient,
+            //    ((App)Application.Current).MovieDetailModelConfigurator,
+            //    new PageService(this));
+
+            //ViewModel = new ListsPageViewModel2(
+            //    ((App)Application.Current).UsersMovieListsService,
+            //    ((App)Application.Current).Settings,
+            //    ((App)Application.Current).CachedSearchClient,
+            //    new PageService(this));
+
+            ViewModel = new ListsPageViewModel3(
+                    ((App)Application.Current).UsersMovieListsService2,
+                    ((App)Application.Current).Settings,
+                    ((App)Application.Current).CachedSearchClient,
+                    new PageService(this));
+
 
             vMInitializer = ViewModel.Initialize();
             InitializeComponent();
         }
 
         protected override async void OnAppearing()
-        {            
+        {
+            await vMInitializer;
             base.OnAppearing();
-            await vMInitializer;  
+            
         }
 
         private async void OnRemoveClicked(object sender, System.EventArgs e)
         {
-            await ViewModel.RemoveMovieFromList();
+            //await ViewModel.RemoveMovieFromList();
         }
     }
 }

@@ -61,14 +61,14 @@ namespace Ch9.Utils
             UsersCustomLists = new ObservableCollection<MovieListModel>();
         }
 
-        public async Task Initialize()
+        public async Task Initialize(int retryCount = 1, int delayMilliseconds = 1000, bool fromCache = false)
         {
             await UpdateCustomLists(1, 1000, false);
             if (_settings.ActiveMovieListId.HasValue)
                 SelectedCustomList = UsersCustomLists.FirstOrDefault(list => list.Id == _settings.ActiveMovieListId);
 
             if (SelectedCustomList != null)
-                await UpdateSingleCustomList(SelectedCustomList.Id, 1, 1000, false);
+                await UpdateSingleCustomList(SelectedCustomList.Id, retryCount, delayMilliseconds, fromCache);
         }
 
 
@@ -111,7 +111,29 @@ namespace Ch9.Utils
             }
         }
 
-        public async Task RemoveActiveCustomList(int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = false)
+        public async Task AddAndMakeActiveCustomList(string name, string description, int retryCount = 1, int delayMilliseconds = 1000)
+        {
+            if (!_settings.HasTmdbAccount)
+                return;
+
+            CreateListResult result = await _tmdbCachedSearchClient.CreateList(name, description, _settings.SearchLanguage ?? "en", retryCount, delayMilliseconds);
+            if (result.HttpStatusCode.IsSuccessCode())
+            {
+                ListCrudResponseModel newListResponse = JsonConvert.DeserializeObject<ListCrudResponseModel>(result.Json);
+
+                MovieListModel newList = new MovieListModel
+                {
+                    Id = newListResponse.ListId,
+                    Name = name,
+                    Description = description,
+                };
+
+                UsersCustomLists.Add(newList);
+                SelectedCustomList = newList;
+            }
+        }
+
+        public async Task RemoveActiveCustomList(int retryCount = 0, int delayMilliseconds = 1000)
         {
             if (!_settings.HasTmdbAccount)
             {
@@ -158,6 +180,19 @@ namespace Ch9.Utils
                 HydrateMovieList(updateTarget, movieListDetails);
             }
             catch { }
+        }
+
+        public bool? CheckIfMovieIsOnActiveList(int movieId)
+        {
+            if (!_settings.HasTmdbAccount)
+                return null;
+
+
+            if (SelectedCustomList == null)
+                return null;
+            else
+                return SelectedCustomList.Movies.FirstOrDefault(movie => movie.Id == movieId) != null;
+
         }
 
         private void HydrateMovieList(MovieListModel target, MovieListModel source)

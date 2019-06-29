@@ -33,6 +33,7 @@ namespace Ch9
         // TODO remove this
         private readonly ListsPageViewModel _prevoiusPageViewModel;
         private readonly ListsPageViewModel2 _prevoiusPageViewModel2;
+        private readonly ListsPageViewModel3 _prevoiusPageViewModel3;
 
 
         public ICommand OkCommand { get; set; }
@@ -59,6 +60,18 @@ namespace Ch9
             {
                 await PageService.PopCurrent();
                 await _prevoiusPageViewModel2.AddList(this);
+            });
+        }
+
+        public AddListPageViewModel(ListsPageViewModel3 previousPageViewModel3)
+        {
+            _prevoiusPageViewModel3 = previousPageViewModel3;
+            Description = string.Empty;
+            Accepted = false;
+            OkCommand = new Command(async () =>
+            {
+                await PageService.PopCurrent();
+                await _prevoiusPageViewModel3.AddList(this);
             });
         }
 

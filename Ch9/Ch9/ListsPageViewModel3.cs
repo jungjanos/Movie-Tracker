@@ -68,6 +68,12 @@ namespace Ch9
             });
 
             RemoveListCommand = new Command(async () => await UsersMovieListsService2.RemoveActiveCustomList());
+            AddListCommand = new Command(async () => await _pageService.PushAsync(new AddListPageViewModel(this)));
+        }
+
+        public async Task AddList(AddListPageViewModel addListPageViewModel)
+        {
+            await UsersMovieListsService2.AddAndMakeActiveCustomList(addListPageViewModel.Name, addListPageViewModel.Description);
         }
 
         public async Task Initialize() => await UsersMovieListsService2.Initialize();

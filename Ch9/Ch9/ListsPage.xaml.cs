@@ -18,22 +18,9 @@ namespace Ch9
 
         public ListsPage()
         {
-            //ViewModel = new ListsPageViewModel(
-            //    ((App)Application.Current).Settings,
-            //    ((App)Application.Current).CachedSearchClient,
-            //    ((App)Application.Current).MovieDetailModelConfigurator,
-            //    new PageService(this));
-
-            //ViewModel = new ListsPageViewModel2(
-            //    ((App)Application.Current).UsersMovieListsService,
-            //    ((App)Application.Current).Settings,
-            //    ((App)Application.Current).CachedSearchClient,
-            //    new PageService(this));
-
             ViewModel = new ListsPageViewModel3(
                     ((App)Application.Current).UsersMovieListsService2,
-                    ((App)Application.Current).Settings,
-                    ((App)Application.Current).CachedSearchClient,
+                    ((App)Application.Current).Settings,                    
                     new PageService(this));
 
 

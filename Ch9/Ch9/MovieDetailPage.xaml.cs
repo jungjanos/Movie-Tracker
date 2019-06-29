@@ -26,6 +26,7 @@ namespace Ch9
                 movie,
                 ((App)Application.Current).Settings,
                 ((App)Application.Current).CachedSearchClient,
+                ((App)Application.Current).UsersMovieListsService2,
                 ((App)Application.Current).MovieDetailModelConfigurator,
                 new PageService(this)
                 );

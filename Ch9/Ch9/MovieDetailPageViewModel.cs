@@ -19,12 +19,13 @@ namespace Ch9
         public MovieDetailModel Movie { get; set; }
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
+        private readonly UsersMovieListsService2 _movieListsService2;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IPageService _pageService;
         private readonly Task _fetchGallery;
         private readonly ReviewsPageViewModel _reviewsPageViewModel;
 
-        public bool? MovieIsAlreadyOnActiveList => _settings.MovieIdsOnActiveList?.Contains(Movie.Id);
+        public bool? MovieIsAlreadyOnActiveList => _movieListsService2.CheckIfMovieIsOnActiveList(Movie.Id);
         private bool _movieHasReviews;
         public bool MovieHasReviews
         {
@@ -58,12 +59,14 @@ namespace Ch9
             MovieDetailModel movie,
             ISettings settings,
             ITmdbCachedSearchClient cachedSearchClient,
+            UsersMovieListsService2 movieListsService2,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPageService pageService)
         {
             Movie = movie;
             _settings = settings;
             _cachedSearchClient = cachedSearchClient;
+            _movieListsService2 = movieListsService2;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _pageService = pageService;
             _fetchGallery = UpdateImageDetailCollection();
@@ -123,7 +126,7 @@ namespace Ch9
 
         public async Task OnAddToListCommand()
         {
-            if (MovieIsAlreadyOnActiveList == null || _settings.ActiveMovieListId == null)
+            if (MovieIsAlreadyOnActiveList == null /* || _settings.ActiveMovieListId == null*/)
             {
                 await _pageService.DisplayAlert("Info", "You have to select a list to be able to add movies to it", "Cancel");
                 return;
@@ -131,30 +134,15 @@ namespace Ch9
 
             if (MovieIsAlreadyOnActiveList == true)
             {
-                RemoveMovieResult result = await _cachedSearchClient.RemoveMovie(_settings.ActiveMovieListId.Value, Movie.Id, retryCount: 3, delayMilliseconds: 1000);
-
-                if (result.HttpStatusCode.IsSuccessCode())
-                {
-                    _settings.MovieIdsOnActiveList = _settings.MovieIdsOnActiveList.Except(Enumerable.Repeat(Movie.Id, 1)).ToArray();
-                    OnPropertyChanged(nameof(MovieIsAlreadyOnActiveList));                    
-                }
-                else
-                    await _pageService.DisplayAlert("Error", "Could not remove item from active list. Try refreshing the lists first or use the TMDB webpage directly", "Ok");
-
+                await _movieListsService2.RemoveMovieFromActiveList(Movie.Id);
+                OnPropertyChanged(nameof(MovieIsAlreadyOnActiveList));
                 return;
             }
 
             if (MovieIsAlreadyOnActiveList == false)
-            {
-                AddMovieResult result = await _cachedSearchClient.AddMovie(_settings.ActiveMovieListId.Value, Movie.Id, retryCount: 3, delayMilliseconds: 1000);
-
-                if (result.HttpStatusCode.IsSuccessCode())
-                {
-                    _settings.MovieIdsOnActiveList = _settings.MovieIdsOnActiveList.Union(Enumerable.Repeat(Movie.Id, 1)).ToArray();
-                    OnPropertyChanged(nameof(MovieIsAlreadyOnActiveList));
-                }
-                else
-                    await _pageService.DisplayAlert("Error", "Could not add item to the active list. Try refreshing the lists first or use the TMDB webpage directly", "Ok");
+            {            
+                await _movieListsService2.AddMovieToActiveList(Movie);
+                OnPropertyChanged(nameof(MovieIsAlreadyOnActiveList));
             }
         }
 

@@ -30,38 +30,11 @@ namespace Ch9
 
         public bool Accepted { get; private set; }
 
-        // TODO remove this
-        private readonly ListsPageViewModel _prevoiusPageViewModel;
-        private readonly ListsPageViewModel2 _prevoiusPageViewModel2;
+
         private readonly ListsPageViewModel3 _prevoiusPageViewModel3;
 
 
         public ICommand OkCommand { get; set; }
-
-        // TODO remove this
-        public AddListPageViewModel(ListsPageViewModel previousPageViewModel)
-        {
-            _prevoiusPageViewModel = previousPageViewModel;
-            Description = string.Empty;
-            Accepted = false;            
-            OkCommand = new Command(async () => 
-            {
-                await PageService.PopCurrent();
-                await _prevoiusPageViewModel.AddList(this);
-            });
-        }
-
-        public AddListPageViewModel(ListsPageViewModel2 previousPageViewModel2)
-        {
-            _prevoiusPageViewModel2 = previousPageViewModel2;
-            Description = string.Empty;
-            Accepted = false;
-            OkCommand = new Command(async () =>
-            {
-                await PageService.PopCurrent();
-                await _prevoiusPageViewModel2.AddList(this);
-            });
-        }
 
         public AddListPageViewModel(ListsPageViewModel3 previousPageViewModel3)
         {

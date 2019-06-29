@@ -45,8 +45,7 @@ namespace Ch9
 
         public ListsPageViewModel3(
             UsersMovieListsService2 usersMovieListsService2,
-            ISettings settings,
-            ITmdbCachedSearchClient cachedSearchClient,
+            ISettings settings,            
             IPageService pageService)
         {
             _pageService = pageService;

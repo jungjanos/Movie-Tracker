@@ -158,6 +158,42 @@ namespace Ch9.Utils
             }
         }
 
+        public async Task RemoveMovieFromActiveList(int movieId, int retryCount = 1, int delayMilliseconds = 1000)
+        {
+            if (!_settings.HasTmdbAccount)
+                return;
+
+            if (SelectedCustomList == null)
+                return;
+
+            var movieToRemove = SelectedCustomList.Movies.FirstOrDefault(movie => movie.Id == movieId);
+            if (movieToRemove == null)
+                return;
+
+            RemoveMovieResult result = await _tmdbCachedSearchClient.RemoveMovie(SelectedCustomList.Id, movieId, retryCount, delayMilliseconds);
+
+            if (result.HttpStatusCode.IsSuccessCode())
+                SelectedCustomList.Movies.Remove(movieToRemove);
+        }
+
+        public async Task AddMovieToActiveList(MovieDetailModel movie, int retryCount = 1, int delayMilliseconds = 1000)
+        {
+            if (!_settings.HasTmdbAccount)
+                return;
+
+            if (SelectedCustomList == null)
+                return;
+
+            if (CheckIfMovieIsOnActiveList(movie.Id) == true)
+                return;
+
+            AddMovieResult result = await _tmdbCachedSearchClient.AddMovie(SelectedCustomList.Id, movie.Id, retryCount, delayMilliseconds);
+
+            if (result.HttpStatusCode.IsSuccessCode())
+                SelectedCustomList.Movies.Add(movie);
+        }
+
+
         public async Task UpdateSingleCustomList(int listId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = false)
         {
             if (!_settings.HasTmdbAccount)

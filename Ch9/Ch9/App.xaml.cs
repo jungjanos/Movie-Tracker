@@ -44,7 +44,7 @@ namespace Ch9
             TmdbConfiguration = await tmdbConfigurationCache.FetchTmdbConfiguration();
 
             MovieDetailModelConfigurator = new MovieDetailModelConfigurator(TmdbConfiguration, MovieGenreSettings);
-            UsersMovieListsService2 = new UsersMovieListsService2(Settings, CachedSearchClient, MovieDetailModelConfigurator, this);
+            UsersMovieListsService2 = new UsersMovieListsService2(Settings, CachedSearchClient, MovieDetailModelConfigurator);
             MainPage = new NavigationPage(new MainTabbedPage());
         }
 

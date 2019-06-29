@@ -16,8 +16,7 @@ namespace Ch9.Utils
     {
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
-        private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
-        private readonly Application _xamarinApplication;
+        private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;        
         private readonly Command _refreshActiveCustomListCommand;
 
         private ObservableCollection<MovieListModel> _usersCustomLists;
@@ -44,13 +43,11 @@ namespace Ch9.Utils
         public UsersMovieListsService2(
             ISettings settings,
             ITmdbCachedSearchClient tmdbCachedSearchClient,
-            IMovieDetailModelConfigurator movieDetailConfigurator,
-            Application xamarinApplication = null)
+            IMovieDetailModelConfigurator movieDetailConfigurator)
         {
             _settings = settings;
             _tmdbCachedSearchClient = tmdbCachedSearchClient;
-            _movieDetailConfigurator = movieDetailConfigurator;
-            _xamarinApplication = xamarinApplication;
+            _movieDetailConfigurator = movieDetailConfigurator;            
             _refreshActiveCustomListCommand = new Command(async () =>
             {
                 if (SelectedCustomList != null)

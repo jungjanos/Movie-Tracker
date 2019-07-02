@@ -13,9 +13,7 @@
                      VerticalOptions="StartAndExpand"
                      Padding="5,0,5,5">
 
-            <Label Text="{Binding DebugVerison}"/>
-            
-            <Label Text="Active list " VerticalTextAlignment="Center"/>
+            <Label Text="{Binding DebugVerison}"/>                      
 
             <Grid>
                 <Grid.RowDefinitions>

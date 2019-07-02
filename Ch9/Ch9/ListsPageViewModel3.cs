@@ -12,7 +12,6 @@ namespace Ch9
 {
     public class ListsPageViewModel3 : INotifyPropertyChanged
     {
-        private readonly ISettings _settings;
         private IPageService _pageService;
 
         public string DebugVerison { get; } = "0.0.27";
@@ -53,12 +52,10 @@ namespace Ch9
 
         public ListsPageViewModel3(
             UsersMovieListsService2 usersMovieListsService2,
-            ISettings settings,
             IPageService pageService)
         {
             _pageService = pageService;
             UsersMovieListsService2 = usersMovieListsService2;
-            _settings = settings;
 
             RefreshCommand = new Command(async () =>
             {

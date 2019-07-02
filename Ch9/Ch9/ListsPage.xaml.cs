@@ -19,8 +19,7 @@ namespace Ch9
         public ListsPage()
         {
             ViewModel = new ListsPageViewModel3(
-                    ((App)Application.Current).UsersMovieListsService2,
-                    ((App)Application.Current).Settings,                    
+                    ((App)Application.Current).UsersMovieListsService2,                                    
                     new PageService(this));
 
             vMInitializer = ViewModel.Initialize();

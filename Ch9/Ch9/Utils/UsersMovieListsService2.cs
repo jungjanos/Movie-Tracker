@@ -299,14 +299,13 @@ namespace Ch9.Utils
             target.Name = source.Name;
             target.PosterPath = source.PosterPath;
 
+            _movieDetailConfigurator.SetImageSrc(source.Movies);
+            _movieDetailConfigurator.SetGenreNamesFromGenreIds(source.Movies);
+
             if (target.Movies == null)
                 target.Movies = source.Movies;
             else
-            {
-                _movieDetailConfigurator.SetImageSrc(source.Movies);
-                _movieDetailConfigurator.SetGenreNamesFromGenreIds(source.Movies);
                 Utils.UpdateListviewCollection(target.Movies, source.Movies, new MovieModelComparer());
-            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -126,14 +126,20 @@ namespace Ch9
 
         public async Task OnAddToListCommand()
         {
+            if (!_settings.HasTmdbAccount)
+            {
+                await _pageService.DisplayAlert("Info", "You have to log in with a user account to use this function", "Ok");
+                return;
+            }
+
+            if (MovieIsAlreadyOnActiveList == null)
+            {
+                await _pageService.DisplayAlert("Info", "You have to select a valid public list to be able to add movies to it", "Cancel");
+                return;
+            }
+
             try
             {
-                if (MovieIsAlreadyOnActiveList == null)
-                {
-                    await _pageService.DisplayAlert("Info", "You have to select a valid public list to be able to add movies to it", "Cancel");
-                    return;
-                }
-
                 if (MovieIsAlreadyOnActiveList == true)
                 {
                     await _movieListsService2.RemoveMovieFromActiveList(Movie.Id);
@@ -152,9 +158,15 @@ namespace Ch9
 
         public async Task OnToggleFavoriteCommand()
         {
+            if (!_settings.HasTmdbAccount)
+            {
+                await _pageService.DisplayAlert("Info", "You have to log in with a user account to use this function", "Ok");
+                return;
+            }
+
             bool desiredState = !MovieStates.IsFavorite;
 
-            UpdateFavoriteListResult response = await _cachedSearchClient.UpdateFavoriteList("movie", desiredState, Movie.Id, 3, 1000);
+            UpdateFavoriteListResult response = await _cachedSearchClient.UpdateFavoriteList("movie", desiredState, Movie.Id, 1, 1000);
 
             if (response.HttpStatusCode.IsSuccessCode())
             {
@@ -165,7 +177,7 @@ namespace Ch9
                 await _pageService.DisplayAlert("Network error", $"Could not change favorite state, server responded with: {response.HttpStatusCode}", "Ok");
         }
         
-        public async Task FetchMovieStates()
+        private async Task FetchMovieStates()
         {
             GetAccountMovieStatesResult response = await _cachedSearchClient.GetAccountMovieStates(Movie.Id, guestSessionId: null, retryCount: 3, delayMilliseconds: 1000);
             if (response.HttpStatusCode.IsSuccessCode())

@@ -5,7 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              Title="Lists"
-             x:Class="Ch9.ListsPage">
+             x:Class="Ch9.ListsPage"
+             x:Name="listsPage">
     <ContentPage.Content>
 
         <StackLayout Orientation="Vertical" 
@@ -31,8 +32,7 @@
                     x:Name="viewedListPicker"
                                     ItemsSource="{Binding Path=UsersMovieListsService2.UsersCustomLists, Mode=TwoWay}"
                                     ItemDisplayBinding="{Binding Name, Mode=TwoWay}"
-                                    SelectedItem="{Binding Path=UsersMovieListsService2.SelectedCustomList, Mode=TwoWay}"
-                                    BackgroundColor="Beige"/>
+                                    SelectedItem="{Binding Path=UsersMovieListsService2.SelectedCustomList, Mode=TwoWay}"/>
 
                 <Button Grid.Row="0" Grid.Column="1"
                         Command="{Binding RemoveListCommand}">
@@ -66,10 +66,10 @@
 
             <ListView HasUnevenRows="True"
                       HorizontalOptions="Start"
-                      VerticalOptions="StartAndExpand"
-                      BackgroundColor="Aqua"
+                      VerticalOptions="StartAndExpand"                      
                       ItemsSource="{Binding Source={x:Reference viewedListPicker}, Path=SelectedItem.Movies, Mode=TwoWay}"
                       SelectedItem="{Binding SelectedMovie, Mode=TwoWay}"
+                      ItemTapped="MovieListEntryTapped"
                       IsPullToRefreshEnabled="True"
                       IsRefreshing="{Binding IsRefreshing}"
                       RefreshCommand="{Binding RefreshListCommand}">
@@ -77,6 +77,9 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
+                            <ViewCell.ContextActions>
+                                <MenuItem Command="{Binding Path=BindingContext.RemoveMovieFromListCommand, Source={x:Reference Name=listsPage}}" CommandParameter="{Binding .}" Text="Remove" IsDestructive="True"/>
+                            </ViewCell.ContextActions>
                             <StackLayout Orientation="Horizontal" Padding="5">
 
                                 <Image>
@@ -102,7 +105,7 @@
             </ListView>
 
 
-            <Grid VerticalOptions="End" BackgroundColor="LightGray">
+            <!--<Grid VerticalOptions="End" BackgroundColor="LightGray">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
@@ -117,7 +120,7 @@
                         Command="{Binding MovieInfoCommand}"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
-                        <!--<ion-icon name="information-circle"></ion-icon>-->
+                        --><!--<ion-icon name="information-circle"></ion-icon>--><!--
                         <FontImageSource Glyph="&#xf1a0;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="44" 
@@ -128,7 +131,7 @@
                 <Button Grid.Row="0" Grid.Column="1"                        
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
-                        <!--checkmark-circle-->
+                        --><!--checkmark-circle--><!--
                         <FontImageSource Glyph="&#xf2bb;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="44" 
@@ -140,7 +143,7 @@
                         Command="{Binding RemoveMovieFromListCommand}"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
-                        <!--trash-->
+                        --><!--trash--><!--
                         <FontImageSource Glyph="&#xf398;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="44" 
@@ -151,7 +154,7 @@
                 <Button Grid.Row="0" Grid.Column="3"                        
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
-                        <!--help-circle-->
+                        --><!--help-circle--><!--
                         <FontImageSource Glyph="&#xf198;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="44" 
@@ -159,7 +162,7 @@
                     </Button.ImageSource>
                 </Button>
 
-            </Grid>
+            </Grid>-->
 
         </StackLayout>
         

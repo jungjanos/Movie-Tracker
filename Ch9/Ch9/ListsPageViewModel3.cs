@@ -44,7 +44,11 @@ namespace Ch9
 
         public Command RefreshListCommand { get; private set; }
         public Command MovieInfoCommand { get; private set; }
-        public Command RemoveMovieFromListCommand { get; private set; }
+        public Command RemoveMovieFromListCommand { get; private set; }        
+
+        public Command RemoveMovieCommand { get; private set; }
+
+        public Command MovieListEntryTappedCommand { get; private set; }
 
 
         public ListsPageViewModel3(
@@ -108,6 +112,15 @@ namespace Ch9
             });
 
             AddListCommand = new Command(async () => await _pageService.PushAsync(new AddListPageViewModel(this)));
+
+            RemoveMovieFromListCommand = new Command<MovieDetailModel>(async movie => {
+                try
+                {
+                    await UsersMovieListsService2.RemoveMovieFromActiveList(movie.Id);
+                } catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Service responded with: {ex.Message}", "Ok"); }
+            });
+
+            MovieListEntryTappedCommand = new Command<MovieDetailModel>(async movie => await _pageService.PushAsync(movie));
         }
 
         public async Task AddList(AddListPageViewModel addListPageViewModel)

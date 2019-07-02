@@ -33,5 +33,8 @@ namespace Ch9
             base.OnAppearing();
             
         }
+
+        private void MovieListEntryTapped(object sender, ItemTappedEventArgs e) => ViewModel.MovieListEntryTappedCommand.Execute(e.Item);
+
     }
 }

@@ -126,24 +126,28 @@ namespace Ch9
 
         public async Task OnAddToListCommand()
         {
-            if (MovieIsAlreadyOnActiveList == null /* || _settings.ActiveMovieListId == null*/)
+            try
             {
-                await _pageService.DisplayAlert("Info", "You have to select a list to be able to add movies to it", "Cancel");
-                return;
-            }                
+                if (MovieIsAlreadyOnActiveList == null)
+                {
+                    await _pageService.DisplayAlert("Info", "You have to select a valid public list to be able to add movies to it", "Cancel");
+                    return;
+                }
 
-            if (MovieIsAlreadyOnActiveList == true)
-            {
-                await _movieListsService2.RemoveMovieFromActiveList(Movie.Id);
-                OnPropertyChanged(nameof(MovieIsAlreadyOnActiveList));
-                return;
-            }
+                if (MovieIsAlreadyOnActiveList == true)
+                {
+                    await _movieListsService2.RemoveMovieFromActiveList(Movie.Id);
+                    OnPropertyChanged(nameof(MovieIsAlreadyOnActiveList));
+                    return;
+                }
 
-            if (MovieIsAlreadyOnActiveList == false)
-            {            
-                await _movieListsService2.AddMovieToActiveList(Movie);
-                OnPropertyChanged(nameof(MovieIsAlreadyOnActiveList));
+                if (MovieIsAlreadyOnActiveList == false)
+                {
+                    await _movieListsService2.AddMovieToActiveList(Movie);
+                    OnPropertyChanged(nameof(MovieIsAlreadyOnActiveList));
+                }
             }
+            catch (Exception ex) { await _pageService.DisplayAlert("Error",$"Service responded with: {ex.Message}","Ok"); }            
         }
 
         public async Task OnToggleFavoriteCommand()

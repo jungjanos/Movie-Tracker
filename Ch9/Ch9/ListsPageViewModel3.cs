@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace Ch9
         {
             get => _selectedMovie;
             set => SetProperty(ref _selectedMovie, value);
-        }               
+        }
 
         private bool _isRefreshing = false;
         public bool IsRefreshing
@@ -45,34 +46,77 @@ namespace Ch9
 
         public ListsPageViewModel3(
             UsersMovieListsService2 usersMovieListsService2,
-            ISettings settings,            
+            ISettings settings,
             IPageService pageService)
         {
             _pageService = pageService;
             UsersMovieListsService2 = usersMovieListsService2;
             _settings = settings;
 
-            RefreshCommand = new Command(async () => {
+            RefreshCommand = new Command(async () =>
+            {
                 IsRefreshing = true;
-                await UsersMovieListsService2.UpdateCustomLists();
+                try
+                {
+                    await UsersMovieListsService2.UpdateCustomLists();
+                }
+                catch (Exception ex)
+                {
+                    await _pageService.DisplayAlert("Error", $"Could not update custom lists: {ex.Message}", "Ok");
+                }
+                
                 IsRefreshing = false;
             });
 
             RefreshListCommand = new Command(async () =>
-            {
-                IsRefreshing = true;
+            {                
                 if (UsersMovieListsService2.SelectedCustomList != null)
-                    await UsersMovieListsService2.UpdateSingleCustomList(UsersMovieListsService2.SelectedCustomList.Id);
-                IsRefreshing = false;
+                {
+                    IsRefreshing = true;
+                    try
+                    {
+                        await UsersMovieListsService2.UpdateSingleCustomList(UsersMovieListsService2.SelectedCustomList.Id);
+                    }
+                    catch (Exception ex)
+                    {
+                        await _pageService.DisplayAlert("Error", $"could not refresh list: {ex.Message}", "Ok");
+                    }
+                    IsRefreshing = false;
+                }});
+
+            RemoveListCommand = new Command(async () =>
+            {
+                if (UsersMovieListsService2.SelectedCustomList != null)
+                {
+                    if(UsersMovieListsService2.SelectedCustomList.Movies?.Count > 0)
+                    {
+                        if (await _pageService.DisplayActionSheet("Delete nonempty list?", "Cancel", "Remove") != "Remove")
+                            return;
+                    }
+                    try
+                    {
+                        await UsersMovieListsService2.RemoveActiveCustomList();
+                    }
+                    catch(Exception ex)
+                    {
+                        await _pageService.DisplayAlert("Error", $"Could not remove active list: {ex.Message}", "Ok");
+                    }
+                }
             });
 
-            RemoveListCommand = new Command(async () => await UsersMovieListsService2.RemoveActiveCustomList());
             AddListCommand = new Command(async () => await _pageService.PushAsync(new AddListPageViewModel(this)));
         }
 
         public async Task AddList(AddListPageViewModel addListPageViewModel)
         {
-            await UsersMovieListsService2.AddAndMakeActiveCustomList(addListPageViewModel.Name, addListPageViewModel.Description);
+            try
+            {
+                await UsersMovieListsService2.AddAndMakeActiveCustomList(addListPageViewModel.Name, addListPageViewModel.Description);
+            }
+            catch (Exception ex)
+            {
+                await _pageService.DisplayAlert("Error", $"Could not add list: {ex.Message}", "Ok");
+            }
         }
 
         public async Task Initialize() => await UsersMovieListsService2.Initialize();

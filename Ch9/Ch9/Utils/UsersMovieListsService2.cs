@@ -16,7 +16,7 @@ namespace Ch9.Utils
     {
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
-        private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;        
+        private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
         private readonly Command _refreshActiveCustomListCommand;
 
         private ObservableCollection<MovieListModel> _usersCustomLists;
@@ -47,40 +47,59 @@ namespace Ch9.Utils
         {
             _settings = settings;
             _tmdbCachedSearchClient = tmdbCachedSearchClient;
-            _movieDetailConfigurator = movieDetailConfigurator;            
+            _movieDetailConfigurator = movieDetailConfigurator;
             _refreshActiveCustomListCommand = new Command(async () =>
             {
                 if (SelectedCustomList != null)
-                    await UpdateSingleCustomList(SelectedCustomList.Id);
+                {
+                    try
+                    {
+                        await UpdateSingleCustomList(SelectedCustomList.Id);
+                    } catch { }                    
+                }
+                    
             });
-
 
             UsersCustomLists = new ObservableCollection<MovieListModel>();
         }
 
+        /// <summary>
+        /// Not allowed to throw. 
+        /// Awaiting this method must be the first call on the object after constructor
+        /// Fetches the list of custom movie lists. 
+        /// If the user had previously selected a custom movie list as active, that list is queried for detailed info
+        /// </summary>        
         public async Task Initialize(int retryCount = 1, int delayMilliseconds = 1000, bool fromCache = false)
         {
-            await UpdateCustomLists(1, 1000, false);
-            if (_settings.ActiveMovieListId.HasValue)
-                SelectedCustomList = UsersCustomLists.FirstOrDefault(list => list.Id == _settings.ActiveMovieListId);
+            try
+            {
+                await UpdateCustomLists(1, 1000, false);
+                if (_settings.ActiveMovieListId.HasValue)
+                    SelectedCustomList = UsersCustomLists.FirstOrDefault(list => list.Id == _settings.ActiveMovieListId);
 
-            if (SelectedCustomList != null)
-                await UpdateSingleCustomList(SelectedCustomList.Id, retryCount, delayMilliseconds, fromCache);
+                if (SelectedCustomList != null)
+                    await UpdateSingleCustomList(SelectedCustomList.Id, retryCount, delayMilliseconds, fromCache);
+            } catch { }            
         }
 
 
-        private void ClearList()
+        private void ClearLists()
         {
             UsersCustomLists?.Clear();
             SelectedCustomList = null;
         }
 
+        /// <summary>
+        /// Can throw. 
+        /// Tries to query the TMDB server for an update of the list of the users movie lists
+        /// If fails the client side collection of the list of movie lists is reset.
+        /// </summary>        
         public async Task UpdateCustomLists(int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = false)
         {
             if (!_settings.HasTmdbAccount)
             {
-                ClearList();
-                return;
+                ClearLists();
+                throw new Exception("Account error: user is not signed in");
             }
 
             try
@@ -89,8 +108,8 @@ namespace Ch9.Utils
 
                 if (!getLists.HttpStatusCode.IsSuccessCode())
                 {
-                    ClearList();
-                    return;
+                    ClearLists();
+                    throw new Exception($"When trying to fetch user's custom lists, server responded with error code: {getLists.HttpStatusCode}");
                 }
 
                 MovieListModel[] movieLists = JsonConvert.DeserializeObject<GetListsModel>(getLists.Json).MovieLists;
@@ -102,16 +121,24 @@ namespace Ch9.Utils
                 if (selectedListBackup != null)
                     SelectedCustomList = UsersCustomLists.Contains(selectedListBackup) ? selectedListBackup : UsersCustomLists.FirstOrDefault();
             }
-            catch
+            catch (Exception ex)
             {
-                ClearList();
+                ClearLists();
+                throw new Exception($"Exception happened when trying to fetch user's custom lists. Message: {ex.Message}", ex);
             }
         }
 
+        /// <summary>
+        /// Can throw. 
+        /// Tries to create a new public custom movie list on the TMDB server. 
+        /// If successfull, the new list is added to the client side list collection and it is made active. 
+        /// </summary>
+        /// <param name="name">list name</param>
+        /// <param name="description">optional: list description</param>
         public async Task AddAndMakeActiveCustomList(string name, string description, int retryCount = 1, int delayMilliseconds = 1000)
         {
             if (!_settings.HasTmdbAccount)
-                return;
+                throw new Exception("Account error: user is not signed in");
 
             CreateListResult result = await _tmdbCachedSearchClient.CreateList(name, description, _settings.SearchLanguage ?? "en", retryCount, delayMilliseconds);
             if (result.HttpStatusCode.IsSuccessCode())
@@ -128,22 +155,27 @@ namespace Ch9.Utils
                 UsersCustomLists.Add(newList);
                 SelectedCustomList = newList;
             }
+            else
+                throw new Exception($"Server responded with {result.HttpStatusCode}");
         }
 
-        public async Task RemoveActiveCustomList(int retryCount = 0, int delayMilliseconds = 1000)
+        /// <summary>
+        /// Can thow. 
+        /// Tries to remove the currently selected movie list
+        /// </summary>
+        public async Task RemoveActiveCustomList(int retryCount = 1, int delayMilliseconds = 1000)
         {
             if (!_settings.HasTmdbAccount)
             {
-                ClearList();
-                return;
+                ClearLists();
+                throw new Exception("Account error: user is not signed in");
             }
 
             if (SelectedCustomList == null)
-                return;
+                throw new Exception($"Error when trying to remove active custom list: there is no list selected");
 
             var listToDelete = SelectedCustomList;
-
-            DeleteListResult result = await _tmdbCachedSearchClient.DeleteList(SelectedCustomList.Id, retryCount: 1, delayMilliseconds: 1000);
+            DeleteListResult result = await _tmdbCachedSearchClient.DeleteList(SelectedCustomList.Id, retryCount, delayMilliseconds);
 
             // Tmdb Web API has a glitch here: Http.500 denotes "success" here...
             bool success = result.HttpStatusCode.Is500Code();
@@ -153,41 +185,61 @@ namespace Ch9.Utils
                 UsersCustomLists.Remove(listToDelete);
                 SelectedCustomList = UsersCustomLists.FirstOrDefault();
             }
+            else
+                throw new Exception($"Server responded with error code: {result.HttpStatusCode}");
         }
 
+        /// <summary>
+        /// Can throw. 
+        /// Tries to remove a movie from the currently selected custom movie list
+        /// </summary>
         public async Task RemoveMovieFromActiveList(int movieId, int retryCount = 1, int delayMilliseconds = 1000)
         {
             if (!_settings.HasTmdbAccount)
-                return;
+                throw new Exception("Account error: user is not signed in");
 
             if (SelectedCustomList == null)
-                return;
+                throw new Exception("Error when trying to remove movie from active list: no custom list is selected");
+
+            if (SelectedCustomList.Movies == null)
+                throw new Exception("Error when trying to remove movie from active list: selected custom list is not a valid public list");
 
             var movieToRemove = SelectedCustomList.Movies.FirstOrDefault(movie => movie.Id == movieId);
             if (movieToRemove == null)
-                return;
+                throw new Exception("Error when trying to remove movie from active list: to be removed movie is invalid or not on the list");
 
             RemoveMovieResult result = await _tmdbCachedSearchClient.RemoveMovie(SelectedCustomList.Id, movieId, retryCount, delayMilliseconds);
 
             if (result.HttpStatusCode.IsSuccessCode())
                 SelectedCustomList.Movies.Remove(movieToRemove);
+            else
+                throw new Exception($"Error when trying to remove movie from active list, server responded with error code: {result.HttpStatusCode}");
         }
 
+        /// <summary>
+        /// Can throw. 
+        /// Tries to add a movie to the currently selected custom movie list
+        /// </summary>
         public async Task AddMovieToActiveList(MovieDetailModel movie, int retryCount = 1, int delayMilliseconds = 1000)
         {
             if (!_settings.HasTmdbAccount)
-                return;
+                throw new Exception("Account error: user is not signed in");
 
             if (SelectedCustomList == null)
-                return;
+                throw new Exception("Error when trying to add movie to active list: no custom list is selected");
+
+            if (SelectedCustomList.Movies == null)
+                throw new Exception("Error when trying to add movie to active list: selected custom list is not a valid public list");
 
             if (CheckIfMovieIsOnActiveList(movie.Id) == true)
-                return;
+                throw new Exception("Error when trying to add movie to active list: to be added movie is already on the list");
 
             AddMovieResult result = await _tmdbCachedSearchClient.AddMovie(SelectedCustomList.Id, movie.Id, retryCount, delayMilliseconds);
 
             if (result.HttpStatusCode.IsSuccessCode())
                 SelectedCustomList.Movies.Add(movie);
+            else
+                throw new Exception($"Error when trying to add movie to active list, server responded with error code: {result.HttpStatusCode}");
         }
 
 
@@ -195,37 +247,37 @@ namespace Ch9.Utils
         {
             if (!_settings.HasTmdbAccount)
             {
-                ClearList();
-                return;
+                ClearLists();
+                throw new Exception("Account error: user is not signed in");
             }
 
             MovieListModel updateTarget = UsersCustomLists.FirstOrDefault(list => list.Id == listId);
             if (updateTarget == null)
-                return;
+                throw new Exception($"Error when trying to update active movie list: couldn't find the to target list with id={listId} in your custom lists");
 
-            try
-            {
-                GetListDetailsResult listDetailResponse = await _tmdbCachedSearchClient.GetListDetails(listId, _settings.SearchLanguage, retryCount, delayMilliseconds, fromCache);
-                if (!listDetailResponse.HttpStatusCode.IsSuccessCode())
-                    return;
+            GetListDetailsResult listDetailResponse = await _tmdbCachedSearchClient.GetListDetails(listId, _settings.SearchLanguage, retryCount, delayMilliseconds, fromCache);
+            if (!listDetailResponse.HttpStatusCode.IsSuccessCode())
+                throw new Exception($"Error when trying to update active movie list with id={listId}. Server responded with {listDetailResponse.HttpStatusCode} code");
 
-                MovieListModel movieListDetails = JsonConvert.DeserializeObject<MovieListModel>(listDetailResponse.Json);
-                HydrateMovieList(updateTarget, movieListDetails);
-            }
-            catch { }
+            MovieListModel movieListDetails = JsonConvert.DeserializeObject<MovieListModel>(listDetailResponse.Json);
+            HydrateMovieList(updateTarget, movieListDetails);
         }
 
+        /// <summary>
+        /// Not allowed to throw. 
+        /// Returns null if user is not logged in or no custom movie list is currently selected. 
+        /// Returns false if the queried movie is not on the active list. 
+        /// Returns true if the queried movie is on the active list. 
+        /// </summary> 
         public bool? CheckIfMovieIsOnActiveList(int movieId)
         {
             if (!_settings.HasTmdbAccount)
                 return null;
 
-
             if (SelectedCustomList == null)
                 return null;
             else
-                return SelectedCustomList.Movies.FirstOrDefault(movie => movie.Id == movieId) != null;
-
+                return SelectedCustomList.Movies?.FirstOrDefault(movie => movie.Id == movieId) != null;
         }
 
         private void HydrateMovieList(MovieListModel target, MovieListModel source)

@@ -56,8 +56,7 @@ namespace Ch9.Utils
                     {
                         await UpdateSingleCustomList(SelectedCustomList.Id);
                     } catch { }                    
-                }
-                    
+                }                    
             });
 
             UsersCustomLists = new ObservableCollection<MovieListModel>();
@@ -81,7 +80,6 @@ namespace Ch9.Utils
                     await UpdateSingleCustomList(SelectedCustomList.Id, retryCount, delayMilliseconds, fromCache);
             } catch { }            
         }
-
 
         private void ClearLists()
         {
@@ -120,6 +118,8 @@ namespace Ch9.Utils
 
                 if (selectedListBackup != null)
                     SelectedCustomList = UsersCustomLists.Contains(selectedListBackup) ? selectedListBackup : UsersCustomLists.FirstOrDefault();
+                else
+                    SelectedCustomList = UsersCustomLists.FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -242,7 +242,10 @@ namespace Ch9.Utils
                 throw new Exception($"Error when trying to add movie to active list, server responded with error code: {result.HttpStatusCode}");
         }
 
-
+        /// <summary>
+        /// Can throw. 
+        /// Updates the currently selected custom movie list. 
+        /// </summary>
         public async Task UpdateSingleCustomList(int listId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = false)
         {
             if (!_settings.HasTmdbAccount)

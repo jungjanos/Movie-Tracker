@@ -36,12 +36,15 @@ namespace Ch9
         {
             get => _isRefreshing;
             set => SetProperty(ref _isRefreshing, value);
-        }
-        public Command RefreshCommand { get; private set; }
-        public Command RefreshListCommand { get; private set; }
-        public Command MovieInfoCommand { get; private set; }
+        }        
+        
         public Command RemoveListCommand { get; private set; }
         public Command AddListCommand { get; private set; }
+        public Command RefreshCommand { get; private set; }
+
+        public Command RefreshListCommand { get; private set; }
+        public Command MovieInfoCommand { get; private set; }
+        public Command RemoveMovieFromListCommand { get; private set; }
 
 
         public ListsPageViewModel3(

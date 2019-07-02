@@ -137,7 +137,7 @@
                 </Button>
 
                 <Button Grid.Row="0" Grid.Column="2"
-                        Clicked="OnRemoveClicked"
+                        Command="{Binding RemoveMovieFromListCommand}"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
                         <!--trash-->

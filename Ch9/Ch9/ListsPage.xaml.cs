@@ -8,13 +8,13 @@ namespace Ch9
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ListsPage : ContentPage
     {
+        Task vMInitializer;
+
         public ListsPageViewModel3 ViewModel
         {
             get => BindingContext as ListsPageViewModel3;
             set => BindingContext = value;
         }
-
-        Task vMInitializer;
 
         public ListsPage()
         {
@@ -22,7 +22,6 @@ namespace Ch9
                     ((App)Application.Current).UsersMovieListsService2,
                     ((App)Application.Current).Settings,                    
                     new PageService(this));
-
 
             vMInitializer = ViewModel.Initialize();
             InitializeComponent();
@@ -33,11 +32,6 @@ namespace Ch9
             await vMInitializer;
             base.OnAppearing();
             
-        }
-
-        private async void OnRemoveClicked(object sender, System.EventArgs e)
-        {
-            //await ViewModel.RemoveMovieFromList();
         }
     }
 }

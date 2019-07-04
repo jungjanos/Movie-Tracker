@@ -150,7 +150,6 @@ namespace Ch9.ApiClient
 
             return result;
         }
-
         #endregion
 
         #region UncachedQueries
@@ -204,6 +203,10 @@ namespace Ch9.ApiClient
             return await _networkClient.DeleteMovieRating(mediaId, guestSessionId, retryCount, delayMilliseconds);
         }
 
+        public async Task<GetFavoriteMoviesResult> GetFavoriteMovies(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            return await _networkClient.GetFavoriteMovies(accountId, language, sortBy, page, retryCount, delayMilliseconds);
+        }
         #endregion
     }
 }

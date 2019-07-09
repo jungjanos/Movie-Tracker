@@ -35,17 +35,15 @@ namespace Ch9
         {
             get => _isRefreshing;
             set => SetProperty(ref _isRefreshing, value);
-        }        
-        
+        }
+
+        #region CUSTOM_LIST_COMMANDS
         public Command RemoveCustomListCommand { get; private set; }
         public Command AddCustomListCommand { get; private set; }
         public Command RefreshCustomCommand { get; private set; }
-
-        public Command RefreshCustomListCommand { get; private set; }
-        public Command MovieInfoCommand { get; private set; }
-        public Command RemoveMovieFromCustomListCommand { get; private set; }        
-
-        public Command RemoveMovieCommand { get; private set; }
+        public Command RefreshCustomListCommand { get; private set; }        
+        public Command RemoveMovieFromCustomListCommand { get; private set; }
+        #endregion
 
         public Command MovieListEntryTappedCommand { get; private set; }
 

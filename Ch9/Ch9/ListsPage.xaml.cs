@@ -56,7 +56,7 @@ namespace Ch9
     /// </summary>
     public class ListsPageIntToButtonColorConverter : IValueConverter
     {
-        private readonly Color _activeColor = Color.Gray;
+        private readonly Color _activeColor = Color.DarkGray;
         private readonly Color _nonActiveColor = Color.LightGray;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => (int)value == (int)parameter ? _activeColor : _nonActiveColor;

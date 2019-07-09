@@ -25,7 +25,7 @@ namespace Ch9
         /// <summary>
         /// 1 = CUSTOM, 2 = FAVORITES 3 = WATCHLIST
         /// </summary>
-        private int _selectedListType=2;
+        private int _selectedListType=1;
         public int SelectedListType
         {
             get => _selectedListType;

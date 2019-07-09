@@ -1,14 +1,8 @@
 ﻿using Ch9.ApiClient;
 using Ch9.Utils;
-using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using LazyCache;
-using System.Threading.Tasks;
 using Ch9.Models;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Linq;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Ch9

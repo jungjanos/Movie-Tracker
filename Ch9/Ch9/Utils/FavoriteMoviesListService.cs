@@ -98,9 +98,6 @@ namespace Ch9.Utils
         }
 
 
-
-
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged([CallerMemberName]string propertyName = null)

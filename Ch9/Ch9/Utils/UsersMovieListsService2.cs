@@ -13,6 +13,7 @@ namespace Ch9.Utils
         private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
 
         public CustomListsService CustomListsService { get; set; }
+        public FavoriteMoviesListService FavoriteMoviesListService { get; set; }
 
 
         public UsersMovieListsService2(
@@ -25,6 +26,7 @@ namespace Ch9.Utils
             _movieDetailConfigurator = movieDetailConfigurator;
 
             CustomListsService = new CustomListsService(_settings, _tmdbCachedSearchClient, _movieDetailConfigurator);
+            FavoriteMoviesListService = new FavoriteMoviesListService(_settings, _tmdbCachedSearchClient, _movieDetailConfigurator);
         }
 
 

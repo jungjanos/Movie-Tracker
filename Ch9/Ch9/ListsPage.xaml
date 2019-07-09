@@ -13,6 +13,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <local:ListsPageIntToVisibilityConverter x:Key="listsPageIntToVisibility"/>
+            <local:ListsPageIntToButtonColorConverter x:Key="listsPageIntToButtonColor"/>
             <sys:Int32 x:Key="IntOne">1</sys:Int32>
             <sys:Int32 x:Key="IntTwo">2</sys:Int32>
             <sys:Int32 x:Key="IntThree">3</sys:Int32>
@@ -35,9 +36,11 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>                              
 
-                <Button Grid.Row="0" Grid.Column="0" Text="Custom" BackgroundColor="DarkGray"/>
-                <Button Grid.Row="0" Grid.Column="1" Text="Favorites" BackgroundColor="LightGray"/>
-                <Button Grid.Row="0" Grid.Column="2" Text="Watchlist" BackgroundColor="LightGray"/>
+                <Button Grid.Row="0" Grid.Column="0" Text="Custom"                         
+                        BackgroundColor="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntOne}}"/>
+                
+                <Button Grid.Row="0" Grid.Column="1" Text="Favorites" BackgroundColor="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntTwo}}"/>
+                <Button Grid.Row="0" Grid.Column="2" Text="Watchlist" BackgroundColor="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntThree}}"/>
 
             </Grid>
             
@@ -108,6 +111,39 @@
                             <ViewCell.ContextActions>
                                 <MenuItem Command="{Binding Path=BindingContext.RemoveMovieFromCustomListCommand, Source={x:Reference Name=listsPage}}" CommandParameter="{Binding .}" Text="Remove" IsDestructive="True"/>
                             </ViewCell.ContextActions>
+                            <StackLayout Orientation="Horizontal" Padding="5">
+
+                                <Image>
+                                    <Image.Source>
+                                        <UriImageSource Uri="{Binding ImgSmSrc}"
+                                                    CacheValidity="0"
+                                                    CachingEnabled="False"                                                    
+                                                    />
+                                    </Image.Source>
+                                </Image>
+
+                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical">
+                                    <Label Text="{Binding Title}" TextColor="Black"/>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>
+                                        <Label TextColor="Gray" Text="{Binding Genre}" FontSize="Micro"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <ListView IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntTwo}}"
+                      HasUnevenRows="True"
+                      HorizontalOptions="Start"
+                      VerticalOptions="StartAndExpand"                      
+                      ItemsSource="{Binding Path=UsersMovieListsService2.FavoriteMoviesListService.FavoriteMovies.MovieDetailModels}">
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
                             <StackLayout Orientation="Horizontal" Padding="5">
 
                                 <Image>

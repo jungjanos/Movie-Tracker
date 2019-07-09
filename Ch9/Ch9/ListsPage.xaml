@@ -13,6 +13,25 @@
                      VerticalOptions="StartAndExpand"
                      Padding="5,0,5,5">
 
+            <Grid ColumnSpacing="0" Margin="0,5,0,0" Padding="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                
+
+                <Button Grid.Row="0" Grid.Column="0" Text="Custom" BackgroundColor="DarkGray"/>
+                <Button Grid.Row="0" Grid.Column="1" Text="Favorites" BackgroundColor="LightGray"/>
+                <Button Grid.Row="0" Grid.Column="2" Text="Watchlist" BackgroundColor="LightGray"/>
+
+            </Grid>
+            
+
             <Label Text="{Binding DebugVerison}"/>                      
 
             <Grid>

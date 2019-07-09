@@ -23,6 +23,16 @@ namespace Ch9
             set => SetProperty(ref _usersMovieListsService2, value);
         }
 
+        /// <summary>
+        /// 1 = CUSTOM, 2 = FAVORITES 3 = WATCHLIST
+        /// </summary>
+        private int _selectedListType=1;
+        public int SelectedListType
+        {
+            get => _selectedListType;
+            set => _selectedListType = value;
+        }
+
         private MovieDetailModel _selectedMovie;
         public MovieDetailModel SelectedMovie
         {
@@ -30,7 +40,8 @@ namespace Ch9
             set => SetProperty(ref _selectedMovie, value);
         }
 
-        private bool _isRefreshing = false;
+        private bool _isRefreshing = false;        
+
         public bool IsRefreshing
         {
             get => _isRefreshing;
@@ -41,7 +52,7 @@ namespace Ch9
         public Command RemoveCustomListCommand { get; private set; }
         public Command AddCustomListCommand { get; private set; }
         public Command RefreshCustomCommand { get; private set; }
-        public Command RefreshCustomListCommand { get; private set; }        
+        public Command RefreshCustomListCommand { get; private set; }
         public Command RemoveMovieFromCustomListCommand { get; private set; }
         #endregion
 
@@ -66,12 +77,12 @@ namespace Ch9
                 {
                     await _pageService.DisplayAlert("Error", $"Could not update custom lists: {ex.Message}", "Ok");
                 }
-                
+
                 IsRefreshing = false;
             });
 
             RefreshCustomListCommand = new Command(async () =>
-            {                
+            {
                 if (UsersMovieListsService2.SelectedCustomList != null)
                 {
                     IsRefreshing = true;
@@ -84,13 +95,14 @@ namespace Ch9
                         await _pageService.DisplayAlert("Error", $"could not refresh list: {ex.Message}", "Ok");
                     }
                     IsRefreshing = false;
-                }});
+                }
+            });
 
             RemoveCustomListCommand = new Command(async () =>
             {
                 if (UsersMovieListsService2.SelectedCustomList != null)
                 {
-                    if(UsersMovieListsService2.SelectedCustomList.Movies?.Count > 0)
+                    if (UsersMovieListsService2.SelectedCustomList.Movies?.Count > 0)
                     {
                         if (await _pageService.DisplayActionSheet("Delete nonempty list?", "Cancel", "Remove") != "Remove")
                             return;
@@ -99,7 +111,7 @@ namespace Ch9
                     {
                         await UsersMovieListsService2.RemoveActiveCustomList();
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         await _pageService.DisplayAlert("Error", $"Could not remove active list: {ex.Message}", "Ok");
                     }
@@ -108,11 +120,13 @@ namespace Ch9
 
             AddCustomListCommand = new Command(async () => await _pageService.PushAsync(new AddListPageViewModel(this)));
 
-            RemoveMovieFromCustomListCommand = new Command<MovieDetailModel>(async movie => {
+            RemoveMovieFromCustomListCommand = new Command<MovieDetailModel>(async movie =>
+            {
                 try
                 {
                     await UsersMovieListsService2.RemoveMovieFromActiveList(movie.Id);
-                } catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Service responded with: {ex.Message}", "Ok"); }
+                }
+                catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Service responded with: {ex.Message}", "Ok"); }
             });
 
             MovieListEntryTappedCommand = new Command<MovieDetailModel>(async movie => await _pageService.PushAsync(movie));

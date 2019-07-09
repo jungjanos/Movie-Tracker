@@ -3,10 +3,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:Ch9"
+             xmlns:sys="clr-namespace:System;assembly=netstandard"
              mc:Ignorable="d"
              Title="Lists"
              x:Class="Ch9.ListsPage"
              x:Name="listsPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:ListsPageIntToVisibilityConverter x:Key="listsPageIntToVisibility"/>
+            <sys:Int32 x:Key="IntOne">1</sys:Int32>
+            <sys:Int32 x:Key="IntTwo">2</sys:Int32>
+            <sys:Int32 x:Key="IntThree">3</sys:Int32>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <ContentPage.Content>
 
         <StackLayout Orientation="Vertical" 
@@ -21,9 +33,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                
-                
+                </Grid.ColumnDefinitions>                              
 
                 <Button Grid.Row="0" Grid.Column="0" Text="Custom" BackgroundColor="DarkGray"/>
                 <Button Grid.Row="0" Grid.Column="1" Text="Favorites" BackgroundColor="LightGray"/>
@@ -32,9 +42,9 @@
             </Grid>
             
 
-            <Label Text="{Binding DebugVerison}"/>                      
+            <Label Text="{Binding DebugVerison}"/>
 
-            <Grid>
+            <Grid IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntOne}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
@@ -78,10 +88,11 @@
                     </Button.ImageSource>
                 </Button>
 
-            </Grid>           
+            </Grid>
 
 
-            <ListView HasUnevenRows="True"
+            <ListView IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntOne}}"
+                      HasUnevenRows="True"
                       HorizontalOptions="Start"
                       VerticalOptions="StartAndExpand"                      
                       ItemsSource="{Binding Source={x:Reference viewedListPicker}, Path=SelectedItem.Movies, Mode=TwoWay}"

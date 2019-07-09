@@ -37,13 +37,13 @@ namespace Ch9
             set => SetProperty(ref _isRefreshing, value);
         }        
         
-        public Command RemoveListCommand { get; private set; }
-        public Command AddListCommand { get; private set; }
-        public Command RefreshCommand { get; private set; }
+        public Command RemoveCustomListCommand { get; private set; }
+        public Command AddCustomListCommand { get; private set; }
+        public Command RefreshCustomCommand { get; private set; }
 
-        public Command RefreshListCommand { get; private set; }
+        public Command RefreshCustomListCommand { get; private set; }
         public Command MovieInfoCommand { get; private set; }
-        public Command RemoveMovieFromListCommand { get; private set; }        
+        public Command RemoveMovieFromCustomListCommand { get; private set; }        
 
         public Command RemoveMovieCommand { get; private set; }
 
@@ -57,7 +57,7 @@ namespace Ch9
             _pageService = pageService;
             UsersMovieListsService2 = usersMovieListsService2;
 
-            RefreshCommand = new Command(async () =>
+            RefreshCustomCommand = new Command(async () =>
             {
                 IsRefreshing = true;
                 try
@@ -72,7 +72,7 @@ namespace Ch9
                 IsRefreshing = false;
             });
 
-            RefreshListCommand = new Command(async () =>
+            RefreshCustomListCommand = new Command(async () =>
             {                
                 if (UsersMovieListsService2.SelectedCustomList != null)
                 {
@@ -88,7 +88,7 @@ namespace Ch9
                     IsRefreshing = false;
                 }});
 
-            RemoveListCommand = new Command(async () =>
+            RemoveCustomListCommand = new Command(async () =>
             {
                 if (UsersMovieListsService2.SelectedCustomList != null)
                 {
@@ -108,9 +108,9 @@ namespace Ch9
                 }
             });
 
-            AddListCommand = new Command(async () => await _pageService.PushAsync(new AddListPageViewModel(this)));
+            AddCustomListCommand = new Command(async () => await _pageService.PushAsync(new AddListPageViewModel(this)));
 
-            RemoveMovieFromListCommand = new Command<MovieDetailModel>(async movie => {
+            RemoveMovieFromCustomListCommand = new Command<MovieDetailModel>(async movie => {
                 try
                 {
                     await UsersMovieListsService2.RemoveMovieFromActiveList(movie.Id);

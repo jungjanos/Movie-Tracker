@@ -52,7 +52,7 @@
                                     SelectedItem="{Binding Path=UsersMovieListsService2.SelectedCustomList, Mode=TwoWay}"/>
 
                 <Button Grid.Row="0" Grid.Column="1"
-                        Command="{Binding RemoveListCommand}">
+                        Command="{Binding RemoveCustomListCommand}">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xf398;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
@@ -61,7 +61,7 @@
                 </Button>
 
                 <Button Grid.Row="0" Grid.Column="2"
-                        Command="{Binding AddListCommand}">
+                        Command="{Binding AddCustomListCommand}">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xf273;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
@@ -70,7 +70,7 @@
                 </Button>
 
                 <Button Grid.Row="0" Grid.Column="3"
-                        Command="{Binding RefreshCommand}">
+                        Command="{Binding RefreshCustomCommand}">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xf366;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
@@ -95,7 +95,7 @@
                     <DataTemplate>
                         <ViewCell>
                             <ViewCell.ContextActions>
-                                <MenuItem Command="{Binding Path=BindingContext.RemoveMovieFromListCommand, Source={x:Reference Name=listsPage}}" CommandParameter="{Binding .}" Text="Remove" IsDestructive="True"/>
+                                <MenuItem Command="{Binding Path=BindingContext.RemoveMovieFromCustomListCommand, Source={x:Reference Name=listsPage}}" CommandParameter="{Binding .}" Text="Remove" IsDestructive="True"/>
                             </ViewCell.ContextActions>
                             <StackLayout Orientation="Horizontal" Padding="5">
 
@@ -120,66 +120,6 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-
-
-            <!--<Grid VerticalOptions="End" BackgroundColor="LightGray">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <Button Grid.Row="0" Grid.Column="0"
-                        Command="{Binding MovieInfoCommand}"
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        --><!--<ion-icon name="information-circle"></ion-icon>--><!--
-                        <FontImageSource Glyph="&#xf1a0;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="44" 
-                         Color="Black"/>
-                    </Button.ImageSource>
-                </Button>
-
-                <Button Grid.Row="0" Grid.Column="1"                        
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        --><!--checkmark-circle--><!--
-                        <FontImageSource Glyph="&#xf2bb;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="44" 
-                         Color="Black"/>
-                    </Button.ImageSource>
-                </Button>
-
-                <Button Grid.Row="0" Grid.Column="2"
-                        Command="{Binding RemoveMovieFromListCommand}"
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        --><!--trash--><!--
-                        <FontImageSource Glyph="&#xf398;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="44" 
-                         Color="Black"/>
-                    </Button.ImageSource>
-                </Button>
-
-                <Button Grid.Row="0" Grid.Column="3"                        
-                        BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        --><!--help-circle--><!--
-                        <FontImageSource Glyph="&#xf198;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="44" 
-                         Color="Black"/>
-                    </Button.ImageSource>
-                </Button>
-
-            </Grid>-->
 
         </StackLayout>
         

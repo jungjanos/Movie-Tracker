@@ -57,17 +57,5 @@ namespace Ch9
         {
             // Handle when your app resumes
         }
-
-        private async Task<TmdbConfigurationModel> GetTmdbConfiguration(int retries, int retryDelay)
-        {
-            var response = await CachedSearchClient.GetTmdbConfiguration(retries, retryDelay, fromCache: true);
-
-            if (response.HttpStatusCode.IsSuccessCode())
-            {
-                var result = JsonConvert.DeserializeObject<TmdbConfigurationModel>(response.Json);
-                return result;
-            }
-            else throw new TimeoutException($"Could not connect TMDB Server to fetch configuration data at application start, retried {retries}-times");
-        }
     }
 }

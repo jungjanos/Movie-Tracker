@@ -25,7 +25,7 @@ namespace Ch9
         private readonly Task _fetchGallery;
         private readonly ReviewsPageViewModel _reviewsPageViewModel;
 
-        public bool? MovieIsAlreadyOnActiveList => _movieListsService2.CheckIfMovieIsOnActiveList(Movie.Id);
+        public bool? MovieIsAlreadyOnActiveList => _movieListsService2.CustomListsService.CheckIfMovieIsOnActiveList(Movie.Id);
         private bool _movieHasReviews;
         public bool MovieHasReviews
         {
@@ -142,14 +142,14 @@ namespace Ch9
             {
                 if (MovieIsAlreadyOnActiveList == true)
                 {
-                    await _movieListsService2.RemoveMovieFromActiveList(Movie.Id);
+                    await _movieListsService2.CustomListsService.RemoveMovieFromActiveList(Movie.Id);
                     OnPropertyChanged(nameof(MovieIsAlreadyOnActiveList));
                     return;
                 }
 
                 if (MovieIsAlreadyOnActiveList == false)
                 {
-                    await _movieListsService2.AddMovieToActiveList(Movie);
+                    await _movieListsService2.CustomListsService.AddMovieToActiveList(Movie);
                     OnPropertyChanged(nameof(MovieIsAlreadyOnActiveList));
                 }
             }

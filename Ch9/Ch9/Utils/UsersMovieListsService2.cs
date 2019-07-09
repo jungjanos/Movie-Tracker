@@ -17,7 +17,48 @@ namespace Ch9.Utils
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
         private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
+
+        public CustomListsService CustomListsService { get; set; }
+
+
+        public UsersMovieListsService2(
+            ISettings settings,
+            ITmdbCachedSearchClient tmdbCachedSearchClient,
+            IMovieDetailModelConfigurator movieDetailConfigurator)
+        {
+            _settings = settings;
+            _tmdbCachedSearchClient = tmdbCachedSearchClient;
+            _movieDetailConfigurator = movieDetailConfigurator;
+
+            CustomListsService = new CustomListsService(_settings, _tmdbCachedSearchClient, _movieDetailConfigurator);
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName]string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(storage, value))
+                return false;
+
+            storage = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+    }
+
+    public class CustomListsService : INotifyPropertyChanged
+    {
+        private readonly ISettings _settings;
+        private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
+        private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
         private readonly Command _refreshActiveCustomListCommand;
+
 
         private ObservableCollection<MovieListModel> _usersCustomLists;
         public ObservableCollection<MovieListModel> UsersCustomLists
@@ -40,14 +81,16 @@ namespace Ch9.Utils
             }
         }
 
-        public UsersMovieListsService2(
+        public CustomListsService(
             ISettings settings,
             ITmdbCachedSearchClient tmdbCachedSearchClient,
-            IMovieDetailModelConfigurator movieDetailConfigurator)
+            IMovieDetailModelConfigurator movieDetailConfigurator
+            )
         {
             _settings = settings;
             _tmdbCachedSearchClient = tmdbCachedSearchClient;
             _movieDetailConfigurator = movieDetailConfigurator;
+
             _refreshActiveCustomListCommand = new Command(async () =>
             {
                 if (SelectedCustomList != null)
@@ -55,8 +98,9 @@ namespace Ch9.Utils
                     try
                     {
                         await UpdateSingleCustomList(SelectedCustomList.Id);
-                    } catch { }                    
-                }                    
+                    }
+                    catch { }
+                }
             });
 
             UsersCustomLists = new ObservableCollection<MovieListModel>();
@@ -78,7 +122,8 @@ namespace Ch9.Utils
 
                 if (SelectedCustomList != null)
                     await UpdateSingleCustomList(SelectedCustomList.Id, retryCount, delayMilliseconds, fromCache);
-            } catch { }            
+            }
+            catch { }
         }
 
         private void ClearLists()
@@ -307,6 +352,7 @@ namespace Ch9.Utils
             else
                 Utils.UpdateListviewCollection(target.Movies, source.Movies, new MovieModelComparer());
         }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 

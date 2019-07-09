@@ -57,9 +57,9 @@
 
                 <Picker Grid.Row="0" Grid.Column="0"
                     x:Name="viewedListPicker"
-                                    ItemsSource="{Binding Path=UsersMovieListsService2.UsersCustomLists, Mode=TwoWay}"
+                                    ItemsSource="{Binding Path=UsersMovieListsService2.CustomListsService.UsersCustomLists, Mode=TwoWay}"
                                     ItemDisplayBinding="{Binding Name, Mode=TwoWay}"
-                                    SelectedItem="{Binding Path=UsersMovieListsService2.SelectedCustomList, Mode=TwoWay}"/>
+                                    SelectedItem="{Binding Path=UsersMovieListsService2.CustomListsService.SelectedCustomList, Mode=TwoWay}"/>
 
                 <Button Grid.Row="0" Grid.Column="1"
                         Command="{Binding RemoveCustomListCommand}">

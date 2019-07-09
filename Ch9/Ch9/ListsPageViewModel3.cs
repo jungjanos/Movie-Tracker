@@ -12,7 +12,7 @@ namespace Ch9
 {
     public class ListsPageViewModel3 : INotifyPropertyChanged
     {
-        private IPageService _pageService;
+        private readonly IPageService _pageService;
 
         public string DebugVerison { get; } = "0.0.27";
 
@@ -71,7 +71,7 @@ namespace Ch9
                 IsRefreshing = true;
                 try
                 {
-                    await UsersMovieListsService2.UpdateCustomLists();
+                    await UsersMovieListsService2.CustomListsService.UpdateCustomLists();
                 }
                 catch (Exception ex)
                 {
@@ -83,12 +83,12 @@ namespace Ch9
 
             RefreshCustomListCommand = new Command(async () =>
             {
-                if (UsersMovieListsService2.SelectedCustomList != null)
+                if (UsersMovieListsService2.CustomListsService.SelectedCustomList != null)
                 {
                     IsRefreshing = true;
                     try
                     {
-                        await UsersMovieListsService2.UpdateSingleCustomList(UsersMovieListsService2.SelectedCustomList.Id);
+                        await UsersMovieListsService2.CustomListsService.UpdateSingleCustomList(UsersMovieListsService2.CustomListsService.SelectedCustomList.Id);
                     }
                     catch (Exception ex)
                     {
@@ -100,16 +100,16 @@ namespace Ch9
 
             RemoveCustomListCommand = new Command(async () =>
             {
-                if (UsersMovieListsService2.SelectedCustomList != null)
+                if (UsersMovieListsService2.CustomListsService.SelectedCustomList != null)
                 {
-                    if (UsersMovieListsService2.SelectedCustomList.Movies?.Count > 0)
+                    if (UsersMovieListsService2.CustomListsService.SelectedCustomList.Movies?.Count > 0)
                     {
                         if (await _pageService.DisplayActionSheet("Delete nonempty list?", "Cancel", "Remove") != "Remove")
                             return;
                     }
                     try
                     {
-                        await UsersMovieListsService2.RemoveActiveCustomList();
+                        await UsersMovieListsService2.CustomListsService.RemoveActiveCustomList();
                     }
                     catch (Exception ex)
                     {
@@ -124,7 +124,7 @@ namespace Ch9
             {
                 try
                 {
-                    await UsersMovieListsService2.RemoveMovieFromActiveList(movie.Id);
+                    await UsersMovieListsService2.CustomListsService.RemoveMovieFromActiveList(movie.Id);
                 }
                 catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Service responded with: {ex.Message}", "Ok"); }
             });
@@ -136,7 +136,7 @@ namespace Ch9
         {
             try
             {
-                await UsersMovieListsService2.AddAndMakeActiveCustomList(addListPageViewModel.Name, addListPageViewModel.Description);
+                await UsersMovieListsService2.CustomListsService.AddAndMakeActiveCustomList(addListPageViewModel.Name, addListPageViewModel.Description);
             }
             catch (Exception ex)
             {
@@ -144,7 +144,7 @@ namespace Ch9
             }
         }
 
-        public async Task Initialize() => await UsersMovieListsService2.Initialize();
+        public async Task Initialize() => await UsersMovieListsService2.CustomListsService.Initialize();
 
         public event PropertyChangedEventHandler PropertyChanged;
 

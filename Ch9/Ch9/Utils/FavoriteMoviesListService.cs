@@ -101,6 +101,17 @@ namespace Ch9.Utils
             AppendResult(FavoriteMovies, moviesOnFavoriteList);
         }
 
+        /// <summary>
+        /// Can throw.
+        /// Tries to add a movie to the favorites. 
+        /// </summary>
+        public async Task AddMovieToFavorites(MovieDetailModel movie, int retryCount = 1, int delayMilliseconds = 1000)
+        {
+            if (!_settings.HasTmdbAccount)
+                throw new Exception("Account error: user is not signed in");
+
+
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

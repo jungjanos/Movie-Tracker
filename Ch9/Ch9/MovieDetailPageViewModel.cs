@@ -86,7 +86,7 @@ namespace Ch9
 
         public async Task Initialize()
         {
-            FetchMovieStates();
+            _ = FetchMovieStates();
             FetchMovieDetailsResult movieDetailsResult = await _cachedSearchClient.FetchMovieDetails(Movie.Id, _settings.SearchLanguage);
             if (movieDetailsResult.HttpStatusCode.IsSuccessCode())
                 JsonConvert.PopulateObject(movieDetailsResult.Json, Movie);            

@@ -60,6 +60,23 @@ namespace Ch9.Test.TmdbNetworkClientTests
         }
 
         [Fact]
+        // happy path
+        public async Task WhenAddingMovieAlreadyOnFavoriteList_ReturnsSuccess()
+        {
+            int movieToAdd = _movie1;
+            UpdateFavoriteListResult response1 = await _client.UpdateFavoriteList("movie", true, movieToAdd);
+            UpdateFavoriteListResult response2 = await _client.UpdateFavoriteList("movie", true, movieToAdd);
+            _output.WriteLine($"Server responded: {response2.HttpStatusCode}");
+            _output.WriteLine(response2.Json);
+
+            var getFavorites = await _client.GetFavoriteMovies();
+
+            Assert.True(response1.HttpStatusCode.IsSuccessCode());
+            Assert.True(response2.HttpStatusCode.IsSuccessCode());
+            Assert.Contains(movieToAdd.ToString(), getFavorites.Json);
+        }
+
+        [Fact]
         // failure path
         public async Task WhenAddingInvalidMovie_Returns404()
         {

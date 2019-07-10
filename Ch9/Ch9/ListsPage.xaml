@@ -145,6 +145,7 @@
                       HorizontalOptions="Start"
                       VerticalOptions="StartAndExpand"                      
                       ItemsSource="{Binding Path=UsersMovieListsService2.FavoriteMoviesListService.FavoriteMovies.MovieDetailModels}"
+                      ItemTapped="MovieListEntryTapped"
                       IsPullToRefreshEnabled="True"
                       IsRefreshing="{Binding IsRefreshing}"
                       RefreshCommand="{Binding RefreshFavoriteListCommand}">

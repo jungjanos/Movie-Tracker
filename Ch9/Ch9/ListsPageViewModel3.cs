@@ -24,7 +24,7 @@ namespace Ch9
         /// <summary>
         /// 1 = CUSTOM, 2 = FAVORITES 3 = WATCHLIST
         /// </summary>
-        private int _selectedListType=1;
+        private int _selectedListType = 1;
         public int SelectedListType
         {
             get => _selectedListType;
@@ -38,7 +38,7 @@ namespace Ch9
             set => SetProperty(ref _selectedMovie, value);
         }
 
-        private bool _isRefreshing = false;        
+        private bool _isRefreshing = false;
 
         public bool IsRefreshing
         {
@@ -52,13 +52,18 @@ namespace Ch9
         public Command WatchlistViewSelectorCommand { get; private set; }
         #endregion
 
-        #region CUSTOM_LIST_COMMANDS
+        #region CUSTOM_LISTS_COMMANDS
         public Command RemoveCustomListCommand { get; private set; }
         public Command AddCustomListCommand { get; private set; }
         public Command RefreshCustomCommand { get; private set; }
         public Command RefreshCustomListCommand { get; private set; }
         public Command RemoveMovieFromCustomListCommand { get; private set; }
         #endregion
+
+        #region FAVORITE_LIST_COMMANDS
+        public Command RefreshFavoriteListCommand { get; private set; }
+        #endregion 
+
 
         public Command MovieListEntryTappedCommand { get; private set; }
 
@@ -70,7 +75,7 @@ namespace Ch9
             UsersMovieListsService2 = usersMovieListsService2;
 
             CustomListsViewSelectorCommand = new Command(() => { SelectedListType = 1; });
-            FavoritesListViewSelectorCommand = new Command(async () => 
+            FavoritesListViewSelectorCommand = new Command(async () =>
             {
                 SelectedListType = 2;
                 if (!(0 < UsersMovieListsService2.FavoriteMoviesListService.FavoriteMovies.MovieDetailModels.Count))
@@ -79,10 +84,11 @@ namespace Ch9
                     try
                     {
                         await UsersMovieListsService2.FavoriteMoviesListService.RefreshFavoriteMoviesList(1, 1000);
-                    } catch (Exception ex)
-                    { await _pageService.DisplayAlert("Error", $"Could not refresh the favorites list, service responded with: {ex.Message}", "Ok");}
+                    }
+                    catch (Exception ex)
+                    { await _pageService.DisplayAlert("Error", $"Could not refresh the favorites list, service responded with: {ex.Message}", "Ok"); }
                     IsRefreshing = false;
-                }                    
+                }
             });
             WatchlistViewSelectorCommand = new Command(() => { SelectedListType = 3; });
 
@@ -147,6 +153,18 @@ namespace Ch9
                     await UsersMovieListsService2.CustomListsService.RemoveMovieFromActiveList(movie.Id);
                 }
                 catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Service responded with: {ex.Message}", "Ok"); }
+            });
+
+            RefreshFavoriteListCommand = new Command(async () => 
+            {
+                IsRefreshing = true;
+                try
+                {
+                    await UsersMovieListsService2.FavoriteMoviesListService.RefreshFavoriteMoviesList();
+                }
+                catch (Exception ex)
+                { await _pageService.DisplayAlert("Error", $"Could not refresh the favorites list, service responded with: {ex.Message}", "Ok"); }
+                IsRefreshing = false;
             });
 
             MovieListEntryTappedCommand = new Command<MovieDetailModel>(async movie => await _pageService.PushAsync(movie));

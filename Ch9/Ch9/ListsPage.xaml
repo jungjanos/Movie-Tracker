@@ -36,12 +36,17 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>                              
 
-                <Button Grid.Row="0" Grid.Column="0" Text="Custom"                         
+                <Button Grid.Row="0" Grid.Column="0" Text="Custom"
+                        Command="{Binding CustomListsViewSelectorCommand}"
                         BackgroundColor="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntOne}}"/>
                 
-                <Button Grid.Row="0" Grid.Column="1" Text="Favorites" BackgroundColor="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntTwo}}"/>
-                <Button Grid.Row="0" Grid.Column="2" Text="Watchlist" BackgroundColor="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntThree}}"/>
-
+                <Button Grid.Row="0" Grid.Column="1" Text="Favorites" 
+                        Command="{Binding FavoritesListViewSelectorCommand}"
+                        BackgroundColor="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntTwo}}"/>
+                
+                <Button Grid.Row="0" Grid.Column="2" Text="Watchlist" 
+                        Command="{Binding WatchlistViewSelectorCommand}"
+                        BackgroundColor="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntThree}}"/>
             </Grid>
             
 
@@ -139,7 +144,8 @@
                       HasUnevenRows="True"
                       HorizontalOptions="Start"
                       VerticalOptions="StartAndExpand"                      
-                      ItemsSource="{Binding Path=UsersMovieListsService2.FavoriteMoviesListService.FavoriteMovies.MovieDetailModels}">
+                      ItemsSource="{Binding Path=UsersMovieListsService2.FavoriteMoviesListService.FavoriteMovies.MovieDetailModels}"
+                      IsRefreshing="{Binding IsRefreshing}">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>

@@ -65,8 +65,12 @@ namespace Ch9.Utils
         {
             if (serverResponse.MovieDetailModels.Count > 0)
             {
+                _movieDetailConfigurator.SetImageSrc(serverResponse.MovieDetailModels);
+                _movieDetailConfigurator.SetGenreNamesFromGenreIds(serverResponse.MovieDetailModels);
+
                 foreach (MovieDetailModel movie in serverResponse.MovieDetailModels)
                     targetList.MovieDetailModels.Add(movie);
+                    
 
                 targetList.Page = serverResponse.Page;
                 targetList.TotalPages = serverResponse.TotalPages;

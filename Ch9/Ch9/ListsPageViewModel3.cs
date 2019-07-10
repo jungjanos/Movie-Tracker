@@ -29,7 +29,7 @@ namespace Ch9
         public int SelectedListType
         {
             get => _selectedListType;
-            set => _selectedListType = value;
+            set => SetProperty(ref _selectedListType, value);
         }
 
         private MovieDetailModel _selectedMovie;
@@ -47,6 +47,12 @@ namespace Ch9
             set => SetProperty(ref _isRefreshing, value);
         }
 
+        #region VIEW_SELECTOR_COMMANDS
+        public Command CustomListsViewSelectorCommand { get; private set; }
+        public Command FavoritesListViewSelectorCommand { get; private set; }
+        public Command WatchlistViewSelectorCommand { get; private set; }
+        #endregion
+
         #region CUSTOM_LIST_COMMANDS
         public Command RemoveCustomListCommand { get; private set; }
         public Command AddCustomListCommand { get; private set; }
@@ -57,13 +63,29 @@ namespace Ch9
 
         public Command MovieListEntryTappedCommand { get; private set; }
 
-
         public ListsPageViewModel3(
             UsersMovieListsService2 usersMovieListsService2,
             IPageService pageService)
         {
             _pageService = pageService;
             UsersMovieListsService2 = usersMovieListsService2;
+
+            CustomListsViewSelectorCommand = new Command(() => { SelectedListType = 1; });
+            FavoritesListViewSelectorCommand = new Command(async () => 
+            {
+                SelectedListType = 2;
+                if (!(0 < UsersMovieListsService2.FavoriteMoviesListService.FavoriteMovies.MovieDetailModels.Count))
+                {
+                    IsRefreshing = true;
+                    try
+                    {
+                        await UsersMovieListsService2.FavoriteMoviesListService.RefreshFavoriteMoviesList(1, 1000);
+                    } catch (Exception ex)
+                    { await _pageService.DisplayAlert("Error", $"Could not refresh the favorites list, service responded with: {ex.Message}", "Ok");}
+                    IsRefreshing = false;
+                }                    
+            });
+            WatchlistViewSelectorCommand = new Command(() => { SelectedListType = 3; });
 
             RefreshCustomCommand = new Command(async () =>
             {

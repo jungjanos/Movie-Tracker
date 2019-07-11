@@ -47,10 +47,7 @@
                 <Button Grid.Row="0" Grid.Column="2" Text="Watchlist" 
                         Command="{Binding WatchlistViewSelectorCommand}"
                         BackgroundColor="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntThree}}"/>
-            </Grid>
-            
-
-            <Label Text="{Binding DebugVerison}"/>
+            </Grid>                      
 
             <Grid IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntOne}}">
                 <Grid.RowDefinitions>
@@ -108,7 +105,7 @@
                       ItemTapped="MovieListEntryTapped"
                       IsPullToRefreshEnabled="True"
                       IsRefreshing="{Binding IsRefreshing}"
-                      RefreshCommand="{Binding RefreshListCommand}">
+                      RefreshCommand="{Binding RefreshCustomListCommand}">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>

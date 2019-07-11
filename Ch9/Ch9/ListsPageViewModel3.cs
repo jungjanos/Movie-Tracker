@@ -12,7 +12,6 @@ namespace Ch9
     public class ListsPageViewModel3 : INotifyPropertyChanged
     {
         private readonly IPageService _pageService;
-        public string DebugVerison { get; } = "0.0.27";
 
         private UsersMovieListsService2 _usersMovieListsService2;
         public UsersMovieListsService2 UsersMovieListsService2

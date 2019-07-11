@@ -14,6 +14,7 @@ namespace Ch9.Utils
 
         public CustomListsService CustomListsService { get; set; }
         public FavoriteMoviesListService FavoriteMoviesListService { get; set; }
+        public WatchlistService WatchlistService { get; set; }
 
 
         public UsersMovieListsService2(
@@ -27,8 +28,8 @@ namespace Ch9.Utils
 
             CustomListsService = new CustomListsService(_settings, _tmdbCachedSearchClient, _movieDetailConfigurator);
             FavoriteMoviesListService = new FavoriteMoviesListService(_settings, _tmdbCachedSearchClient, _movieDetailConfigurator);
+            WatchlistService = new WatchlistService(_settings, _tmdbCachedSearchClient, _movieDetailConfigurator);
         }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 

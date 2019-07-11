@@ -62,9 +62,10 @@ namespace Ch9
 
         #region FAVORITE_LIST_COMMANDS
         public Command RefreshFavoriteListCommand { get; private set; }
-        #endregion 
-
-
+        #endregion
+        #region WATCHLIST_COMMANDS
+        public Command RefreshWatchlistCommand { get; set; }
+        #endregion
         public Command MovieListEntryTappedCommand { get; private set; }
 
         public ListsPageViewModel3(
@@ -90,7 +91,21 @@ namespace Ch9
                     IsRefreshing = false;
                 }
             });
-            WatchlistViewSelectorCommand = new Command(() => { SelectedListType = 3; });
+            WatchlistViewSelectorCommand = new Command(async () => 
+            {
+                SelectedListType = 3;
+                if (!(0 < UsersMovieListsService2.WatchlistService.Watchlist.MovieDetailModels.Count))
+                {
+                    IsRefreshing = true;
+                    try
+                    {
+                        await UsersMovieListsService2.WatchlistService.RefreshWatchlist(1, 1000);
+                    }
+                    catch (Exception ex)
+                    { await _pageService.DisplayAlert("Error", $"Could not refresh the watchlist, service responded with: {ex.Message}", "Ok"); }
+                    IsRefreshing = false;
+                }
+            });
 
             RefreshCustomCommand = new Command(async () =>
             {
@@ -164,6 +179,18 @@ namespace Ch9
                 }
                 catch (Exception ex)
                 { await _pageService.DisplayAlert("Error", $"Could not refresh the favorites list, service responded with: {ex.Message}", "Ok"); }
+                IsRefreshing = false;
+            });
+
+            RefreshWatchlistCommand = new Command(async () =>
+            {
+                IsRefreshing = true;
+                try
+                {
+                    await UsersMovieListsService2.WatchlistService.RefreshWatchlist();
+                }
+                catch (Exception ex)
+                { await _pageService.DisplayAlert("Error", $"Could not refresh the watchlist, service responded with: {ex.Message}", "Ok"); }
                 IsRefreshing = false;
             });
 

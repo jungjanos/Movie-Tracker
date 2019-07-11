@@ -207,6 +207,12 @@ namespace Ch9.ApiClient
         {
             return await _networkClient.GetFavoriteMovies(accountId, language, sortBy, page, retryCount, delayMilliseconds);
         }
+
+
+        public async Task<GetMovieWatchlistResult> GetMovieWatchlist(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            return await _networkClient.GetMovieWatchlist(accountId, language, sortBy, page, retryCount, delayMilliseconds);
+        }
         #endregion
     }
 }

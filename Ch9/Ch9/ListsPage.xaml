@@ -178,6 +178,44 @@
                 </ListView.ItemTemplate>
             </ListView>
 
+            <ListView IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntThree}}"
+                      HasUnevenRows="True"
+                      HorizontalOptions="Start"
+                      VerticalOptions="StartAndExpand"                      
+                      ItemsSource="{Binding Path=UsersMovieListsService2.WatchlistService.Watchlist.MovieDetailModels}"
+                      ItemTapped="MovieListEntryTapped"
+                      IsPullToRefreshEnabled="True"
+                      IsRefreshing="{Binding IsRefreshing}"
+                      RefreshCommand="{Binding RefreshWatchlistCommand}">
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+
+                            <StackLayout Orientation="Horizontal" Padding="5">
+
+                                <Image>
+                                    <Image.Source>
+                                        <UriImageSource Uri="{Binding ImgSmSrc}"
+                                                    CacheValidity="0"
+                                                    CachingEnabled="False"                                                    
+                                                    />
+                                    </Image.Source>
+                                </Image>
+
+                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical">
+                                    <Label Text="{Binding Title}" TextColor="Black"/>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>
+                                        <Label TextColor="Gray" Text="{Binding Genre}" FontSize="Micro"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
         </StackLayout>
         
     </ContentPage.Content>

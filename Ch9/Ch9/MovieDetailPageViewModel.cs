@@ -166,15 +166,13 @@ namespace Ch9
 
             bool desiredState = !MovieStates.IsFavorite;
 
-            UpdateFavoriteListResult response = await _cachedSearchClient.UpdateFavoriteList("movie", desiredState, Movie.Id, 1, 1000);
-
-            if (response.HttpStatusCode.IsSuccessCode())
+            try
             {
+                await _movieListsService2.FavoriteMoviesListService.ToggleFavoriteState(Movie, desiredState);
                 MovieStates.IsFavorite = desiredState;
                 OnPropertyChanged(nameof(MovieStates));
-            }
-            else
-                await _pageService.DisplayAlert("Network error", $"Could not change favorite state, server responded with: {response.HttpStatusCode}", "Ok");
+            } catch (Exception ex)
+            { await _pageService.DisplayAlert("Error", $"Could not change favorite state, service responded with: {ex.Message}", "Ok");}
         }
         
         private async Task FetchMovieStates()

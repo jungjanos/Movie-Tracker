@@ -2,11 +2,11 @@
 using Ch9.Models;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Ch9.Utils
@@ -25,7 +25,7 @@ namespace Ch9.Utils
         }
 
         public string SortBy;
-        
+
         public FavoriteMoviesListService(
             ISettings settings,
             ITmdbCachedSearchClient tmdbCachedSearchClient,
@@ -42,8 +42,8 @@ namespace Ch9.Utils
                 MovieDetailModels = new ObservableCollection<MovieDetailModel>(),
                 Page = 0,
                 TotalPages = 0,
-                TotalResults = 0                
-            };            
+                TotalResults = 0
+            };
         }
 
         private void ClearFavoriteList()
@@ -70,12 +70,12 @@ namespace Ch9.Utils
 
                 foreach (MovieDetailModel movie in serverResponse.MovieDetailModels)
                     targetList.MovieDetailModels.Add(movie);
-                    
+
 
                 targetList.Page = serverResponse.Page;
                 targetList.TotalPages = serverResponse.TotalPages;
                 targetList.TotalResults = serverResponse.TotalResults;
-            }                
+            }
         }
 
         /// <summary>
@@ -88,9 +88,9 @@ namespace Ch9.Utils
         {
             ClearFavoriteList();
 
-            if (!_settings.HasTmdbAccount)                
+            if (!_settings.HasTmdbAccount)
                 throw new Exception("Account error: user is not signed in");
-            
+
 
             GetFavoriteMoviesResult getFavoriteList = await _tmdbCachedSearchClient.GetFavoriteMovies(sortBy: SortBy, page: 1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
             if (!getFavoriteList.HttpStatusCode.IsSuccessCode())
@@ -102,15 +102,37 @@ namespace Ch9.Utils
         }
 
         /// <summary>
-        /// Can throw.
-        /// Tries to add a movie to the favorites. 
-        /// </summary>
-        public async Task AddMovieToFavorites(MovieDetailModel movie, int retryCount = 1, int delayMilliseconds = 1000)
+        /// Can throw. 
+        /// Tries to add or remove a movie to/from the favorites depending on the desired state. 
+        /// The current favorite status of the movie both on the local list and on the server is not checked. 
+        /// Trying to add (or remove) a movie which is (or is not) on the local or server's favorite list does not throw. 
+        /// </summary>        
+        /// <param name="desiredState">true: tries to add, false: tries to remove</param>        
+        public async Task ToggleFavoriteState(MovieDetailModel movie, bool desiredState, int retryCount = 1, int delayMilliseconds = 1000)
         {
             if (!_settings.HasTmdbAccount)
                 throw new Exception("Account error: user is not signed in");
 
+            if (movie == null)
+                throw new Exception("Movie is invalid");
 
+            UpdateFavoriteListResult response = await _tmdbCachedSearchClient.UpdateFavoriteList("movie", desiredState, movie.Id, retryCount, delayMilliseconds);
+
+            if (response.HttpStatusCode.IsSuccessCode())
+            {
+                if (desiredState) // we added the movie to the server's favorite list
+                {
+                    if (!FavoriteMovies.MovieDetailModels.Select(movie_ => movie_.Id).Contains(movie.Id))
+                        FavoriteMovies.MovieDetailModels.Add(movie);
+                }
+                else // we removed the movie from the server's favorite list
+                {
+                    var movieToRemove = FavoriteMovies.MovieDetailModels.FirstOrDefault(movie_ => movie_.Id == movie.Id);
+                    FavoriteMovies.MovieDetailModels.Remove(movieToRemove);
+                }
+            }
+            else
+                throw new Exception($"Could not update favorite state, server responded with: {response.HttpStatusCode}");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

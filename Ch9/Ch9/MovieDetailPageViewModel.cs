@@ -111,17 +111,22 @@ namespace Ch9
         
         public async Task OnToggleWatchlistCommand()
         {
+            if (!_settings.HasTmdbAccount)
+            {
+                await _pageService.DisplayAlert("Info", "You have to log in with a user account to use this function", "Ok");
+                return;
+            }
+
             bool desiredState = !MovieStates.OnWatchlist;
 
-            UpdateWatchlistResult response = await _cachedSearchClient.UpdateWatchlist("movie", desiredState, Movie.Id, 3, 1000);
-
-            if (response.HttpStatusCode.IsSuccessCode())
+            try
             {
+                await _movieListsService2.WatchlistService.ToggleWatchlistState(Movie, desiredState);
                 MovieStates.OnWatchlist = desiredState;
                 OnPropertyChanged(nameof(MovieStates));
             }
-            else
-                await _pageService.DisplayAlert("Network error", $"Could not change watchlist state, server responded with: {response.HttpStatusCode}", "Ok");
+            catch (Exception ex)
+            { await _pageService.DisplayAlert("Error", $"Could not change watchlist state, service responded with: {ex.Message}", "Ok"); }
         }
 
         public async Task OnAddToListCommand()

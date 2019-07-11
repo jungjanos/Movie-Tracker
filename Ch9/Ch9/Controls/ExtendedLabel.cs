@@ -1,7 +1,7 @@
 ﻿using System;
 using Xamarin.Forms;
 
-namespace Ch9
+namespace Ch9.Controls
 {
     public class ExtendedLabel : Label
     {

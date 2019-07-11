@@ -4,6 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Ch9;assembly=Ch9"
+             xmlns:controls="clr-namespace:Ch9.Controls"
              mc:Ignorable="d"
              x:Class="Ch9.MovieDetailPage"
              Title="{Binding Path=Movie.Title}" Padding="5"
@@ -46,7 +47,7 @@
 
                     <Label Text="{Binding Path=Movie.Genre}" FontSize="Small"/>
                     <Label Text="{Binding Path=Movie.Tagline}"/>
-                    <local:ExtendedLabel Text="{Binding Path=Movie.Overview}" TextColor="DarkGray" FontSize="Medium" Visual="Material" JustifyText="True"/>
+                    <controls:ExtendedLabel Text="{Binding Path=Movie.Overview}" TextColor="DarkGray" FontSize="Medium" Visual="Material" JustifyText="True"/>
 
                     <StackLayout Orientation="Horizontal">
                         <Label Text="{Binding Path= Movie.Duration, StringFormat='{0} mins'}" IsVisible="{Binding Path=Movie.Duration.HasValue}"/>

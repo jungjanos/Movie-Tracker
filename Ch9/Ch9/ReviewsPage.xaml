@@ -4,6 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Ch9;assembly=Ch9"
+             xmlns:controls="clr-namespace:Ch9.Controls;assembly=Ch9"
              mc:Ignorable="d"
              x:Class="Ch9.ReviewsPage">
 
@@ -182,7 +183,7 @@
 
                             <StackLayout Orientation="Vertical" Padding="5" Margin="10">
                                 <Label Text="{Binding Author}" FontSize="Large"/>
-                                <local:ExtendedLabel Text="{Binding Content}" FontSize="Small"  Visual="Material" JustifyText="True"/>
+                                <controls:ExtendedLabel Text="{Binding Content}" FontSize="Small"  Visual="Material" JustifyText="True"/>
                             </StackLayout>
 
                         </ViewCell>

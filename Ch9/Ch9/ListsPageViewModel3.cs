@@ -65,6 +65,7 @@ namespace Ch9
         #region WATCHLIST_COMMANDS
         public Command RefreshWatchlistCommand { get; set; }
         #endregion
+
         public Command MovieListEntryTappedCommand { get; private set; }
 
         public ListsPageViewModel3(

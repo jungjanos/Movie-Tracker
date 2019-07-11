@@ -58,6 +58,21 @@ namespace Ch9.Test.TmdbNetworkClientTests
         }
 
         [Fact]
+        //happy path
+        public async Task WhenAddingMovieAlreadyOnWatchlist_ReturnsSuccess()
+        {
+            await _client.UpdateWatchlist(mediaType: "movie", add: true, mediaId: _movie1, accountId: null, retryCount: 0);
+            var response2 = await _client.UpdateWatchlist(mediaType: "movie", add: true, mediaId: _movie1, accountId: null, retryCount: 0);
+            _output.WriteLine($"Server responded: {response2.HttpStatusCode}");
+            _output.WriteLine(response2.Json);
+
+            var watchlistResponse = await _client.GetMovieWatchlist();
+
+            Assert.True(response2.HttpStatusCode.IsSuccessCode());
+            Assert.Contains(_movie1.ToString(), watchlistResponse.Json);
+        }
+
+        [Fact]
         // failure path
         public async Task WhenAddingInvalidMovie_Returns404()
         {

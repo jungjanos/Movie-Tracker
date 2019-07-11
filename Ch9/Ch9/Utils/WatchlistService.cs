@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -89,14 +90,47 @@ namespace Ch9.Utils
             if (!_settings.HasTmdbAccount)
                 throw new Exception("Account error: user is not signed in");
 
-
             GetMovieWatchlistResult getWatchlist = await _tmdbCachedSearchClient.GetMovieWatchlist(sortBy: SortBy, page: 1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
             if (!getWatchlist.HttpStatusCode.IsSuccessCode())
                 throw new Exception($"Could not refresh watchlist, TMDB server responded with {getWatchlist.HttpStatusCode}");
 
-            SearchResult WatchlistFavoriteList = JsonConvert.DeserializeObject<SearchResult>(getWatchlist.Json);
+            SearchResult moviesOnWatchlist = JsonConvert.DeserializeObject<SearchResult>(getWatchlist.Json);
 
-            AppendResult(Watchlist, WatchlistFavoriteList);
+            AppendResult(Watchlist, moviesOnWatchlist);
+        }
+
+        /// <summary>
+        /// Can throw. 
+        /// Tries to add or remove a movie to/from the watchlist depending on the desired state. 
+        /// The current watchlist status of the movie both on the local list and on the server is not checked. 
+        /// Trying to add (or remove) a movie which is (or is not) on the local or server's watchlist list does not throw. 
+        /// </summary>        
+        /// <param name="desiredState">true: tries to add, false: tries to remove</param>        
+        public async Task ToggleWatchlistState(MovieDetailModel movie, bool desiredState, int retryCount = 1, int delayMilliseconds = 1000)
+        {
+            if (!_settings.HasTmdbAccount)
+                throw new Exception("Account error: user is not signed in");
+
+            if (movie == null)
+                throw new Exception("Movie is invalid");
+
+            UpdateWatchlistResult response = await _tmdbCachedSearchClient.UpdateWatchlist("movie", desiredState, movie.Id, retryCount, delayMilliseconds);
+
+            if (response.HttpStatusCode.IsSuccessCode())
+            {
+                if (desiredState) // we added the movie to the server's watchlist
+                {
+                    if (!Watchlist.MovieDetailModels.Select(movie_ => movie_.Id).Contains(movie.Id))
+                        Watchlist.MovieDetailModels.Add(movie);
+                }
+                else // we removed the movie from the server's watchlist
+                {
+                    var movieToRemove = Watchlist.MovieDetailModels.FirstOrDefault(movie_ => movie_.Id == movie.Id);
+                    Watchlist.MovieDetailModels.Remove(movieToRemove);
+                }
+            }
+            else
+                throw new Exception($"Could not update watchlist state, server responded with: {response.HttpStatusCode}");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

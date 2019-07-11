@@ -492,7 +492,7 @@ namespace Ch9.ApiClient
                 {
                     result.States = JsonConvert.DeserializeObject<AccountMovieStates>(result.Json, jsonSettings);
                 }
-                catch (JsonException ex)
+                catch (JsonException)
                 {
                     result.HttpStatusCode = HttpStatusCode.InternalServerError;
                 }                

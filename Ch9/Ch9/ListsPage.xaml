@@ -153,6 +153,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
+                            
                             <StackLayout Orientation="Horizontal" Padding="5">
 
                                 <Image>

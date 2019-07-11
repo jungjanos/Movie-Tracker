@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
-using System.Text;
 
 namespace Ch9.Utils
 {
@@ -44,5 +43,28 @@ namespace Ch9.Utils
         }
 
         public static decimal GetValue(this Rating rating) => (decimal)rating / 2;
+
+        /// <summary>
+        /// Not allowed to throw. 
+        /// Appends the movie collection in the "MovieDetailModels" property of the server response
+        /// to the target's same named property. Updates the targets page and result counters from the serverResponse 
+        /// </summary>
+        /// <param name="targetList">this is the public observered collection wich is updated with data from the server's response</param>
+        /// <param name="serverResponse">contains the server's response, containing movies to append to the observed collection and page/result counter</param>
+        public static void AppendResult(SearchResult targetList, SearchResult serverResponse, IMovieDetailModelConfigurator movieDetailConfigurator)
+        {
+            if (serverResponse.MovieDetailModels.Count > 0)
+            {
+                movieDetailConfigurator.SetImageSrc(serverResponse.MovieDetailModels);
+                movieDetailConfigurator.SetGenreNamesFromGenreIds(serverResponse.MovieDetailModels);
+
+                foreach (MovieDetailModel movie in serverResponse.MovieDetailModels)
+                    targetList.MovieDetailModels.Add(movie);
+
+                targetList.Page = serverResponse.Page;
+                targetList.TotalPages = serverResponse.TotalPages;
+                targetList.TotalResults = serverResponse.TotalResults;
+            }
+        }
     }
 }

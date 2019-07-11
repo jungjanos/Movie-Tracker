@@ -55,30 +55,6 @@ namespace Ch9.Utils
         }
 
         /// <summary>
-        /// Not allowed to throw. 
-        /// Appends the movie collection in the "MovieDetailModels" property of the server response
-        /// to the target's same named property. Updates the targets page and result counters from the serverResponse 
-        /// </summary>
-        /// <param name="targetList">this is the public observered collection wich is updated with data from the server's response</param>
-        /// <param name="serverResponse">contains the server's response, containing movies to append to the observed collection and page/result counter</param>
-        private void AppendResult(SearchResult targetList, SearchResult serverResponse)
-        {
-            if (serverResponse.MovieDetailModels.Count > 0)
-            {
-                _movieDetailConfigurator.SetImageSrc(serverResponse.MovieDetailModels);
-                _movieDetailConfigurator.SetGenreNamesFromGenreIds(serverResponse.MovieDetailModels);
-
-                foreach (MovieDetailModel movie in serverResponse.MovieDetailModels)
-                    targetList.MovieDetailModels.Add(movie);
-
-
-                targetList.Page = serverResponse.Page;
-                targetList.TotalPages = serverResponse.TotalPages;
-                targetList.TotalResults = serverResponse.TotalResults;
-            }
-        }
-
-        /// <summary>
         /// Can throw. 
         /// First resets the client side collection of the favorite list to its initial state.
         /// Tries to reload the first page of the favorite list from the server.
@@ -91,14 +67,13 @@ namespace Ch9.Utils
             if (!_settings.HasTmdbAccount)
                 throw new Exception("Account error: user is not signed in");
 
-
             GetFavoriteMoviesResult getFavoriteList = await _tmdbCachedSearchClient.GetFavoriteMovies(sortBy: SortBy, page: 1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
             if (!getFavoriteList.HttpStatusCode.IsSuccessCode())
                 throw new Exception($"Could not refresh favorite list, TMDB server responded with {getFavoriteList.HttpStatusCode}");
 
             SearchResult moviesOnFavoriteList = JsonConvert.DeserializeObject<SearchResult>(getFavoriteList.Json);
 
-            AppendResult(FavoriteMovies, moviesOnFavoriteList);
+            Utils.AppendResult(FavoriteMovies, moviesOnFavoriteList, _movieDetailConfigurator);
         }
 
         /// <summary>

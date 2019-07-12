@@ -67,7 +67,7 @@ namespace Ch9.Utils
             if (!_settings.HasTmdbAccount)
                 throw new Exception("Account error: user is not signed in");
 
-            GetFavoriteMoviesResult getFavoriteList = await _tmdbCachedSearchClient.GetFavoriteMovies(sortBy: SortBy, page: 1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
+            GetFavoriteMoviesResult getFavoriteList = await _tmdbCachedSearchClient.GetFavoriteMovies(language: _settings.SearchLanguage, sortBy: SortBy, page: 1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
             if (!getFavoriteList.HttpStatusCode.IsSuccessCode())
                 throw new Exception($"Could not refresh favorite list, TMDB server responded with {getFavoriteList.HttpStatusCode}");
 
@@ -84,7 +84,7 @@ namespace Ch9.Utils
             if (!CanLoad)
                 return;
 
-            GetFavoriteMoviesResult getFavoriteList = await _tmdbCachedSearchClient.GetFavoriteMovies(sortBy: SortBy, page: FavoriteMovies.Page+1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
+            GetFavoriteMoviesResult getFavoriteList = await _tmdbCachedSearchClient.GetFavoriteMovies(language: _settings.SearchLanguage, sortBy: SortBy, page: FavoriteMovies.Page+1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
 
             if (!getFavoriteList.HttpStatusCode.IsSuccessCode())
                 throw new Exception($"Could not load favorite list, TMDB server responded with {getFavoriteList.HttpStatusCode}");

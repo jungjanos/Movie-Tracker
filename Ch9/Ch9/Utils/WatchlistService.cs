@@ -8,6 +8,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Xamarin.Forms;
 
 namespace Ch9.Utils
 {
@@ -16,15 +18,26 @@ namespace Ch9.Utils
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
         private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
+        private readonly ICommand _sortOptionChangedCommand;
 
-        private SearchResult _watchlist;
+        private SearchResult _watchlist;        
+
         public SearchResult Watchlist
         {
             get => _watchlist;
             set => SetProperty(ref _watchlist, value);
         }
 
-        public string SortBy;
+        private string _sortBy;
+        public string SortBy
+        {
+            get => _sortBy;
+            set
+            {
+                if (SetProperty(ref _sortBy, value))
+                    _sortOptionChangedCommand.Execute(null);
+            }
+        }
 
         public WatchlistService(ISettings settings,
             ITmdbCachedSearchClient tmdbCachedSearchClient,
@@ -34,7 +47,7 @@ namespace Ch9.Utils
             _tmdbCachedSearchClient = tmdbCachedSearchClient;
             _movieDetailConfigurator = movieDetailConfigurator;
 
-            SortBy = "created_at.desc";
+            _sortBy = "created_at.desc";
 
             _watchlist = new SearchResult
             {
@@ -43,6 +56,8 @@ namespace Ch9.Utils
                 TotalPages = 0,
                 TotalResults = 0
             };
+
+            _sortOptionChangedCommand = new Command(async () => await RefreshWatchlist(1, 1000));
         }
 
         private void ClearWatchlist()

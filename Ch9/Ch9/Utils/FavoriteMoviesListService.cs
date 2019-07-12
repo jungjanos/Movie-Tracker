@@ -56,6 +56,7 @@ namespace Ch9.Utils
                 TotalPages = 0,
                 TotalResults = 0
             };
+
             _sortOptionChangedCommand = new Command(async () => await RefreshFavoriteMoviesList(1, 1000));
         }
 

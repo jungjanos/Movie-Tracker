@@ -202,6 +202,30 @@
                 </ListView.ItemTemplate>
             </controls:ExtendedListView>
 
+            <StackLayout IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntThree}}"
+                         Orientation="Horizontal"
+                         Padding="5">
+                <Image>
+                    <Image.Source>
+                        <FontImageSource Glyph="&#xf2f7;"
+                        FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                        Size="30" 
+                        Color="DarkGray"/>
+                    </Image.Source>
+                </Image>
+
+                <Picker SelectedItem="{Binding Path=UsersMovieListsService2.WatchlistService.SortBy,Mode=TwoWay}"
+                        HorizontalOptions="Start"
+                        Visual="Material">
+
+                    <Picker.Items>
+                        <x:String>created_at.desc</x:String>
+                        <x:String>created_at.asc</x:String>
+                    </Picker.Items>
+                </Picker>
+
+            </StackLayout>
+
             <controls:ExtendedListView IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntThree}}"
                       HasUnevenRows="True"
                       HorizontalOptions="Start"

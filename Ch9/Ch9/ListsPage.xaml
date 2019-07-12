@@ -162,12 +162,7 @@
                 </Picker>
 
             </StackLayout>
-
-
             
-            
-
-
             <controls:ExtendedListView IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntTwo}}"
                       HasUnevenRows="True"
                       HorizontalOptions="Start"

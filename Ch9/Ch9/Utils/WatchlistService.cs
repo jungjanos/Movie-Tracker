@@ -57,7 +57,13 @@ namespace Ch9.Utils
                 TotalResults = 0
             };
 
-            _sortOptionChangedCommand = new Command(async () => await RefreshWatchlist(1, 1000));
+            _sortOptionChangedCommand = new Command(async () =>
+            {
+                try
+                {
+                    await RefreshWatchlist(1, 1000);
+                } catch { }                
+            });
         }
 
         private void ClearWatchlist()

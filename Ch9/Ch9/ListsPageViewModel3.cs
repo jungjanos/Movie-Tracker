@@ -61,6 +61,7 @@ namespace Ch9
 
         #region FAVORITE_LIST_COMMANDS
         public Command RefreshFavoriteListCommand { get; private set; }
+        public Command LoadNextFavoritesPageCommand { get; private set; }
         #endregion
         #region WATCHLIST_COMMANDS
         public Command RefreshWatchlistCommand { get; set; }
@@ -179,6 +180,18 @@ namespace Ch9
                 }
                 catch (Exception ex)
                 { await _pageService.DisplayAlert("Error", $"Could not refresh the favorites list, service responded with: {ex.Message}", "Ok"); }
+                IsRefreshing = false;
+            });
+
+            LoadNextFavoritesPageCommand = new Command(async () =>
+            {
+                IsRefreshing = true;
+                try
+                {
+                    await UsersMovieListsService2.FavoriteMoviesListService.TryLoadNextPage();
+                }
+                catch (Exception ex)
+                { await _pageService.DisplayAlert("Error", $"Could not load favorites, service responded with: {ex.Message}", "Ok"); }
                 IsRefreshing = false;
             });
 

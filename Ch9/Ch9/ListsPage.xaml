@@ -4,6 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Ch9"
+             xmlns:controls="clr-namespace:Ch9.Controls"
              xmlns:sys="clr-namespace:System;assembly=netstandard"
              mc:Ignorable="d"
              Title="Lists"
@@ -137,7 +138,7 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <ListView IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntTwo}}"
+            <controls:ExtendedListView IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntTwo}}"
                       HasUnevenRows="True"
                       HorizontalOptions="Start"
                       VerticalOptions="StartAndExpand"                      
@@ -145,7 +146,8 @@
                       ItemTapped="MovieListEntryTapped"
                       IsPullToRefreshEnabled="True"
                       IsRefreshing="{Binding IsRefreshing}"
-                      RefreshCommand="{Binding RefreshFavoriteListCommand}">
+                      RefreshCommand="{Binding RefreshFavoriteListCommand}"
+                      LoadMoreCommand="{Binding LoadNextFavoritesPageCommand}">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -173,7 +175,7 @@
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </controls:ExtendedListView>
 
             <ListView IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntThree}}"
                       HasUnevenRows="True"

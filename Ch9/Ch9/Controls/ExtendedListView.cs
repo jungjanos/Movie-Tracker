@@ -57,7 +57,6 @@ namespace Ch9.Controls
             //If its the last item execute command and load more data.
             if (e.Item == ItemsSource.Cast<object>().Last())
                 LoadMoreCommand?.Execute(null);
-
         }
     }
 }

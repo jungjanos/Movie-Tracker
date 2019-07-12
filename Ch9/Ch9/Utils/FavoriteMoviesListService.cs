@@ -76,6 +76,27 @@ namespace Ch9.Utils
             Utils.AppendResult(FavoriteMovies, moviesOnFavoriteList, _movieDetailConfigurator);
         }
 
+        public async Task TryLoadNextPage(int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            if (!_settings.HasTmdbAccount)
+                throw new Exception("Account error: user is not signed in");
+
+            if (!CanLoad)
+                return;
+
+            GetFavoriteMoviesResult getFavoriteList = await _tmdbCachedSearchClient.GetFavoriteMovies(sortBy: SortBy, page: FavoriteMovies.Page+1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
+
+            if (!getFavoriteList.HttpStatusCode.IsSuccessCode())
+                throw new Exception($"Could not load favorite list, TMDB server responded with {getFavoriteList.HttpStatusCode}");
+
+            SearchResult moviesOnFavoriteList = JsonConvert.DeserializeObject<SearchResult>(getFavoriteList.Json);
+
+            Utils.AppendResult(FavoriteMovies, moviesOnFavoriteList, _movieDetailConfigurator);            
+            OnPropertyChanged(nameof(CanLoad));
+        }
+
+        public bool CanLoad => FavoriteMovies.Page == 0 ? false : (FavoriteMovies.Page >= FavoriteMovies.TotalPages ? false : true);
+
         /// <summary>
         /// Can throw. 
         /// Tries to add or remove a movie to/from the favorites depending on the desired state. 

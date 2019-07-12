@@ -202,7 +202,7 @@
                 </ListView.ItemTemplate>
             </controls:ExtendedListView>
 
-            <ListView IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntThree}}"
+            <controls:ExtendedListView IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntThree}}"
                       HasUnevenRows="True"
                       HorizontalOptions="Start"
                       VerticalOptions="StartAndExpand"                      
@@ -210,7 +210,8 @@
                       ItemTapped="MovieListEntryTapped"
                       IsPullToRefreshEnabled="True"
                       IsRefreshing="{Binding IsRefreshing}"
-                      RefreshCommand="{Binding RefreshWatchlistCommand}">
+                      RefreshCommand="{Binding RefreshWatchlistCommand}"
+                      LoadMoreCommand="{Binding LoadNextWatchlistPageCommand}">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -238,7 +239,7 @@
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </controls:ExtendedListView>
 
         </StackLayout>
         

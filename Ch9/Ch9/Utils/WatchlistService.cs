@@ -75,6 +75,27 @@ namespace Ch9.Utils
             Utils.AppendResult(Watchlist, moviesOnWatchlist, _movieDetailConfigurator);
         }
 
+        public async Task TryLoadNextPage(int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            if (!_settings.HasTmdbAccount)
+                throw new Exception("Account error: user is not signed in");
+
+            if (!CanLoad)
+                return;
+
+            GetMovieWatchlistResult getWatchlist = await _tmdbCachedSearchClient.GetMovieWatchlist(language: _settings.SearchLanguage, sortBy: SortBy, page: Watchlist.Page + 1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
+
+            if (!getWatchlist.HttpStatusCode.IsSuccessCode())
+                throw new Exception($"Could not load watchlist items, TMDB server responded with {getWatchlist.HttpStatusCode}");
+
+            SearchResult moviesOnWatchlistPage = JsonConvert.DeserializeObject<SearchResult>(getWatchlist.Json);
+
+            Utils.AppendResult(Watchlist, moviesOnWatchlistPage, _movieDetailConfigurator);
+            OnPropertyChanged(nameof(CanLoad));
+        }
+
+        public bool CanLoad => Watchlist.Page == 0 ? false : (Watchlist.Page >= Watchlist.TotalPages ? false : true);
+
         /// <summary>
         /// Can throw. 
         /// Tries to add or remove a movie to/from the watchlist depending on the desired state. 

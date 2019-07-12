@@ -64,7 +64,8 @@ namespace Ch9
         public Command LoadNextFavoritesPageCommand { get; private set; }
         #endregion
         #region WATCHLIST_COMMANDS
-        public Command RefreshWatchlistCommand { get; set; }
+        public Command RefreshWatchlistCommand { get; private set; }
+        public Command LoadNextWatchlistPageCommand { get; private set; }
         #endregion
 
         public Command MovieListEntryTappedCommand { get; private set; }
@@ -204,6 +205,18 @@ namespace Ch9
                 }
                 catch (Exception ex)
                 { await _pageService.DisplayAlert("Error", $"Could not refresh the watchlist, service responded with: {ex.Message}", "Ok"); }
+                IsRefreshing = false;
+            });
+
+            LoadNextWatchlistPageCommand = new Command(async () =>
+            {
+                IsRefreshing = true;
+                try
+                {
+                    await UsersMovieListsService2.WatchlistService.TryLoadNextPage();
+                }
+                catch (Exception ex)
+                { await _pageService.DisplayAlert("Error", $"Could not load watchlist items, service responded with: {ex.Message}", "Ok"); }
                 IsRefreshing = false;
             });
 

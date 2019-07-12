@@ -102,9 +102,9 @@ namespace Ch9.Utils
             if (!getFavoriteList.HttpStatusCode.IsSuccessCode())
                 throw new Exception($"Could not load favorite list, TMDB server responded with {getFavoriteList.HttpStatusCode}");
 
-            SearchResult moviesOnFavoriteList = JsonConvert.DeserializeObject<SearchResult>(getFavoriteList.Json);
+            SearchResult moviesOnFavoriteListPage = JsonConvert.DeserializeObject<SearchResult>(getFavoriteList.Json);
 
-            Utils.AppendResult(FavoriteMovies, moviesOnFavoriteList, _movieDetailConfigurator);
+            Utils.AppendResult(FavoriteMovies, moviesOnFavoriteListPage, _movieDetailConfigurator);
             OnPropertyChanged(nameof(CanLoad));
         }
 

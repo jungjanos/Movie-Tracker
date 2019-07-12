@@ -8,6 +8,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Xamarin.Forms;
 
 namespace Ch9.Utils
 {
@@ -16,6 +18,7 @@ namespace Ch9.Utils
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
         private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
+        private readonly ICommand _sortOptionChangedCommand;
 
         private SearchResult _favoriteMovies;
         public SearchResult FavoriteMovies
@@ -24,7 +27,16 @@ namespace Ch9.Utils
             set => SetProperty(ref _favoriteMovies, value);
         }
 
-        public string SortBy;
+        private string _sortBy;
+        public string SortBy
+        {
+            get => _sortBy;
+            set
+            {
+                if (SetProperty(ref _sortBy, value))
+                    _sortOptionChangedCommand.Execute(null);
+            } 
+        }
 
         public FavoriteMoviesListService(
             ISettings settings,
@@ -35,7 +47,7 @@ namespace Ch9.Utils
             _tmdbCachedSearchClient = tmdbCachedSearchClient;
             _movieDetailConfigurator = movieDetailConfigurator;
 
-            SortBy = "created_at.desc";
+            _sortBy = "created_at.desc";
 
             _favoriteMovies = new SearchResult
             {
@@ -44,6 +56,7 @@ namespace Ch9.Utils
                 TotalPages = 0,
                 TotalResults = 0
             };
+            _sortOptionChangedCommand = new Command(async () => await RefreshFavoriteMoviesList(1, 1000));
         }
 
         private void ClearFavoriteList()
@@ -84,14 +97,14 @@ namespace Ch9.Utils
             if (!CanLoad)
                 return;
 
-            GetFavoriteMoviesResult getFavoriteList = await _tmdbCachedSearchClient.GetFavoriteMovies(language: _settings.SearchLanguage, sortBy: SortBy, page: FavoriteMovies.Page+1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
+            GetFavoriteMoviesResult getFavoriteList = await _tmdbCachedSearchClient.GetFavoriteMovies(language: _settings.SearchLanguage, sortBy: SortBy, page: FavoriteMovies.Page + 1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
 
             if (!getFavoriteList.HttpStatusCode.IsSuccessCode())
                 throw new Exception($"Could not load favorite list, TMDB server responded with {getFavoriteList.HttpStatusCode}");
 
             SearchResult moviesOnFavoriteList = JsonConvert.DeserializeObject<SearchResult>(getFavoriteList.Json);
 
-            Utils.AppendResult(FavoriteMovies, moviesOnFavoriteList, _movieDetailConfigurator);            
+            Utils.AppendResult(FavoriteMovies, moviesOnFavoriteList, _movieDetailConfigurator);
             OnPropertyChanged(nameof(CanLoad));
         }
 

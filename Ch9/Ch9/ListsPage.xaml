@@ -29,7 +29,7 @@
 
             <Grid ColumnSpacing="0" Margin="0,5,0,0" Padding="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="50" />
+                    <RowDefinition Height="40" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -47,9 +47,10 @@
                 
                 <Button Grid.Row="0" Grid.Column="2" Text="Watchlist" 
                         Command="{Binding WatchlistViewSelectorCommand}"
-                        BackgroundColor="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntThree}}"/>
-            </Grid>                      
+                        BackgroundColor="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntThree}}"/>              
 
+            </Grid>
+            
             <Grid IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntOne}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
@@ -137,6 +138,35 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+
+            <StackLayout IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntTwo}}"
+                         Orientation="Horizontal"
+                         Padding="5">
+                <Image>
+                    <Image.Source>
+                        <FontImageSource Glyph="&#xf2f7;"
+                        FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                        Size="30" 
+                        Color="DarkGray"/>
+                    </Image.Source>
+                </Image>
+
+                <Picker SelectedItem="{Binding Path=UsersMovieListsService2.FavoriteMoviesListService.SortBy,Mode=TwoWay}"
+                        HorizontalOptions="Start"
+                        Visual="Material">
+
+                    <Picker.Items>
+                        <x:String>created_at.desc</x:String>
+                        <x:String>created_at.asc</x:String>
+                    </Picker.Items>
+                </Picker>
+
+            </StackLayout>
+
+
+            
+            
+
 
             <controls:ExtendedListView IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntTwo}}"
                       HasUnevenRows="True"

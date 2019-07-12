@@ -66,7 +66,7 @@ namespace Ch9.Utils
             if (!_settings.HasTmdbAccount)
                 throw new Exception("Account error: user is not signed in");
 
-            GetMovieWatchlistResult getWatchlist = await _tmdbCachedSearchClient.GetMovieWatchlist(sortBy: SortBy, page: 1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
+            GetMovieWatchlistResult getWatchlist = await _tmdbCachedSearchClient.GetMovieWatchlist(language: _settings.SearchLanguage, sortBy: SortBy, page: 1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
             if (!getWatchlist.HttpStatusCode.IsSuccessCode())
                 throw new Exception($"Could not refresh watchlist, TMDB server responded with {getWatchlist.HttpStatusCode}");
 

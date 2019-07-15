@@ -4,6 +4,8 @@ using Xamarin.Forms;
 
 namespace Ch9.Controls
 {
+    // Idea:
+    // https://www.pujolsluis.com/creating-custom-controls-part-1-extendedlistview/
     class ExtendedListView : ListView
     {
         // ItemAppearing Property and field to allow binding of a custom command in our control

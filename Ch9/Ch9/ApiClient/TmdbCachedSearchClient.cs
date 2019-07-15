@@ -58,9 +58,12 @@ namespace Ch9.ApiClient
             return result;
         }
 
-        public async Task<TrendingMoviesResult> GetTrendingMovies(bool week = true, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<TrendingMoviesResult> GetTrendingMovies(bool week = true, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
             string key = "$" + nameof(GetTrendingMovies) + week + (language ?? "") + (includeAdult?.ToString() ?? "") + (page?.ToString() ?? "");
+
+            if (!fromCache)
+                _cache.Remove(key);
 
             var result = _cache.Get<TrendingMoviesResult>(key) ?? await _networkClient.GetTrendingMovies(week, language, includeAdult, page, retryCount, delayMilliseconds);
 

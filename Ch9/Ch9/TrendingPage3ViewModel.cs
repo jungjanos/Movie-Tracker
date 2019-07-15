@@ -14,6 +14,7 @@ using Xamarin.Forms;
 
 namespace Ch9
 {
+    // Tracks the trending movies for the current week and day
     public class TrendingPage3ViewModel : INotifyPropertyChanged
     {
         private readonly ISettings _settings;
@@ -43,7 +44,6 @@ namespace Ch9
             set => SetProperty(ref _trendingDay, value);
         }
 
-
         // controls the setting of the Week/Day toggle switch on the UI        
         private bool _weekOrDaySwitch;
         public bool WeekOrDaySwitch
@@ -56,6 +56,7 @@ namespace Ch9
         public ICommand LoadNextTrendingDayPageCommand { get; private set; }
         public ICommand RefreshTrendingWeekListCommand { get; private set; }
         public ICommand RefreshTrendingDayListCommand { get; private set; }
+        public ICommand OnItemTappedCommand { get; private set; }
 
 
         public TrendingPage3ViewModel(ISettings settings,
@@ -101,6 +102,8 @@ namespace Ch9
                 ClearList(TrendingDay);
                 await TryLoadingNextDayPage(1, 1000);
             });
+
+            OnItemTappedCommand = new Command<MovieDetailModel>(async movie => await _pageService.PushAsync(movie));
         }
 
         /// <summary>
@@ -185,7 +188,6 @@ namespace Ch9
                 finally { IsRefreshing = false; }
             }
         }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 

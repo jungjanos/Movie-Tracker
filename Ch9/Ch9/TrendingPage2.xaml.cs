@@ -1,7 +1,6 @@
 ﻿using Ch9.Utils;
 using System;
 using System.Globalization;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -32,7 +31,6 @@ namespace Ch9
             base.OnAppearing();
             await ViewModel.Initialize();
         }
-
     }
 
     public class WeekOrDayBoolToStringConverter : IValueConverter

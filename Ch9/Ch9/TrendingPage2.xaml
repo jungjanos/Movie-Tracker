@@ -26,11 +26,12 @@
 
             <controls:ExtendedListView  ItemsSource="{Binding Path=TrendingWeek.MovieDetailModels}"
                                         IsVisible="{Binding WeekOrDaySwitch}"
+                                        TappedCommand="{Binding OnItemTappedCommand}"
                                         IsPullToRefreshEnabled="True"
                                         RefreshCommand="{Binding RefreshTrendingWeekListCommand}"
-                                        IsRefreshing="{Binding IsRefreshing}"                                                
+                                        IsRefreshing="{Binding IsRefreshing}"
                                         HasUnevenRows="True"
-                                        LoadMoreCommand="{Binding LoadNextTrendingWeekPageCommand}">  
+                                        LoadMoreCommand="{Binding LoadNextTrendingWeekPageCommand}">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -63,6 +64,7 @@
 
             <controls:ExtendedListView  ItemsSource="{Binding Path=TrendingDay.MovieDetailModels}"                
                                         IsVisible="{Binding WeekOrDaySwitch, Converter={StaticResource Key=inverseBool}}"
+                                        TappedCommand="{Binding OnItemTappedCommand}"
                                         IsPullToRefreshEnabled="True"
                                         RefreshCommand="{Binding RefreshTrendingDayListCommand}"
                                         IsRefreshing="{Binding IsRefreshing}"                                                

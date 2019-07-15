@@ -4,6 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Ch9"
+             xmlns:controls="clr-namespace:Ch9.Controls"
              mc:Ignorable="d"
              x:Class="Ch9.TrendingPage2"
              Title="Trending">
@@ -11,6 +12,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <local:WeekOrDayBoolToStringConverter x:Key="weekOrDayBoolToString"/>
+            <local:InverseBoolConverter x:Key="inverseBool"/>
         </ResourceDictionary>        
     </ContentPage.Resources>
     
@@ -22,13 +24,13 @@
                 <Switch IsToggled="{Binding WeekOrDaySwitch}"/>
             </StackLayout>
 
-            <ListView   ItemsSource="{Binding TrendingMovies}"                
-                        ItemTapped="TrendingMovies_ItemTapped"
-                        IsPullToRefreshEnabled="True"            
-                        IsRefreshing="{Binding IsRefreshing}"
-                        RefreshCommand="{Binding RefreshCommand}" 
-                        CachingStrategy="RecycleElement"
-                        HasUnevenRows="True" >  
+            <controls:ExtendedListView  ItemsSource="{Binding Path=TrendingWeek.MovieDetailModels}"
+                                        IsVisible="{Binding WeekOrDaySwitch}"
+                                        IsPullToRefreshEnabled="True"
+                                        RefreshCommand="{Binding RefreshTrendingWeekListCommand}"
+                                        IsRefreshing="{Binding IsRefreshing}"                                                
+                                        HasUnevenRows="True"
+                                        LoadMoreCommand="{Binding LoadNextTrendingWeekPageCommand}">  
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -56,7 +58,44 @@
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </controls:ExtendedListView>
+
+
+            <controls:ExtendedListView  ItemsSource="{Binding Path=TrendingDay.MovieDetailModels}"                
+                                        IsVisible="{Binding WeekOrDaySwitch, Converter={StaticResource Key=inverseBool}}"
+                                        IsPullToRefreshEnabled="True"
+                                        RefreshCommand="{Binding RefreshTrendingDayListCommand}"
+                                        IsRefreshing="{Binding IsRefreshing}"                                                
+                                        HasUnevenRows="True"
+                                        LoadMoreCommand="{Binding LoadNextTrendingDayPageCommand}">    
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+
+                            <StackLayout Orientation="Horizontal" Padding="5">
+
+                                <Image>
+                                    <Image.Source>
+                                        <UriImageSource Uri="{Binding ImgSmSrc}"
+                                                    CacheValidity="0"
+                                                    CachingEnabled="False"                                                    
+                                                    />
+                                    </Image.Source>
+                                </Image>
+
+                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical">
+                                    <Label Text="{Binding Title}" TextColor="Black"/>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>
+                                        <Label TextColor="Gray" Text="{Binding Genre}" FontSize="Micro"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </controls:ExtendedListView>
 
         </StackLayout>
     </ContentPage.Content>

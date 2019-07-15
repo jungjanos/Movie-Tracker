@@ -33,8 +33,6 @@ namespace Ch9
             await vMInitializer;
             base.OnAppearing();            
         }
-
-        private void MovieListEntryTapped(object sender, ItemTappedEventArgs e) => ViewModel.MovieListEntryTappedCommand.Execute(e.Item);
     }
 
     /// <summary>
@@ -61,5 +59,4 @@ namespace Ch9
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         { throw new NotImplementedException(); }
     }
-
 }

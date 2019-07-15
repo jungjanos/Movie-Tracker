@@ -98,16 +98,16 @@
             </Grid>
 
 
-            <ListView IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntOne}}"
-                      HasUnevenRows="True"
-                      HorizontalOptions="Start"
-                      VerticalOptions="StartAndExpand"                      
-                      ItemsSource="{Binding Source={x:Reference viewedListPicker}, Path=SelectedItem.Movies, Mode=TwoWay}"
-                      SelectedItem="{Binding SelectedMovie, Mode=TwoWay}"
-                      ItemTapped="MovieListEntryTapped"
-                      IsPullToRefreshEnabled="True"
-                      IsRefreshing="{Binding IsRefreshing}"
-                      RefreshCommand="{Binding RefreshCustomListCommand}">
+            <controls:ExtendedListView  IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntOne}}"
+                                        HasUnevenRows="True"
+                                        HorizontalOptions="Start"
+                                        VerticalOptions="StartAndExpand"                      
+                                        ItemsSource="{Binding Source={x:Reference viewedListPicker}, Path=SelectedItem.Movies, Mode=TwoWay}"
+                                        SelectedItem="{Binding SelectedMovie, Mode=TwoWay}"
+                                        TappedCommand="{Binding OnItemTappedCommand}"
+                                        IsPullToRefreshEnabled="True"
+                                        IsRefreshing="{Binding IsRefreshing}"
+                                        RefreshCommand="{Binding RefreshCustomListCommand}">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -137,7 +137,7 @@
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </controls:ExtendedListView>
 
             <StackLayout IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntTwo}}"
                          Orientation="Horizontal"
@@ -163,16 +163,16 @@
 
             </StackLayout>
             
-            <controls:ExtendedListView IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntTwo}}"
-                      HasUnevenRows="True"
-                      HorizontalOptions="Start"
-                      VerticalOptions="StartAndExpand"                      
-                      ItemsSource="{Binding Path=UsersMovieListsService2.FavoriteMoviesListService.FavoriteMovies.MovieDetailModels}"
-                      ItemTapped="MovieListEntryTapped"
-                      IsPullToRefreshEnabled="True"
-                      IsRefreshing="{Binding IsRefreshing}"
-                      RefreshCommand="{Binding RefreshFavoriteListCommand}"
-                      LoadMoreCommand="{Binding LoadNextFavoritesPageCommand}">
+            <controls:ExtendedListView  IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntTwo}}"
+                                        HasUnevenRows="True"
+                                        HorizontalOptions="Start"
+                                        VerticalOptions="StartAndExpand"                      
+                                        ItemsSource="{Binding Path=UsersMovieListsService2.FavoriteMoviesListService.FavoriteMovies.MovieDetailModels}"
+                                        TappedCommand="{Binding OnItemTappedCommand}"
+                                        IsPullToRefreshEnabled="True"
+                                        IsRefreshing="{Binding IsRefreshing}"
+                                        RefreshCommand="{Binding RefreshFavoriteListCommand}"
+                                        LoadMoreCommand="{Binding LoadNextFavoritesPageCommand}">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -226,16 +226,16 @@
 
             </StackLayout>
 
-            <controls:ExtendedListView IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntThree}}"
-                      HasUnevenRows="True"
-                      HorizontalOptions="Start"
-                      VerticalOptions="StartAndExpand"                      
-                      ItemsSource="{Binding Path=UsersMovieListsService2.WatchlistService.Watchlist.MovieDetailModels}"
-                      ItemTapped="MovieListEntryTapped"
-                      IsPullToRefreshEnabled="True"
-                      IsRefreshing="{Binding IsRefreshing}"
-                      RefreshCommand="{Binding RefreshWatchlistCommand}"
-                      LoadMoreCommand="{Binding LoadNextWatchlistPageCommand}">
+            <controls:ExtendedListView  IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntThree}}"
+                                        HasUnevenRows="True"
+                                        HorizontalOptions="Start"
+                                        VerticalOptions="StartAndExpand"                      
+                                        ItemsSource="{Binding Path=UsersMovieListsService2.WatchlistService.Watchlist.MovieDetailModels}"
+                                        TappedCommand="{Binding OnItemTappedCommand}"
+                                        IsPullToRefreshEnabled="True"
+                                        IsRefreshing="{Binding IsRefreshing}"
+                                        RefreshCommand="{Binding RefreshWatchlistCommand}"
+                                        LoadMoreCommand="{Binding LoadNextWatchlistPageCommand}">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Ch9.Models;
 using Ch9.Utils;
 using Xamarin.Forms;
@@ -67,8 +68,8 @@ namespace Ch9
         public Command RefreshWatchlistCommand { get; private set; }
         public Command LoadNextWatchlistPageCommand { get; private set; }
         #endregion
+        public ICommand OnItemTappedCommand { get; private set; }
 
-        public Command MovieListEntryTappedCommand { get; private set; }
 
         public ListsPageViewModel3(
             UsersMovieListsService2 usersMovieListsService2,
@@ -219,8 +220,7 @@ namespace Ch9
                 { await _pageService.DisplayAlert("Error", $"Could not load watchlist items, service responded with: {ex.Message}", "Ok"); }
                 IsRefreshing = false;
             });
-
-            MovieListEntryTappedCommand = new Command<MovieDetailModel>(async movie => await _pageService.PushAsync(movie));
+            OnItemTappedCommand = new Command<MovieDetailModel>(async movie => await _pageService.PushAsync(movie));
         }
 
         public async Task AddList(AddListPageViewModel addListPageViewModel)

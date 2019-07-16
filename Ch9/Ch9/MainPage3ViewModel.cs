@@ -32,7 +32,7 @@ namespace Ch9
                 if (SetProperty(ref _searchString, value))
                 {
                     if (string.IsNullOrEmpty(SearchString))
-                        ClearList(SearchResults);
+                        SearchResults.InitializeOrClearMovieCollection();
                 }
             }
         }
@@ -67,20 +67,15 @@ namespace Ch9
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _pageService = pageService;
 
-            _searchResults = new SearchResult
-            {
-                MovieDetailModels = new ObservableCollection<MovieDetailModel>(),
-                Page = 0,
-                TotalPages = 0,
-                TotalResults = 0
-            };
+            _searchResults = new SearchResult();
+            _searchResults.InitializeOrClearMovieCollection();
 
             SearchCommand = new Command(async () =>
             {
                 if (!(SearchString?.Length >= MINIMUM_Search_Str_Length))
                     return;
 
-                ClearList(SearchResults);
+                SearchResults.InitializeOrClearMovieCollection();
                 await TryLoadingNextResultPage(1, 1000);
             });            
 
@@ -93,14 +88,6 @@ namespace Ch9
             });
 
             OnItemTappedCommand = new Command<MovieDetailModel>(async movie => await _pageService.PushAsync(movie));
-        }
-        // TODO : refactor to external helper method
-        private void ClearList(SearchResult list)
-        {
-            list.MovieDetailModels.Clear();
-            list.Page = 0;
-            list.TotalPages = 0;
-            list.TotalResults = 0;
         }
 
         public async Task TryLoadingNextResultPage(int retryCount = 0, int delayMilliseconds = 1000)

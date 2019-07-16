@@ -49,13 +49,8 @@ namespace Ch9.Utils
 
             _sortBy = "created_at.desc";
 
-            _watchlist = new SearchResult
-            {
-                MovieDetailModels = new ObservableCollection<MovieDetailModel>(),
-                Page = 0,
-                TotalPages = 0,
-                TotalResults = 0
-            };
+            _watchlist = new SearchResult();
+            _watchlist.InitializeOrClearMovieCollection();
 
             _sortOptionChangedCommand = new Command(async () =>
             {
@@ -66,14 +61,6 @@ namespace Ch9.Utils
             });
         }
 
-        private void ClearWatchlist()
-        {
-            Watchlist.MovieDetailModels.Clear();
-            Watchlist.Page = 0;
-            Watchlist.TotalPages = 0;
-            Watchlist.TotalResults = 0;
-        }
-
         /// <summary>
         /// Can throw. 
         /// First resets the client side collection of the watchlist to its initial state.
@@ -82,7 +69,7 @@ namespace Ch9.Utils
         /// </summary>        
         public async Task RefreshWatchlist(int retryCount = 0, int delayMilliseconds = 1000)
         {
-            ClearWatchlist();
+            Watchlist.InitializeOrClearMovieCollection();
 
             if (!_settings.HasTmdbAccount)
                 throw new Exception("Account error: user is not signed in");

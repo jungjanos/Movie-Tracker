@@ -49,13 +49,8 @@ namespace Ch9.Utils
 
             _sortBy = "created_at.desc";
 
-            _favoriteMovies = new SearchResult
-            {
-                MovieDetailModels = new ObservableCollection<MovieDetailModel>(),
-                Page = 0,
-                TotalPages = 0,
-                TotalResults = 0
-            };
+            _favoriteMovies = new SearchResult();
+            _favoriteMovies.InitializeOrClearMovieCollection();
 
             _sortOptionChangedCommand = new Command(async () =>
             {
@@ -67,14 +62,6 @@ namespace Ch9.Utils
             });            
         }
 
-        private void ClearFavoriteList()
-        {
-            FavoriteMovies.MovieDetailModels.Clear();
-            FavoriteMovies.Page = 0;
-            FavoriteMovies.TotalPages = 0;
-            FavoriteMovies.TotalResults = 0;
-        }
-
         /// <summary>
         /// Can throw. 
         /// First resets the client side collection of the favorite list to its initial state.
@@ -83,7 +70,7 @@ namespace Ch9.Utils
         /// </summary>        
         public async Task RefreshFavoriteMoviesList(int retryCount = 0, int delayMilliseconds = 1000)
         {
-            ClearFavoriteList();
+            FavoriteMovies.InitializeOrClearMovieCollection();
 
             if (!_settings.HasTmdbAccount)
                 throw new Exception("Account error: user is not signed in");

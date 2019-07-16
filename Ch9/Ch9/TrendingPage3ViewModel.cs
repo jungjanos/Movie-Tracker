@@ -72,21 +72,11 @@ namespace Ch9
             _pageService = pageService;
             _weekOrDaySwitch = true;
 
-            _trendingWeek = new SearchResult
-            {
-                MovieDetailModels = new ObservableCollection<MovieDetailModel>(),
-                Page = 0,
-                TotalPages = 0,
-                TotalResults = 0
-            };
+            _trendingWeek = new SearchResult();
+            _trendingWeek.InitializeOrClearMovieCollection();
 
-            _trendingDay = new SearchResult
-            {
-                MovieDetailModels = new ObservableCollection<MovieDetailModel>(),
-                Page = 0,
-                TotalPages = 0,
-                TotalResults = 0
-            };
+            _trendingDay = new SearchResult();
+            _trendingDay.InitializeOrClearMovieCollection();
 
             LoadNextTrendingWeekPageCommand = new Command(async () => await TryLoadingNextWeekPage());
             LoadNextTrendingDayPageCommand = new Command(async () => await TryLoadingNextDayPage());

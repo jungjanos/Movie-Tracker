@@ -25,7 +25,7 @@ namespace Ch9.Utils
         }
 
         // Empties and refills an ObservableCollection<T> object without dropping the reference to it.  
-        public static void RefillList<T>(ObservableCollection<T> intoList,  IEnumerable<T> fromList)
+        public static void RefillList<T>(ObservableCollection<T> intoList, IEnumerable<T> fromList)
         {
             intoList.Clear();
             foreach (T item in fromList)
@@ -65,6 +65,24 @@ namespace Ch9.Utils
                 targetList.TotalPages = serverResponse.TotalPages;
                 targetList.TotalResults = serverResponse.TotalResults;
             }
+        }
+
+        /// <summary>
+        /// Not allowed to throw. 
+        /// Depending on the state of the MovieDetailModels property of the argument, if it was null, it will be initialized to an empty
+        /// ObservableCollection, or if it was already initialized, it will be cleared to an empty state. 
+        /// The pagination properties will al be set to zero. 
+        /// </summary>        
+        public static void InitializeOrClearMovieCollection(this SearchResult collection)
+        {
+            if (collection.MovieDetailModels == null)
+                collection.MovieDetailModels = new ObservableCollection<MovieDetailModel>();
+            else
+                collection.MovieDetailModels.Clear();
+
+            collection.Page = 0;
+            collection.TotalPages = 0;
+            collection.TotalResults = 0;
         }
     }
 }

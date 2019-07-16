@@ -8,13 +8,7 @@
              mc:Ignorable="d"
              x:Class="Ch9.MainTabbedPage">
 
-    <!--<TabbedPage.ToolbarItems>
-        <ToolbarItem Icon="settings2.png" Order="Primary" Text="Settings" Clicked="OnSettingsButton_Clicked"/>
-    </TabbedPage.ToolbarItems>-->
-
-    <!--Pages can be added as references or inline-->
-    
-    <!--<local:MainPage2/>-->
+    <!--Pages can be added as references or inline-->        
     <local:MainPage3/>
     <local:TrendingPage2/>
     <local:ListsPage/>

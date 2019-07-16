@@ -51,6 +51,20 @@ namespace Ch9.Utils
                     tmdbConfiguration.Images.BaseUrl + "w780" + movie.ImgBackdropName
                 };
                 movie.GalleryDisplayImage = movie.GalleryDisplayImages[0];
+
+                //movie.ImgSmSrc = tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.PosterSizes[0] + movie.ImgPosterName;
+
+                //if (!string.IsNullOrEmpty(movie.ImgBackdropName))
+                //    movie.ImgBackdropSrc = tmdbConfiguration.Images.BaseUrl + "w780" + movie.ImgBackdropName;
+                //else if (!string.IsNullOrEmpty(movie.ImgPosterName))
+                //    movie.ImgBackdropSrc = tmdbConfiguration.Images.BaseUrl + (tmdbConfiguration.Images.PosterSizes?.Last() ?? string.Empty) + movie.ImgPosterName;
+
+                //movie.GalleryDisplayImages = new string[]
+                //{
+                //    tmdbConfiguration.Images.BaseUrl + "w780" + movie.ImgBackdropName
+                //};
+                //movie.GalleryDisplayImage = movie.GalleryDisplayImages[0];
+
             }
         }
 
@@ -58,9 +72,16 @@ namespace Ch9.Utils
         {
             foreach (MovieDetailModel movie in movies)
             {
-                movie.Genre = movie.GenreIds?.Length == null ? string.Empty :
-                string.Join(", ", movie.GenreIds.Select(id => movieGenreSettings.GenreSelectionDisplay.FirstOrDefault(y => y.Id == id)?.GenreName ?? string.Empty))
-                .TrimEnd(new char[] { ',', ' ' });
+                //movie.Genre = movie.GenreIds?.Length == null ? string.Empty : string.Join(", ", movie.GenreIds.Select(id => movieGenreSettings.GenreSelectionDisplay.FirstOrDefault(y => y.Id == id)?.GenreName ?? string.Empty))
+                // .TrimEnd(new char[] { ',', ' ' });
+
+                if (movie.Adult)
+                    movie.Genre = "Porn";
+                else if (movie.GenreIds == null)
+                    movie.Genre = string.Empty;
+                else
+                    movie.Genre = string.Join(", ", movie.GenreIds.Select(id => movieGenreSettings.GenreSelectionDisplay.FirstOrDefault(y => y.Id == id)?.GenreName ?? string.Empty)).TrimEnd(new char[] { ',', ' ' });
+
             }
         }
     }

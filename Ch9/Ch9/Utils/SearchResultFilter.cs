@@ -8,6 +8,8 @@ namespace Ch9.Utils
     public interface ISearchResultFilter
     {
         IEnumerable<MovieDetailModel> FilterBySearchSettings(IEnumerable<MovieDetailModel> movies);
+        IEnumerable<MovieDetailModel> FilterBySearchSettingsIncludeAdult(IEnumerable<MovieDetailModel> movies);
+        IEnumerable<MovieDetailModel> FilterForAdultOnly(IEnumerable<MovieDetailModel> movies);
     }
 
     // Aims to provide filtering of the TMDB WebAPI response based on user 
@@ -35,6 +37,21 @@ namespace Ch9.Utils
         {
             var first = filterByTimeframe(movies);
             var second = filterByGenres(first);
+
+            return second;
+        }
+        public IEnumerable<MovieDetailModel> FilterForAdultOnly(IEnumerable<MovieDetailModel> movies)
+        {
+            var first = filterByTimeframe(movies);
+            var second = first.Where(movie => movie.Adult == true);
+
+            return second;
+        }
+
+        public IEnumerable<MovieDetailModel> FilterBySearchSettingsIncludeAdult(IEnumerable<MovieDetailModel> movies)
+        {
+            var first = filterByTimeframe(movies);
+            var second = first.Where(movie => movie.Adult || genreSettings.PreferredCategories.Overlaps(movie.GenreIds));
 
             return second;
         }

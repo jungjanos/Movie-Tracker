@@ -17,6 +17,9 @@ namespace Ch9.Models
         [JsonProperty("title")]
         public string Title { get; set; }
 
+        [JsonProperty("adult")]
+        public bool Adult { get; set; }
+
         [JsonProperty("release_date")]
         public DateTime? ReleaseDate { get; set; }
 
@@ -42,8 +45,7 @@ namespace Ch9.Models
         public double VoteAverage { get; set; }
 
         public string ImgSmSrc { get; set; }
-
-        protected string imgBackdropSrc;
+        
         public string ImgBackdropSrc { get; set; }    
 
         public int Year => ReleaseDate.HasValue ? ReleaseDate.Value.Year : -1;

@@ -20,12 +20,13 @@
         <StackLayout Padding="5,0,5,5">
             <SearchBar 
                 Text="{Binding SearchString, Mode=TwoWay}"
-                SearchCommand="{Binding SearchCommand}"
+                SearchCommand="{Binding SearchCommand}"                                
                 Placeholder="Search..." 
-                FontSize="Medium"/>
-
+                FontSize="Medium"/>            
+            
             <Label Text="type at least three characters"
-                   Margin="50,0,0,0">
+                   Margin="50,0,0,0"
+                   x:Name="label">
                 <Label.IsVisible>
                     <Binding Path="SearchString" Converter="{StaticResource Key=searchStringToIsVisibleBool}">
                         <Binding.ConverterParameter>
@@ -34,6 +35,16 @@
                     </Binding>
                 </Label.IsVisible>
             </Label>
+
+            <StackLayout Orientation="Horizontal" HorizontalOptions="End">
+                <Label Text="XXX" 
+                       HorizontalOptions="End"
+                       VerticalOptions="Center"/>
+                <Switch IsToggled="{Binding IncludeAdultContent}" 
+                        HorizontalOptions="End"
+                        VerticalOptions="Center"/>
+            </StackLayout>          
+
 
             <controls:ExtendedListView  ItemsSource="{Binding Path=SearchResults.MovieDetailModels}"
                                         TappedCommand="{Binding OnItemTappedCommand}"

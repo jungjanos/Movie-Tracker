@@ -37,6 +37,17 @@ namespace Ch9
             }
         }
 
+        private bool _includeAdultContent;
+        public bool IncludeAdultContent
+        {
+            get => _includeAdultContent;
+            set
+            {
+                if (SetProperty(ref _includeAdultContent, value))
+                    SearchResults.InitializeOrClearMovieCollection();
+            }                
+        }
+
         private SearchResult _searchResults;
         public SearchResult SearchResults
         {
@@ -44,14 +55,14 @@ namespace Ch9
             set => SetProperty(ref _searchResults, value);
         }
 
-        private bool _isRefreshing = false;
+        private bool _isRefreshing = false;      
         public bool IsRefreshing
         {
             get => _isRefreshing;
             set => SetProperty(ref _isRefreshing, value);
         }
 
-        public ICommand SearchCommand { get; private set; }        
+        public ICommand SearchCommand { get; private set; }
         public ICommand LoadNextResultPageCommand { get; private set; }
         public ICommand OnItemTappedCommand { get; private set; }
 
@@ -77,9 +88,9 @@ namespace Ch9
 
                 SearchResults.InitializeOrClearMovieCollection();
                 await TryLoadingNextResultPage(1, 1000);
-            });            
+            });
 
-            LoadNextResultPageCommand = new Command(async () => 
+            LoadNextResultPageCommand = new Command(async () =>
             {
                 if (!(SearchString?.Length >= MINIMUM_Search_Str_Length))
                     return;
@@ -97,14 +108,17 @@ namespace Ch9
                 IsRefreshing = true;
                 try
                 {
-                    var getNextPageResponse = await _cachedSearchClient.SearchByMovie(searchString: SearchString, _settings.SearchLanguage, _settings.IncludeAdult, SearchResults.Page + 1, year: null, retryCount, delayMilliseconds, fromCache: true);
+                    var getNextPageResponse = await _cachedSearchClient.SearchByMovie(searchString: SearchString, _settings.SearchLanguage, IncludeAdultContent, SearchResults.Page + 1, year: null, retryCount, delayMilliseconds, fromCache: true);
                     if (!getNextPageResponse.HttpStatusCode.IsSuccessCode())
                     {
                         await _pageService.DisplayAlert("Error", $"Could not load search results, service responded with: {getNextPageResponse.HttpStatusCode}", "Ok");
                         return;
                     }
                     SearchResult moviesOnNextPage = JsonConvert.DeserializeObject<SearchResult>(getNextPageResponse.Json);
-                    moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
+
+                    var filteredResults =  IncludeAdultContent ?  _resultFilter.FilterBySearchSettingsIncludeAdult(moviesOnNextPage.MovieDetailModels) : _resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels);
+
+                    moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(filteredResults);
 
                     Utils.Utils.AppendResult(SearchResults, moviesOnNextPage, _movieDetailModelConfigurator);
                 }

@@ -24,7 +24,7 @@ namespace Ch9
                 ((App)Application.Current).ResultFilter,
                 ((App)Application.Current).MovieDetailModelConfigurator,
                 new PageService(this));
-        }
+        }          
     }
 
     // returns whether or not the search text info (e.g. type at least # characters) should be displayed

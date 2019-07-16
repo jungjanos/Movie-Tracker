@@ -64,7 +64,7 @@
 
                 <TableSection Title="Search settings">
                     <SwitchCell On="{Binding Path=Settings.IncludeAdult}"
-                                Text="Include adult" />
+                                Text="Adult content in searches" />
                     <ViewCell>
                         <StackLayout Orientation="Horizontal" Padding="13,0" HorizontalOptions="FillAndExpand">
                             <Label Text="Search language " VerticalTextAlignment="Center"/>

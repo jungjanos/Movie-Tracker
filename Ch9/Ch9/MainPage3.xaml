@@ -34,17 +34,7 @@
                         </Binding.ConverterParameter>
                     </Binding>
                 </Label.IsVisible>
-            </Label>
-
-            <StackLayout Orientation="Horizontal" HorizontalOptions="End">
-                <Label Text="XXX" 
-                       HorizontalOptions="End"
-                       VerticalOptions="Center"/>
-                <Switch IsToggled="{Binding IncludeAdultContent}" 
-                        HorizontalOptions="End"
-                        VerticalOptions="Center"/>
-            </StackLayout>          
-
+            </Label>      
 
             <controls:ExtendedListView  ItemsSource="{Binding Path=SearchResults.MovieDetailModels}"
                                         TappedCommand="{Binding OnItemTappedCommand}"

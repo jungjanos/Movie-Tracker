@@ -37,17 +37,6 @@ namespace Ch9
             }
         }
 
-        private bool _includeAdultContent;
-        public bool IncludeAdultContent
-        {
-            get => _includeAdultContent;
-            set
-            {
-                if (SetProperty(ref _includeAdultContent, value))
-                    SearchResults.InitializeOrClearMovieCollection();
-            }                
-        }
-
         private SearchResult _searchResults;
         public SearchResult SearchResults
         {
@@ -108,7 +97,7 @@ namespace Ch9
                 IsRefreshing = true;
                 try
                 {
-                    var getNextPageResponse = await _cachedSearchClient.SearchByMovie(searchString: SearchString, _settings.SearchLanguage, IncludeAdultContent, SearchResults.Page + 1, year: null, retryCount, delayMilliseconds, fromCache: true);
+                    var getNextPageResponse = await _cachedSearchClient.SearchByMovie(searchString: SearchString, _settings.SearchLanguage, _settings.IncludeAdult, SearchResults.Page + 1, year: null, retryCount, delayMilliseconds, fromCache: true);
                     if (!getNextPageResponse.HttpStatusCode.IsSuccessCode())
                     {
                         await _pageService.DisplayAlert("Error", $"Could not load search results, service responded with: {getNextPageResponse.HttpStatusCode}", "Ok");
@@ -116,7 +105,7 @@ namespace Ch9
                     }
                     SearchResult moviesOnNextPage = JsonConvert.DeserializeObject<SearchResult>(getNextPageResponse.Json);
 
-                    var filteredResults =  IncludeAdultContent ?  _resultFilter.FilterBySearchSettingsIncludeAdult(moviesOnNextPage.MovieDetailModels) : _resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels);
+                    var filteredResults =  _settings.IncludeAdult ?  _resultFilter.FilterBySearchSettingsIncludeAdult(moviesOnNextPage.MovieDetailModels) : _resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels);
 
                     moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(filteredResults);
 

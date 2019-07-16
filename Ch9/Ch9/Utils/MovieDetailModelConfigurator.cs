@@ -28,43 +28,42 @@ namespace Ch9.Utils
 
         public void SetGalleryImageSources(MovieDetailModel movie)
         {
-            List<string> tempResult = new List<string>(1 + movie.ImageDetailCollection.Backdrops?.Length ?? 0);
+            List<string> tempResult = new List<string>();
 
-            tempResult.Add(movie.ImgBackdropSrc);
-
-            if (movie.ImageDetailCollection.Backdrops?.Length > 1)
-                foreach (ImageModel backdrop in movie.ImageDetailCollection.Backdrops.Skip(1))
-                    tempResult.Add(tmdbConfiguration.Images.BaseUrl + "w780" + backdrop.FilePath);
+            if (movie.ImageDetailCollection.Backdrops?.Length > 0)
+            {
+                foreach (ImageModel backdrop in movie.ImageDetailCollection.Backdrops)
+                    tempResult.Add(tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.BackdropSizes[1] + backdrop.FilePath);
+            }
+            else if (movie.ImageDetailCollection.Posters?.Length > 0)
+            {
+                foreach (ImageModel poster in movie.ImageDetailCollection.Posters)
+                    tempResult.Add(tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.PosterSizes.Last() + poster.FilePath);
+            }
+            else
+                tempResult.Add(string.Empty);
 
             movie.GalleryDisplayImages = tempResult.ToArray();
         }
-
 
         public void SetImageSrc(IEnumerable<MovieDetailModel> movies)
         {
             foreach (MovieDetailModel movie in movies)
             {
                 movie.ImgSmSrc = tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.PosterSizes[0] + movie.ImgPosterName;
-                movie.ImgBackdropSrc = tmdbConfiguration.Images.BaseUrl + "w780" + movie.ImgBackdropName;
+
+                string firstGalleryImage= string.Empty;
+
+                if (!string.IsNullOrEmpty(movie.ImgBackdropName))
+                    firstGalleryImage = tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.BackdropSizes[1] + movie.ImgBackdropName;
+                else if (!string.IsNullOrEmpty(movie.ImgPosterName))
+                    firstGalleryImage = tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.PosterSizes.Last() + movie.ImgPosterName;
+
                 movie.GalleryDisplayImages = new string[]
                 {
-                    tmdbConfiguration.Images.BaseUrl + "w780" + movie.ImgBackdropName
+                    firstGalleryImage
                 };
                 movie.GalleryDisplayImage = movie.GalleryDisplayImages[0];
-
-                //movie.ImgSmSrc = tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.PosterSizes[0] + movie.ImgPosterName;
-
-                //if (!string.IsNullOrEmpty(movie.ImgBackdropName))
-                //    movie.ImgBackdropSrc = tmdbConfiguration.Images.BaseUrl + "w780" + movie.ImgBackdropName;
-                //else if (!string.IsNullOrEmpty(movie.ImgPosterName))
-                //    movie.ImgBackdropSrc = tmdbConfiguration.Images.BaseUrl + (tmdbConfiguration.Images.PosterSizes?.Last() ?? string.Empty) + movie.ImgPosterName;
-
-                //movie.GalleryDisplayImages = new string[]
-                //{
-                //    tmdbConfiguration.Images.BaseUrl + "w780" + movie.ImgBackdropName
-                //};
-                //movie.GalleryDisplayImage = movie.GalleryDisplayImages[0];
-
             }
         }
 
@@ -72,16 +71,12 @@ namespace Ch9.Utils
         {
             foreach (MovieDetailModel movie in movies)
             {
-                //movie.Genre = movie.GenreIds?.Length == null ? string.Empty : string.Join(", ", movie.GenreIds.Select(id => movieGenreSettings.GenreSelectionDisplay.FirstOrDefault(y => y.Id == id)?.GenreName ?? string.Empty))
-                // .TrimEnd(new char[] { ',', ' ' });
-
                 if (movie.Adult)
                     movie.Genre = "Porn";
                 else if (movie.GenreIds == null)
                     movie.Genre = string.Empty;
                 else
                     movie.Genre = string.Join(", ", movie.GenreIds.Select(id => movieGenreSettings.GenreSelectionDisplay.FirstOrDefault(y => y.Id == id)?.GenreName ?? string.Empty)).TrimEnd(new char[] { ',', ' ' });
-
             }
         }
     }

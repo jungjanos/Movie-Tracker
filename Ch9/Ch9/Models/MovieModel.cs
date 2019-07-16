@@ -44,9 +44,7 @@ namespace Ch9.Models
         [JsonProperty("vote_average")]
         public double VoteAverage { get; set; }
 
-        public string ImgSmSrc { get; set; }
-        
-        public string ImgBackdropSrc { get; set; }    
+        public string ImgSmSrc { get; set; }       
 
         public int Year => ReleaseDate.HasValue ? ReleaseDate.Value.Year : -1;
 

@@ -25,12 +25,13 @@
             <ScrollView VerticalOptions="FillAndExpand">
                 <StackLayout>
 
-                    <ImageButton HorizontalOptions="FillAndExpand" Aspect="AspectFill" 
+                    <ImageButton HorizontalOptions="FillAndExpand" Aspect="AspectFill"
+                                 HeightRequest="250"
                                  Command="{Binding ImageStepCommand}">
                         <ImageButton.Source>
-                            <UriImageSource Uri="{Binding Path=Movie.GalleryDisplayImage}"
-                                                    CacheValidity="0"
-                                                    CachingEnabled="False"                                
+                            <UriImageSource Uri="{Binding Path=Movie.GalleryDisplayImage}"                                            
+                                            CacheValidity="0"
+                                            CachingEnabled="False"                                
                                                     />
                         </ImageButton.Source>
                     </ImageButton>

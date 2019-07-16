@@ -32,11 +32,8 @@ namespace Ch9.Utils
 
             tempResult.Add(movie.ImgBackdropSrc);
 
-            if (movie.ImageDetailCollection.Posters?.Length > 0)
-                tempResult.Add(tmdbConfiguration.Images.BaseUrl + "w780" + movie.ImageDetailCollection.Posters.First().FilePath);
-
-            if (movie.ImageDetailCollection.Backdrops?.Length > 0)
-                foreach (ImageModel backdrop in movie.ImageDetailCollection.Backdrops)
+            if (movie.ImageDetailCollection.Backdrops?.Length > 1)
+                foreach (ImageModel backdrop in movie.ImageDetailCollection.Backdrops.Skip(1))
                     tempResult.Add(tmdbConfiguration.Images.BaseUrl + "w780" + backdrop.FilePath);
 
             movie.GalleryDisplayImages = tempResult.ToArray();

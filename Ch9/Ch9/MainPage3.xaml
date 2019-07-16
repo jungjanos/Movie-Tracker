@@ -40,22 +40,28 @@
                                         IsPullToRefreshEnabled="False"
                                         IsRefreshing="{Binding IsRefreshing}"                                        
                                         LoadMoreCommand="{Binding LoadNextResultPageCommand}"
-                                        HasUnevenRows="True">
-
+                                        HasUnevenRows="False"
+                                        RowHeight="85">
+                
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout Orientation="Horizontal" Padding="5" InputTransparent="False">
-                                <Image InputTransparent="True">
+                                <Image InputTransparent="True"
+                                       Aspect="AspectFit"
+                                       VerticalOptions="FillAndExpand"
+                                       HorizontalOptions="Start"
+                                       HeightRequest="75"
+                                       WidthRequest="50">
                                     <Image.Source>
                                         <UriImageSource Uri="{Binding ImgSmSrc}"
                                                     CacheValidity="0"
-                                                    CachingEnabled="False"
+                                                    CachingEnabled="False"                                                         
                                                     />
                                     </Image.Source>
                                 </Image>
 
-                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical" InputTransparent="True">
+                                <StackLayout HorizontalOptions="Start" Orientation="Vertical" InputTransparent="True" Margin="10,8,0,0">
                                     <Label Text="{Binding Title}" TextColor="Black"/>
                                     <StackLayout Orientation="Horizontal">
                                         <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>

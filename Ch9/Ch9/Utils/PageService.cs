@@ -36,7 +36,7 @@ namespace Ch9.Utils
             await _currentPage.Navigation.PushAsync(new AddListPage(viewModel));
 
         public async Task PushRecommendationsPageAsync(MovieDetailModel movie) =>        
-            await _currentPage.Navigation.PushAsync(new RecommendationsPage2(movie));        
+            await _currentPage.Navigation.PushAsync(new RecommendationsPage3(movie));        
 
         public async Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons) =>        
              await _currentPage.DisplayActionSheet(title, cancel, destruction, buttons);        

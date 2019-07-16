@@ -89,9 +89,7 @@ namespace Ch9
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+        { throw new NotImplementedException(); }
     }
 
     // converts IsFavorite property from AccountMovieStates object to 
@@ -113,9 +111,7 @@ namespace Ch9
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+        { throw new NotImplementedException(); }
     }
 
     // converts OnWatchlist property from AccountMovieStates object to 
@@ -137,8 +133,6 @@ namespace Ch9
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+        { throw new NotImplementedException(); }
     }
 }

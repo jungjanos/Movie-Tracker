@@ -85,11 +85,14 @@ namespace Ch9.ApiClient
             return result;
         }
 
-        public async Task<GetMovieRecommendationsResult> GetMovieRecommendations(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<GetMovieRecommendationsResult> GetMovieRecommendations(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            string key = "$" + nameof(GetMovieRecommendations) + id + (language ?? "");
+            string key = "$" + nameof(GetMovieRecommendations) + id + (language ?? "") + (page?.ToString() ?? "");
 
-            var result = _cache.Get<GetMovieRecommendationsResult>(key) ?? await _networkClient.GetMovieRecommendations(id, language, retryCount, delayMilliseconds);
+            if (!fromCache)
+                _cache.Remove(key);
+
+            var result = _cache.Get<GetMovieRecommendationsResult>(key) ?? await _networkClient.GetMovieRecommendations(id, language, page, retryCount, delayMilliseconds);
 
             if (result.HttpStatusCode.IsSuccessCode())
                 _cache.Add(key, result);
@@ -97,9 +100,12 @@ namespace Ch9.ApiClient
             return result;
         }
 
-        public async Task<GetSimilarMoviesResult> GetSimilarMovies(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<GetSimilarMoviesResult> GetSimilarMovies(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            string key = "$" + nameof(GetSimilarMovies) + id + (language ?? "");
+            string key = "$" + nameof(GetSimilarMovies) + id + (language ?? "") + (page?.ToString() ?? "");
+
+            if (!fromCache)
+                _cache.Remove(key);
 
             var result = _cache.Get<GetSimilarMoviesResult>(key) ?? await _networkClient.GetSimilarMovies(id, language, retryCount, delayMilliseconds);
 

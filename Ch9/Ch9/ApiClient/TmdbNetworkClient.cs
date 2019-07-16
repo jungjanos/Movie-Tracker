@@ -67,7 +67,6 @@ namespace Ch9.ApiClient
             return result;
         }
 
-
         // Searches for moves according to settings 
         // Swallows exceptions retries as needed    
         public async Task<SearchByMovieResult> SearchByMovie(string searchString, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
@@ -128,7 +127,7 @@ namespace Ch9.ApiClient
 
         //TODO : Make sort option to enum 
         public async Task<GetFavoriteMoviesResult> GetFavoriteMovies(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
-        {            
+        {
             // no mistake here: missing "account_id" parameter add the string literal "{account_id}" as paths segment                        
             string baseUrl = BASE_Address + BASE_Path + ACCOUNT_DETAILS_Path + "/" + (accountId.HasValue ? accountId.Value.ToString() : "{account_id}") + FAVORITE_Path + MOVIES_Path;
 
@@ -232,7 +231,7 @@ namespace Ch9.ApiClient
             return result;
         }
 
-        public async Task<GetMovieRecommendationsResult> GetMovieRecommendations(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<GetMovieRecommendationsResult> GetMovieRecommendations(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id + RECOMMENDATIONS_Path;
 
@@ -242,6 +241,9 @@ namespace Ch9.ApiClient
             if (!string.IsNullOrEmpty(language))
                 query.Add(LANGUAGE_Key, language);
 
+            if (page > 0)
+                query.Add(PAGE_Key, page.ToString());
+
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
             GetMovieRecommendationsResult result = await GetResponse<GetMovieRecommendationsResult>(retryCount, delayMilliseconds, requestUri);
@@ -249,7 +251,7 @@ namespace Ch9.ApiClient
             return result;
         }
 
-        public async Task<GetSimilarMoviesResult> GetSimilarMovies(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<GetSimilarMoviesResult> GetSimilarMovies(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id + SIMILARS_Path;
 
@@ -258,6 +260,9 @@ namespace Ch9.ApiClient
 
             if (!string.IsNullOrEmpty(language))
                 query.Add(LANGUAGE_Key, language);
+
+            if (page > 0)
+                query.Add(PAGE_Key, page.ToString());
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
@@ -331,8 +336,6 @@ namespace Ch9.ApiClient
                 catch { }
             }
             CreateRequestTokenResult result = new CreateRequestTokenResult { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.ServiceUnavailable };
-            //if (result.HttpStatusCode.IsSuccessCode())
-            //    result.Json = await response.Content.ReadAsStringAsync();
 
             await ReadResponseAsStringIntoResultWhenSafe(result, response);
 
@@ -371,8 +374,6 @@ namespace Ch9.ApiClient
                 catch { }
             }
             CreateSessionIdResult result = new CreateSessionIdResult { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.ServiceUnavailable };
-            //if (result.HttpStatusCode.IsSuccessCode())
-            //    result.Json = await response.Content.ReadAsStringAsync();
 
             await ReadResponseAsStringIntoResultWhenSafe(result, response);
 
@@ -422,9 +423,6 @@ namespace Ch9.ApiClient
             {
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
-
-            //if (result.HttpStatusCode.IsSuccessCode())
-            //    result.Json = await response.Content.ReadAsStringAsync();
 
             await ReadResponseAsStringIntoResultWhenSafe(result, response);
 
@@ -495,7 +493,7 @@ namespace Ch9.ApiClient
                 catch (JsonException)
                 {
                     result.HttpStatusCode = HttpStatusCode.InternalServerError;
-                }                
+                }
             }
             return result;
         }
@@ -551,9 +549,6 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            //if (result.HttpStatusCode.IsSuccessCode())
-            //    result.Json = await response.Content.ReadAsStringAsync();
-
             await ReadResponseAsStringIntoResultWhenSafe(result, response);
 
             return result;
@@ -594,9 +589,6 @@ namespace Ch9.ApiClient
             {
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
-
-            //if (result.HttpStatusCode.IsSuccessCode())
-            //    result.Json = await response.Content.ReadAsStringAsync();
 
             await ReadResponseAsStringIntoResultWhenSafe(result, response);
 
@@ -669,9 +661,6 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            //if (result.HttpStatusCode.IsSuccessCode())
-            //    result.Json = await response.Content.ReadAsStringAsync();
-
             await ReadResponseAsStringIntoResultWhenSafe(result, response);
 
             return result;
@@ -681,9 +670,9 @@ namespace Ch9.ApiClient
         // media type: "movie" OR "tv"
         //TODO refactor media type to enum
         public async Task<UpdateWatchlistResult> UpdateWatchlist(string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)
-        {            
+        {
             // no mistake here: missing "account_id" parameter add the string literal "{account_id}" as paths segment                        
-            string baseUrl = BASE_Address + BASE_Path + ACCOUNT_DETAILS_Path + "/" + (accountId.HasValue ? accountId.Value.ToString() : "{account_id}") + WATCHLIST_Path ;
+            string baseUrl = BASE_Address + BASE_Path + ACCOUNT_DETAILS_Path + "/" + (accountId.HasValue ? accountId.Value.ToString() : "{account_id}") + WATCHLIST_Path;
 
             var query = new Dictionary<string, string>();
             query.Add(API_KEY_Key, _settings.ApiKey);
@@ -730,9 +719,6 @@ namespace Ch9.ApiClient
             {
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
-
-            //if (result.HttpStatusCode.IsSuccessCode())
-            //    result.Json = await response.Content.ReadAsStringAsync();
 
             await ReadResponseAsStringIntoResultWhenSafe(result, response);
 
@@ -793,9 +779,6 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            //if (result.HttpStatusCode.IsSuccessCode())
-            //    result.Json = await response.Content.ReadAsStringAsync();
-
             await ReadResponseAsStringIntoResultWhenSafe(result, response);
 
             return result;
@@ -812,7 +795,7 @@ namespace Ch9.ApiClient
             query.Add(API_KEY_Key, _settings.ApiKey);
             query.Add(SESSION_ID_Key, _settings.SessionId);
 
-            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);            
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
             var jsonObj = new
             {
@@ -852,9 +835,6 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            //if (result.HttpStatusCode.IsSuccessCode())
-            //    result.Json = await response.Content.ReadAsStringAsync();
-
             await ReadResponseAsStringIntoResultWhenSafe(result, response);
 
             return result;
@@ -874,7 +854,7 @@ namespace Ch9.ApiClient
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
             HttpRequestMessage request = new HttpRequestMessage
-            {                 
+            {
                 Method = HttpMethod.Delete,
                 RequestUri = new Uri(requestUri)
             };
@@ -901,9 +881,6 @@ namespace Ch9.ApiClient
             {
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
-
-            //if (result.HttpStatusCode.IsSuccessCode())
-            //    result.Json = await response.Content.ReadAsStringAsync();
 
             await ReadResponseAsStringIntoResultWhenSafe(result, response);
 
@@ -960,9 +937,6 @@ namespace Ch9.ApiClient
                 HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout
             };
 
-            //if (result.HttpStatusCode.IsSuccessCode())
-            //    result.Json = await response.Content.ReadAsStringAsync();
-
             await ReadResponseAsStringIntoResultWhenSafe(result, response);
 
             return result;
@@ -991,22 +965,12 @@ namespace Ch9.ApiClient
             }
             T result = new T { HttpStatusCode = response?.StatusCode ?? HttpStatusCode.RequestTimeout };
 
-            //try
-            //{
-            //    if (result.HttpStatusCode.IsSuccessCode())
-            //        result.Json = await response.Content.ReadAsStringAsync();
-            //}
-            //catch
-            //{
-            //    result.HttpStatusCode = HttpStatusCode.RequestTimeout;
-            //}
-
             await ReadResponseAsStringIntoResultWhenSafe(result, response);
-            
+
             return result;
         }
 
-        private async Task ReadResponseAsStringIntoResultWhenSafe<T>(T result, HttpResponseMessage response)  where T : TmdbResponseBase
+        private async Task ReadResponseAsStringIntoResultWhenSafe<T>(T result, HttpResponseMessage response) where T : TmdbResponseBase
         {
             try
             {

@@ -47,7 +47,7 @@
     <EmbeddedResource Update="MovieDetailPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="RecommendationsPage2.xaml">
+    <EmbeddedResource Update="RecommendationsPage3.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="ReviewsPage.xaml">

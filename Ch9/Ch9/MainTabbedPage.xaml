@@ -13,7 +13,9 @@
     </TabbedPage.ToolbarItems>-->
 
     <!--Pages can be added as references or inline-->
-    <local:MainPage2/>
+    
+    <!--<local:MainPage2/>-->
+    <local:MainPage3/>
     <local:TrendingPage2/>
     <local:ListsPage/>
     <local:MainSettingsPage2/>

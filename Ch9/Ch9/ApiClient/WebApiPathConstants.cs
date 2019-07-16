@@ -45,5 +45,6 @@ namespace Ch9.ApiClient
         public const string SORTBY_Key = "sort_by";
         public const string RATING_Path = "/rating";
         public const string ACCOUNT_STATES_Path = "/account_states";
+        public const string YEAR_Key = "year";
     }
 }

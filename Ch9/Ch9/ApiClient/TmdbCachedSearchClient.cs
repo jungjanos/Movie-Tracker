@@ -34,11 +34,14 @@ namespace Ch9.ApiClient
 
             //return await _networkClient.GetTmdbConfiguration(retryCount, delayMilliseconds);
         }
-        public async Task<SearchByMovieResult> SearchByMovie(string searchString, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<SearchByMovieResult> SearchByMovie(string searchString, string language = null, bool? includeAdult = null, int? page = null, int? year = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            string key = "$" + nameof(SearchByMovie) + searchString + (language ?? "") + (includeAdult?.ToString() ?? "");
+            string key = "$" + nameof(SearchByMovie) + searchString + (language ?? "") + (includeAdult?.ToString() ?? "") + (page?.ToString() ?? "") + (year?.ToString() ?? "");
 
-            var result =  _cache.Get<SearchByMovieResult>(key) ?? await _networkClient.SearchByMovie(searchString, language, includeAdult, page, retryCount, delayMilliseconds);
+            if (!fromCache)
+                _cache.Remove(key);
+
+            var result =  _cache.Get<SearchByMovieResult>(key) ?? await _networkClient.SearchByMovie(searchString, language, includeAdult, page, year, retryCount, delayMilliseconds);
 
             if (result.HttpStatusCode.IsSuccessCode())
                 _cache.Add(key, result);

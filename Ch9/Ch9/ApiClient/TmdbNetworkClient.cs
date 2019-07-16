@@ -69,7 +69,7 @@ namespace Ch9.ApiClient
 
         // Searches for moves according to settings 
         // Swallows exceptions retries as needed    
-        public async Task<SearchByMovieResult> SearchByMovie(string searchString, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<SearchByMovieResult> SearchByMovie(string searchString, string language = null, bool? includeAdult = null, int? page = null, int? year = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + SEARCH_MOVIE_Path;
 
@@ -90,6 +90,9 @@ namespace Ch9.ApiClient
 
             if (page > 0)
                 query.Add(PAGE_Key, page.ToString());
+
+            if (year > 0)
+                query.Add(YEAR_Key, year.ToString());
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 

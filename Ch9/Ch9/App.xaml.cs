@@ -3,6 +3,7 @@ using Ch9.Utils;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Ch9.Models;
+using System.Net.Http;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Ch9
@@ -18,16 +19,15 @@ namespace Ch9
         public ITmdbCachedSearchClient CachedSearchClient { get; private set; }
         public UsersMovieListsService2 UsersMovieListsService2 { get; private set; }
 
-        public App()
+        public App(HttpClient httpClient = null)
         {
             Settings = new Settings();
             MovieGenreSettings = new MovieGenreSettings();
             ResultFilter = new SearchResultFilter(Settings, MovieGenreSettings);
-            TmdbNetworkClient = new TmdbNetworkClient(Settings);
+            TmdbNetworkClient = new TmdbNetworkClient(Settings, httpClient);
             CachedSearchClient = new TmdbCachedSearchClient(TmdbNetworkClient);            
 
             InitializeComponent();
-            // TODO : Add content to loading page
             MainPage = new LoadingPage();
 
         }

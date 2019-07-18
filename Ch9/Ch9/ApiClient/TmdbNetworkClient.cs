@@ -18,18 +18,12 @@ namespace Ch9.ApiClient
     public class TmdbNetworkClient : ITmdbNetworkClient
     {
         private readonly ISettings _settings;
-        private static Lazy<HttpClient> httpClient = new Lazy<HttpClient>(
-            () =>
-            {
-                var client = new HttpClient();
-                return client;
-            });
+        private HttpClient HttpClient { get; }
 
-        private HttpClient HttpClient => httpClient.Value;
-
-        public TmdbNetworkClient(ISettings settings)
+        public TmdbNetworkClient(ISettings settings, HttpClient httpClient)
         {
             _settings = settings;
+            HttpClient = httpClient ?? new HttpClient();
         }
 
         public async Task<TmdbConfigurationModelResult> GetTmdbConfiguration(int retryCount = 0, int delayMilliseconds = 1000)

@@ -6,6 +6,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using System.Net.Http;
 
 
 namespace Ch9.Droid
@@ -19,8 +20,11 @@ namespace Ch9.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(savedInstanceState);
-            global::Xamarin.Forms.Forms.Init(this, savedInstanceState);            
-            LoadApplication(new App());
+            global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+
+            HttpClient httpClient = new HttpClient(new Xamarin.Android.Net.AndroidClientHandler());
+
+            LoadApplication(new App(httpClient));
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settingsKeyValues = new Dictionary<string, object>();
             _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";
             _settings = new Settings(_settingsKeyValues);
-            _client = new TmdbNetworkClient(_settings);
+            _client = new TmdbNetworkClient(_settings, null);
         }
 
         [Fact]

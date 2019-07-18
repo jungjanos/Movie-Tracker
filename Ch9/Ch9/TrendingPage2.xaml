@@ -30,7 +30,8 @@
                                         IsPullToRefreshEnabled="True"
                                         RefreshCommand="{Binding RefreshTrendingWeekListCommand}"
                                         IsRefreshing="{Binding IsRefreshing}"
-                                        HasUnevenRows="True"
+                                        HasUnevenRows="False"
+                                        RowHeight="85"
                                         LoadMoreCommand="{Binding LoadNextTrendingWeekPageCommand}">
 
                 <ListView.ItemTemplate>
@@ -38,17 +39,20 @@
                         <ViewCell>
 
                             <StackLayout Orientation="Horizontal" Padding="5">
-
-                                <Image>
+                                <Image Aspect="AspectFit"
+                                       VerticalOptions="FillAndExpand"
+                                       HorizontalOptions="Start"
+                                       HeightRequest="75"
+                                       WidthRequest="50">
                                     <Image.Source>
                                         <UriImageSource Uri="{Binding ImgSmSrc}"
                                                     CacheValidity="0"
-                                                    CachingEnabled="False"                                                    
+                                                    CachingEnabled="False"                                                         
                                                     />
                                     </Image.Source>
                                 </Image>
 
-                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical">
+                                <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
                                     <Label Text="{Binding Title}" TextColor="Black"/>
                                     <StackLayout Orientation="Horizontal">
                                         <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>
@@ -68,7 +72,8 @@
                                         IsPullToRefreshEnabled="True"
                                         RefreshCommand="{Binding RefreshTrendingDayListCommand}"
                                         IsRefreshing="{Binding IsRefreshing}"                                                
-                                        HasUnevenRows="True"
+                                        HasUnevenRows="False"
+                                        RowHeight="85"
                                         LoadMoreCommand="{Binding LoadNextTrendingDayPageCommand}">    
 
                 <ListView.ItemTemplate>
@@ -76,17 +81,20 @@
                         <ViewCell>
 
                             <StackLayout Orientation="Horizontal" Padding="5">
-
-                                <Image>
+                                <Image Aspect="AspectFit"
+                                       VerticalOptions="FillAndExpand"
+                                       HorizontalOptions="Start"
+                                       HeightRequest="75"
+                                       WidthRequest="50">
                                     <Image.Source>
                                         <UriImageSource Uri="{Binding ImgSmSrc}"
                                                     CacheValidity="0"
-                                                    CachingEnabled="False"                                                    
+                                                    CachingEnabled="False"                                                         
                                                     />
                                     </Image.Source>
                                 </Image>
 
-                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical">
+                                <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
                                     <Label Text="{Binding Title}" TextColor="Black"/>
                                     <StackLayout Orientation="Horizontal">
                                         <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>

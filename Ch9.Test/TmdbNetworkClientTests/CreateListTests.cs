@@ -28,7 +28,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";
             _settingsKeyValues[nameof(Settings.SessionId)] = "563636d0e4a0b41b775ba7703cc5c985f36cffaf"; // !!!! correct it !!!!!
             _settings = new Settings(_settingsKeyValues);
-            _client = new TmdbNetworkClient(_settings);
+            _client = new TmdbNetworkClient(_settings, null);
         }
 
         public async Task DisposeAsync()

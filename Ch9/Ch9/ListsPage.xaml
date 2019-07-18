@@ -98,16 +98,15 @@
             </Grid>
 
 
-            <controls:ExtendedListView  IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntOne}}"
-                                        HasUnevenRows="True"
-                                        HorizontalOptions="Start"
-                                        VerticalOptions="StartAndExpand"                      
+            <controls:ExtendedListView  IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntOne}}"                                                                                
                                         ItemsSource="{Binding Source={x:Reference viewedListPicker}, Path=SelectedItem.Movies, Mode=TwoWay}"
                                         SelectedItem="{Binding SelectedMovie, Mode=TwoWay}"
                                         TappedCommand="{Binding OnItemTappedCommand}"
                                         IsPullToRefreshEnabled="True"
                                         IsRefreshing="{Binding IsRefreshing}"
-                                        RefreshCommand="{Binding RefreshCustomListCommand}">
+                                        RefreshCommand="{Binding RefreshCustomListCommand}"
+                                        HasUnevenRows="False"
+                                        RowHeight="85">                                        
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -116,17 +115,20 @@
                                 <MenuItem Command="{Binding Path=BindingContext.RemoveMovieFromCustomListCommand, Source={x:Reference Name=listsPage}}" CommandParameter="{Binding .}" Text="Remove" IsDestructive="True"/>
                             </ViewCell.ContextActions>
                             <StackLayout Orientation="Horizontal" Padding="5">
-
-                                <Image>
+                                <Image Aspect="AspectFit"
+                                       VerticalOptions="FillAndExpand"
+                                       HorizontalOptions="Start"
+                                       HeightRequest="75"
+                                       WidthRequest="50">
                                     <Image.Source>
                                         <UriImageSource Uri="{Binding ImgSmSrc}"
                                                     CacheValidity="0"
-                                                    CachingEnabled="False"                                                    
+                                                    CachingEnabled="False"                                                         
                                                     />
                                     </Image.Source>
                                 </Image>
 
-                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical">
+                                <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
                                     <Label Text="{Binding Title}" TextColor="Black"/>
                                     <StackLayout Orientation="Horizontal">
                                         <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>
@@ -163,33 +165,36 @@
 
             </StackLayout>
             
-            <controls:ExtendedListView  IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntTwo}}"
-                                        HasUnevenRows="True"
-                                        HorizontalOptions="Start"
-                                        VerticalOptions="StartAndExpand"                      
+            <controls:ExtendedListView  IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntTwo}}"                                        
+                                        HorizontalOptions="Start"                                        
                                         ItemsSource="{Binding Path=UsersMovieListsService2.FavoriteMoviesListService.FavoriteMovies.MovieDetailModels}"
                                         TappedCommand="{Binding OnItemTappedCommand}"
                                         IsPullToRefreshEnabled="True"
                                         IsRefreshing="{Binding IsRefreshing}"
                                         RefreshCommand="{Binding RefreshFavoriteListCommand}"
-                                        LoadMoreCommand="{Binding LoadNextFavoritesPageCommand}">
+                                        LoadMoreCommand="{Binding LoadNextFavoritesPageCommand}"
+                                        HasUnevenRows="False"
+                                        RowHeight="85">                
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            
-                            <StackLayout Orientation="Horizontal" Padding="5">
 
-                                <Image>
+                            <StackLayout Orientation="Horizontal" Padding="5">
+                                <Image Aspect="AspectFit"
+                                       VerticalOptions="FillAndExpand"
+                                       HorizontalOptions="Start"
+                                       HeightRequest="75"
+                                       WidthRequest="50">
                                     <Image.Source>
                                         <UriImageSource Uri="{Binding ImgSmSrc}"
                                                     CacheValidity="0"
-                                                    CachingEnabled="False"                                                    
+                                                    CachingEnabled="False"                                                         
                                                     />
                                     </Image.Source>
                                 </Image>
 
-                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical">
+                                <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
                                     <Label Text="{Binding Title}" TextColor="Black"/>
                                     <StackLayout Orientation="Horizontal">
                                         <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>
@@ -197,6 +202,7 @@
                                     </StackLayout>
                                 </StackLayout>
                             </StackLayout>
+                            
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -226,33 +232,35 @@
 
             </StackLayout>
 
-            <controls:ExtendedListView  IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntThree}}"
-                                        HasUnevenRows="True"
-                                        HorizontalOptions="Start"
-                                        VerticalOptions="StartAndExpand"                      
+            <controls:ExtendedListView  IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntThree}}"                                        
                                         ItemsSource="{Binding Path=UsersMovieListsService2.WatchlistService.Watchlist.MovieDetailModels}"
                                         TappedCommand="{Binding OnItemTappedCommand}"
                                         IsPullToRefreshEnabled="True"
                                         IsRefreshing="{Binding IsRefreshing}"
                                         RefreshCommand="{Binding RefreshWatchlistCommand}"
-                                        LoadMoreCommand="{Binding LoadNextWatchlistPageCommand}">
+                                        LoadMoreCommand="{Binding LoadNextWatchlistPageCommand}"
+                                        HasUnevenRows="False"
+                                        RowHeight="85">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
 
                             <StackLayout Orientation="Horizontal" Padding="5">
-
-                                <Image>
+                                <Image Aspect="AspectFit"
+                                       VerticalOptions="FillAndExpand"
+                                       HorizontalOptions="Start"
+                                       HeightRequest="75"
+                                       WidthRequest="50">
                                     <Image.Source>
                                         <UriImageSource Uri="{Binding ImgSmSrc}"
                                                     CacheValidity="0"
-                                                    CachingEnabled="False"                                                    
+                                                    CachingEnabled="False"                                                         
                                                     />
                                     </Image.Source>
                                 </Image>
 
-                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical">
+                                <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
                                     <Label Text="{Binding Title}" TextColor="Black"/>
                                     <StackLayout Orientation="Horizontal">
                                         <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>
@@ -260,6 +268,7 @@
                                     </StackLayout>
                                 </StackLayout>
                             </StackLayout>
+                            
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>

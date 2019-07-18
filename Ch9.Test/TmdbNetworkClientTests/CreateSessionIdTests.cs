@@ -37,7 +37,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settingsKeyValues[nameof(Settings.AccountName)] = "j4nitest";
             _settingsKeyValues[nameof(Settings.Password)] = "awx123.";
             _settings = new Settings(_settingsKeyValues);
-            _client = new TmdbNetworkClient(_settings);
+            _client = new TmdbNetworkClient(_settings, null);
         }
 
         public async Task InitializeAsync()

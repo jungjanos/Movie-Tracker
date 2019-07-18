@@ -29,7 +29,6 @@ namespace Ch9
 
             InitializeComponent();
             MainPage = new LoadingPage();
-
         }
 
         protected override async void OnStart()

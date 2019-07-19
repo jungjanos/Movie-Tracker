@@ -28,42 +28,35 @@ namespace Ch9.Utils
 
         public void SetGalleryImageSources(MovieDetailModel movie)
         {
-            List<string> tempResult = new List<string>();
-
-            if (movie.ImageDetailCollection.Backdrops?.Length > 0)
-            {
-                foreach (ImageModel backdrop in movie.ImageDetailCollection.Backdrops)
-                    tempResult.Add(tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.BackdropSizes[1] + backdrop.FilePath);
-            }
-            else if (movie.ImageDetailCollection.Posters?.Length > 0)
-            {
-                foreach (ImageModel poster in movie.ImageDetailCollection.Posters)
-                    tempResult.Add(tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.PosterSizes.Last() + poster.FilePath);
-            }
-            else
-                tempResult.Add(string.Empty);
-
-            movie.GalleryDisplayImages = tempResult.ToArray();
+            if (movie.GalleryDisplayImages.Count < 2)
+            {               
+                if (movie.ImageDetailCollection.Backdrops?.Length > 0)
+                {
+                    foreach (ImageModel backdrop in movie.ImageDetailCollection.Backdrops.Skip(1))
+                        movie.GalleryDisplayImages.Add(tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.BackdropSizes[1] + backdrop.FilePath);
+                }
+                else if (movie.ImageDetailCollection.Posters?.Length > 0)
+                {
+                    foreach (ImageModel poster in movie.ImageDetailCollection.Posters.Skip(1))
+                        movie.GalleryDisplayImages.Add(tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.PosterSizes.Last() + poster.FilePath);
+                }                
+            }                
         }
 
         public void SetImageSrc(IEnumerable<MovieDetailModel> movies)
         {
             foreach (MovieDetailModel movie in movies)
-            {
-                movie.ImgSmSrc = tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.PosterSizes[0] + movie.ImgPosterName;
-
-                string firstGalleryImage= string.Empty;
-
-                if (!string.IsNullOrEmpty(movie.ImgBackdropName))
-                    firstGalleryImage = tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.BackdropSizes[1] + movie.ImgBackdropName;
-                else if (!string.IsNullOrEmpty(movie.ImgPosterName))
-                    firstGalleryImage = tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.PosterSizes.Last() + movie.ImgPosterName;
-
-                movie.GalleryDisplayImages = new string[]
+            {                
+                if (movie.GalleryDisplayImages.Count == 0)
                 {
-                    firstGalleryImage
-                };
-                movie.GalleryDisplayImage = movie.GalleryDisplayImages[0];
+                    movie.ImgSmSrc = tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.PosterSizes[0] + movie.ImgPosterName;
+
+                    if (!string.IsNullOrEmpty(movie.ImgBackdropName))
+                        movie.GalleryDisplayImages.Add(tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.BackdropSizes[1] + movie.ImgBackdropName);
+
+                    else if (!string.IsNullOrEmpty(movie.ImgPosterName))
+                        movie.GalleryDisplayImages.Add(tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.PosterSizes.Last() + movie.ImgPosterName);
+                }
             }
         }
 

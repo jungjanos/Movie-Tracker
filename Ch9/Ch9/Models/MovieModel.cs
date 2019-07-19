@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Collections.ObjectModel;
 
 namespace Ch9.Models
 {
@@ -57,6 +58,7 @@ namespace Ch9.Models
         public MovieDetailModel()
         {
             _imageDetailCollection = new ImageDetailCollection();
+            _galleryDisplayImages = new ObservableCollection<string>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -135,38 +137,19 @@ namespace Ch9.Models
             set => SetProperty(ref _imageDetailCollection, value);
         }
 
-        private string[] _galleryDisplayImages;
-        public string[] GalleryDisplayImages
+        private ObservableCollection<string> _galleryDisplayImages;
+        public ObservableCollection<string> GalleryDisplayImages
         {
             get => _galleryDisplayImages;
             set => SetProperty(ref _galleryDisplayImages, value);
-        }
+        } 
 
-        // this is a counter which always displays one more than it stores!
-        // and which always stores one less than it receives!
-        // reason: to make model binding to UI simpler
-        private int galleryPositionCounter;        
-        public int GalleryPositionCounter
+
+        private int _galleryIndex;        
+        public int GalleryIndex
         {
-            get => galleryPositionCounter+1;
-            set
-            {
-                int circularIndex = value % GalleryDisplayImages.Length-1;
-                if (circularIndex < 0)
-                    circularIndex += GalleryDisplayImages.Length;
-
-                if (SetProperty(ref galleryPositionCounter, circularIndex))
-                {
-                    GalleryDisplayImage = GalleryDisplayImages[circularIndex];
-                }
-            }
-        }
-
-        private string _galleryDisplayImage;
-        public string GalleryDisplayImage
-        {
-            get => _galleryDisplayImage;
-            set => SetProperty(ref _galleryDisplayImage, value);
+            get => _galleryIndex;
+            set => SetProperty(ref _galleryIndex, value);
         }
     }
 

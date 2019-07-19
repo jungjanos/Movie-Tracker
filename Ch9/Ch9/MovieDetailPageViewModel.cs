@@ -45,8 +45,7 @@ namespace Ch9
             get => _movieStates;
             set => SetProperty(ref _movieStates, value);
         }
-
-        public ICommand ImageStepCommand { get; private set; }
+        
         public ICommand HomeCommand { get; private set; }
         public ICommand RecommendationsCommand { get; private set; }
         public ICommand ReviewsCommand { get; private set; }
@@ -71,10 +70,8 @@ namespace Ch9
             _fetchGallery = UpdateImageDetailCollection();
             MovieHasReviews = false;
             MovieStatesFetchFinished = false;
-            _reviewsPageViewModel = new ReviewsPageViewModel(this, _cachedSearchClient);
-
+            _reviewsPageViewModel = new ReviewsPageViewModel(this, _cachedSearchClient);            
             
-            ImageStepCommand = new Command(async () => { await _fetchGallery; Movie.GalleryPositionCounter++; });
             HomeCommand = new Command(async () => await _pageService.PopToRootAsync());
             ReviewsCommand = new Command(async () => await _pageService.PushAsync(_reviewsPageViewModel), () => MovieStatesFetchFinished);
             RecommendationsCommand = new Command(async () => await _pageService.PushRecommendationsPageAsync(Movie));
@@ -104,7 +101,7 @@ namespace Ch9
                     JsonConvert.PopulateObject(t.Result.Json, Movie.ImageDetailCollection);
                     _movieDetailModelConfigurator.SetGalleryImageSources(Movie);
                 }
-            });
+            }, TaskScheduler.FromCurrentSynchronizationContext());
             return galleryCollectionReady;
         }      
         
@@ -179,6 +176,7 @@ namespace Ch9
             { await _pageService.DisplayAlert("Error", $"Could not change favorite state, service responded with: {ex.Message}", "Ok");}
         }
         
+        // TODO : property should set be with awaiter from UI thread!!!
         private async Task FetchMovieStates()
         {
             GetAccountMovieStatesResult response = await _cachedSearchClient.GetAccountMovieStates(Movie.Id, guestSessionId: null, retryCount: 3, delayMilliseconds: 1000);

@@ -5,6 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Ch9;assembly=Ch9"
              xmlns:controls="clr-namespace:Ch9.Controls"
+             xmlns:pancardview="clr-namespace:PanCardView;assembly=PanCardView"
+             xmlns:pancardviewcontrols="clr-namespace:PanCardView.Controls;assembly=PanCardView"
              mc:Ignorable="d"
              x:Class="Ch9.MovieDetailPage"
              Title="{Binding Path=Movie.Title}" Padding="5"
@@ -25,20 +27,43 @@
             <ScrollView VerticalOptions="FillAndExpand">
                 <StackLayout>
 
-                    <ImageButton HorizontalOptions="FillAndExpand" Aspect="AspectFill"
-                                 HeightRequest="250"
-                                 Command="{Binding ImageStepCommand}">
-                        <ImageButton.Source>
-                            <UriImageSource Uri="{Binding Path=Movie.GalleryDisplayImage}"                                            
-                                            CacheValidity="0"
-                                            CachingEnabled="False"                                
-                                                    />
-                        </ImageButton.Source>
-                    </ImageButton>
+                    <pancardview:CardsView
+                        ItemsSource="{Binding Path=Movie.GalleryDisplayImages}"
+                        SelectedIndex="{Binding Path=Movie.GalleryIndex}"
+                        >
+
+                        <pancardview:CardsView.ItemTemplate>
+                            <DataTemplate>
+                                <ContentView>
+                                    <Frame 
+                                        HeightRequest="226"
+                                        Padding="0" 
+                                        HasShadow="false"
+                                        IsClippedToBounds="true"
+                                        CornerRadius="10"
+                                        BackgroundColor="WhiteSmoke"
+                                    >
+                                        
+                                        <Image Aspect="AspectFit">
+                                            <Image.Source>
+                                                <UriImageSource
+                                                    Uri="{Binding .}"
+                                                    CacheValidity="0"
+                                                    CachingEnabled="False"
+                                                />
+                                            </Image.Source>
+                                        </Image>                      
+                                    </Frame>
+                                </ContentView>
+                            </DataTemplate>
+                        </pancardview:CardsView.ItemTemplate>
+
+                    </pancardview:CardsView>
+                    
 
                     <StackLayout Orientation="Horizontal" Spacing="0" HorizontalOptions="EndAndExpand">
-                        <Label Text="{Binding Path=Movie.GalleryPositionCounter, StringFormat='{0}/'}" FontSize="Micro" HorizontalOptions="End"/>
-                        <Label Text="{Binding Path=Movie.GalleryDisplayImages.Length, StringFormat='{0} gallery images (tap picture)'}" FontSize="Micro" HorizontalOptions="End"/>
+                        <Label Text="{Binding Path=Movie.GalleryIndex, StringFormat='{0}/'}" FontSize="Micro" HorizontalOptions="End"/>
+                        <Label Text="{Binding Path=Movie.GalleryDisplayImages.Count, StringFormat='{0} gallery images'}" FontSize="Micro" HorizontalOptions="End"/>
                     </StackLayout>
 
                     <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10">

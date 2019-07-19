@@ -82,7 +82,6 @@ namespace Ch9.Models
         {
             get => _budget;
             set => SetProperty(ref _budget, value);
-
         }
 
         private string _homepage;
@@ -121,7 +120,6 @@ namespace Ch9.Models
             set => SetProperty(ref _duration, value);
         }
 
-
         private string _tagline;
         [JsonProperty("tagline")]
         public string Tagline
@@ -142,8 +140,7 @@ namespace Ch9.Models
         {
             get => _galleryDisplayImages;
             set => SetProperty(ref _galleryDisplayImages, value);
-        } 
-
+        }
 
         private int _galleryIndex;        
         public int GalleryIndex

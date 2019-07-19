@@ -29,7 +29,7 @@ namespace Ch9.Utils
         public void SetGalleryImageSources(MovieDetailModel movie)
         {
             if (movie.GalleryDisplayImages.Count < 2)
-            {               
+            {                
                 if (movie.ImageDetailCollection.Backdrops?.Length > 0)
                 {
                     foreach (ImageModel backdrop in movie.ImageDetailCollection.Backdrops.Skip(1))

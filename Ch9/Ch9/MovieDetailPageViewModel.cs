@@ -45,12 +45,12 @@ namespace Ch9
             get => _movieStates;
             set => SetProperty(ref _movieStates, value);
         }
-        
+
         public ICommand HomeCommand { get; private set; }
         public ICommand RecommendationsCommand { get; private set; }
         public ICommand ReviewsCommand { get; private set; }
         public ICommand ToggleWatchlistCommand { get; private set; }
-        public ICommand AddToListCommand { get; private set; }        
+        public ICommand AddToListCommand { get; private set; }
         public ICommand ToggleFavoriteCommand { get; private set; }
 
         public MovieDetailPageViewModel(
@@ -70,8 +70,8 @@ namespace Ch9
             _fetchGallery = UpdateImageDetailCollection();
             MovieHasReviews = false;
             MovieStatesFetchFinished = false;
-            _reviewsPageViewModel = new ReviewsPageViewModel(this, _cachedSearchClient);            
-            
+            _reviewsPageViewModel = new ReviewsPageViewModel(this, _cachedSearchClient);
+
             HomeCommand = new Command(async () => await _pageService.PopToRootAsync());
             ReviewsCommand = new Command(async () => await _pageService.PushAsync(_reviewsPageViewModel), () => MovieStatesFetchFinished);
             RecommendationsCommand = new Command(async () => await _pageService.PushRecommendationsPageAsync(Movie));
@@ -85,26 +85,24 @@ namespace Ch9
             _ = FetchMovieStates();
             FetchMovieDetailsResult movieDetailsResult = await _cachedSearchClient.FetchMovieDetails(Movie.Id, _settings.SearchLanguage);
             if (movieDetailsResult.HttpStatusCode.IsSuccessCode())
-                JsonConvert.PopulateObject(movieDetailsResult.Json, Movie);            
+                JsonConvert.PopulateObject(movieDetailsResult.Json, Movie);
         }
 
         // starts a hot task to fetch and adjust gallery image paths as early as possible        
-        private Task UpdateImageDetailCollection()
+        private async Task UpdateImageDetailCollection()
         {
-            var imageDetailCollectionUpdateTask = _cachedSearchClient.UpdateMovieImages(Movie.Id, _settings.SearchLanguage, null, true);
-
-            // attaches task to adjust movie gallery details with the results of the antecendent
-            var galleryCollectionReady = imageDetailCollectionUpdateTask.ContinueWith(t =>
+            try
             {
-                if (t.Result.HttpStatusCode.IsSuccessCode())
-                {
-                    JsonConvert.PopulateObject(t.Result.Json, Movie.ImageDetailCollection);
+                var moveImagesResponse = await _cachedSearchClient.UpdateMovieImages(Movie.Id, _settings.SearchLanguage, null, true);
+                var success = moveImagesResponse.HttpStatusCode.IsSuccessCode();
+                if (success)
+                    await Task.Run(() => JsonConvert.PopulateObject(moveImagesResponse.Json, Movie.ImageDetailCollection));
+
+                if (success)
                     _movieDetailModelConfigurator.SetGalleryImageSources(Movie);
-                }
-            }, TaskScheduler.FromCurrentSynchronizationContext());
-            return galleryCollectionReady;
-        }      
-        
+            } catch{ }
+        }
+
         public async Task OnToggleWatchlistCommand()
         {
             if (!_settings.HasTmdbAccount)
@@ -154,7 +152,7 @@ namespace Ch9
                     OnPropertyChanged(nameof(MovieIsAlreadyOnActiveList));
                 }
             }
-            catch (Exception ex) { await _pageService.DisplayAlert("Error",$"Service responded with: {ex.Message}","Ok"); }            
+            catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Service responded with: {ex.Message}", "Ok"); }
         }
 
         public async Task OnToggleFavoriteCommand()
@@ -172,10 +170,11 @@ namespace Ch9
                 await _movieListsService2.FavoriteMoviesListService.ToggleFavoriteState(Movie, desiredState);
                 MovieStates.IsFavorite = desiredState;
                 OnPropertyChanged(nameof(MovieStates));
-            } catch (Exception ex)
-            { await _pageService.DisplayAlert("Error", $"Could not change favorite state, service responded with: {ex.Message}", "Ok");}
+            }
+            catch (Exception ex)
+            { await _pageService.DisplayAlert("Error", $"Could not change favorite state, service responded with: {ex.Message}", "Ok"); }
         }
-        
+
         // TODO : property should set be with awaiter from UI thread!!!
         private async Task FetchMovieStates()
         {

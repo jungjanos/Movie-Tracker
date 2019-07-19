@@ -13,8 +13,7 @@ using Xamarin.Forms;
 namespace Ch9
 {
     public class MovieDetailPageViewModel : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
+    {        
         public MovieDetailModel Movie { get; set; }
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
@@ -189,6 +188,8 @@ namespace Ch9
                 RefreshCanExecutes();
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private void RefreshCanExecutes()
         {

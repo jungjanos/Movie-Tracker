@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
+             xmlns:pancardview="clr-namespace:PanCardView;assembly=PanCardView"
+             xmlns:pancardviewcontrols="clr-namespace:PanCardView.Controls;assembly=PanCardView"
+             mc:Ignorable="d"
+             x:Class="Ch9.LargeImagePage">
+    <ContentPage.Content>
+        <pancardview:CardsView
+                        ItemsSource="{Binding Path=Movie.GalleryDisplayImages}"
+                        SelectedIndex="{Binding Path=Movie.GalleryIndex}"
+                        >
+            <pancardview:CardsView.ItemTemplate>
+                <DataTemplate>
+                    <ContentView>
+                        <Frame
+                            Padding="5" 
+                            HasShadow="false"
+                            IsClippedToBounds="true"
+                            CornerRadius="10"
+                            BackgroundColor="WhiteSmoke"            
+                        >
+                            <Image Aspect="AspectFit">                        
+
+                                <Image.Source>
+                                    <UriImageSource
+                                        Uri="https://image.tmdb.org/t/p/w780/9mmkq59uRuJWDFz9UHeX5ATNJYf.jpg"
+                                        CacheValidity="0"
+                                        CachingEnabled="False"
+                                    />
+                                </Image.Source>
+                            </Image>
+
+                        </Frame>
+                    </ContentView>
+                </DataTemplate>
+            </pancardview:CardsView.ItemTemplate>
+
+        </pancardview:CardsView>
+    </ContentPage.Content>
+</ContentPage>

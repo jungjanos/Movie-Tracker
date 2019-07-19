@@ -52,6 +52,8 @@ namespace Ch9
         public ICommand ToggleWatchlistCommand { get; private set; }
         public ICommand AddToListCommand { get; private set; }
         public ICommand ToggleFavoriteCommand { get; private set; }
+        public ICommand TapCommand { get; private set; }
+
 
         public MovieDetailPageViewModel(
             MovieDetailModel movie,
@@ -78,6 +80,7 @@ namespace Ch9
             ToggleWatchlistCommand = new Command(async () => await OnToggleWatchlistCommand());
             AddToListCommand = new Command(async () => await OnAddToListCommand());
             ToggleFavoriteCommand = new Command(async () => await OnToggleFavoriteCommand(), () => MovieStatesFetchFinished);
+            TapCommand = new Command(() => { }); // empty stub on Page
         }
 
         public async Task Initialize()

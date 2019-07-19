@@ -9,6 +9,7 @@
              xmlns:pancardviewcontrols="clr-namespace:PanCardView.Controls;assembly=PanCardView"
              mc:Ignorable="d"
              x:Class="Ch9.MovieDetailPage"
+             x:Name="movieDetailPage"
              Title="{Binding Path=Movie.Title}" Padding="5"
              BackgroundColor="WhiteSmoke" NavigationPage.HasNavigationBar="False">
     
@@ -42,9 +43,15 @@
                                         IsClippedToBounds="true"
                                         CornerRadius="10"
                                         BackgroundColor="WhiteSmoke"
-                                    >
-                                        
+                                    >                                        
                                         <Image Aspect="AspectFit">
+                                            
+                                            <Image.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding  Path=BindingContext.TapCommand, Source={x:Reference movieDetailPage}}"/>
+                                                <!--<CommandParameter="{Binding  Path=BindingContext.CurrentIndex, Source={x:Reference movieDetailPage}}" />-->
+
+                                            </Image.GestureRecognizers>
+
                                             <Image.Source>
                                                 <UriImageSource
                                                     Uri="{Binding .}"
@@ -56,7 +63,7 @@
                                     </Frame>
                                 </ContentView>
                             </DataTemplate>
-                        </pancardview:CardsView.ItemTemplate>
+                        </pancardview:CardsView.ItemTemplate>                        
 
                     </pancardview:CardsView>
                     

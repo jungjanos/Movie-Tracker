@@ -68,6 +68,14 @@ namespace Ch9.ApiClient
 
     public class GetMovieImagesResult : TmdbResponseBase
     { }
+    public class GetMovieVideosResult :TmdbResponseBase
+    {
+        [JsonProperty("id")] 
+        public int MovieId { get; set; } 
+
+        [JsonProperty("results")]
+        public List<VideoModel> VideoModels { get; set; }
+    }
 
     public class GetMovieRecommendationsResult : TmdbResponseBase
     { }

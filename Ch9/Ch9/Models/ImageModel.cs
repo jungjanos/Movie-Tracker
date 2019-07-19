@@ -1,10 +1,8 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Ch9.Models
 {
+    // Represents different kinds of movie images (posters, backdrops, stills..)
     public class ImageModel
     {
         [JsonProperty("aspect_ratio")]

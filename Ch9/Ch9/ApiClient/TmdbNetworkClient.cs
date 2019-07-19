@@ -228,6 +228,22 @@ namespace Ch9.ApiClient
             return result;
         }
 
+        public async Task<GetMovieVideosResult> GetMovieVideos(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id + VIDEO_DETAIL_PATH;
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+
+            if (!string.IsNullOrEmpty(language))
+                query.Add(LANGUAGE_Key, language);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+            GetMovieVideosResult result = await GetResponse<GetMovieVideosResult>(retryCount, delayMilliseconds, requestUri);
+
+            return result;
+        }
+
+
         public async Task<GetMovieRecommendationsResult> GetMovieRecommendations(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id + RECOMMENDATIONS_Path;

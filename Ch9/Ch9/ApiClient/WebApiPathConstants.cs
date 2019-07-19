@@ -17,6 +17,7 @@ namespace Ch9.ApiClient
         public const string WEEK_Path = "/week";
         public const string DAY_Path = "/day";
         public const string IMAGE_DETAIL_Path = "/images";
+        public const string VIDEO_DETAIL_PATH = "/videos";
         public const string IMAGE_ADDITIONAL_LANGUAGES = "include_image_language";
 
         public const string TRENDING_WEEK_Path = "/trending/movie/week";

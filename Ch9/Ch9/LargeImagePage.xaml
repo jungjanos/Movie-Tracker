@@ -6,7 +6,10 @@
              xmlns:pancardview="clr-namespace:PanCardView;assembly=PanCardView"
              xmlns:pancardviewcontrols="clr-namespace:PanCardView.Controls;assembly=PanCardView"
              mc:Ignorable="d"
-             x:Class="Ch9.LargeImagePage">
+             x:Class="Ch9.LargeImagePage"
+             NavigationPage.HasNavigationBar="False"
+             >
+
     <ContentPage.Content>
         <pancardview:CardsView
                         ItemsSource="{Binding Path=Movie.GalleryDisplayImages}"
@@ -14,19 +17,20 @@
                         >
             <pancardview:CardsView.ItemTemplate>
                 <DataTemplate>
-                    <ContentView>
+                    <ContentView Padding="5"
+                                 BackgroundColor="WhiteSmoke">
                         <Frame
-                            Padding="5" 
+                            Padding="0" 
                             HasShadow="false"
                             IsClippedToBounds="true"
-                            CornerRadius="10"
-                            BackgroundColor="WhiteSmoke"            
+                            CornerRadius="20"
+                            BackgroundColor="WhiteSmoke"                            
                         >
-                            <Image Aspect="AspectFit">                        
+                            <Image Aspect="AspectFill">    
 
                                 <Image.Source>
                                     <UriImageSource
-                                        Uri="https://image.tmdb.org/t/p/w780/9mmkq59uRuJWDFz9UHeX5ATNJYf.jpg"
+                                        Uri="{Binding .}"
                                         CacheValidity="0"
                                         CachingEnabled="False"
                                     />

@@ -47,8 +47,8 @@
                                         <Image Aspect="AspectFit">
                                             
                                             <Image.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding  Path=BindingContext.TapCommand, Source={x:Reference movieDetailPage}}"/>
-                                                <!--<CommandParameter="{Binding  Path=BindingContext.CurrentIndex, Source={x:Reference movieDetailPage}}" />-->
+                                                <TapGestureRecognizer Command="{Binding  Path=BindingContext.TapImageCommand, Source={x:Reference movieDetailPage}}" />
+                                                <!--<CommandParameter="{Binding  Path=BindingContext.CurrentImageIndex, Source={x:Reference movieDetailPage}}" />-->
 
                                             </Image.GestureRecognizers>
 

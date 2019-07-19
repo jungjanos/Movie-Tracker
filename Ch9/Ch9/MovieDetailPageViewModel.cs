@@ -13,7 +13,7 @@ using Xamarin.Forms;
 namespace Ch9
 {
     public class MovieDetailPageViewModel : INotifyPropertyChanged
-    {        
+    {
         public MovieDetailModel Movie { get; set; }
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
@@ -51,7 +51,7 @@ namespace Ch9
         public ICommand ToggleWatchlistCommand { get; private set; }
         public ICommand AddToListCommand { get; private set; }
         public ICommand ToggleFavoriteCommand { get; private set; }
-        public ICommand TapCommand { get; private set; }
+        public ICommand TapImageCommand { get; private set; }
 
 
         public MovieDetailPageViewModel(
@@ -79,7 +79,7 @@ namespace Ch9
             ToggleWatchlistCommand = new Command(async () => await OnToggleWatchlistCommand());
             AddToListCommand = new Command(async () => await OnAddToListCommand());
             ToggleFavoriteCommand = new Command(async () => await OnToggleFavoriteCommand(), () => MovieStatesFetchFinished);
-            TapCommand = new Command(() => { }); // empty stub on Page
+            TapImageCommand = new Command(async () => await _pageService.PushLargeImagePage(Movie));
         }
 
         public async Task Initialize()
@@ -102,7 +102,8 @@ namespace Ch9
 
                 if (success)
                     _movieDetailModelConfigurator.SetGalleryImageSources(Movie);
-            } catch{ }
+            }
+            catch { }
         }
 
         public async Task OnToggleWatchlistCommand()

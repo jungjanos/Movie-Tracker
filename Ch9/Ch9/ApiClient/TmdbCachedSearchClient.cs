@@ -76,11 +76,11 @@ namespace Ch9.ApiClient
             return result;
         }
 
-        public async Task<GetMovieImagesResult> UpdateMovieImages(int id, string language = null, string otherLanguage = null, bool? includeLanguageless = true, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<GetMovieImagesResult> GetMovieImages(int id, string language = null, string otherLanguage = null, bool? includeLanguageless = true, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            string key = "$" + nameof(UpdateMovieImages) + id + (language ?? "") + (otherLanguage ?? "") + (includeLanguageless == null ? "" : includeLanguageless.Value.ToString());
+            string key = "$" + nameof(GetMovieImages) + id + (language ?? "") + (otherLanguage ?? "") + (includeLanguageless == null ? "" : includeLanguageless.Value.ToString());
 
-            var result = _cache.Get<GetMovieImagesResult>(key) ?? await _networkClient.UpdateMovieImages(id, language, otherLanguage, includeLanguageless, retryCount, delayMilliseconds);
+            var result = _cache.Get<GetMovieImagesResult>(key) ?? await _networkClient.GetMovieImages(id, language, otherLanguage, includeLanguageless, retryCount, delayMilliseconds);
 
             if (result.HttpStatusCode.IsSuccessCode())
                 _cache.Add(key, result);

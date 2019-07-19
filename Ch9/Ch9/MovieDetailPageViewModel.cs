@@ -95,7 +95,7 @@ namespace Ch9
         {
             try
             {
-                var moveImagesResponse = await _cachedSearchClient.UpdateMovieImages(Movie.Id, _settings.SearchLanguage, null, true);
+                var moveImagesResponse = await _cachedSearchClient.GetMovieImages(Movie.Id, _settings.SearchLanguage, null, true);
                 var success = moveImagesResponse.HttpStatusCode.IsSuccessCode();
                 if (success)
                     await Task.Run(() => JsonConvert.PopulateObject(moveImagesResponse.Json, Movie.ImageDetailCollection));

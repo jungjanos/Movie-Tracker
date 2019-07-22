@@ -12,7 +12,7 @@
 
     <ContentPage.Content>
         <pancardview:CardsView
-                        ItemsSource="{Binding Path=Movie.GalleryDisplayImages}"
+                        ItemsSource="{Binding Path=Movie.DisplayImages}"
                         SelectedIndex="{Binding Path=Movie.GalleryIndex}"
                         >
             <pancardview:CardsView.ItemTemplate>
@@ -30,7 +30,7 @@
 
                                 <Image.Source>
                                     <UriImageSource
-                                        Uri="{Binding .}"
+                                        Uri="{Binding Path=FilePath}"
                                         CacheValidity="0"
                                         CachingEnabled="False"
                                     />

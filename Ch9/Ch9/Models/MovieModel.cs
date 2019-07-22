@@ -57,8 +57,8 @@ namespace Ch9.Models
     {
         public MovieDetailModel()
         {
-            _imageDetailCollection = new ImageDetailCollection();
-            _galleryDisplayImages = new ObservableCollection<string>();
+            _imageDetailCollection = new ImageDetailCollection();            
+            _displayImages = new ObservableCollection<ImageModel>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -104,13 +104,12 @@ namespace Ch9.Models
             set
             {
                 SetProperty(ref _productionCountries, value);
-                Countries = string.Join(", ", _productionCountries.Select(x => x.Iso/* == "US" ? "USA" : x.Name*/));
+                Countries = string.Join(", ", _productionCountries.Select(x => x.Iso));
                 OnPropertyChanged(nameof(Countries));
             }
         }
 
         public string Countries { get; set; }
-
 
         private int? _duration;
         [JsonProperty("runtime")]
@@ -135,14 +134,14 @@ namespace Ch9.Models
             set => SetProperty(ref _imageDetailCollection, value);
         }
 
-        private ObservableCollection<string> _galleryDisplayImages;
-        public ObservableCollection<string> GalleryDisplayImages
+        private ObservableCollection<ImageModel> _displayImages;
+        public ObservableCollection<ImageModel> DisplayImages
         {
-            get => _galleryDisplayImages;
-            set => SetProperty(ref _galleryDisplayImages, value);
+            get => _displayImages;
+            set => SetProperty(ref _displayImages, value);
         }
 
-        private int _galleryIndex;        
+        private int _galleryIndex;
         public int GalleryIndex
         {
             get => _galleryIndex;
@@ -179,10 +178,7 @@ namespace Ch9.Models
                 return x.Id == y.Id;
         }
 
-        public int GetHashCode(MovieModel obj)
-        {
-            return obj.Id;
-        }
+        public int GetHashCode(MovieModel obj) => obj.Id;        
     }
 }
 

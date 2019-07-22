@@ -53,7 +53,6 @@ namespace Ch9
         public ICommand ToggleFavoriteCommand { get; private set; }
         public ICommand TapImageCommand { get; private set; }
 
-
         public MovieDetailPageViewModel(
             MovieDetailModel movie,
             ISettings settings,

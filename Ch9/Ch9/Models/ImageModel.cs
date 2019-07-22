@@ -25,6 +25,5 @@ namespace Ch9.Models
 
         [JsonProperty("width")]
         public int Width { get; set; }
-
     }
 }

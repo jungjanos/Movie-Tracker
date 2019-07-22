@@ -29,7 +29,7 @@
                 <StackLayout>
 
                     <pancardview:CardsView
-                        ItemsSource="{Binding Path=Movie.GalleryDisplayImages}"
+                        ItemsSource="{Binding Path=Movie.DisplayImages}"
                         SelectedIndex="{Binding Path=Movie.GalleryIndex}"
                         >
 
@@ -43,9 +43,9 @@
                                         IsClippedToBounds="true"
                                         CornerRadius="10"
                                         BackgroundColor="WhiteSmoke"
-                                    >                                        
+                                    >
                                         <Image Aspect="AspectFit">
-                                            
+
                                             <Image.GestureRecognizers>
                                                 <TapGestureRecognizer Command="{Binding  Path=BindingContext.TapImageCommand, Source={x:Reference movieDetailPage}}" />
                                                 <!--<CommandParameter="{Binding  Path=BindingContext.CurrentImageIndex, Source={x:Reference movieDetailPage}}" />-->
@@ -54,23 +54,22 @@
 
                                             <Image.Source>
                                                 <UriImageSource
-                                                    Uri="{Binding .}"
+                                                    Uri="{Binding Path=FilePath}"
                                                     CacheValidity="0"
                                                     CachingEnabled="False"
                                                 />
                                             </Image.Source>
-                                        </Image>                      
+                                        </Image>
                                     </Frame>
                                 </ContentView>
                             </DataTemplate>
-                        </pancardview:CardsView.ItemTemplate>                        
+                        </pancardview:CardsView.ItemTemplate>
 
                     </pancardview:CardsView>
-                    
 
                     <StackLayout Orientation="Horizontal" Spacing="0" HorizontalOptions="EndAndExpand">
                         <Label Text="{Binding Path=Movie.GalleryIndex, StringFormat='{0}/'}" FontSize="Micro" HorizontalOptions="End"/>
-                        <Label Text="{Binding Path=Movie.GalleryDisplayImages.Count, StringFormat='{0} gallery images'}" FontSize="Micro" HorizontalOptions="End"/>
+                        <Label Text="{Binding Path=Movie.DisplayImages.Count, StringFormat='{0} gallery images'}" FontSize="Micro" HorizontalOptions="End"/>
                     </StackLayout>
 
                     <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10">

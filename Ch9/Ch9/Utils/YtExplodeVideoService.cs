@@ -55,7 +55,7 @@ namespace Ch9.Utils
                             videoModel.VideoInfo = await GetVideoInfo(videoModel.Key);
                         } catch { }
                     }
-                }                
+                }
 
                 foreach (TmdbVideoModel videoModel in movieVideosResponse.VideoModels)
                 {
@@ -71,6 +71,9 @@ namespace Ch9.Utils
                     }
                 }
             }
+            else
+                throw new Exception($"TMDB server responded with {movieVideosResponse.HttpStatusCode}");
+
             return resultingThumbnailsWithVideos;
         }
 

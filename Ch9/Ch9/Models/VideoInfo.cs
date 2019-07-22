@@ -7,7 +7,7 @@ namespace Ch9.Models
 {
     public interface IVideoService
     {
-        Task<List<ImageModel>> GetVideoThumbnailsWithVideoStreams(int movieId);
+        Task<List<ImageModel>> GetVideoThumbnailsWithVideoStreams(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true);
     }
 
     public class VideoInfo
@@ -50,7 +50,7 @@ namespace Ch9.Models
         public IReadOnlyList<string> Keywords { get; }
         public Statistics Statistics { get; }
         public IList<VideoStreamInfo> VideoStreams { get; set; }
-        public VideoStreamInfo SelectedStream { get; }
+        public VideoStreamInfo SelectedStream => QualitySelector?.SelectVideoStream(VideoStreams);
         public IVideoQualitySelector QualitySelector { get; }
     }
 
@@ -92,8 +92,7 @@ namespace Ch9.Models
         public VideoQuality Quality { get; }
         public string QualityLabel { get; }
         public int Height { get; }
-        public int Width { get; }
-        public int With { get; }
+        public int Width { get; }        
     }
 
     /// <summary>

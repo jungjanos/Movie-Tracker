@@ -19,8 +19,10 @@ namespace Ch9
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
         private readonly UsersMovieListsService2 _movieListsService2;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
+        private readonly IVideoService _videoService;
         private readonly IPageService _pageService;
         private readonly Task _fetchGallery;
+        private readonly Task _fetchThumbnails;
         private readonly ReviewsPageViewModel _reviewsPageViewModel;
 
         public bool? MovieIsAlreadyOnActiveList => _movieListsService2.CustomListsService.CheckIfMovieIsOnActiveList(Movie.Id);
@@ -59,6 +61,7 @@ namespace Ch9
             ITmdbCachedSearchClient cachedSearchClient,
             UsersMovieListsService2 movieListsService2,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
+            IVideoService videoService,
             IPageService pageService)
         {
             Movie = movie;
@@ -66,8 +69,10 @@ namespace Ch9
             _cachedSearchClient = cachedSearchClient;
             _movieListsService2 = movieListsService2;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
+            _videoService = videoService;
             _pageService = pageService;
-            _fetchGallery = UpdateImageDetailCollection();
+            _fetchGallery = UpdateImageCollection();
+            _fetchThumbnails = UpdateImageCollectionWithVideoThumbnails();
             MovieHasReviews = false;
             MovieStatesFetchFinished = false;
             _reviewsPageViewModel = new ReviewsPageViewModel(this, _cachedSearchClient);
@@ -90,7 +95,7 @@ namespace Ch9
         }
 
         // starts a hot task to fetch and adjust gallery image paths as early as possible        
-        private async Task UpdateImageDetailCollection()
+        private async Task UpdateImageCollection()
         {
             try
             {
@@ -104,6 +109,20 @@ namespace Ch9
             }
             catch { }
         }
+
+        private async Task UpdateImageCollectionWithVideoThumbnails()
+        {
+            try
+            {
+                List<ImageModel> videoThumbnails = await _videoService.GetVideoThumbnailsWithVideoStreams(Movie.Id, 1, 1000, true);
+                await _fetchGallery;
+                foreach (var thumbnail in videoThumbnails)
+                    Movie.DisplayImages.Add(thumbnail);
+            }
+            catch (Exception ex)
+            { await _pageService.DisplayAlert("Error", $"Could not load videos, service responded with: {ex.Message}", "Ok"); }
+        }
+
 
         public async Task OnToggleWatchlistCommand()
         {

@@ -15,7 +15,7 @@ namespace Ch9.Models
         public string Key { get; set; }
 
         [JsonProperty("name")]
-        public string Name { get; set; }        
+        public string Title { get; set; }        
 
         [JsonProperty("site")]
         public string Site { get; set; }

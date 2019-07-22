@@ -18,6 +18,8 @@ namespace Ch9
         public ITmdbNetworkClient TmdbNetworkClient { get; private set; }
         public ITmdbCachedSearchClient CachedSearchClient { get; private set; }
         public UsersMovieListsService2 UsersMovieListsService2 { get; private set; }
+        public IVideoService VideoService { get; private set; }
+
 
         public App(HttpClient httpClient = null)
         {
@@ -25,7 +27,8 @@ namespace Ch9
             MovieGenreSettings = new MovieGenreSettings();
             ResultFilter = new SearchResultFilter(Settings, MovieGenreSettings);
             TmdbNetworkClient = new TmdbNetworkClient(Settings, httpClient);
-            CachedSearchClient = new TmdbCachedSearchClient(TmdbNetworkClient);            
+            CachedSearchClient = new TmdbCachedSearchClient(TmdbNetworkClient);
+            VideoService = new YtExplodeVideoService(httpClient, Settings, CachedSearchClient);
 
             InitializeComponent();
             MainPage = new LoadingPage();

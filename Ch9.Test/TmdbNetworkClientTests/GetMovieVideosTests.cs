@@ -116,7 +116,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
                 _output.WriteLine($"Movie id: {videoDetail.Id}");
                 _output.WriteLine($"iso: {videoDetail.Iso}");
                 _output.WriteLine($"key: {videoDetail.Key}");
-                _output.WriteLine($"name : {videoDetail.Name}");
+                _output.WriteLine($"name : {videoDetail.Title}");
                 _output.WriteLine($"site: {videoDetail.Site}");
                 _output.WriteLine($"video size: {videoDetail.Size}");
                 _output.WriteLine($"video type: {videoDetail.Type}");

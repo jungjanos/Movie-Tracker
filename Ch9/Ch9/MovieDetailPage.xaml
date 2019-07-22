@@ -31,6 +31,7 @@
                     <pancardview:CardsView
                         ItemsSource="{Binding Path=Movie.DisplayImages}"
                         SelectedIndex="{Binding Path=Movie.GalleryIndex}"
+                        IsCyclical="True"
                         >
 
                         <pancardview:CardsView.ItemTemplate>

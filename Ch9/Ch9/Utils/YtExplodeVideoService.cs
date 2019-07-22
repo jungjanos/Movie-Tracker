@@ -8,6 +8,7 @@ using YoutubeExplode;
 using YoutubeExplode.Models;
 using YoutubeExplode.Models.MediaStreams;
 using Newtonsoft.Json;
+using System;
 
 namespace Ch9.Utils
 {
@@ -29,36 +30,34 @@ namespace Ch9.Utils
             ITmdbCachedSearchClient tmdbCachedSearchClient
             )
         {
-            _httpClient = httpClient;
+            _httpClient = httpClient ?? new HttpClient();
             _settings = settings;
             _tmdbCachedSearchClient = tmdbCachedSearchClient;
 
-            _youtubeClient = new YoutubeClient(_httpClient);
+            _youtubeClient = /*new YoutubeClient(_httpClient)*/ new YoutubeClient();
         }
 
-        public async Task<List<ImageModel>> GetVideoThumbnailsWithVideoStreams(int movieId)
+        public async Task<List<ImageModel>> GetVideoThumbnailsWithVideoStreams(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
             List<ImageModel> resultingThumbnailsWithVideos = new List<ImageModel>();
-
-            GetMovieVideosResult movieVideosResponse = await _tmdbCachedSearchClient.GetMovieVideos(movieId, _settings.SearchLanguage, 1, 1000, true);
+            GetMovieVideosResult movieVideosResponse = await _tmdbCachedSearchClient.GetMovieVideos(movieId, _settings.SearchLanguage, retryCount, delayMilliseconds, fromCache);
 
             if (movieVideosResponse.HttpStatusCode.IsSuccessCode())
             {
                 JsonConvert.PopulateObject(movieVideosResponse.Json, movieVideosResponse);
 
-                foreach(TmdbVideoModel videoModel in movieVideosResponse.VideoModels)
+                foreach (TmdbVideoModel videoModel in movieVideosResponse.VideoModels)
                 {
-                    if (videoModel.Site == "YouTube" && YoutubeClient.ValidateVideoId(videoModel.Id))
+                    if (videoModel.Site == "YouTube" && YoutubeClient.ValidateVideoId(videoModel.Key))
                     {
                         try
                         {
-                            videoModel.VideoInfo = await GetVideoInfo(videoModel.Id);
-                        }
-                        catch { }
-                    }                    
+                            videoModel.VideoInfo = await GetVideoInfo(videoModel.Key);
+                        } catch { }
+                    }
                 }                
-                
-                foreach(TmdbVideoModel videoModel in movieVideosResponse.VideoModels)
+
+                foreach (TmdbVideoModel videoModel in movieVideosResponse.VideoModels)
                 {
                     if (videoModel?.VideoInfo?.SelectedStream != null)
                     {
@@ -70,14 +69,15 @@ namespace Ch9.Utils
                         };
                         resultingThumbnailsWithVideos.Add(videoThumbnail);
                     }
-                }                
+                }
             }
             return resultingThumbnailsWithVideos;
-        } 
+        }
 
         private async Task<VideoInfo> GetVideoInfo(string id)
         {
             Video video = await _youtubeClient.GetVideoAsync(id);
+
             MediaStreamInfoSet streamInfoSet = await _youtubeClient.GetVideoMediaStreamInfosAsync(id);
 
             List<Models.VideoStreamInfo> videoStreams = new List<Models.VideoStreamInfo>();
@@ -108,14 +108,13 @@ namespace Ch9.Utils
                 videoStreams,
                 new YtVideoQualitySelector(_settings));
         }
-
     }
 
     public class YtVideoQualitySelector : IVideoQualitySelector
     {
         private readonly ISettings _settings;
 
-        public YtVideoQualitySelector(ISettings settings) => _settings = settings;        
+        public YtVideoQualitySelector(ISettings settings) => _settings = settings;
 
         public Models.VideoStreamInfo SelectVideoStream(IList<Models.VideoStreamInfo> streams)
         {

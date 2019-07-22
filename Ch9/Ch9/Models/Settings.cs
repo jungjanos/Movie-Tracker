@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Ch9.Utils;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -143,6 +144,8 @@ namespace Ch9.Models
             }
             set => _appDictionary[nameof(MovieIdsOnActiveList)] = JsonConvert.SerializeObject(value);
         }
+
+        public VideoPlaybackQuality PlaybackQuality => VideoPlaybackQuality.HighQ;
 
         public async Task SavePropertiesAsync()
         {

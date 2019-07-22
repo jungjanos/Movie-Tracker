@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using Ch9.Utils;
+using System.Threading.Tasks;
+using static Ch9.Models.Settings;
 
 namespace Ch9.Models
 {
@@ -14,6 +16,7 @@ namespace Ch9.Models
         string SessionId { get; set; }
         int? ActiveMovieListId { get; set; }
         int[] MovieIdsOnActiveList { get; set; }
+        VideoPlaybackQuality PlaybackQuality { get; }
         Task SavePropertiesAsync();
     }
 }

@@ -74,7 +74,7 @@ namespace Ch9.ApiClient
         public int MovieId { get; set; } 
 
         [JsonProperty("results")]
-        public List<VideoModel> VideoModels { get; set; }
+        public List<TmdbVideoModel> VideoModels { get; set; }
     }
 
     public class GetMovieRecommendationsResult : TmdbResponseBase

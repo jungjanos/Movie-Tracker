@@ -13,7 +13,7 @@ namespace Ch9.Models
 
         [JsonProperty("height")]
         public int Height { get; set; }
-               
+
         [JsonProperty("iso_639_1")]
         public string Iso { get; set; }
 
@@ -25,5 +25,8 @@ namespace Ch9.Models
 
         [JsonProperty("width")]
         public int Width { get; set; }
+        public bool HasAttachedVideo => !string.IsNullOrEmpty(AttachedVideo?.VideoInfo?.SelectedStream?.StreamUrl);
+
+        public TmdbVideoModel AttachedVideo { get; set; }
     }
 }

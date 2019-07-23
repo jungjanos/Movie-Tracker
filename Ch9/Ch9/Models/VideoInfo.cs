@@ -14,6 +14,9 @@ namespace Ch9.Models
         //Task<List<ImageModel>> GetVideoThumbnailsWithVideoStreams(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true);
     }
 
+    /// <summary>
+    /// Class containing important metadata about the video itself
+    /// </summary>
     public class VideoInfo
     {
         public VideoInfo(             
@@ -21,11 +24,8 @@ namespace Ch9.Models
             DateTimeOffset uploadDate, 
             string title, 
             string description, 
-            TimeSpan duration, 
-            //IReadOnlyList<string> keywords, 
+            TimeSpan duration,             
             Statistics statistics 
-            //IList<VideoStreamInfo> videoStreams, 
-            //IVideoQualitySelector qualitySelector
             )
         {            
             Author = author;
@@ -33,21 +33,15 @@ namespace Ch9.Models
             Title = title;
             Description = description;
             Duration = duration;
-            //Keywords = keywords;
-            //VideoStreams = videoStreams;
-            //QualitySelector = qualitySelector;
+            Statistics = statistics;
         }
         
         public string Author { get; }
         public DateTimeOffset UploadDate { get; }
         public string Title { get; }
         public string Description { get; }
-        public TimeSpan Duration { get; }
-        //public IReadOnlyList<string> Keywords { get; }
+        public TimeSpan Duration { get; }        
         public Statistics Statistics { get; }
-        //public IList<VideoStreamInfo> VideoStreams { get; set; }
-        //public VideoStreamInfo SelectedStream => QualitySelector?.SelectVideoStream(VideoStreams);
-        //public IVideoQualitySelector QualitySelector { get; }
     }
 
 
@@ -69,12 +63,17 @@ namespace Ch9.Models
         public long DislikeCount { get; }
         public double AverageRating { get; }
     }
-
-    public interface IVideoQualitySelector
+    /// <summary>
+    /// Selects a video stream based on user setting for desired quality level
+    /// </summary>
+    public interface IVideoStreamSelector
     {
-        VideoStreamInfo SelectVideoStream(IList<VideoStreamInfo> streams);
+        VideoStreamInfo SelectVideoStream(IEnumerable<VideoStreamInfo> streams);
     }
 
+    /// <summary>
+    /// Contains properties of a single url video stream source
+    /// </summary>
     public class VideoStreamInfo 
     {
         public VideoStreamInfo(string streamUrl, VideoQuality quality, string qualityLabel, int height, int width)
@@ -91,6 +90,32 @@ namespace Ch9.Models
         public int Height { get; }
         public int Width { get; }        
     }
+
+    /// <summary>
+    /// Contains all url video stream sources for a single video. Selects the stream best fitting user's 
+    /// requirements based on the stream selector passed to its constructor
+    /// </summary>
+    public class VideoStreamInfoSet
+    {
+        private readonly IEnumerable<VideoStreamInfo> _videoStreams;
+        private readonly IVideoStreamSelector _videoStreamSelector;
+        /// <summary>
+        /// The stream sources become invalid after the specified point in time. 
+        /// Has to be checked by caller.  
+        /// </summary>
+        public DateTimeOffset ValidUntil { get; }
+
+        public VideoStreamInfoSet(IEnumerable<VideoStreamInfo> videoStreams, DateTimeOffset validUntil, IVideoStreamSelector videoStreamSelector)
+        {
+            _videoStreams = videoStreams;
+            ValidUntil = validUntil;
+            _videoStreamSelector = videoStreamSelector;
+        }
+
+        public VideoStreamInfo SelectedVideoStream =>
+            _videoStreamSelector.SelectVideoStream(_videoStreams);
+    }
+
 
     /// <summary>
     /// Quality tag for a video stream

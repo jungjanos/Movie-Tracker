@@ -27,5 +27,6 @@ namespace Ch9.Models
         public string Type { get; set; } // allowed: Trailer, Teaser, Clip, Featurette, Behind the Scenes, Bloopers
 
         public VideoInfo VideoInfo { get; set; }
+        public VideoStreamInfoSet Streams { get; set; } 
     }
 }

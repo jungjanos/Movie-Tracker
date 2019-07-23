@@ -90,22 +90,41 @@ namespace Ch9.Utils
             return resultingThumbnailsWithoutVideos;
         }
 
-        public Models.Statistics GetStatistics(Video video) =>  new Models.Statistics(
+        private async Task PopulateWithStreams(TmdbVideoModel attachedVideo)
+        {            
+            try
+            {
+                MediaStreamInfoSet streamInfoSet = await _youtubeClient.GetVideoMediaStreamInfosAsync(attachedVideo.Key);
+                var streams = streamInfoSet.Muxed.Select(stream => GetStreamInfo(stream));
+
+                attachedVideo.Streams = new VideoStreamInfoSet(streams, streamInfoSet.ValidUntil, new YtVideoStreamSelector(_settings));
+            }
+            catch { }
+        }
+
+        public static Models.Statistics GetStatistics(Video video) =>  new Models.Statistics(
                  viewCount: video.Statistics.ViewCount,
                  likeCount: video.Statistics.LikeCount,
                  dislikeCount: video.Statistics.DislikeCount,
                  averageRating: video.Statistics.AverageRating
                 );
 
+        public static Models.VideoStreamInfo GetStreamInfo(MuxedStreamInfo muxedStreamInfo) => new Models.VideoStreamInfo(
+            streamUrl: muxedStreamInfo.Url,
+            quality: (Models.VideoQuality)muxedStreamInfo.VideoQuality,
+            qualityLabel: muxedStreamInfo.VideoQualityLabel,
+            height: muxedStreamInfo.Resolution.Height,
+            width:muxedStreamInfo.Resolution.Width
+            );
     }
 
-    public class YtVideoQualitySelector : IVideoQualitySelector
+    public class YtVideoStreamSelector : IVideoStreamSelector
     {
         private readonly ISettings _settings;
 
-        public YtVideoQualitySelector(ISettings settings) => _settings = settings;
+        public YtVideoStreamSelector(ISettings settings) => _settings = settings;
 
-        public Models.VideoStreamInfo SelectVideoStream(IList<Models.VideoStreamInfo> streams)
+        public Models.VideoStreamInfo SelectVideoStream(IEnumerable<Models.VideoStreamInfo> streams)
         {
             Models.VideoStreamInfo result = null;
 

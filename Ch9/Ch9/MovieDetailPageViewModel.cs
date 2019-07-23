@@ -4,6 +4,7 @@ using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -22,8 +23,29 @@ namespace Ch9
         private readonly IVideoService _videoService;
         private readonly IPageService _pageService;
         private readonly Task _fetchGallery;
-        private readonly Task _fetchThumbnails;
+
         private readonly ReviewsPageViewModel _reviewsPageViewModel;
+
+        private ObservableCollection<ImageModel> _displayImages;
+        public ObservableCollection<ImageModel> DisplayImages
+        {
+            get => _displayImages;
+            set => SetProperty(ref _displayImages, value);
+        }
+
+        private int _galleryIndex;
+        public int GalleryIndex
+        {
+            get => _galleryIndex;
+            set => SetProperty(ref _galleryIndex, value);
+        }
+
+        private bool _galleryIsBusy;
+        public bool GalleryIsBusy
+        {
+            get => _galleryIsBusy;
+            set => SetProperty(ref _galleryIsBusy, value);
+        }
 
         public bool? MovieIsAlreadyOnActiveList => _movieListsService2.CustomListsService.CheckIfMovieIsOnActiveList(Movie.Id);
         private bool _movieHasReviews;
@@ -47,6 +69,18 @@ namespace Ch9
             set => SetProperty(ref _movieStates, value);
         }
 
+        private bool _displayImageTypeSelector;        
+
+        /// <summary>
+        /// tracks the type of images displayed on the View. 
+        /// false : displays simple images, true : displays video thumbnails
+        /// </summary>
+        public bool DisplayImageTypeSelector
+        {
+            get => _displayImageTypeSelector;
+            set => SetProperty(ref _displayImageTypeSelector, value);
+        }
+
         public ICommand HomeCommand { get; private set; }
         public ICommand RecommendationsCommand { get; private set; }
         public ICommand ReviewsCommand { get; private set; }
@@ -54,6 +88,7 @@ namespace Ch9
         public ICommand AddToListCommand { get; private set; }
         public ICommand ToggleFavoriteCommand { get; private set; }
         public ICommand TapImageCommand { get; private set; }
+        public ICommand ChangeDisplayedImageTypeCommand { get; private set; }
 
         public MovieDetailPageViewModel(
             MovieDetailModel movie,
@@ -72,7 +107,6 @@ namespace Ch9
             _videoService = videoService;
             _pageService = pageService;
             _fetchGallery = UpdateImageCollection();
-            _fetchThumbnails = UpdateImageCollectionWithNakedVideoThumbnails();
             MovieHasReviews = false;
             MovieStatesFetchFinished = false;
             _reviewsPageViewModel = new ReviewsPageViewModel(this, _cachedSearchClient);
@@ -83,7 +117,30 @@ namespace Ch9
             ToggleWatchlistCommand = new Command(async () => await OnToggleWatchlistCommand());
             AddToListCommand = new Command(async () => await OnAddToListCommand());
             ToggleFavoriteCommand = new Command(async () => await OnToggleFavoriteCommand(), () => MovieStatesFetchFinished);
-            TapImageCommand = new Command(async () => await _pageService.PushLargeImagePage(Movie));
+            TapImageCommand = new Command(async () => await _pageService.PushLargeImagePage(this));
+            ChangeDisplayedImageTypeCommand = new Command(async () =>
+            {
+                GalleryIsBusy = true;
+                ((Command)ChangeDisplayedImageTypeCommand).ChangeCanExecute();
+                if (DisplayImageTypeSelector == false)
+                {
+                    await _fetchGallery;
+                    await UpdateThumbnailCollection();
+                    DisplayImages = null;
+                    DisplayImages = Movie.VideoThumbnails;
+                }
+                else
+                {
+                    DisplayImages = null;
+                    DisplayImages = Movie.MovieImages;
+                }
+                DisplayImageTypeSelector = !DisplayImageTypeSelector;
+                GalleryIsBusy = false;
+                ((Command)ChangeDisplayedImageTypeCommand).ChangeCanExecute();
+
+            }, () => !GalleryIsBusy);
+
+            DisplayImages = Movie.MovieImages;
         }
 
         public async Task Initialize()
@@ -97,6 +154,7 @@ namespace Ch9
         // starts a hot task to fetch and adjust gallery image paths as early as possible        
         private async Task UpdateImageCollection()
         {
+            GalleryIsBusy = true;
             try
             {
                 var moveImagesResponse = await _cachedSearchClient.GetMovieImages(Movie.Id, _settings.SearchLanguage, null, true);
@@ -108,19 +166,37 @@ namespace Ch9
                     _movieDetailModelConfigurator.SetGalleryImageSources(Movie);
             }
             catch { }
+            finally { GalleryIsBusy = false; }
         }
 
-        private async Task UpdateImageCollectionWithNakedVideoThumbnails()
+        public async Task UpdateImageCollectionWithNakedVideoThumbnails()
         {
             try
             {
                 List<ImageModel> videoThumbnails = await _videoService.GetVideoThumbnails(Movie.Id, 1, 1000, true);
                 await _fetchGallery;
                 foreach (var thumbnail in videoThumbnails)
-                    Movie.DisplayImages.Add(thumbnail);
+                    Movie.MovieImages.Add(thumbnail);
             }
             catch (Exception ex)
-            { await _pageService.DisplayAlert("Error", $"Could not load video thumbnails, service responded with: {ex.Message}", "Ok"); }        
+            { await _pageService.DisplayAlert("Error", $"Could not load video thumbnails, service responded with: {ex.Message}", "Ok"); }
+        }
+
+        public async Task UpdateThumbnailCollection()
+        {
+            if (Movie.VideoThumbnails != null)
+                return;
+
+            Movie.VideoThumbnails = new ObservableCollection<ImageModel>();
+
+            try
+            {
+                List<ImageModel> videoThumbnails = await _videoService.GetVideoThumbnails(Movie.Id, 1, 1000, true);
+                foreach (var thumbnail in videoThumbnails)
+                    Movie.VideoThumbnails.Add(thumbnail);
+            }
+            catch (Exception ex)
+            { await _pageService.DisplayAlert("Error", $"Could not load video thumbnails, service responded with: {ex.Message}", "Ok"); }
         }
 
         public async Task OnToggleWatchlistCommand()

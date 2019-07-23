@@ -12,8 +12,8 @@
 
     <ContentPage.Content>
         <pancardview:CardsView
-                        ItemsSource="{Binding Path=Movie.DisplayImages}"
-                        SelectedIndex="{Binding Path=Movie.GalleryIndex}"
+                        ItemsSource="{Binding DisplayImages}"
+                        SelectedIndex="{Binding GalleryIndex}"
                         >
             <pancardview:CardsView.ItemTemplate>
                 <DataTemplate>

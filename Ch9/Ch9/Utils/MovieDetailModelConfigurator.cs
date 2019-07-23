@@ -28,14 +28,14 @@ namespace Ch9.Utils
 
         public void SetGalleryImageSources(MovieDetailModel movie)
         {
-            if (movie.DisplayImages.Count < 2)
+            if (movie.MovieImages.Count < 2)
             {
                 if (movie.ImageDetailCollection.Backdrops?.Length > 0)
                 {
                     foreach (ImageModel backdrop in movie.ImageDetailCollection.Backdrops.Skip(1))
                     {
                         backdrop.FilePath = tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.BackdropSizes[1] + backdrop.FilePath;
-                        movie.DisplayImages.Add(backdrop);
+                        movie.MovieImages.Add(backdrop);
                     }
                 }
                 else if (movie.ImageDetailCollection.Posters?.Length > 0)
@@ -43,7 +43,7 @@ namespace Ch9.Utils
                     foreach (ImageModel poster in movie.ImageDetailCollection.Posters.Skip(1))
                     {
                         poster.FilePath = tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.PosterSizes.Last() + poster.FilePath;
-                        movie.DisplayImages.Add(poster);
+                        movie.MovieImages.Add(poster);
                     }
                 }
             }
@@ -54,19 +54,19 @@ namespace Ch9.Utils
             foreach (MovieDetailModel movie in movies)
             {
                 movie.ImgSmSrc = tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.PosterSizes[0] + movie.ImgPosterName;
-                if (movie.DisplayImages.Count == 0)
+                if (movie.MovieImages.Count == 0)
                 {
                     var firstDisplayImage = new ImageModel();
 
                     if (!string.IsNullOrEmpty(movie.ImgBackdropName))
                     {
                         firstDisplayImage.FilePath = tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.BackdropSizes[1] + movie.ImgBackdropName;
-                        movie.DisplayImages.Add(firstDisplayImage);
+                        movie.MovieImages.Add(firstDisplayImage);
                     }                       
                     else if (!string.IsNullOrEmpty(movie.ImgPosterName))
                     {
                         firstDisplayImage.FilePath = tmdbConfiguration.Images.BaseUrl + tmdbConfiguration.Images.PosterSizes.Last() + movie.ImgPosterName;
-                        movie.DisplayImages.Add(firstDisplayImage);
+                        movie.MovieImages.Add(firstDisplayImage);
                     }
                 }
             }

@@ -29,12 +29,12 @@
                 <StackLayout>
 
                     <pancardview:CardsView
-                        ItemsSource="{Binding Path=Movie.DisplayImages}"
-                        SelectedIndex="{Binding Path=Movie.GalleryIndex}"
+                        ItemsSource="{Binding DisplayImages}"
+                        SelectedIndex="{Binding GalleryIndex}"
                         IsCyclical="True"
                         >
 
-                        <pancardview:CardsView.ItemTemplate>
+                        <pancardview:CardsView.ItemTemplate>                            
                             <DataTemplate>
                                 <ContentView>
                                     <Frame 
@@ -59,18 +59,34 @@
                                                     CacheValidity="0"
                                                     CachingEnabled="False"
                                                 />
-                                            </Image.Source>
-                                        </Image>
-                                    </Frame>
+                                            </Image.Source>                                            
+                                        </Image>                                        
+                                    </Frame>                                    
                                 </ContentView>
                             </DataTemplate>
                         </pancardview:CardsView.ItemTemplate>
 
                     </pancardview:CardsView>
 
-                    <StackLayout Orientation="Horizontal" Spacing="0" HorizontalOptions="EndAndExpand">
-                        <Label Text="{Binding Path=Movie.GalleryIndex, StringFormat='{0}/'}" FontSize="Micro" HorizontalOptions="End"/>
-                        <Label Text="{Binding Path=Movie.DisplayImages.Count, StringFormat='{0} gallery images'}" FontSize="Micro" HorizontalOptions="End"/>
+                    <StackLayout Orientation="Horizontal" Spacing="0" HorizontalOptions="Fill">
+                        
+                        <Label 
+                            Margin="5,0,0,0"
+                            HorizontalOptions="Start"
+                            VerticalOptions="Start"
+                            TextColor="Purple"
+                            FontSize="Micro"
+                            Text="images"
+                            >
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Path=BindingContext.ChangeDisplayedImageTypeCommand, Source={x:Reference movieDetailPage}}"/>
+                            </Label.GestureRecognizers>
+
+                        </Label>
+                        <ActivityIndicator IsRunning="{Binding Path=BindingContext.GalleryIsBusy, Source={x:Reference movieDetailPage}}" HorizontalOptions="CenterAndExpand" VerticalOptions="Start" HeightRequest="10"/>
+
+                        <Label Text="{Binding GalleryIndex, StringFormat='{0}/'}" FontSize="Micro" HorizontalOptions="End" VerticalOptions="Start"/>
+                        <Label Text="{Binding Path=DisplayImages.Count, StringFormat='{0} gallery images'}" FontSize="Micro" HorizontalOptions="End" VerticalOptions="Start"/>
                     </StackLayout>
 
                     <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10">

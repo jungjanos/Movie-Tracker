@@ -8,19 +8,15 @@ namespace Ch9
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LargeImagePage : ContentPage
     {
-        public LargeImagePageViewModel ViewModel
+        public MovieDetailPageViewModel ViewModel
         {
-            get => BindingContext as LargeImagePageViewModel;
+            get => BindingContext as MovieDetailPageViewModel;
             set => BindingContext = value;
         }
 
-        public LargeImagePage(MovieDetailModel movie)
+        public LargeImagePage(MovieDetailPageViewModel viewModel)
         {
-            ViewModel = new LargeImagePageViewModel(
-                movie,
-                ((App)Application.Current).Settings,
-                new PageService(this)
-                );
+            ViewModel = viewModel;
 
             InitializeComponent();
         }

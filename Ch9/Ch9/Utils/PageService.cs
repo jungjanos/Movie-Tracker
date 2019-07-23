@@ -18,7 +18,7 @@ namespace Ch9.Utils
         Task PushAsync(MovieDetailModel movie);
         Task PushAsync(AddListPageViewModel viewModel);
         Task PushAsync(ReviewsPageViewModel reviewsPageViewModel);
-        Task PushLargeImagePage(MovieDetailModel movie);
+        Task PushLargeImagePage(MovieDetailPageViewModel viewModel);
         Task PushRecommendationsPageAsync(MovieDetailModel movie);        
     }
     
@@ -39,8 +39,8 @@ namespace Ch9.Utils
         public async Task PushRecommendationsPageAsync(MovieDetailModel movie) =>        
             await _currentPage.Navigation.PushAsync(new RecommendationsPage3(movie));
 
-        public async Task PushLargeImagePage(MovieDetailModel movie) =>
-            await _currentPage.Navigation.PushAsync(new LargeImagePage(movie));
+        public async Task PushLargeImagePage(MovieDetailPageViewModel viewModel) =>
+            await _currentPage.Navigation.PushAsync(new LargeImagePage(viewModel));
 
         public async Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons) =>        
              await _currentPage.DisplayActionSheet(title, cancel, destruction, buttons);        

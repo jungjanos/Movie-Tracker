@@ -45,7 +45,7 @@ namespace Ch9.Models
         [JsonProperty("vote_average")]
         public double VoteAverage { get; set; }
 
-        public string ImgSmSrc { get; set; }       
+        public string ImgSmSrc { get; set; }
 
         public int Year => ReleaseDate.HasValue ? ReleaseDate.Value.Year : -1;
 
@@ -56,9 +56,9 @@ namespace Ch9.Models
     public class MovieDetailModel : MovieModel, INotifyPropertyChanged
     {
         public MovieDetailModel()
-        {
-            _imageDetailCollection = new ImageDetailCollection();            
-            _displayImages = new ObservableCollection<ImageModel>();
+        {            
+            ImageDetailCollection = new ImageDetailCollection();
+            _movieImages = new ObservableCollection<ImageModel>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -95,7 +95,6 @@ namespace Ch9.Models
         [JsonProperty("imdb_id")]
         public string ImdbId { get; set; }
 
-
         private ProductionCountry[] _productionCountries;
         [JsonProperty("production_countries")]
         public ProductionCountry[] ProductionCountries
@@ -127,25 +126,20 @@ namespace Ch9.Models
             set => SetProperty(ref _tagline, value);
         }
 
-        private ImageDetailCollection _imageDetailCollection;
-        public ImageDetailCollection ImageDetailCollection
+        public ImageDetailCollection ImageDetailCollection { get; set; }
+
+        private ObservableCollection<ImageModel> _movieImages;
+        public ObservableCollection<ImageModel> MovieImages
         {
-            get => _imageDetailCollection;
-            set => SetProperty(ref _imageDetailCollection, value);
+            get => _movieImages;
+            set => SetProperty(ref _movieImages, value);
         }
 
-        private ObservableCollection<ImageModel> _displayImages;
-        public ObservableCollection<ImageModel> DisplayImages
+        private ObservableCollection<ImageModel> _videoThumbnails;
+        public ObservableCollection<ImageModel> VideoThumbnails
         {
-            get => _displayImages;
-            set => SetProperty(ref _displayImages, value);
-        }
-
-        private int _galleryIndex;
-        public int GalleryIndex
-        {
-            get => _galleryIndex;
-            set => SetProperty(ref _galleryIndex, value);
+            get => _videoThumbnails;
+            set => SetProperty(ref _videoThumbnails, value);
         }
     }
 
@@ -167,7 +161,6 @@ namespace Ch9.Models
         public ImageModel[] Posters { get; set; }
     }
 
-
     public class MovieModelComparer : IEqualityComparer<MovieModel>
     {
         public bool Equals(MovieModel x, MovieModel y)
@@ -178,7 +171,7 @@ namespace Ch9.Models
                 return x.Id == y.Id;
         }
 
-        public int GetHashCode(MovieModel obj) => obj.Id;        
+        public int GetHashCode(MovieModel obj) => obj.Id;
     }
 }
 

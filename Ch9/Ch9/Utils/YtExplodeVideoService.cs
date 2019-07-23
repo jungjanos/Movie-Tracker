@@ -79,6 +79,9 @@ namespace Ch9.Utils
             return resultingThumbnailsWithoutVideos;
         }
 
+        /// <summary>
+        /// deprecated, shouldnt be used: too slow, too much work, breakable
+        /// </summary>
         public async Task<List<ImageModel>> GetVideoThumbnailsWithVideoStreams(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
             List<ImageModel> resultingThumbnailsWithVideos = new List<ImageModel>();

@@ -34,6 +34,7 @@ namespace Ch9.Utils
             _settings = settings;
             _tmdbCachedSearchClient = tmdbCachedSearchClient;
 
+            // TODO : Raise bugreport: YoutubeExplode: currently can not handle the Android native HttpClient
             _youtubeClient = /*new YoutubeClient(_httpClient)*/ new YoutubeClient();
         }
 

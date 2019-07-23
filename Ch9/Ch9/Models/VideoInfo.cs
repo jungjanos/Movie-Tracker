@@ -8,54 +8,46 @@ namespace Ch9.Models
     {
         Task<List<ImageModel>> GetVideoThumbnails(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true);
 
-        /// <summary>
-        /// deprecated, shouldnt be used: too slow, too much work, breakable
-        /// </summary>
-        Task<List<ImageModel>> GetVideoThumbnailsWithVideoStreams(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true);
+        ///// <summary>
+        ///// deprecated, shouldnt be used: too slow, too much work, breakable
+        ///// </summary>
+        //Task<List<ImageModel>> GetVideoThumbnailsWithVideoStreams(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true);
     }
 
     public class VideoInfo
     {
-        public VideoInfo(
-            string id, 
+        public VideoInfo(             
             string author, 
             DateTimeOffset uploadDate, 
             string title, 
             string description, 
-            string thumbnailHighRes, 
-            string thumbnailMediumRes, 
             TimeSpan duration, 
-            IReadOnlyList<string> keywords, 
-            Statistics statistics, 
-            IList<VideoStreamInfo> videoStreams, 
-            IVideoQualitySelector qualitySelector)
-        {
-            Id = id;
+            //IReadOnlyList<string> keywords, 
+            Statistics statistics 
+            //IList<VideoStreamInfo> videoStreams, 
+            //IVideoQualitySelector qualitySelector
+            )
+        {            
             Author = author;
             UploadDate = uploadDate;
             Title = title;
             Description = description;
-            ThumbnailHighRes = new ImageModel { FilePath = thumbnailHighRes };
-            ThumbnailMediumRes = new ImageModel { FilePath = thumbnailMediumRes };
             Duration = duration;
-            Keywords = keywords;
-            VideoStreams = videoStreams;
-            QualitySelector = qualitySelector;
+            //Keywords = keywords;
+            //VideoStreams = videoStreams;
+            //QualitySelector = qualitySelector;
         }
-
-        public string Id { get; }
+        
         public string Author { get; }
         public DateTimeOffset UploadDate { get; }
         public string Title { get; }
         public string Description { get; }
-        public ImageModel ThumbnailHighRes { get; }
-        public ImageModel ThumbnailMediumRes { get; }
         public TimeSpan Duration { get; }
-        public IReadOnlyList<string> Keywords { get; }
+        //public IReadOnlyList<string> Keywords { get; }
         public Statistics Statistics { get; }
-        public IList<VideoStreamInfo> VideoStreams { get; set; }
-        public VideoStreamInfo SelectedStream => QualitySelector?.SelectVideoStream(VideoStreams);
-        public IVideoQualitySelector QualitySelector { get; }
+        //public IList<VideoStreamInfo> VideoStreams { get; set; }
+        //public VideoStreamInfo SelectedStream => QualitySelector?.SelectVideoStream(VideoStreams);
+        //public IVideoQualitySelector QualitySelector { get; }
     }
 
 
@@ -64,11 +56,12 @@ namespace Ch9.Models
     /// </summary>
     public class Statistics
     {
-        public Statistics(long viewCount, long likeCount, long dislikeCount)
+        public Statistics(long viewCount, long likeCount, long dislikeCount, double averageRating)
         {
             ViewCount = viewCount;
             LikeCount = likeCount;
             DislikeCount = dislikeCount;
+            AverageRating = averageRating;
         }
 
         public long ViewCount { get; }

@@ -50,11 +50,11 @@ namespace Ch9.Utils
 
                 foreach (TmdbVideoModel videoModel in movieVideosResponse.VideoModels)
                 {
-                    if (string.Equals(videoModel.Site, "YouTube", StringComparison.InvariantCultureIgnoreCase) 
-                        && string.Equals(videoModel.Type, "Trailer", StringComparison.InvariantCultureIgnoreCase) 
+                    if (string.Equals(videoModel.Site, "YouTube", StringComparison.InvariantCultureIgnoreCase)
+                        && string.Equals(videoModel.Type, "Trailer", StringComparison.InvariantCultureIgnoreCase)
                         && YoutubeClient.ValidateVideoId(videoModel.Key))
                     {
-                        Video video= null;
+                        Video video = null;
                         try
                         {
                             video = await _youtubeClient.GetVideoAsync(videoModel.Key);
@@ -69,6 +69,16 @@ namespace Ch9.Utils
                                 HasAttachedVideo = true,
                                 AttachedVideo = videoModel,
                             };
+
+                            videoModel.VideoInfo = new VideoInfo(
+                                  author: video.Author,
+                                  uploadDate: video.UploadDate,
+                                  title: video.Title,
+                                  description: video.Description,
+                                  duration: video.Duration,
+                                  statistics: GetStatistics(video)
+                                );
+
                             resultingThumbnailsWithoutVideos.Add(videoThumbnail);
                         }
                     }
@@ -80,83 +90,13 @@ namespace Ch9.Utils
             return resultingThumbnailsWithoutVideos;
         }
 
-        /// <summary>
-        /// deprecated, shouldnt be used: too slow, too much work, breakable
-        /// </summary>
-        public async Task<List<ImageModel>> GetVideoThumbnailsWithVideoStreams(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
-        {
-            List<ImageModel> resultingThumbnailsWithVideos = new List<ImageModel>();
-            GetMovieVideosResult movieVideosResponse = await _tmdbCachedSearchClient.GetMovieVideos(movieId, _settings.SearchLanguage, retryCount, delayMilliseconds, fromCache);
+        public Models.Statistics GetStatistics(Video video) =>  new Models.Statistics(
+                 viewCount: video.Statistics.ViewCount,
+                 likeCount: video.Statistics.LikeCount,
+                 dislikeCount: video.Statistics.DislikeCount,
+                 averageRating: video.Statistics.AverageRating
+                );
 
-            if (movieVideosResponse.HttpStatusCode.IsSuccessCode())
-            {
-                JsonConvert.PopulateObject(movieVideosResponse.Json, movieVideosResponse);
-
-                foreach (TmdbVideoModel videoModel in movieVideosResponse.VideoModels)
-                {
-                    if (videoModel.Site == "YouTube" && YoutubeClient.ValidateVideoId(videoModel.Key))
-                    {
-                        try
-                        {
-                            videoModel.VideoInfo = await GetVideoInfo(videoModel.Key);
-                        } catch { }
-                    }
-                }
-
-                foreach (TmdbVideoModel videoModel in movieVideosResponse.VideoModels)
-                {
-                    if (videoModel?.VideoInfo?.SelectedStream != null)
-                    {
-                        ImageModel videoThumbnail = new ImageModel
-                        {
-                            FilePath = videoModel.VideoInfo.ThumbnailMediumRes.FilePath,
-                            Iso = videoModel.Iso,
-                            AttachedVideo = videoModel,
-                        };
-                        resultingThumbnailsWithVideos.Add(videoThumbnail);
-                    }
-                }
-            }
-            else
-                throw new Exception($"TMDB server responded with {movieVideosResponse.HttpStatusCode}");
-
-            return resultingThumbnailsWithVideos;
-        }
-
-        private async Task<VideoInfo> GetVideoInfo(string id)
-        {
-            Video video = await _youtubeClient.GetVideoAsync(id);
-
-            MediaStreamInfoSet streamInfoSet = await _youtubeClient.GetVideoMediaStreamInfosAsync(id);
-
-            List<Models.VideoStreamInfo> videoStreams = new List<Models.VideoStreamInfo>();
-
-            foreach (MuxedStreamInfo stream in streamInfoSet.Muxed)
-            {
-                Models.VideoStreamInfo videoStreamInfo = new Models.VideoStreamInfo(
-                    streamUrl: stream.Url,
-                    quality: (Models.VideoQuality)stream.VideoQuality,
-                    qualityLabel: stream.VideoQualityLabel,
-                    height: stream.Resolution.Height,
-                    width: stream.Resolution.Width
-                    );
-
-                videoStreams.Add(videoStreamInfo);
-            }
-
-            return new VideoInfo(
-                id: id,
-                author: video.Author,
-                uploadDate: video.UploadDate,
-                title: video.Title,
-                description: video.Description,
-                thumbnailHighRes: video.Thumbnails.HighResUrl,
-                thumbnailMediumRes: video.Thumbnails.MediumResUrl,
-                video.Duration, video.Keywords,
-                new Models.Statistics(video.Statistics.ViewCount, video.Statistics.LikeCount, video.Statistics.DislikeCount),
-                videoStreams,
-                new YtVideoQualitySelector(_settings));
-        }
     }
 
     public class YtVideoQualitySelector : IVideoQualitySelector

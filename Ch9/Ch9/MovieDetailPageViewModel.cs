@@ -23,7 +23,6 @@ namespace Ch9
         private readonly IVideoService _videoService;
         private readonly IPageService _pageService;
         private readonly Task _fetchGallery;
-
         private readonly ReviewsPageViewModel _reviewsPageViewModel;
 
         private ObservableCollection<ImageModel> _displayImages;
@@ -69,7 +68,7 @@ namespace Ch9
             set => SetProperty(ref _movieStates, value);
         }
 
-        private bool _displayImageTypeSelector;        
+        private bool _displayImageTypeSelector;
 
         /// <summary>
         /// tracks the type of images displayed on the View. 
@@ -168,20 +167,6 @@ namespace Ch9
             catch { }
             finally { GalleryIsBusy = false; }
         }
-
-        public async Task UpdateImageCollectionWithNakedVideoThumbnails()
-        {
-            try
-            {
-                List<ImageModel> videoThumbnails = await _videoService.GetVideoThumbnails(Movie.Id, 1, 1000, true);
-                await _fetchGallery;
-                foreach (var thumbnail in videoThumbnails)
-                    Movie.MovieImages.Add(thumbnail);
-            }
-            catch (Exception ex)
-            { await _pageService.DisplayAlert("Error", $"Could not load video thumbnails, service responded with: {ex.Message}", "Ok"); }
-        }
-
         public async Task UpdateThumbnailCollection()
         {
             if (Movie.VideoThumbnails != null)

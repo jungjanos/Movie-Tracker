@@ -37,6 +37,48 @@ namespace Ch9.Utils
             _youtubeClient = /*new YoutubeClient(_httpClient)*/ new YoutubeClient();
         }
 
+        public async Task<List<ImageModel>> GetVideoThumbnails(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        {
+            List<ImageModel> resultingThumbnailsWithoutVideos = new List<ImageModel>();
+
+            GetMovieVideosResult movieVideosResponse = await _tmdbCachedSearchClient.GetMovieVideos(movieId, _settings.SearchLanguage, retryCount, delayMilliseconds, fromCache);
+
+            if (movieVideosResponse.HttpStatusCode.IsSuccessCode())
+            {
+                JsonConvert.PopulateObject(movieVideosResponse.Json, movieVideosResponse);
+
+                foreach (TmdbVideoModel videoModel in movieVideosResponse.VideoModels)
+                {
+                    if (string.Equals(videoModel.Site, "YouTube", StringComparison.InvariantCultureIgnoreCase) 
+                        && string.Equals(videoModel.Type, "Trailer", StringComparison.InvariantCultureIgnoreCase) 
+                        && YoutubeClient.ValidateVideoId(videoModel.Key))
+                    {
+                        Video video= null;
+                        try
+                        {
+                            video = await _youtubeClient.GetVideoAsync(videoModel.Key);
+                        }
+                        catch { }
+                        if (video != null)
+                        {
+                            ImageModel videoThumbnail = new ImageModel
+                            {
+                                FilePath = video.Thumbnails.MediumResUrl,
+                                Iso = videoModel.Iso,
+                                HasAttachedVideo = true,
+                                AttachedVideo = videoModel,
+                            };
+                            resultingThumbnailsWithoutVideos.Add(videoThumbnail);
+                        }
+                    }
+                }
+            }
+            else
+                throw new Exception($"TMDB server responded with {movieVideosResponse.HttpStatusCode}");
+
+            return resultingThumbnailsWithoutVideos;
+        }
+
         public async Task<List<ImageModel>> GetVideoThumbnailsWithVideoStreams(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
             List<ImageModel> resultingThumbnailsWithVideos = new List<ImageModel>();

@@ -25,7 +25,10 @@ namespace Ch9.Models
 
         [JsonProperty("width")]
         public int Width { get; set; }
-        public bool HasAttachedVideo => !string.IsNullOrEmpty(AttachedVideo?.VideoInfo?.SelectedStream?.StreamUrl);
+
+        //public bool HasAttachedVideo => !string.IsNullOrEmpty(AttachedVideo?.VideoInfo?.SelectedStream?.StreamUrl);
+
+        public bool HasAttachedVideo { get; set; }
 
         public TmdbVideoModel AttachedVideo { get; set; }
     }

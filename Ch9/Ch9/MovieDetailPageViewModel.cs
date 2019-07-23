@@ -72,7 +72,7 @@ namespace Ch9
             _videoService = videoService;
             _pageService = pageService;
             _fetchGallery = UpdateImageCollection();
-            _fetchThumbnails = UpdateImageCollectionWithVideoThumbnails();
+            _fetchThumbnails = UpdateImageCollectionWithNakedVideoThumbnails();
             MovieHasReviews = false;
             MovieStatesFetchFinished = false;
             _reviewsPageViewModel = new ReviewsPageViewModel(this, _cachedSearchClient);
@@ -110,19 +110,18 @@ namespace Ch9
             catch { }
         }
 
-        private async Task UpdateImageCollectionWithVideoThumbnails()
+        private async Task UpdateImageCollectionWithNakedVideoThumbnails()
         {
             try
             {
-                List<ImageModel> videoThumbnails = await _videoService.GetVideoThumbnailsWithVideoStreams(Movie.Id, 1, 1000, true);
+                List<ImageModel> videoThumbnails = await _videoService.GetVideoThumbnails(Movie.Id, 1, 1000, true);
                 await _fetchGallery;
                 foreach (var thumbnail in videoThumbnails)
                     Movie.DisplayImages.Add(thumbnail);
             }
             catch (Exception ex)
-            { await _pageService.DisplayAlert("Error", $"Could not load videos, service responded with: {ex.Message}", "Ok"); }
+            { await _pageService.DisplayAlert("Error", $"Could not load video thumbnails, service responded with: {ex.Message}", "Ok"); }        
         }
-
 
         public async Task OnToggleWatchlistCommand()
         {

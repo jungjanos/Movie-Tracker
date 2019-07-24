@@ -19,8 +19,4 @@
     <ProjectReference Include="..\Ch9\Ch9\Ch9.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="YtExplodeVideoServiceTests\" />
-  </ItemGroup>
-
 </Project>

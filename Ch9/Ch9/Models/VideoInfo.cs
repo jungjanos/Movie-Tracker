@@ -65,6 +65,7 @@ namespace Ch9.Models
     }
     /// <summary>
     /// Selects a video stream based on user setting for desired quality level
+    /// If no stream fulfills the selection criteria, "null" must be returned
     /// </summary>
     public interface IVideoStreamSelector
     {
@@ -114,6 +115,8 @@ namespace Ch9.Models
 
         public VideoStreamInfo SelectedVideoStream =>
             _videoStreamSelector.SelectVideoStream(_videoStreams);
+
+        public IEnumerable<VideoStreamInfo> VideoStreams => _videoStreams;
     }
 
 

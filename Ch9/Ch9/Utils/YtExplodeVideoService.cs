@@ -90,7 +90,7 @@ namespace Ch9.Utils
             return resultingThumbnailsWithoutVideos;
         }
 
-        private async Task PopulateWithStreams(TmdbVideoModel attachedVideo)
+        public async Task PopulateWithStreams(TmdbVideoModel attachedVideo)
         {            
             try
             {

@@ -41,7 +41,9 @@ namespace Ch9.Models
         public DateTimeOffset UploadDate { get; }
         public string Title { get; }
         public string Description { get; }
-        public TimeSpan Duration { get; }        
+        public TimeSpan Duration { get; }
+
+        public string DurationStr => $"{(int)Duration.TotalMinutes}:{Duration.Seconds:00}";
         public Statistics Statistics { get; }
     }
 

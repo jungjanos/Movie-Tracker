@@ -67,9 +67,7 @@ namespace Ch9
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+        { throw new NotImplementedException(); }
     }
 
     // converts IsFavorite property from AccountMovieStates object to 
@@ -158,6 +156,46 @@ namespace Ch9
             int index = (int)value + 1;
             return index > 0 ? index.ToString() + '/' : string.Empty;
         }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        { throw new NotImplementedException(); }
+    }
+
+    public class GalleryImageTypeToGlyphConverter : IValueConverter
+    {
+        private static readonly string _imagesGlyph = "\uf30f";
+        private static readonly string _youtubeGlyph = "\uf34f";
+        /// <summary>
+        /// Converts a boolean GalleryImage type to a UI Glyph code representing either a video or a photo album icon
+        /// </summary>
+        /// <param name="value">false: image gallery, true: video thumbnail gallery</param>
+        /// <returns>Glyph icon as string containing unicode glyph code </returns>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => (bool)value ? _youtubeGlyph : _imagesGlyph;
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        { throw new NotImplementedException(); }
+    }
+
+    public class GalleryImageCountToColorConverter : IValueConverter
+    {
+        private readonly static Color _containsElements = Color.Red;
+        private readonly static Color _empty = Color.DarkGray;
+
+        /// <summary>
+        /// Converts an integer GalleryImage Count property to a color value representing either a video or a photo album glyph icon's color
+        /// </summary>
+        /// <param name="value">Count property of the image collection</param>        
+        /// <param name="parameter"> :</param>        
+        /// <returns>Color value of the glyph icon</returns>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                return 0 < (int)value ? _containsElements : _empty;
+            } catch { }
+            return _empty;
+        }
+            
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         { throw new NotImplementedException(); }

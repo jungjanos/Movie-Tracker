@@ -20,6 +20,8 @@
             <local:MovieOnFavoriteListAccountMovieStatesToGlyphConverter  x:Key="movieOnFavoriteListAccountMovieStatesToGlyph"/>
             <local:MovieOnWathlistAccountMovieStatesToColorConverter x:Key="movieOnWathlistAccountMovieStatesToColor"/>
             <local:IntPlusOneToStringConverter x:Key="intPlusOneToString" />
+            <local:GalleryImageTypeToGlyphConverter x:Key="galleryImageTypeToGlyph" />
+            <local:GalleryImageCountToColorConverter x:Key="galleryImageCountToColor"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -30,9 +32,9 @@
                 <StackLayout>
 
                     <pancardview:CardsView
+                        x:Name="cardView"
                         ItemsSource="{Binding DisplayImages}"
                         SelectedIndex="{Binding GalleryIndex, Mode=OneWayToSource}"
-                        
                     >
 
                         <pancardview:CardsView.ItemTemplate>
@@ -67,33 +69,67 @@
 
                     </pancardview:CardsView>
 
-                    <StackLayout Orientation="Horizontal" Spacing="0" HorizontalOptions="Fill">
+                    <ActivityIndicator 
+                        IsRunning="{Binding Path=BindingContext.GalleryIsBusy, Source={x:Reference movieDetailPage}}" 
+                        IsVisible="{Binding Path=BindingContext.GalleryIsBusy, Source={x:Reference movieDetailPage}}"
+                        HorizontalOptions="CenterAndExpand" 
+                        VerticalOptions="Start" 
+                        HeightRequest="10"/>
+
+                    <Grid BackgroundColor="Transparent" Margin="5,0,5,0">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Path=BindingContext.ChangeDisplayedImageTypeCommand, Source={x:Reference movieDetailPage}}"/>
+                        </Grid.GestureRecognizers>
                         
-                        <Label 
-                            Margin="5,0,0,0"
-                            HorizontalOptions="Start"
-                            VerticalOptions="Start"
-                            TextColor="Purple"
-                            FontSize="Micro"
-                            Text="images"
-                            >
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Path=BindingContext.ChangeDisplayedImageTypeCommand, Source={x:Reference movieDetailPage}}"/>
-                            </Label.GestureRecognizers>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="13"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="5*"/>
+                        </Grid.ColumnDefinitions>
 
-                        </Label>
-                        <ActivityIndicator IsRunning="{Binding Path=BindingContext.GalleryIsBusy, Source={x:Reference movieDetailPage}}" HorizontalOptions="CenterAndExpand" VerticalOptions="Start" HeightRequest="10"/>
+                        <Image Grid.Row="0" Grid.Column="0" 
+                               BackgroundColor="Transparent"
+                               >
+                            <Image.Source>
+                                <FontImageSource 
+                                     Glyph="{Binding Path=DisplayImageTypeSelector, Converter={StaticResource Key=galleryImageTypeToGlyph}}"
+                                     FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                                     Color="{Binding Path=DisplayImages.Count, Converter={StaticResource Key=galleryImageCountToColor}}"/>
+                            </Image.Source>
+                        </Image>
 
-                        <Label Text="{Binding GalleryIndex, Converter={StaticResource Key=intPlusOneToString}}" 
+                        <StackLayout Grid.Row="0" Grid.Column="1"
+                                    Orientation="Horizontal" 
+                                     VerticalOptions="End"
+                                     Spacing="0">
+                            
+                            <Label Text="{Binding GalleryIndex, Converter={StaticResource Key=intPlusOneToString}}" 
                                FontSize="Micro" 
                                HorizontalOptions="End" 
                                VerticalOptions="Start"/>
-                        
-                        <Label Text="{Binding Path=DisplayImages.Count, StringFormat='{0} gallery images'}" 
+
+                            <Label Text="{Binding Path=DisplayImages.Count}" 
                                FontSize="Micro" 
                                HorizontalOptions="End" 
                                VerticalOptions="Start"/>
-                    </StackLayout>
+                        </StackLayout>
+
+                        <Label Grid.Row="0" Grid.Column="2"                               
+                               Text="{Binding Path=SelectedGalleryImage.AttachedVideo.Title}"
+                               FontSize="Micro"
+                               IsVisible="{Binding DisplayImageTypeSelector}" />
+
+                        <Label Grid.Row="0" Grid.Column="3"
+                               Text="{Binding Path=SelectedGalleryImage.AttachedVideo.VideoInfo.DurationStr}"
+                               FontSize="Micro"
+                               IsVisible="{Binding DisplayImageTypeSelector}" />
+
+
+                    </Grid>
 
                     <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10">
                         <Label Text="{Binding Path=Movie.Title}" FontSize="Large" LineBreakMode="WordWrap" HorizontalOptions="Start"/>

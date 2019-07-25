@@ -36,7 +36,11 @@ namespace Ch9
         public int GalleryIndex
         {
             get => _galleryIndex;
-            set => SetProperty(ref _galleryIndex, value);
+            set
+            {
+                if (SetProperty(ref _galleryIndex, value))
+                    OnPropertyChanged(nameof(SelectedGalleryImage));
+            }                
         }
 
         // TODO : Raise Bugreport : SelectedItem property on PanCardsView does not get properly updated when the ItemSource propery changes
@@ -156,12 +160,14 @@ namespace Ch9
                     await _fetchGallery;
                     await UpdateThumbnailCollection();
                     DisplayImages = null;                    
-                    DisplayImages = Movie.VideoThumbnails;                                        
+                    DisplayImages = Movie.VideoThumbnails;
+                    OnPropertyChanged(nameof(SelectedGalleryImage));
                 }
                 else
                 {
                     DisplayImages = null;                    
-                    DisplayImages = Movie.MovieImages;                    
+                    DisplayImages = Movie.MovieImages;
+                    OnPropertyChanged(nameof(SelectedGalleryImage));
                 }
                 DisplayImageTypeSelector = !DisplayImageTypeSelector;
                 GalleryIsBusy = false;

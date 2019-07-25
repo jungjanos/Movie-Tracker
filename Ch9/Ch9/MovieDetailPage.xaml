@@ -19,6 +19,7 @@
             <local:MovieOnFavoriteListAccountMovieStatesToColorConverter  x:Key="movieOnFavoriteListAccountMovieStatesToColor"/>
             <local:MovieOnFavoriteListAccountMovieStatesToGlyphConverter  x:Key="movieOnFavoriteListAccountMovieStatesToGlyph"/>
             <local:MovieOnWathlistAccountMovieStatesToColorConverter x:Key="movieOnWathlistAccountMovieStatesToColor"/>
+            <local:IntPlusOneToStringConverter x:Key="intPlusOneToString" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -48,9 +49,7 @@
                                         <Image Aspect="AspectFit">
 
                                             <Image.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding  Path=BindingContext.TapImageCommand, Source={x:Reference movieDetailPage}}" />
-                                                <!--<CommandParameter="{Binding  Path=BindingContext.CurrentImageIndex, Source={x:Reference movieDetailPage}}" />-->
-
+                                                <TapGestureRecognizer Command="{Binding  Path=BindingContext.TapImageCommand, Source={x:Reference movieDetailPage}}" />                                               
                                             </Image.GestureRecognizers>
 
                                             <Image.Source>
@@ -85,8 +84,15 @@
                         </Label>
                         <ActivityIndicator IsRunning="{Binding Path=BindingContext.GalleryIsBusy, Source={x:Reference movieDetailPage}}" HorizontalOptions="CenterAndExpand" VerticalOptions="Start" HeightRequest="10"/>
 
-                        <Label Text="{Binding GalleryIndex, StringFormat='{0}/'}" FontSize="Micro" HorizontalOptions="End" VerticalOptions="Start"/>
-                        <Label Text="{Binding Path=DisplayImages.Count, StringFormat='{0} gallery images'}" FontSize="Micro" HorizontalOptions="End" VerticalOptions="Start"/>
+                        <Label Text="{Binding GalleryIndex, Converter={StaticResource Key=intPlusOneToString}}" 
+                               FontSize="Micro" 
+                               HorizontalOptions="End" 
+                               VerticalOptions="Start"/>
+                        
+                        <Label Text="{Binding Path=DisplayImages.Count, StringFormat='{0} gallery images'}" 
+                               FontSize="Micro" 
+                               HorizontalOptions="End" 
+                               VerticalOptions="Start"/>
                     </StackLayout>
 
                     <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10">

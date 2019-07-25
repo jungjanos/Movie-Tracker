@@ -1,7 +1,9 @@
 ﻿using Ch9.ApiClient;
 using Ch9.Models;
 using Ch9.Utils;
+using FormsVideoLibrary;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -132,6 +134,15 @@ namespace Ch9
                 return _positiveColor;
             else return _negativeColor;
         }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        { throw new NotImplementedException(); }
+    }
+
+    public class UrlStringToVideoSourceConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+            VideoSource.FromUri(value as string);
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         { throw new NotImplementedException(); }

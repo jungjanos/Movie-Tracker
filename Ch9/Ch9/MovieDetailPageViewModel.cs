@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -39,6 +40,20 @@ namespace Ch9
             set => SetProperty(ref _galleryIndex, value);
         }
 
+        // TODO : Raise Bugreport : SelectedItem property on PanCardsView does not get properly updated when the ItemSource propery changes
+        // TODO: Raise bugreport : SelectedIndex property on PanCardsView does not get properly reset when the ItemSource propery changes
+        // TODO :  after the PanCardsView UI Control gets bugfixed, correct this one to a "proper set-get" property
+        public ImageModel SelectedGalleryImage
+        {
+            get
+            {
+                if (0 <= GalleryIndex)
+                    return DisplayImages[GalleryIndex];
+                else return null;
+            }
+        }
+
+
         private bool _galleryIsBusy;
         public bool GalleryIsBusy
         {
@@ -68,8 +83,7 @@ namespace Ch9
             set => SetProperty(ref _movieStates, value);
         }
 
-        private bool _displayImageTypeSelector;
-
+        private bool _displayImageTypeSelector;       
         /// <summary>
         /// tracks the type of images displayed on the View. 
         /// false : displays simple images, true : displays video thumbnails
@@ -79,6 +93,8 @@ namespace Ch9
             get => _displayImageTypeSelector;
             set => SetProperty(ref _displayImageTypeSelector, value);
         }
+
+        public string Str1 { get; set; } = "https://r4---sn-c0q7lns7.googlevideo.com/videoplayback?expire=1564010909&ei=PZU4XaubL4il-ga6tq6gAQ&ip=80.98.157.94&id=o-ADTAv_oGVYw58KOMhFwEq1RN2URcIZrqsn6CyYjAaY-O&itag=22&source=youtube&requiressl=yes&mm=31%2C26&mn=sn-c0q7lns7%2Csn-4g5e6nsy&ms=au%2Conr&mv=m&mvi=3&pl=16&initcwndbps=1581250&mime=video%2Fmp4&ratebypass=yes&dur=138.483&lmt=1544418834582859&mt=1563989197&fvip=4&c=WEB&txp=5535432&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cmime%2Cratebypass%2Cdur%2Clmt&sig=ALgxI2wwRQIhAO1XziEX9RkqaCvfUZ3ZXfv2gaKk82W9Jet2HglxVveSAiBomRyIMIYk089qL6MpGTi0_hNS2hk5jiRdpCGXA-xN-w%3D%3D&lsparams=mm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Cinitcwndbps&lsig=AHylml4wRQIgSPY48XfSZ4f9KougX6UrTtYlokW2Ydr1dY0uIBRYH2ECIQDoKuhBzMK13g9dgeDJeJzcXO7BHmmLpPEQc5Ug2NKUlQ%3D%3D";
 
         public ICommand HomeCommand { get; private set; }
         public ICommand RecommendationsCommand { get; private set; }
@@ -116,7 +132,22 @@ namespace Ch9
             ToggleWatchlistCommand = new Command(async () => await OnToggleWatchlistCommand());
             AddToListCommand = new Command(async () => await OnAddToListCommand());
             ToggleFavoriteCommand = new Command(async () => await OnToggleFavoriteCommand(), () => MovieStatesFetchFinished);
-            TapImageCommand = new Command(async () => await _pageService.PushLargeImagePage(this));
+            TapImageCommand = new Command(async () =>
+            {
+                if (GalleryIndex < 0)
+                    return;                
+
+                if (!SelectedGalleryImage.HasAttachedVideo)
+                    await _pageService.PushLargeImagePageAsync(this);
+                else 
+                {
+                    if (SelectedGalleryImage.AttachedVideo?.Streams == null)                    
+                        await _videoService.PopulateWithStreams(DisplayImages[GalleryIndex].AttachedVideo);
+                    
+                    if (SelectedGalleryImage.AttachedVideo?.Streams?.SelectedVideoStream != null)
+                        await _pageService.PushVideoPageAsync(this);
+                }
+            });
             ChangeDisplayedImageTypeCommand = new Command(async () =>
             {
                 GalleryIsBusy = true;
@@ -125,13 +156,13 @@ namespace Ch9
                 {
                     await _fetchGallery;
                     await UpdateThumbnailCollection();
-                    DisplayImages = null;
-                    DisplayImages = Movie.VideoThumbnails;
+                    DisplayImages = null;                    
+                    DisplayImages = Movie.VideoThumbnails;                                        
                 }
                 else
                 {
-                    DisplayImages = null;
-                    DisplayImages = Movie.MovieImages;
+                    DisplayImages = null;                    
+                    DisplayImages = Movie.MovieImages;                    
                 }
                 DisplayImageTypeSelector = !DisplayImageTypeSelector;
                 GalleryIsBusy = false;

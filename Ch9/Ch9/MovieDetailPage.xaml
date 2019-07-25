@@ -30,11 +30,11 @@
 
                     <pancardview:CardsView
                         ItemsSource="{Binding DisplayImages}"
-                        SelectedIndex="{Binding GalleryIndex}"
-                        IsCyclical="True"
-                        >
+                        SelectedIndex="{Binding GalleryIndex, Mode=OneWayToSource}"
+                        
+                    >
 
-                        <pancardview:CardsView.ItemTemplate>                            
+                        <pancardview:CardsView.ItemTemplate>
                             <DataTemplate>
                                 <ContentView>
                                     <Frame 

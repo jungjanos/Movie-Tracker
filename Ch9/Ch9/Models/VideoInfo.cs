@@ -7,6 +7,7 @@ namespace Ch9.Models
     public interface IVideoService
     {
         Task<List<ImageModel>> GetVideoThumbnails(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true);
+        Task PopulateWithStreams(TmdbVideoModel attachedVideo);
 
         ///// <summary>
         ///// deprecated, shouldnt be used: too slow, too much work, breakable

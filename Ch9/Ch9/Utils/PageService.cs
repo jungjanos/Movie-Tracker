@@ -18,8 +18,9 @@ namespace Ch9.Utils
         Task PushAsync(MovieDetailModel movie);
         Task PushAsync(AddListPageViewModel viewModel);
         Task PushAsync(ReviewsPageViewModel reviewsPageViewModel);
-        Task PushLargeImagePage(MovieDetailPageViewModel viewModel);
-        Task PushRecommendationsPageAsync(MovieDetailModel movie);        
+        Task PushLargeImagePageAsync(MovieDetailPageViewModel viewModel);
+        Task PushRecommendationsPageAsync(MovieDetailModel movie);
+        Task PushVideoPageAsync(MovieDetailPageViewModel viewModel);
     }
     
     public class PageService : IPageService
@@ -39,8 +40,11 @@ namespace Ch9.Utils
         public async Task PushRecommendationsPageAsync(MovieDetailModel movie) =>        
             await _currentPage.Navigation.PushAsync(new RecommendationsPage3(movie));
 
-        public async Task PushLargeImagePage(MovieDetailPageViewModel viewModel) =>
+        public async Task PushLargeImagePageAsync(MovieDetailPageViewModel viewModel) =>
             await _currentPage.Navigation.PushAsync(new LargeImagePage(viewModel));
+
+        public async Task PushVideoPageAsync(MovieDetailPageViewModel viewModel) =>
+            await _currentPage.Navigation.PushAsync(new VideoPage(viewModel));
 
         public async Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons) =>        
              await _currentPage.DisplayActionSheet(title, cancel, destruction, buttons);        
@@ -49,7 +53,7 @@ namespace Ch9.Utils
             await _currentPage.DisplayAlert(title, message, cancel);        
 
         public async Task<bool> DisplayAlert(string title, string message, string accept, string cancel) => 
-            await _currentPage.DisplayAlert(title, message, accept, cancel);        
+            await _currentPage.DisplayAlert(title, message, accept, cancel);
 
         public async Task<object> PopCurrent()
         {

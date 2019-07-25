@@ -28,6 +28,7 @@ namespace Ch9.Models
 
         //public bool HasAttachedVideo => !string.IsNullOrEmpty(AttachedVideo?.VideoInfo?.SelectedStream?.StreamUrl);
 
+            // TODO : this should probably be initialized with false
         public bool HasAttachedVideo { get; set; }
 
         public TmdbVideoModel AttachedVideo { get; set; }

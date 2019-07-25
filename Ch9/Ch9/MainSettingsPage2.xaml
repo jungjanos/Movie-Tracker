@@ -99,6 +99,24 @@
                     </ViewCell>
                 </TableSection>
 
+                <TableSection Title="Video settings">
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal" Padding="13,0" HorizontalOptions="FillAndExpand">
+                            <Label Text="Preferred quality " VerticalTextAlignment="Center"/>
+
+                            <Picker x:Name="videoQualityPicker"                                      
+                                    SelectedItem="{Binding Path=Settings.PlaybackQualityStr}"                                    
+                                    HorizontalOptions="EndAndExpand"
+                                    WidthRequest="50">
+                                <Picker.Items>
+                                    <x:String>Low</x:String>
+                                    <x:String>High</x:String>                                    
+                                </Picker.Items>
+                            </Picker>
+                        </StackLayout>
+                    </ViewCell>
+                </TableSection>
+                
             </TableRoot>
         </TableView>
     </ContentPage.Content>

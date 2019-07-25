@@ -130,12 +130,12 @@ namespace Ch9.Utils
 
             var orderedByQuality = streams.OrderByDescending(s => s.Quality);
 
-            if (_settings.PlaybackQuality == VideoPlaybackQuality.HighQ)
+            if (_settings.PlaybackQuality == VideoPlaybackQuality.High)
             {
                 result = orderedByQuality.Where(s => s.Quality > Models.VideoQuality.Medium480).LastOrDefault();
                 result = result ?? orderedByQuality.FirstOrDefault();
             }
-            else if (_settings.PlaybackQuality == VideoPlaybackQuality.LowQ)
+            else if (_settings.PlaybackQuality == VideoPlaybackQuality.Low)
             {
                 result = orderedByQuality.Where(s => s.Quality < Models.VideoQuality.High720).FirstOrDefault();
                 result = result ?? orderedByQuality.LastOrDefault();

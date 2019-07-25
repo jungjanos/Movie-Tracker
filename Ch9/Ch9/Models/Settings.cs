@@ -1,5 +1,4 @@
-﻿using Ch9.Utils;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -10,7 +9,7 @@ namespace Ch9.Models
     // Default values are currently hard coded
     public class Settings : ISettings
     {
-        private readonly IDictionary<string, object> _appDictionary;
+        private readonly IDictionary<string, object> _appDictionary;        
 
         public Settings(IDictionary<string, object> settingsDictionary = null)
         {
@@ -144,12 +143,36 @@ namespace Ch9.Models
             }
             set => _appDictionary[nameof(MovieIdsOnActiveList)] = JsonConvert.SerializeObject(value);
         }
+        
+        public string PlaybackQualityStr
+        {
+            get
+            {
+                if (_appDictionary.ContainsKey(nameof(PlaybackQualityStr)))
+                    return _appDictionary[nameof(PlaybackQualityStr)] as string;
+                else
+                    return (VideoPlaybackQuality.Low).ToString();
+            }
+            set => _appDictionary[nameof(PlaybackQualityStr)] = value;
+        }
 
-        public VideoPlaybackQuality PlaybackQuality => VideoPlaybackQuality.HighQ;
+        public VideoPlaybackQuality PlaybackQuality
+        {
+            get
+            {
+                if (PlaybackQualityStr == VideoPlaybackQuality.Low.ToString())
+                    return VideoPlaybackQuality.Low;
+                else if (PlaybackQualityStr == VideoPlaybackQuality.High.ToString())
+                    return VideoPlaybackQuality.High;
+
+                else return VideoPlaybackQuality.Low;
+            }
+        }
+            
 
         public async Task SavePropertiesAsync()
         {
             await Application.Current.SavePropertiesAsync();
         }
-    }    
+    }
 }

@@ -31,7 +31,7 @@ namespace Ch9.Test.YtExplodeVideoServiceTests
             _output = output;
             var settingsKeyValues = new Dictionary<string, object>();
             settingsKeyValues[nameof(Settings.SearchLanguage)] = _englishLanguage;
-            settingsKeyValues[nameof(Settings.PlaybackQuality)] = VideoPlaybackQuality.HighQ.ToString();
+            settingsKeyValues[nameof(Settings.PlaybackQuality)] = VideoPlaybackQuality.High.ToString();
 
             var settings = new Settings(settingsKeyValues);
             var tmdbCachedSearchClient = new TmdbCachedSearchClient(new TmdbNetworkClient(settings, new System.Net.Http.HttpClient()));

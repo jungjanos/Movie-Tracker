@@ -190,7 +190,7 @@ namespace Ch9.Models
     }
     public enum VideoPlaybackQuality
     {
-        LowQ = 0,
-        HighQ = 1
+        Low = 0,
+        High = 1
     }
 }

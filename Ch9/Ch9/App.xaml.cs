@@ -39,7 +39,7 @@ namespace Ch9
             var tmdbConfigurationCache = new TmdbConfigurationCache(CachedSearchClient, Properties, this);
             TmdbConfiguration = await tmdbConfigurationCache.FetchTmdbConfiguration();
 
-            MovieDetailModelConfigurator = new MovieDetailModelConfigurator(TmdbConfiguration, MovieGenreSettings);
+            MovieDetailModelConfigurator = new MovieDetailModelConfigurator(Settings, TmdbConfiguration, MovieGenreSettings);
             UsersMovieListsService2 = new UsersMovieListsService2(Settings, CachedSearchClient, MovieDetailModelConfigurator);
             MainPage = new NavigationPage(new MainTabbedPage());
         }

@@ -144,6 +144,10 @@ namespace Ch9.Models
             set => _appDictionary[nameof(MovieIdsOnActiveList)] = JsonConvert.SerializeObject(value);
         }
         
+        /// <summary>
+        /// Xamarin forms does not allow to bind Enum source to Picker, only string is allowed
+        /// this translates between Picker, Application Dictionary and VideoPlaybackQuality enum
+        /// </summary>
         public string PlaybackQualityStr
         {
             get
@@ -168,7 +172,17 @@ namespace Ch9.Models
                 else return VideoPlaybackQuality.Low;
             }
         }
-            
+
+        public bool UseHttpsForImages
+        {
+            get
+            {
+                if (_appDictionary.ContainsKey(nameof(UseHttpsForImages)))
+                    return (bool)_appDictionary[nameof(UseHttpsForImages)];
+                else return false;
+            }
+            set => _appDictionary[nameof(UseHttpsForImages)] = value;
+        }
 
         public async Task SavePropertiesAsync()
         {

@@ -17,6 +17,9 @@ namespace Ch9.Models
         int? ActiveMovieListId { get; set; }
         int[] MovieIdsOnActiveList { get; set; }
         VideoPlaybackQuality PlaybackQuality { get; }
+        bool UseHttpsForImages { get; set; }
+        string PlaybackQualityStr { get; set; }
+
         Task SavePropertiesAsync();
     }
 }

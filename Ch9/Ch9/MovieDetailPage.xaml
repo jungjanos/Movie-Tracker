@@ -67,7 +67,7 @@
                             </DataTemplate>
                         </pancardview:CardsView.ItemTemplate>
 
-                    </pancardview:CardsView>
+                    </pancardview:CardsView>                    
 
                     <ActivityIndicator 
                         IsRunning="{Binding Path=BindingContext.GalleryIsBusy, Source={x:Reference movieDetailPage}}" 

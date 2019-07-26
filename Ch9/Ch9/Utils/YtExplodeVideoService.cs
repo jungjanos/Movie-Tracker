@@ -45,8 +45,7 @@ namespace Ch9.Utils
             GetMovieVideosResult movieVideosResponse = await _tmdbCachedSearchClient.GetMovieVideos(movieId, _settings.SearchLanguage, retryCount, delayMilliseconds, fromCache);
 
             if (movieVideosResponse.HttpStatusCode.IsSuccessCode())
-            {
-                //JsonConvert.PopulateObject(movieVideosResponse.Json, movieVideosResponse);
+            {                
                 var tmdbVideosModel = JsonConvert.DeserializeObject<GetMovieVideosModel>(movieVideosResponse.Json);
 
                 foreach (TmdbVideoModel videoModel in tmdbVideosModel.VideoModels)

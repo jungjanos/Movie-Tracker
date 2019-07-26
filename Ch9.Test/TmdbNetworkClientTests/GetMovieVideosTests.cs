@@ -71,10 +71,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenCalledOnMovieWithVideos_ReturnsCollection()
         {
             var result = await _client.GetMovieVideos(_movie, language: null);
-
-            //JsonConvert.PopulateObject(result.Json, result);
             var tmdbVideosModel = JsonConvert.DeserializeObject<GetMovieVideosModel>(result.Json);
-
 
             PrintVideoDetails(tmdbVideosModel.VideoModels);
 
@@ -86,9 +83,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenCalledWithLanguageOption_ReturnsResultsInSpecificLanguage()
         {
             var language = "hu";
-            var result = await _client.GetMovieVideos(_movie, language: language);
-
-            //JsonConvert.PopulateObject(result.Json, result);
+            var result = await _client.GetMovieVideos(_movie, language: language);            
             var tmdbVideosModel = JsonConvert.DeserializeObject<GetMovieVideosModel>(result.Json);
 
             PrintVideoDetails(tmdbVideosModel.VideoModels);
@@ -103,9 +98,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenNoVideosInRequestedLanguage_DoesNotFallBack_ReturnsEmpty()
         {
             var language = "hu";
-            var result = await _client.GetMovieVideos(_movieWithout_hu_Videos, language: language);
-
-            //JsonConvert.PopulateObject(result.Json, result);
+            var result = await _client.GetMovieVideos(_movieWithout_hu_Videos, language: language);            
             var tmdbVideosModel = JsonConvert.DeserializeObject<GetMovieVideosModel>(result.Json);
 
             PrintVideoDetails(tmdbVideosModel.VideoModels);            

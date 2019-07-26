@@ -89,8 +89,9 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="5*"/>
-                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="9*"/>
+                            
                         </Grid.ColumnDefinitions>
 
                         <Image Grid.Row="0" Grid.Column="0" 
@@ -120,17 +121,18 @@
                                HorizontalOptions="End" 
                                VerticalOptions="Start"/>
                         </StackLayout>
-
-                        <Label Grid.Row="0" Grid.Column="2"                               
-                               Text="{Binding Path=SelectedGalleryImage.AttachedVideo.Title}"
+                        
+                        <Label Grid.Row="0" Grid.Column="2"
+                               BindingContext="{x:Reference cardView}"
+                               Text="{Binding Path=SelectedItem.AttachedVideo.VideoInfo.DurationStr, StringFormat='{0},'}"
                                FontSize="Micro"
                                IsVisible="{Binding DisplayImageTypeSelector}" />
 
                         <Label Grid.Row="0" Grid.Column="3"
-                               Text="{Binding Path=SelectedGalleryImage.AttachedVideo.VideoInfo.DurationStr}"
+                               BindingContext="{x:Reference cardView}"
+                               Text="{Binding Path=SelectedItem.AttachedVideo.Title}"
                                FontSize="Micro"
                                IsVisible="{Binding DisplayImageTypeSelector}" />
-
 
                     </Grid>
 

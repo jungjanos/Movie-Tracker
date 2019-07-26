@@ -70,12 +70,15 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // happy path
         public async Task WhenCalledOnMovieWithVideos_ReturnsCollection()
         {
-            var result = await _client.GetMovieVideos(_movie, language: null);                        
+            var result = await _client.GetMovieVideos(_movie, language: null);
 
-            JsonConvert.PopulateObject(result.Json, result);
-            PrintVideoDetails(result);
+            //JsonConvert.PopulateObject(result.Json, result);
+            var tmdbVideosModel = JsonConvert.DeserializeObject<GetMovieVideosModel>(result.Json);
 
-            Assert.True(result.VideoModels.Count > 0);
+
+            PrintVideoDetails(tmdbVideosModel.VideoModels);
+
+            Assert.True(tmdbVideosModel.VideoModels.Count > 0);
         }
 
         [Fact]
@@ -85,10 +88,12 @@ namespace Ch9.Test.TmdbNetworkClientTests
             var language = "hu";
             var result = await _client.GetMovieVideos(_movie, language: language);
 
-            JsonConvert.PopulateObject(result.Json, result);
-            PrintVideoDetails(result);
+            //JsonConvert.PopulateObject(result.Json, result);
+            var tmdbVideosModel = JsonConvert.DeserializeObject<GetMovieVideosModel>(result.Json);
 
-            bool resultsInCorrectLanguage =  result.VideoModels.All(videoDetail => videoDetail.Iso == language);
+            PrintVideoDetails(tmdbVideosModel.VideoModels);
+
+            bool resultsInCorrectLanguage =  tmdbVideosModel.VideoModels.All(videoDetail => videoDetail.Iso == language);
 
             Assert.True(resultsInCorrectLanguage);
         }
@@ -100,17 +105,19 @@ namespace Ch9.Test.TmdbNetworkClientTests
             var language = "hu";
             var result = await _client.GetMovieVideos(_movieWithout_hu_Videos, language: language);
 
-            JsonConvert.PopulateObject(result.Json, result);
-            PrintVideoDetails(result);            
+            //JsonConvert.PopulateObject(result.Json, result);
+            var tmdbVideosModel = JsonConvert.DeserializeObject<GetMovieVideosModel>(result.Json);
 
-            Assert.True(result.VideoModels.Count == 0);
+            PrintVideoDetails(tmdbVideosModel.VideoModels);            
+
+            Assert.True(tmdbVideosModel.VideoModels.Count == 0);
         }
 
-        private void PrintVideoDetails(GetMovieVideosResult movieVideos)
+        private void PrintVideoDetails(List<TmdbVideoModel> movieVideos)
         {
-            _output.WriteLine($"{movieVideos.VideoModels.Count} videos contained");
+            _output.WriteLine($"{movieVideos.Count} videos contained");
 
-            foreach (var videoDetail in movieVideos.VideoModels)
+            foreach (var videoDetail in movieVideos)
             {
                 _output.WriteLine("=======================");
                 _output.WriteLine($"Movie id: {videoDetail.Id}");

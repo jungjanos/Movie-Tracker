@@ -46,9 +46,10 @@ namespace Ch9.Utils
 
             if (movieVideosResponse.HttpStatusCode.IsSuccessCode())
             {
-                JsonConvert.PopulateObject(movieVideosResponse.Json, movieVideosResponse);
+                //JsonConvert.PopulateObject(movieVideosResponse.Json, movieVideosResponse);
+                var tmdbVideosModel = JsonConvert.DeserializeObject<GetMovieVideosModel>(movieVideosResponse.Json);
 
-                foreach (TmdbVideoModel videoModel in movieVideosResponse.VideoModels)
+                foreach (TmdbVideoModel videoModel in tmdbVideosModel.VideoModels)
                 {
                     if (string.Equals(videoModel.Site, "YouTube", StringComparison.InvariantCultureIgnoreCase)
                         && string.Equals(videoModel.Type, "Trailer", StringComparison.InvariantCultureIgnoreCase)

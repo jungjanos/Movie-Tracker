@@ -13,7 +13,7 @@ namespace Ch9.ApiClient
 
         public TmdbCachedSearchClient(ITmdbNetworkClient theMovieDatabaseClient)
         {
-            _cache = new CachingService();
+            _cache = new CachingService(); 
             _networkClient = theMovieDatabaseClient;
         }
 

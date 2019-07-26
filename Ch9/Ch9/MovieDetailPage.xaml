@@ -35,6 +35,7 @@
                         x:Name="cardView"
                         ItemsSource="{Binding DisplayImages}"
                         SelectedIndex="{Binding GalleryIndex, Mode=OneWayToSource}"
+                        SelectedItem="{Binding SelectedGalleryImage, Mode=OneWayToSource}"
                         IsCyclical="True"
                     >
 
@@ -108,7 +109,8 @@
                                      VerticalOptions="End"
                                      Spacing="0">
                             
-                            <Label Text="{Binding GalleryIndex, Converter={StaticResource Key=intPlusOneToString}}" 
+                            <Label BindingContext="{x:Reference cardView}"
+                               Text="{Binding SelectedIndex, Converter={StaticResource Key=intPlusOneToString}}" 
                                FontSize="Micro" 
                                HorizontalOptions="End" 
                                VerticalOptions="Start"/>

@@ -13,7 +13,7 @@
     <ContentPage.Content>
         <pancardview:CardsView
                         ItemsSource="{Binding DisplayImages}"
-                        SelectedIndex="{Binding GalleryIndex}"
+                        SelectedIndex="{Binding SelectedGalleryImage}"
                         >
             <pancardview:CardsView.ItemTemplate>
                 <DataTemplate>

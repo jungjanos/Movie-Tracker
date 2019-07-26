@@ -135,6 +135,10 @@
                     </Grid>
 
                     <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10">
+                        <StackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Path=BindingContext.ChangeDisplayedImageTypeCommand, Source={x:Reference movieDetailPage}}"/>
+                        </StackLayout.GestureRecognizers>
+                        
                         <Label Text="{Binding Path=Movie.Title}" FontSize="Large" LineBreakMode="WordWrap" HorizontalOptions="Start"/>
                         <Label Text="{Binding Path=Movie.Year}" FontSize="Large" LineBreakMode="NoWrap" MaxLines="1"  HorizontalOptions="EndAndExpand" MinimumWidthRequest="150"/>
                     </StackLayout>

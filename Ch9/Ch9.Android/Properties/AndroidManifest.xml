@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="Ch9.Android" android:versionName="0.99-beta" android:installLocation="auto" android:versionCode="28">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="Ch9.Android" android:versionName="0.99.01-beta" android:installLocation="auto" android:versionCode="29">
 	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="28" />
 	<application android:label="Ch9.Android"></application>
 </manifest>

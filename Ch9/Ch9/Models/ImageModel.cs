@@ -24,11 +24,9 @@ namespace Ch9.Models
         public int VoteCount { get; set; }
 
         [JsonProperty("width")]
-        public int Width { get; set; }
+        public int Width { get; set; }        
 
-        //public bool HasAttachedVideo => !string.IsNullOrEmpty(AttachedVideo?.VideoInfo?.SelectedStream?.StreamUrl);
-
-            // TODO : this should probably be initialized with false
+        // TODO : this should probably be initialized with false
         public bool HasAttachedVideo { get; set; }
 
         public TmdbVideoModel AttachedVideo { get; set; }

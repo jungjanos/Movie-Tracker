@@ -163,6 +163,21 @@ namespace Ch9.ApiClient
             return result;
         }
 
+        public async Task<GetMovieCreditsResult> GetMovieCredits(int id, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        {
+            string key = "$" + nameof(GetMovieCredits) + id;
+
+            if (!fromCache)
+                _cache.Remove(key);
+
+            var result = _cache.Get<GetMovieCreditsResult>(key) ?? await _networkClient.GetMovieCredits(id, retryCount, delayMilliseconds);
+
+            if (result.HttpStatusCode.IsSuccessCode())
+                _cache.Add(key, result);
+
+            return result;
+        }
+
         public async Task<GetMovieVideosResult> GetMovieVideos(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
             string key = "$" + nameof(GetMovieVideos) + id + (language ?? "");

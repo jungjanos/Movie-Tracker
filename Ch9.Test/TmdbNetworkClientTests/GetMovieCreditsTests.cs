@@ -70,8 +70,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
                 _output.WriteLine($"Id: {actor.Id}");
                 _output.WriteLine($"Name: {actor.Name}");
                 _output.WriteLine($"Order: {actor.Order}");
-                _output.WriteLine($"Profile path: {actor.ProfilePath}");
-                //_output.WriteLine($"{}");
+                _output.WriteLine($"Profile path: {actor.ProfilePath}");                
 
                 _output.WriteLine("-------------");
             }
@@ -93,7 +92,6 @@ namespace Ch9.Test.TmdbNetworkClientTests
                 _output.WriteLine($"Job: {member.Job}");
                 _output.WriteLine($"Name: {member.Name}");
                 _output.WriteLine($"Profile path: {member.ProfilePath}");
-                //_output.WriteLine($"{}");
 
                 _output.WriteLine("-------------");
             }

@@ -304,6 +304,20 @@ namespace Ch9.ApiClient
             return result;
         }
 
+        public async Task<GetMovieCreditsResult> GetMovieCredits(int id, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id + CREDITS_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            GetMovieCreditsResult result = await GetResponse<GetMovieCreditsResult>(retryCount, delayMilliseconds, requestUri);
+
+            return result;
+        }
+
         public async Task<CreateRequestTokenResult> CreateRequestToken(int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + REQUEST_TOKEN_Path;

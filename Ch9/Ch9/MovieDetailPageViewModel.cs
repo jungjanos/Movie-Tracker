@@ -23,7 +23,8 @@ namespace Ch9
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IVideoService _videoService;
         private readonly IPageService _pageService;
-        private readonly Task _fetchGallery;        
+        private readonly Task _fetchGallery;
+        private MovieCreditsModel _credits;
 
         private ObservableCollection<ImageModel> _displayImages;
         public ObservableCollection<ImageModel> DisplayImages
@@ -57,7 +58,7 @@ namespace Ch9
             set => SetProperty(ref _movieStates, value);
         }
 
-        private bool _displayImageTypeSelector;       
+        private bool _displayImageTypeSelector;
         /// <summary>
         /// tracks the type of images displayed on the View. 
         /// false : displays simple images, true : displays video thumbnails
@@ -66,7 +67,21 @@ namespace Ch9
         {
             get => _displayImageTypeSelector;
             set => SetProperty(ref _displayImageTypeSelector, value);
-        }        
+        }
+
+        private bool _showCredits;
+        public bool ShowCredits
+        {
+            get => _showCredits;
+            set => SetProperty(ref _showCredits, value);
+        }
+
+        private List<IStaffMember> _staffs;
+        public List<IStaffMember> Staffs
+        {
+            get => _staffs;
+            set => SetProperty(ref _staffs, value);
+        }
 
         public ICommand HomeCommand { get; private set; }
         public ICommand RecommendationsCommand { get; private set; }
@@ -76,6 +91,7 @@ namespace Ch9
         public ICommand ToggleFavoriteCommand { get; private set; }
         public ICommand TapImageCommand { get; private set; }
         public ICommand ChangeDisplayedImageTypeCommand { get; private set; }
+        public ICommand ToggleCreditsCommand { get; private set; }
 
         public MovieDetailPageViewModel(
             MovieDetailModel movie,
@@ -93,8 +109,8 @@ namespace Ch9
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _videoService = videoService;
             _pageService = pageService;
-            _fetchGallery = UpdateImageCollection();            
-            MovieStatesFetchFinished = false;            
+            _fetchGallery = UpdateImageCollection();
+            MovieStatesFetchFinished = false;
 
             HomeCommand = new Command(async () => await _pageService.PopToRootAsync());
             ReviewsCommand = new Command(async () => await _pageService.PushReviewsPage(this));
@@ -105,15 +121,15 @@ namespace Ch9
             TapImageCommand = new Command(async () =>
             {
                 if (SelectedGalleryImage == null)
-                    return;                
+                    return;
 
                 if (!SelectedGalleryImage.HasAttachedVideo)
                     await _pageService.PushLargeImagePageAsync(this);
-                else 
+                else
                 {
-                    if (SelectedGalleryImage.AttachedVideo?.Streams == null)                    
+                    if (SelectedGalleryImage.AttachedVideo?.Streams == null)
                         await _videoService.PopulateWithStreams(SelectedGalleryImage.AttachedVideo);
-                    
+
                     if (SelectedGalleryImage.AttachedVideo?.Streams?.SelectedVideoStream != null)
                         await _pageService.PushVideoPageAsync(this);
                 }
@@ -126,13 +142,13 @@ namespace Ch9
                 {
                     await _fetchGallery;
                     await UpdateThumbnailCollection();
-                    DisplayImages = null;                    
-                    DisplayImages = Movie.VideoThumbnails;                    
+                    DisplayImages = null;
+                    DisplayImages = Movie.VideoThumbnails;
                 }
                 else
                 {
-                    DisplayImages = null;                    
-                    DisplayImages = Movie.MovieImages;                    
+                    DisplayImages = null;
+                    DisplayImages = Movie.MovieImages;
                 }
                 DisplayImageTypeSelector = !DisplayImageTypeSelector;
                 SelectedGalleryImage = DisplayImages.FirstOrDefault();
@@ -140,6 +156,13 @@ namespace Ch9
                 ((Command)ChangeDisplayedImageTypeCommand).ChangeCanExecute();
 
             }, () => !GalleryIsBusy);
+
+            ToggleCreditsCommand = new Command(async () =>
+            {
+                if (!ShowCredits)
+                    await FetchCredits();
+                ShowCredits = !_showCredits;
+            });
 
             DisplayImages = Movie.MovieImages;
         }
@@ -270,10 +293,43 @@ namespace Ch9
             }
         }
 
+        // TODO :  try-catch{}
+        private async Task FetchCredits(int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            if (_credits == null)
+            {
+                GetMovieCreditsResult response = await _cachedSearchClient.GetMovieCredits(Movie.Id, retryCount, delayMilliseconds, fromCache: true);
+                if (response.HttpStatusCode.IsSuccessCode())
+                {
+                    _credits = JsonConvert.DeserializeObject<MovieCreditsModel>(response.Json);
+
+                    List<IStaffMember> staffMembers = new List<IStaffMember>();
+
+                    var director = _credits.Crew.FirstOrDefault(c => c.Role == "Director");
+                    var writer = _credits.Crew.FirstOrDefault(c => (c.Role == "Writer") || (c.Department == "Writing"));
+
+                    var firstFiveActors = _credits.Cast.Take(5);
+
+                    if (director != null)
+                        staffMembers.Add(director);
+
+                    if (writer != null)
+                        staffMembers.Add(writer);
+
+                    foreach (var actor in firstFiveActors)                    
+                        staffMembers.Add(actor);
+
+                    _movieDetailModelConfigurator.SetProfileImageSrc(staffMembers);                        
+
+                    Staffs = staffMembers;
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void RefreshCanExecutes()
-        {            
+        {
             ((Command)ToggleFavoriteCommand).ChangeCanExecute();
         }
 

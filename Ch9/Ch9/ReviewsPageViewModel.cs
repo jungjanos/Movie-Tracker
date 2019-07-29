@@ -70,7 +70,7 @@ namespace Ch9
         public async Task InitializeVM()
         {
             if (! (ParentPageViewModel.Movie.Reviews?.Count > 0))
-                await RefreshReviews(retryCount: 1, delayMilliseconds: 1000, fromCache: true);
+                await RefreshReviews(retryCount: 1, delayMilliseconds: 1000, fromCache: false);
         }
 
         private async Task RefreshReviews(int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = false )

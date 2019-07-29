@@ -22,6 +22,7 @@
             <local:IntPlusOneToStringConverter x:Key="intPlusOneToString" />
             <local:GalleryImageTypeToGlyphConverter x:Key="galleryImageTypeToGlyph" />
             <local:GalleryImageCountToColorConverter x:Key="galleryImageCountToColor"/>
+            <local:ShowCreditsToColorConverter x:Key="showCreditsToColor"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -149,12 +150,73 @@
                     <Label Text="{Binding Path=Movie.Tagline}"/>
                     <controls:ExtendedLabel Text="{Binding Path=Movie.Overview}" TextColor="DarkGray" FontSize="Medium" Visual="Material" JustifyText="True"/>
 
-                    <StackLayout Orientation="Horizontal">
+                    <StackLayout 
+                        Orientation="Horizontal"
+                        HorizontalOptions="FillAndExpand"
+                        >
+                        
                         <Label Text="{Binding Path= Movie.Duration, StringFormat='{0} mins'}" IsVisible="{Binding Path=Movie.Duration.HasValue}"/>
                         <Label Text="{Binding Path= Movie.VoteAverage, StringFormat='Score: {0:F1}'}"/>
                         <Label Text="{Binding Path= Movie.VoteCount, StringFormat='Votes: {0}'}"/>
                         <Label Text="{Binding Path= Movie.Countries}"/>
+
+                        <Image BackgroundColor="Transparent"
+                               HorizontalOptions="EndAndExpand"
+                               Margin="0,0,10,0">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ToggleCreditsCommand}"/>
+                            </Image.GestureRecognizers>
+                            <Image.Source>
+                                <FontImageSource 
+                                     Glyph="&#xf47c;"
+                                     FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                                     Color="{Binding ShowCredits, Converter={StaticResource Key=showCreditsToColor}}"
+                                     Size="20"/>
+                                
+                            </Image.Source>
+                        </Image>
                     </StackLayout>
+
+                    <Label Text="Top billed cast" FontSize="Medium" IsVisible="{Binding ShowCredits}"/>
+                    <CollectionView 
+                        ItemsSource="{Binding Staffs}"
+                        IsVisible="{Binding ShowCredits}"                        
+                        >                        
+                        
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="5" ColumnSpacing="20">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <Image Grid.RowSpan="2"
+                                        Source="{Binding ProfilePath}"                                        
+                                        Aspect="AspectFill"
+                                        HeightRequest="60" 
+                                        WidthRequest="60" />
+                                    
+                                    <Label Grid.Column="1" 
+                                        Text="{Binding Name}" 
+                                           
+                                        FontAttributes="Bold" />
+                                    
+                                    <Label Grid.Row="1"
+                                        Grid.Column="1" 
+                                        Text="{Binding Role}"
+                                        
+                                        FontAttributes="Italic" 
+                                        VerticalOptions="Center" />
+
+                                </Grid>                                
+                            </DataTemplate>                            
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
 
                 </StackLayout>
             </ScrollView>

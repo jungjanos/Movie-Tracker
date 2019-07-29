@@ -61,21 +61,6 @@ namespace Ch9.Models
             _movieImages = new ObservableCollection<ImageModel>();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(storage, value))
-                return false;
-
-            storage = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-
         private int _budget;
         [JsonProperty("budget")]
         public int Budget
@@ -147,6 +132,21 @@ namespace Ch9.Models
         {
             get => _reviews;
             set => SetProperty(ref _reviews, value);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(storage, value))
+                return false;
+
+            storage = value;
+            OnPropertyChanged(propertyName);
+            return true;
         }
     }
 

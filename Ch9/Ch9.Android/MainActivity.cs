@@ -1,13 +1,9 @@
-﻿using System;
-
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
 using System.Net.Http;
 using PanCardView.Droid;
+using Xamarin.Forms;
 
 namespace Ch9.Droid
 {
@@ -20,6 +16,7 @@ namespace Ch9.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(savedInstanceState);
+            Forms.SetFlags("CollectionView_Experimental");
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
             CardsViewRenderer.Preserve();

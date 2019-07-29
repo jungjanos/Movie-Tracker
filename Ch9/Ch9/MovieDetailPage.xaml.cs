@@ -194,8 +194,18 @@ namespace Ch9
                 return 0 < (int)value ? _containsElements : _empty;
             } catch { }
             return _empty;
-        }
-            
+        }            
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        { throw new NotImplementedException(); }
+    }
+
+    public class ShowCreditsToColorConverter : IValueConverter
+    {
+        public readonly Color _expanded = Color.Green;
+        public readonly Color _closed = Color.Blue;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => (bool)value ? _expanded : _closed;
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         { throw new NotImplementedException(); }

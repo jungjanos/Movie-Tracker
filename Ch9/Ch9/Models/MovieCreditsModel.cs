@@ -14,7 +14,19 @@ namespace Ch9.Models
         public MovieCrewModel[] Crew { get; set; }
     }
 
-    public class MovieCastModel
+    /// <summary>
+    /// interface to display diferent types of staff (crew and actors) on the UI     
+    /// </summary>
+    public interface IStaffMember
+    {        
+        string Name { get; }
+        string Role { get; }
+        string ProfilePath { get; set; }
+        int Id { get; }
+        string CreditId { get; }
+    }
+
+    public class MovieCastModel : IStaffMember
     {
         [JsonProperty("cast_id")]
         public int CastId { get; set; }
@@ -39,9 +51,11 @@ namespace Ch9.Models
 
         [JsonProperty("profile_path")]
         public string ProfilePath { get; set; }
+
+        public string Role => Character;
     }
 
-    public class MovieCrewModel
+    public class MovieCrewModel : IStaffMember
     {
         [JsonProperty("credit_id")]
         public string CreditId { get; set; }
@@ -63,5 +77,7 @@ namespace Ch9.Models
 
         [JsonProperty("profile_path")]
         public string ProfilePath { get; set; }
+
+        public string Role => Job;
     }
 }

@@ -84,5 +84,31 @@ namespace Ch9.Utils
             collection.TotalPages = 0;
             collection.TotalResults = 0;
         }
+
+        /// <summary>
+        /// Extracts from server response the Director, Writer and top billed Actors to display on the UI
+        /// </summary>        
+        /// <param name="numberOfActors">Number of actors to display after the director and writer</param>
+        /// <returns>Collection to be bound to the UI</returns>
+        public static List<IStaffMember> ExtractStaffToDisplay(this MovieCreditsModel credits, int numberOfActors = 5)
+        {
+            List<IStaffMember> staffMembers = new List<IStaffMember>();
+
+            var director = credits.Crew.FirstOrDefault(c => c.Role == "Director");
+            var writer = credits.Crew.FirstOrDefault(c => (c.Role == "Writer") || (c.Department == "Writing"));
+
+            var firstCreditedActors = credits.Cast.Take(numberOfActors);
+
+            if (director != null)
+                staffMembers.Add(director);
+
+            if (writer != null)
+                staffMembers.Add(writer);
+
+            foreach (var actor in firstCreditedActors)
+                staffMembers.Add(actor);
+
+            return staffMembers;
+        }
     }
 }

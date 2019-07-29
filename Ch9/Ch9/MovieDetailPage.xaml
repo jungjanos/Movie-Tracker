@@ -180,7 +180,8 @@
                     <Label Text="Top billed cast" FontSize="Medium" IsVisible="{Binding ShowCredits}"/>
                     <CollectionView 
                         ItemsSource="{Binding Staffs}"
-                        IsVisible="{Binding ShowCredits}"                        
+                        IsVisible="{Binding ShowCredits}"
+                        
                         >                        
                         
                         <CollectionView.ItemTemplate>

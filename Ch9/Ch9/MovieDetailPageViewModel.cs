@@ -281,7 +281,6 @@ namespace Ch9
             { await _pageService.DisplayAlert("Error", $"Could not change favorite state, service responded with: {ex.Message}", "Ok"); }
         }
 
-        // TODO : property should set be with awaiter from UI thread!!!
         private async Task FetchMovieStates()
         {
             GetAccountMovieStatesResult response = await _cachedSearchClient.GetAccountMovieStates(Movie.Id, guestSessionId: null, retryCount: 3, delayMilliseconds: 1000);
@@ -293,36 +292,25 @@ namespace Ch9
             }
         }
 
-        // TODO :  try-catch{}
         private async Task FetchCredits(int retryCount = 0, int delayMilliseconds = 1000)
         {
             if (_credits == null)
             {
-                GetMovieCreditsResult response = await _cachedSearchClient.GetMovieCredits(Movie.Id, retryCount, delayMilliseconds, fromCache: true);
-                if (response.HttpStatusCode.IsSuccessCode())
+                try
                 {
-                    _credits = JsonConvert.DeserializeObject<MovieCreditsModel>(response.Json);
+                    GetMovieCreditsResult response = await _cachedSearchClient.GetMovieCredits(Movie.Id, retryCount, delayMilliseconds, fromCache: true);
+                    if (response.HttpStatusCode.IsSuccessCode())
+                    {
+                        _credits = JsonConvert.DeserializeObject<MovieCreditsModel>(response.Json);
+                        var staffMembers = _credits.ExtractStaffToDisplay(7);
+                        _movieDetailModelConfigurator.SetProfileImageSrc(staffMembers);
 
-                    List<IStaffMember> staffMembers = new List<IStaffMember>();
-
-                    var director = _credits.Crew.FirstOrDefault(c => c.Role == "Director");
-                    var writer = _credits.Crew.FirstOrDefault(c => (c.Role == "Writer") || (c.Department == "Writing"));
-
-                    var firstFiveActors = _credits.Cast.Take(5);
-
-                    if (director != null)
-                        staffMembers.Add(director);
-
-                    if (writer != null)
-                        staffMembers.Add(writer);
-
-                    foreach (var actor in firstFiveActors)                    
-                        staffMembers.Add(actor);
-
-                    _movieDetailModelConfigurator.SetProfileImageSrc(staffMembers);                        
-
-                    Staffs = staffMembers;
+                        Staffs = staffMembers;
+                    }
+                    else
+                        await _pageService.DisplayAlert("Error", $"Could not fetch credits information, service responded with: {response.HttpStatusCode}", "Ok");
                 }
+                catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not fetch credits information, the following exception was thrown: {ex.Message}", "Ok"); }
             }
         }
 

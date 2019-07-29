@@ -4,7 +4,6 @@ using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -16,25 +15,22 @@ namespace Ch9
     public class ReviewsPageViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-
-        private readonly MovieDetailPageViewModel _parent;
+        
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
-        private readonly Task _initializer;
+        private readonly IPageService _pageService;
 
-        public IPageService PageService { get; set; }
         public ICommand DeleteRatingCommand { get; private set; }
         public ICommand SetRatingCommand { get; private set; }
         public ICommand DecreaseRatingCommand { get; private set; }
         public ICommand IncreaseRatingCommand { get; private set; }
+        public MovieDetailPageViewModel ParentPageViewModel { get; set; }
 
-        public MovieDetailModel Movie { get; private set; }
-        public ObservableCollection<Review> Reviews { get; private set; }
-        public ReviewsPageViewModel(MovieDetailPageViewModel parent, ITmdbCachedSearchClient tmdbCachedSearchClient)
-        {
-            _parent = parent;
+        public ReviewsPageViewModel(MovieDetailPageViewModel parent, ITmdbCachedSearchClient tmdbCachedSearchClient, IPageService pageService)
+        {            
             _cachedSearchClient = tmdbCachedSearchClient;
+            _pageService = pageService;
 
-            Movie = _parent.Movie;
+            ParentPageViewModel = parent;
 
             DeleteRatingCommand = new Command(async () => await OnDeleteRatingCommand());
             SetRatingCommand = new Command<string>(async str => {
@@ -43,44 +39,48 @@ namespace Ch9
             });
             DecreaseRatingCommand = new Command(async () => await OnDecreaseRatingCommand());
             IncreaseRatingCommand = new Command(async () => await OnIncreaseRatingCommand());
-
-            Reviews = new ObservableCollection<Review>();
-            _initializer = Initialize();
         }
 
-        // This stupidity is required bc of the way the Server 
-        // side wraps the rating into a variably type Json object.
+        // This stupidity is required bc the way the Server 
+        // side wraps the rating into a variably typed Json object.
         public decimal? UsersRating
         {
-            get => _parent.MovieStates.Rating?.Value;
+            get => ParentPageViewModel.MovieStates.Rating?.Value;
             set
             {
                 if (value == UsersRating)
                     return;
 
                 if (value == null)
-                    _parent.MovieStates.Rating = null;
+                    ParentPageViewModel.MovieStates.Rating = null;
                 else
                 {
-                    if (_parent.MovieStates.Rating == null)
-                        _parent.MovieStates.Rating = new RatingWrapper();
+                    if (ParentPageViewModel.MovieStates.Rating == null)
+                        ParentPageViewModel.MovieStates.Rating = new RatingWrapper();
 
-                    _parent.MovieStates.Rating.Value = value.Value;
+                    ParentPageViewModel.MovieStates.Rating.Value = value.Value;
                 }
                 OnPropertyChanged(nameof(UsersRating));
             }
         }
 
-        private async Task Initialize()
+        /// <summary>
+        /// Must be called when the View is appearing. Initializes the Review collection if not already done or if it is empty.
+        /// </summary>        
+        public async Task InitializeVM()
         {
-            var getReviewResult = await _cachedSearchClient.GetMovieReviews(Movie.Id, language: null, page: null, retryCount: 3, delayMilliseconds: 1000, fromCache: false);
+            if (! (ParentPageViewModel.Movie.Reviews?.Count > 0))
+                await RefreshReviews(retryCount: 1, delayMilliseconds: 1000, fromCache: true);
+        }
+
+        private async Task RefreshReviews(int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = false )
+        {
+            var getReviewResult = await _cachedSearchClient.GetMovieReviews(ParentPageViewModel.Movie.Id, language: null, page: null, retryCount: retryCount, delayMilliseconds: delayMilliseconds, fromCache: fromCache);
             if (getReviewResult.HttpStatusCode.IsSuccessCode())
             {
                 GetReviewsModel reviewsWrapper = JsonConvert.DeserializeObject<GetReviewsModel>(getReviewResult.Json);
 
-                foreach (Review review in reviewsWrapper.Reviews)
-                    Reviews.Add(review);
-                _parent.MovieHasReviews = Reviews.Count > 0;
+                ParentPageViewModel.Movie.Reviews = new List<Review>(reviewsWrapper.Reviews);
             }
         }
 
@@ -121,12 +121,12 @@ namespace Ch9
         {
             if (UsersRating == null)
                 return;
-            var response = await _cachedSearchClient.DeleteMovieRating(Movie.Id, null, retryCount: 3, delayMilliseconds: 1000);
+            var response = await _cachedSearchClient.DeleteMovieRating(ParentPageViewModel.Movie.Id, null, retryCount: 3, delayMilliseconds: 1000);
 
             if (response.HttpStatusCode.IsSuccessCode())
                 UsersRating = null;
             else
-                await PageService.DisplayAlert("Error", $"Could not delete your rating, server reponse: {response.HttpStatusCode}", "Ok");
+                await _pageService.DisplayAlert("Error", $"Could not delete your rating, server reponse: {response.HttpStatusCode}", "Ok");
         }
 
         private async Task<bool> UpdateRating(decimal targetRating)
@@ -134,10 +134,10 @@ namespace Ch9
             int enumValue = (int)(targetRating * 2);
             Rating rating = (Rating)enumValue;
 
-            var response = await _cachedSearchClient.RateMovie(rating, Movie.Id, null, 3, 1000);
+            var response = await _cachedSearchClient.RateMovie(rating, ParentPageViewModel.Movie.Id, null, 3, 1000);
 
             if (!response.HttpStatusCode.IsSuccessCode())
-                await PageService.DisplayAlert("Error", $"Could not update your rating, server response: {response.HttpStatusCode}", "Ok");
+                await _pageService.DisplayAlert("Error", $"Could not update your rating, server response: {response.HttpStatusCode}", "Ok");
 
             return response.HttpStatusCode.IsSuccessCode();
         }

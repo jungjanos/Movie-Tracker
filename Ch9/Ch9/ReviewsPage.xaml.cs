@@ -20,11 +20,21 @@ namespace Ch9
             set => BindingContext = value;
         }
 
-        public ReviewsPage(ReviewsPageViewModel viewModel)
+        public ReviewsPage(MovieDetailPageViewModel parentViewModel)
         {
-            viewModel.PageService = new PageService(this);
-            ViewModel = viewModel;
+            ViewModel = new ReviewsPageViewModel(
+                parentViewModel,
+                ((App)Application.Current).CachedSearchClient,
+                new PageService(this)
+                );
+
             InitializeComponent();
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await ViewModel.InitializeVM();
         }
     }
 

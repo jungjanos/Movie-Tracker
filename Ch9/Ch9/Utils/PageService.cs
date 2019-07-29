@@ -16,10 +16,10 @@ namespace Ch9.Utils
         Task<object> PopCurrent();
         Task PopToRootAsync();
         Task PushAsync(MovieDetailModel movie);
-        Task PushAsync(AddListPageViewModel viewModel);
-        Task PushAsync(ReviewsPageViewModel reviewsPageViewModel);
+        Task PushAsync(AddListPageViewModel viewModel);        
         Task PushLargeImagePageAsync(MovieDetailPageViewModel viewModel);
         Task PushRecommendationsPageAsync(MovieDetailModel movie);
+        Task PushReviewsPage(MovieDetailPageViewModel model);
         Task PushVideoPageAsync(MovieDetailPageViewModel viewModel);
     }
     
@@ -29,10 +29,10 @@ namespace Ch9.Utils
 
         public PageService(Page current) => _currentPage = current;        
 
-        public async Task PushAsync(MovieDetailModel movie) => await _currentPage.Navigation.PushAsync(new MovieDetailPage(movie));        
-
-        public async Task PushAsync(ReviewsPageViewModel reviewsPageViewModel) =>            
-            await _currentPage.Navigation.PushAsync(new ReviewsPage(reviewsPageViewModel));       
+        public async Task PushAsync(MovieDetailModel movie) => await _currentPage.Navigation.PushAsync(new MovieDetailPage(movie));
+        
+        public async Task PushReviewsPage(MovieDetailPageViewModel model) =>
+            await _currentPage.Navigation.PushAsync(new ReviewsPage(model));
 
         public async Task PushAsync(AddListPageViewModel viewModel) =>        
             await _currentPage.Navigation.PushAsync(new AddListPage(viewModel));

@@ -141,6 +141,13 @@ namespace Ch9.Models
             get => _videoThumbnails;
             set => SetProperty(ref _videoThumbnails, value);
         }
+
+        private List<Review> _reviews;
+        public List<Review> Reviews
+        {
+            get => _reviews;
+            set => SetProperty(ref _reviews, value);
+        }
     }
 
     public class ProductionCountry

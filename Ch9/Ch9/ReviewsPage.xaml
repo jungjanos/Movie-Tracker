@@ -18,26 +18,22 @@
 
     <ContentPage.Content>
         <StackLayout Orientation="Vertical" Padding="5,0,5,5">
-            <Label Text="v0.2"/>
+            
             <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10">
-                <Label Text="{Binding Path=Movie.Title}" FontSize="Large" LineBreakMode="WordWrap" HorizontalOptions="Start"/>
-                <Label Text="{Binding Path=Movie.Year}" FontSize="Large" LineBreakMode="NoWrap" MaxLines="1"  HorizontalOptions="EndAndExpand" MinimumWidthRequest="150"/>
+                <Label Text="{Binding Path=ParentPageViewModel.Movie.Title}" FontSize="Large" LineBreakMode="WordWrap" HorizontalOptions="Start"/>
+                <Label Text="{Binding Path=ParentPageViewModel.Movie.Year}" FontSize="Large" LineBreakMode="NoWrap" MaxLines="1"  HorizontalOptions="EndAndExpand" MinimumWidthRequest="150"/>
             </StackLayout>
 
-            <Label Text="{Binding Path=Movie.Tagline}"/>
-            <Label Text="{Binding Path=Movie.Genre}" FontSize="Small"/>
+            <Label Text="{Binding Path=ParentPageViewModel.Movie.Tagline}"/>
+            <Label Text="{Binding Path=ParentPageViewModel.Movie.Genre}" FontSize="Small"/>
 
 
             <StackLayout Orientation="Horizontal">
-                <Label Text="{Binding Path= Movie.Duration, StringFormat='{0} mins'}" IsVisible="{Binding Path=Movie.Duration.HasValue}"/>
-                <Label Text="{Binding Path= Movie.VoteAverage, StringFormat='Score: {0:F1}'}"/>
-                <Label Text="{Binding Path= Movie.VoteCount, StringFormat='Votes: {0}'}"/>
-                <Label Text="{Binding Path= Movie.Countries}"/>
+                <Label Text="{Binding Path= ParentPageViewModel.Movie.Duration, StringFormat='{0} mins'}" IsVisible="{Binding Path=ParentPageViewModel.Movie.Duration.HasValue}"/>
+                <Label Text="{Binding Path= ParentPageViewModel.Movie.VoteAverage, StringFormat='Score: {0:F1}'}"/>
+                <Label Text="{Binding Path= ParentPageViewModel.Movie.VoteCount, StringFormat='Votes: {0}'}"/>
+                <Label Text="{Binding Path= ParentPageViewModel.Movie.Countries}"/>
             </StackLayout>
-
-
-
-
 
             <Grid HorizontalOptions="Start"
                   ColumnSpacing="0"
@@ -60,8 +56,6 @@
                         FontSize="Small" TextColor="Black"
                         VerticalTextAlignment="Center"/>
 
-
-
                 <Button Grid.Row="0" Grid.Column="1"
                         Command="{Binding DeleteRatingCommand}"
                         IsVisible="{Binding UsersRating, Converter={StaticResource Key=nullableDecimalRatingToHasRating}}"
@@ -74,6 +68,7 @@
                          Color="DarkGray"/>
                     </Button.ImageSource>
                 </Button>
+                
                 <Button Grid.Row="0" Grid.Column="2"
                         Command="{Binding SetRatingCommand}"
                         CommandParameter="2"
@@ -170,10 +165,11 @@
 
 
 
-            <Label Text="Reviews" FontSize="Large" TextColor="DarkGray"/>
+            <!--<Label Text="Reviews" FontSize="Large" TextColor="DarkGray"/>-->
+            <Label Text="{Binding Path=ParentPageViewModel.Movie.Reviews.Count , StringFormat='Reviews ({0})'}" FontSize="Large" TextColor="DarkGray"/>
 
             <ListView HasUnevenRows="True"
-                      ItemsSource="{Binding Reviews}"
+                      ItemsSource="{Binding Path=ParentPageViewModel.Movie.Reviews}"
                       SeparatorVisibility="Default"
                       SeparatorColor="DarkSeaGreen">
 

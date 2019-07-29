@@ -23,8 +23,7 @@ namespace Ch9
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IVideoService _videoService;
         private readonly IPageService _pageService;
-        private readonly Task _fetchGallery;
-        private readonly ReviewsPageViewModel _reviewsPageViewModel;
+        private readonly Task _fetchGallery;        
 
         private ObservableCollection<ImageModel> _displayImages;
         public ObservableCollection<ImageModel> DisplayImages
@@ -43,12 +42,6 @@ namespace Ch9
         }
 
         public bool? MovieIsAlreadyOnActiveList => _movieListsService2.CustomListsService.CheckIfMovieIsOnActiveList(Movie.Id);
-        private bool _movieHasReviews;
-        public bool MovieHasReviews
-        {
-            get => _movieHasReviews;
-            set => SetProperty(ref _movieHasReviews, value);
-        }
 
         private bool _movieStatesFetchFinished;
         public bool MovieStatesFetchFinished
@@ -100,13 +93,11 @@ namespace Ch9
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _videoService = videoService;
             _pageService = pageService;
-            _fetchGallery = UpdateImageCollection();
-            MovieHasReviews = false;
-            MovieStatesFetchFinished = false;
-            _reviewsPageViewModel = new ReviewsPageViewModel(this, _cachedSearchClient);
+            _fetchGallery = UpdateImageCollection();            
+            MovieStatesFetchFinished = false;            
 
             HomeCommand = new Command(async () => await _pageService.PopToRootAsync());
-            ReviewsCommand = new Command(async () => await _pageService.PushAsync(_reviewsPageViewModel), () => MovieStatesFetchFinished);
+            ReviewsCommand = new Command(async () => await _pageService.PushReviewsPage(this));
             RecommendationsCommand = new Command(async () => await _pageService.PushRecommendationsPageAsync(Movie));
             ToggleWatchlistCommand = new Command(async () => await OnToggleWatchlistCommand());
             AddToListCommand = new Command(async () => await OnAddToListCommand());
@@ -282,8 +273,7 @@ namespace Ch9
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void RefreshCanExecutes()
-        {
-            ((Command)ReviewsCommand).ChangeCanExecute();
+        {            
             ((Command)ToggleFavoriteCommand).ChangeCanExecute();
         }
 

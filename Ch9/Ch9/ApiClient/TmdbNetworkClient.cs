@@ -318,6 +318,23 @@ namespace Ch9.ApiClient
             return result;
         }
 
+        public async Task<GetPersonsMovieCreditsResult> GetPersonsMovieCredits(int personId, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            string baseUrl = BASE_Address + BASE_Path + PERSON_Path + "/" + personId + MOVIE_CREDITS_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+
+            if (!string.IsNullOrEmpty(language))
+                query.Add(LANGUAGE_Key, language);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            GetPersonsMovieCreditsResult result = await GetResponse<GetPersonsMovieCreditsResult>(retryCount, delayMilliseconds, requestUri);
+
+            return result;
+        }
+
         public async Task<CreateRequestTokenResult> CreateRequestToken(int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + REQUEST_TOKEN_Path;

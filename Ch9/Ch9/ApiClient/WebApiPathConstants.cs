@@ -41,6 +41,7 @@ namespace Ch9.ApiClient
         public const string REMOVE_MEDIA_Path = "/remove_item";
         public const string REVIEWS_Path = "/reviews";
         public const string CREDITS_Path = "/credits";
+        public const string MOVIE_CREDITS_Path = "/movie_credits";
         public const string WATCHLIST_Path = "/watchlist";
         public const string FAVORITE_Path = "/favorite";
         public const string MOVIES_Path = "/movies";
@@ -48,5 +49,6 @@ namespace Ch9.ApiClient
         public const string RATING_Path = "/rating";
         public const string ACCOUNT_STATES_Path = "/account_states";
         public const string YEAR_Key = "year";
+        public const string PERSON_Path = "/person";
     }
 }

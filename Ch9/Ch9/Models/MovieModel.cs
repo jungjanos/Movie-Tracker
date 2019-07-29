@@ -49,8 +49,7 @@ namespace Ch9.Models
 
         public int Year => ReleaseDate.HasValue ? ReleaseDate.Value.Year : -1;
 
-        public string Genre
-        { get; set; }
+        public string Genre { get; set; }
     }
 
     public class MovieDetailModel : MovieModel, INotifyPropertyChanged

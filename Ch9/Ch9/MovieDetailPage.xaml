@@ -198,7 +198,7 @@
                                     
                                     <Image Grid.RowSpan="2"
                                         Source="{Binding ProfilePath}"                                        
-                                        Aspect="AspectFill"
+                                        Aspect="AspectFit"
                                         HeightRequest="60" 
                                         WidthRequest="60" />
                                     

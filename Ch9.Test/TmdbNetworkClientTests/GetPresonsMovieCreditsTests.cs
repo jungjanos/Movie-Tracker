@@ -71,6 +71,22 @@ namespace Ch9.Test.TmdbNetworkClientTests
             Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.NotFound);
         }
 
+        [Fact]
+        // happy path
+        public async Task WhenCalledWithLanguageOption_ReturnsResultInSetLanguage()
+        {
+            string language = "hu";
+            string hungarianTitle = "Vérző olaj";
+            GetPersonsMovieCreditsResult response = await _client.GetPersonsMovieCredits(personId: _actor, language: language, retryCount: 0, delayMilliseconds: 1000);
+
+            Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.OK);
+
+            GetPersonsMovieCreditsModel personsCredits = JsonConvert.DeserializeObject<GetPersonsMovieCreditsModel>(response.Json);
+            PrintActorsCredits(personsCredits.MoviesAsActor);
+
+            Assert.Contains(hungarianTitle, response.Json, System.StringComparison.OrdinalIgnoreCase);
+        }
+
 
         private void PrintActorsCredits(IList<ActorsMovieCredit> actorsCredits)
         {

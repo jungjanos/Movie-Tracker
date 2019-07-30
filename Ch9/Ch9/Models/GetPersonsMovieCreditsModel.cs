@@ -8,10 +8,10 @@ namespace Ch9.Models
         public int Id { get; set; }
 
         [JsonProperty("cast")]
-        ActorsMovieCredit[] MoviesAsActor { get; set; }
+        public ActorsMovieCredit[] MoviesAsActor { get; set; }
 
         [JsonProperty("crew")]
-        CrewMembersMovieCredit[] MoviesAsCrewMember { get; set; }
+        public CrewMembersMovieCredit[] MoviesAsCrewMember { get; set; }
     }
 
     public class ActorsMovieCredit : MovieDetailModel

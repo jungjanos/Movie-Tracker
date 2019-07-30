@@ -47,9 +47,11 @@ namespace Ch9
         private void CollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.CurrentSelection?.FirstOrDefault() != null)
-                ViewModel.MovieCastPersonTappedCommand.Execute(e.CurrentSelection.First());
-
-            //movieCastList.SelectedItem = null;
+            {
+                var selectedPerson = e.CurrentSelection?.FirstOrDefault();
+                movieCastList.SelectedItem = null;                
+                ViewModel.MovieCastPersonTappedCommand.Execute(selectedPerson);
+            }            
         }
     }
 

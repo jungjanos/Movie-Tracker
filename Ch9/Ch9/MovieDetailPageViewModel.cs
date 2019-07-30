@@ -167,7 +167,7 @@ namespace Ch9
 
             MovieCastPersonTappedCommand = new Command<IStaffMemberRole>(async staffMemberRole => 
             {
-                await FetchMovieCreditsOfstaffMember(staffMemberRole);
+                await FetchMovieCreditsOfStaffMember(staffMemberRole);
             });
 
             DisplayImages = Movie.MovieImages;
@@ -320,7 +320,7 @@ namespace Ch9
             }
         }
 
-        private async Task FetchMovieCreditsOfstaffMember(IStaffMemberRole staffMemberRole)
+        private async Task FetchMovieCreditsOfStaffMember(IStaffMemberRole staffMemberRole)
         {
             try
             {

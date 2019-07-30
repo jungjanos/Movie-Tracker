@@ -192,12 +192,6 @@
                         
                         <DataTemplate>
                                 <Grid Padding="5" ColumnSpacing="20">
-                                    <!--<Grid.GestureRecognizers>
-                                        <TapGestureRecognizer
-                                            Command="{Binding MovieCastPersonTappedCommand}"
-                                            CommandParameter="{Binding .}"
-                                            />
-                                    </Grid.GestureRecognizers>-->
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />

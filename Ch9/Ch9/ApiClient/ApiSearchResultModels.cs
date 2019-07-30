@@ -134,6 +134,9 @@ namespace Ch9.ApiClient
     public class GetPersonsMovieCreditsResult : TmdbResponseBase
     { }
 
+    public class GetPersonsDetailsResult : TmdbResponseBase
+    { }
+
     // Because of the flexible object type of the Json object the WebAPI sends back as response,
     // The Api client itself handles the deserialization of the server's response.
     // this behavior diverges from normal case

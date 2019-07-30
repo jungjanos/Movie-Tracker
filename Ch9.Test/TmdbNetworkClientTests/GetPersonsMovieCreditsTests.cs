@@ -1,6 +1,5 @@
 ﻿using Ch9.ApiClient;
 using Ch9.Models;
-using Ch9.Utils;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -12,7 +11,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 {
     // INTEGRATION TESTS
     // for the critical TmdbNetworkClient.GetPresonsMovieCredits(...) function accessing the TMDB WebAPI
-    public class GetPresonsMovieCreditsTests
+    public class GetPersonsMovieCreditsTests
     {
         private readonly ITestOutputHelper _output;
         readonly Dictionary<string, object> _settingsKeyValues;
@@ -23,7 +22,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         readonly int _director = 4762; // Paul Thomas Anderson
         readonly int _invalidActor = 9999999;
 
-        public GetPresonsMovieCreditsTests(ITestOutputHelper output)
+        public GetPersonsMovieCreditsTests(ITestOutputHelper output)
         {
             _output = output;
 

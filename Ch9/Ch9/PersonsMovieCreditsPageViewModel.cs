@@ -1,11 +1,14 @@
 ﻿using Ch9.ApiClient;
 using Ch9.Models;
 using Ch9.Utils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -16,9 +19,13 @@ namespace Ch9
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
+        private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
         private readonly IPageService _pageService;
 
-        public GetPersonsMovieCreditsModel PersonsMovieCreditsModel { get; set; }
+        public GetPersonsDetailsModel PersonsDetails { get; private set; }
+        public GetPersonsMovieCreditsModel PersonsMovieCreditsModel { get; private set; }
+
+        public ObservableCollection<ImageModel> DisplayImages { get; private set; }
 
         private bool _actorOrCrewSwitch;
         public bool ActorOrCrewSwitch
@@ -28,12 +35,15 @@ namespace Ch9
         }
 
         public ICommand OnItemTappedCommand { get; private set; }
+        public ICommand OpenWeblinkCommand { get; private set; }
 
         public PersonsMovieCreditsPageViewModel(
+            GetPersonsDetailsModel personDetails,
             GetPersonsMovieCreditsModel personsMovieCreditsModel,
             ISettings settings,
             ITmdbCachedSearchClient cachedSearchClient,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
+            IPersonDetailModelConfigurator personDetailModelConfigurator,
             IPageService pageService
             )
         {
@@ -41,6 +51,7 @@ namespace Ch9
             _settings = settings;
             _cachedSearchClient = cachedSearchClient;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
+            _personDetailModelConfigurator = personDetailModelConfigurator;
             _pageService = pageService;
 
             _movieDetailModelConfigurator.SetImageSrc(personsMovieCreditsModel.MoviesAsActor);
@@ -48,14 +59,18 @@ namespace Ch9
             _movieDetailModelConfigurator.SetGenreNamesFromGenreIds(personsMovieCreditsModel.MoviesAsActor);
             _movieDetailModelConfigurator.SetGenreNamesFromGenreIds(personsMovieCreditsModel.MoviesAsCrewMember);
 
+            PersonsDetails = personDetails;
             PersonsMovieCreditsModel = personsMovieCreditsModel;
-            OnItemTappedCommand = new Command<MovieDetailModel>(async mov =>
-            {
-                await _pageService.PushAsync(mov);
-            });
+
+            var firstImage = new ImageModel();
+            _personDetailModelConfigurator.SetProfileGalleryPictureImageSrc(firstImage, PersonsDetails);
+
+            DisplayImages = new ObservableCollection<ImageModel>(new ImageModel[] { firstImage });
+
+            OnItemTappedCommand = new Command<MovieDetailModel>(async mov => await _pageService.PushAsync(mov));
+
+            OpenWeblinkCommand = new Command<string>(url => _pageService.OpenWeblink(url));
         }
-
-
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName]string propertyName = null) =>

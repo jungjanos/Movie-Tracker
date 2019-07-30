@@ -5,135 +5,259 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Ch9"
              xmlns:controls="clr-namespace:Ch9.Controls"
+             xmlns:pancardview="clr-namespace:PanCardView;assembly=PanCardView"
              mc:Ignorable="d"
              x:Class="Ch9.PersonsMovieCreditsPage"
-             Title="Persons movie history">
+             Title="{Binding Path=PersonsDetails.Name}">
     <ContentPage.Resources>
         <ResourceDictionary>
             <local:ActorOrCrewBoolToStringConverter x:Key="actorOrCrewBoolToString"/>
-            <local:InverseBoolConverter x:Key="inverseBool" />            
+            <local:InverseBoolConverter x:Key="inverseBool" />
+            <local:StringToNotNullOremptyStringToBoolConverter x:Key="stringToNotNullOremptyStringToBool" />
         </ResourceDictionary>
     </ContentPage.Resources>
-    
+
     <ContentPage.Content>
-        <StackLayout>
-            <StackLayout 
+        <ScrollView>
+            <StackLayout>
+                <Grid
+                    HeightRequest="190"
+                    MinimumHeightRequest="190"
+                    Padding="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="6*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <pancardview:CardsView
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.RowSpan="6"
+                        HeightRequest="190"
+                        MinimumHeightRequest="190"
+                        VerticalOptions="CenterAndExpand"
+                        ItemsSource="{Binding DisplayImages}"
+                        IsCyclical="True"
+
+                    >
+
+                        <pancardview:CardsView.ItemTemplate>
+                            <DataTemplate>
+                                <ContentView>
+                                    <Frame 
+                                
+                                Padding="0" 
+                                HasShadow="false"
+                                IsClippedToBounds="true"
+                                CornerRadius="10"
+                                BackgroundColor="WhiteSmoke">
+
+                                        <Image Aspect="AspectFit">
+
+                                            <Image.Source>
+                                                <UriImageSource
+                                                    Uri="{Binding Path=FilePath}"
+                                                    CacheValidity="0"
+                                                    CachingEnabled="False"
+                                        />
+                                            </Image.Source>
+
+                                        </Image>
+                                    </Frame>
+                                </ContentView>
+                            </DataTemplate>
+                        </pancardview:CardsView.ItemTemplate>
+
+                    </pancardview:CardsView>
+
+                    <Label
+                        Grid.Row="0"
+                        Grid.Column="1">
+
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <FormattedString.Spans>
+                                    <Span  Text="{Binding Path=PersonsDetails.Name}" FontAttributes="Bold"/>
+                                    <Span Text=", "/>
+                                    <Span Text="{Binding Path=PersonsDetails.Age,StringFormat='{0}, '} "/>
+                                    <Span Text="{Binding Path=PersonsDetails.Popularity, StringFormat='  popularity: {0:F1}'}"/>
+
+                                </FormattedString.Spans>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+
+                    <ScrollView
+                        Grid.Row="1"
+                        Grid.RowSpan="5"
+                        Grid.Column="1">
+
+                        <StackLayout Orientation="Vertical">
+
+                            <Label 
+                                IsVisible="{Binding Path=PersonsDetails.Homepage, Converter={StaticResource Key=stringToNotNullOremptyStringToBool}}"
+                                HorizontalOptions="Start">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span 
+                                            Text="{Binding Path=PersonsDetails.Homepage}"                                            
+                                            TextColor="Blue"
+                                            FontSize="Micro"
+                                            TextDecorations="Underline">
+
+                                            <Span.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding OpenWeblinkCommand}"
+                                                    CommandParameter="{Binding Path=PersonsDetails.Homepage}" />
+                                            </Span.GestureRecognizers>
+                                        </Span>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+
+                            <controls:ExtendedLabel 
+                                Text="{Binding Path=PersonsDetails.Biography}" 
+                                TextColor="DarkGray" 
+                                FontSize="Small"
+                                Visual="Material" 
+                                JustifyText="True"              
+                            />
+
+                        </StackLayout>
+
+
+                    </ScrollView>
+
+
+                </Grid>
+
+                <StackLayout 
                 Orientation="Horizontal" Padding="5"
                 HorizontalOptions="FillAndExpand">
 
-                <Label Text="John Doe's movie credits" 
+                    <Label Text="{Binding Path=PersonsDetails.Name, StringFormat='{0}s movie credits'}" 
                        FontSize="Subtitle" 
                        VerticalTextAlignment="Center"
                        HorizontalOptions="StartAndExpand"/>
 
-                <Label 
+                    <Label 
                     Text="{Binding ActorOrCrewSwitch, Converter={StaticResource Key=actorOrCrewBoolToString}}" 
                     VerticalTextAlignment="Center"
                     HorizontalOptions="End"/>
-                
-                <Switch 
+
+                    <Switch 
                     IsToggled="{Binding ActorOrCrewSwitch}"
                     HorizontalOptions="End"/>
-                
+
+                </StackLayout>
+
+                <controls:ExtendedListView  
+                    ItemsSource="{Binding Path=PersonsMovieCreditsModel.MoviesAsActor}"
+                    TappedCommand="{Binding OnItemTappedCommand}"
+                    IsVisible="{Binding ActorOrCrewSwitch, Converter={StaticResource Key=inverseBool}}"
+                    HasUnevenRows="False"                                        
+                    RowHeight="85">
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+
+                                <StackLayout Orientation="Horizontal" Padding="5">
+                                    <Image Aspect="AspectFit"
+                                       VerticalOptions="FillAndExpand"
+                                       HorizontalOptions="Start"
+                                       HeightRequest="75"
+                                       WidthRequest="50">
+                                        <Image.Source>
+                                            <UriImageSource Uri="{Binding ImgSmSrc}"
+                                                    CacheValidity="0"
+                                                    CachingEnabled="False"                                                         
+                                                    />
+                                        </Image.Source>
+                                    </Image>
+
+                                    <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
+                                        <Label Text="{Binding Title}" TextColor="Black" LineBreakMode="TailTruncation"/>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>
+                                            <Label TextColor="Gray" Text="{Binding Genre}" FontSize="Micro"/>
+                                        </StackLayout>
+
+
+                                        <Label>
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="Playing as " TextColor="DarkGray"/>
+                                                    <Span Text="{Binding Character}" TextColor="Black" FontAttributes="Italic"/>
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+
+                                    </StackLayout>
+                                </StackLayout>
+
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </controls:ExtendedListView>
+
+
+                <controls:ExtendedListView  
+                    ItemsSource="{Binding Path=PersonsMovieCreditsModel.MoviesAsCrewMember}"
+                    TappedCommand="{Binding OnItemTappedCommand}"
+                    HasUnevenRows="False"
+                    IsVisible="{Binding ActorOrCrewSwitch}"
+                    RowHeight="85">
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+
+                                <StackLayout Orientation="Horizontal" Padding="5">
+                                    <Image Aspect="AspectFit"
+                                       VerticalOptions="FillAndExpand"
+                                       HorizontalOptions="Start"
+                                       HeightRequest="75"
+                                       WidthRequest="50">
+                                        <Image.Source>
+                                            <UriImageSource Uri="{Binding ImgSmSrc}"
+                                                    CacheValidity="0"
+                                                    CachingEnabled="False"                                                         
+                                                    />
+                                        </Image.Source>
+                                    </Image>
+
+                                    <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
+                                        <Label Text="{Binding Title}" TextColor="Black" LineBreakMode="TailTruncation"/>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>
+                                            <Label TextColor="Gray" Text="{Binding Genre}" FontSize="Micro"/>
+                                        </StackLayout>
+
+                                        <Label>
+                                            <Label.FormattedText>
+                                                <FormattedString>
+                                                    <Span Text="Role: " TextColor="DarkGray"/>
+                                                    <Span Text="{Binding Job}" TextColor="Black" FontAttributes="Italic"/>
+                                                </FormattedString>
+                                            </Label.FormattedText>
+                                        </Label>
+                                    </StackLayout>
+                                </StackLayout>
+
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </controls:ExtendedListView>
+
             </StackLayout>
-
-            <controls:ExtendedListView  ItemsSource="{Binding Path=PersonsMovieCreditsModel.MoviesAsActor}"                                        
-                                        TappedCommand="{Binding OnItemTappedCommand}"
-                                        IsVisible="{Binding ActorOrCrewSwitch, Converter={StaticResource Key=inverseBool}}"
-                                        HasUnevenRows="False"
-                                        RowHeight="85">
-
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-
-                            <StackLayout Orientation="Horizontal" Padding="5">
-                                <Image Aspect="AspectFit"
-                                       VerticalOptions="FillAndExpand"
-                                       HorizontalOptions="Start"
-                                       HeightRequest="75"
-                                       WidthRequest="50">
-                                    <Image.Source>
-                                        <UriImageSource Uri="{Binding ImgSmSrc}"
-                                                    CacheValidity="0"
-                                                    CachingEnabled="False"                                                         
-                                                    />
-                                    </Image.Source>
-                                </Image>
-
-                                <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
-                                    <Label Text="{Binding Title}" TextColor="Black" LineBreakMode="TailTruncation"/>
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>
-                                        <Label TextColor="Gray" Text="{Binding Genre}" FontSize="Micro"/>
-                                    </StackLayout>
-                                    
-
-                                    <Label>
-                                        <Label.FormattedText>
-                                            <FormattedString>
-                                                <Span Text="Playing as " TextColor="DarkGray"/>
-                                                <Span Text="{Binding Character}" TextColor="Black" FontAttributes="Italic"/>
-                                            </FormattedString>
-                                        </Label.FormattedText>
-                                    </Label>
-
-                                </StackLayout>
-                            </StackLayout>
-
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </controls:ExtendedListView>
-
-
-            <controls:ExtendedListView  ItemsSource="{Binding Path=PersonsMovieCreditsModel.MoviesAsCrewMember}"                                        
-                                        TappedCommand="{Binding OnItemTappedCommand}"
-                                        HasUnevenRows="False"
-                                        IsVisible="{Binding ActorOrCrewSwitch}"
-                                        RowHeight="85">
-
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-
-                            <StackLayout Orientation="Horizontal" Padding="5">
-                                <Image Aspect="AspectFit"
-                                       VerticalOptions="FillAndExpand"
-                                       HorizontalOptions="Start"
-                                       HeightRequest="75"
-                                       WidthRequest="50">
-                                    <Image.Source>
-                                        <UriImageSource Uri="{Binding ImgSmSrc}"
-                                                    CacheValidity="0"
-                                                    CachingEnabled="False"                                                         
-                                                    />
-                                    </Image.Source>
-                                </Image>
-
-                                <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
-                                    <Label Text="{Binding Title}" TextColor="Black" LineBreakMode="TailTruncation"/>
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>
-                                        <Label TextColor="Gray" Text="{Binding Genre}" FontSize="Micro"/>
-                                    </StackLayout>
-                                    
-                                    <Label>
-                                        <Label.FormattedText>
-                                            <FormattedString>
-                                                <Span Text="Role: " TextColor="DarkGray"/>
-                                                <Span Text="{Binding Job}" TextColor="Black" FontAttributes="Italic"/>
-                                            </FormattedString>
-                                        </Label.FormattedText>
-                                    </Label>
-                                </StackLayout>
-                            </StackLayout>
-
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </controls:ExtendedListView>
-
-        </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

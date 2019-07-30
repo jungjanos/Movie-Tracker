@@ -1,9 +1,7 @@
 ﻿using Ch9.ApiClient;
 using Ch9.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Ch9.Utils
 {
@@ -11,8 +9,7 @@ namespace Ch9.Utils
     {
         void SetGalleryImageSources(MovieDetailModel movie);
         void SetGenreNamesFromGenreIds(IEnumerable<MovieDetailModel> movies);
-        void SetImageSrc(IEnumerable<MovieDetailModel> movies);
-        void SetProfileImageSrc(IEnumerable<IStaffMemberRole> staffMembers);
+        void SetImageSrc(IEnumerable<MovieDetailModel> movies);        
     }
 
     // TODO : This class should be composed into MovieDetailModel (static field ?)
@@ -79,14 +76,6 @@ namespace Ch9.Utils
                     }
                 }
             }
-        }
-
-        public void SetProfileImageSrc(IEnumerable<IStaffMemberRole> staffMembers)
-        {
-            string baseUrl = ImageBaseUrl;
-
-            foreach(var staff in staffMembers)
-                staff.ProfilePath = baseUrl + _tmdbConfiguration.Images.ProfileSizes[0] + staff.ProfilePath;
         }
 
         public void SetGenreNamesFromGenreIds(IEnumerable<MovieDetailModel> movies)

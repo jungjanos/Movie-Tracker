@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace Ch9.Models
 {
@@ -7,6 +8,20 @@ namespace Ch9.Models
         [JsonProperty("birthday")]
         public string Birthday { get; set; }
 
+        public int Age
+        {
+            get
+            {
+                if (DateTime.TryParse(Birthday, out DateTime birthDay))
+                {
+                    int years = DateTime.Now.Year - birthDay.Year;
+                    bool bdayStillComming = DateTime.Now.DayOfYear < birthDay.DayOfYear;
+
+                    return bdayStillComming ? years - 1 : years;
+                }
+                return -1;
+            }
+        }
         [JsonProperty("known_for_department")]
         public string KnownFor { get; set; }
 

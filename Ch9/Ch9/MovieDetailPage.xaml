@@ -202,7 +202,7 @@
                                     </Grid.ColumnDefinitions>
                                     
                                     <Image Grid.RowSpan="2"
-                                        Source="{Binding ProfilePath}"                                        
+                                        Source="{Binding ProfileUrl}"                                        
                                         Aspect="AspectFit"
                                         HeightRequest="60" 
                                         WidthRequest="60" />

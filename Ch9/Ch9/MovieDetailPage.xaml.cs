@@ -30,6 +30,7 @@ namespace Ch9
                 ((App)Application.Current).CachedSearchClient,
                 ((App)Application.Current).UsersMovieListsService2,
                 ((App)Application.Current).MovieDetailModelConfigurator,
+                ((App)Application.Current).PersonDetailModelConfigurator,
                 ((App)Application.Current).VideoService,
                 new PageService(this)
                 );

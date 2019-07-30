@@ -14,6 +14,7 @@ namespace Ch9
         public MovieGenreSettings MovieGenreSettings { get; private set; }
         public TmdbConfigurationModel TmdbConfiguration { get; private set; }
         public IMovieDetailModelConfigurator MovieDetailModelConfigurator { get; private set; }
+        public IPersonDetailModelConfigurator PersonDetailModelConfigurator { get; private set; }
         public SearchResultFilter ResultFilter { get; private set; }
         public ITmdbNetworkClient TmdbNetworkClient { get; private set; }
         public ITmdbCachedSearchClient CachedSearchClient { get; private set; }
@@ -40,6 +41,7 @@ namespace Ch9
             TmdbConfiguration = await tmdbConfigurationCache.FetchTmdbConfiguration();
 
             MovieDetailModelConfigurator = new MovieDetailModelConfigurator(Settings, TmdbConfiguration, MovieGenreSettings);
+            PersonDetailModelConfigurator = new PersonDetailModelConfigurator(Settings, TmdbConfiguration);
             UsersMovieListsService2 = new UsersMovieListsService2(Settings, CachedSearchClient, MovieDetailModelConfigurator);
             MainPage = new NavigationPage(new MainTabbedPage());
         }

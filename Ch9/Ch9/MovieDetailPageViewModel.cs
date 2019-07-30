@@ -21,6 +21,7 @@ namespace Ch9
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
         private readonly UsersMovieListsService2 _movieListsService2;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
+        private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
         private readonly IVideoService _videoService;
         private readonly IPageService _pageService;
         private readonly Task _fetchGallery;
@@ -100,6 +101,7 @@ namespace Ch9
             ITmdbCachedSearchClient cachedSearchClient,
             UsersMovieListsService2 movieListsService2,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
+            IPersonDetailModelConfigurator personDetailModelConfigurator,
             IVideoService videoService,
             IPageService pageService)
         {
@@ -108,6 +110,7 @@ namespace Ch9
             _cachedSearchClient = cachedSearchClient;
             _movieListsService2 = movieListsService2;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
+            _personDetailModelConfigurator = personDetailModelConfigurator;
             _videoService = videoService;
             _pageService = pageService;
             _fetchGallery = UpdateImageCollection();
@@ -167,7 +170,7 @@ namespace Ch9
 
             MovieCastPersonTappedCommand = new Command<IStaffMemberRole>(async staffMemberRole => 
             {
-                await FetchMovieCreditsOfStaffMember(staffMemberRole);
+                await FetchStaffMemberDetailsAndMovieCredits(staffMemberRole);
             });
 
             DisplayImages = Movie.MovieImages;
@@ -309,7 +312,7 @@ namespace Ch9
                     {
                         _credits = JsonConvert.DeserializeObject<MovieCreditsModel>(response.Json);
                         var staffMembers = _credits.ExtractStaffToDisplay(7);
-                        _movieDetailModelConfigurator.SetProfileImageSrc(staffMembers);
+                        _personDetailModelConfigurator.SetProfileImageSrc(staffMembers);
 
                         Staffs = staffMembers;
                     }
@@ -320,18 +323,21 @@ namespace Ch9
             }
         }
 
-        private async Task FetchMovieCreditsOfStaffMember(IStaffMemberRole staffMemberRole)
+        private async Task FetchStaffMemberDetailsAndMovieCredits(IStaffMemberRole staffMemberRole)
         {
             try
             {
-                GetPersonsMovieCreditsResult response = await _cachedSearchClient.GetPersonsMovieCredits(staffMemberRole.Id, _settings.SearchLanguage, 0, 1000, fromCache: true);
-                if (response.HttpStatusCode.IsSuccessCode())
+                GetPersonsDetailsResult personDetailsResponse = await _cachedSearchClient.GetPersonsDetails(staffMemberRole.Id, _settings.SearchLanguage, 0, 1000, fromCache: true);
+                GetPersonsMovieCreditsResult movieCreditsResponse = await _cachedSearchClient.GetPersonsMovieCredits(staffMemberRole.Id, _settings.SearchLanguage, 0, 1000, fromCache: true);
+                if (personDetailsResponse.HttpStatusCode.IsSuccessCode() && movieCreditsResponse.HttpStatusCode.IsSuccessCode())
                 {
-                    GetPersonsMovieCreditsModel personsMovieCredits = JsonConvert.DeserializeObject<GetPersonsMovieCreditsModel>(response.Json);
-                    await _pageService.PushPersonsMovieCreditsPageAsync(personsMovieCredits);
+                    GetPersonsMovieCreditsModel personsMovieCredits = JsonConvert.DeserializeObject<GetPersonsMovieCreditsModel>(movieCreditsResponse.Json);
+                    GetPersonsDetailsModel personDetails = JsonConvert.DeserializeObject<GetPersonsDetailsModel>(personDetailsResponse.Json);
+
+                    await _pageService.PushPersonsMovieCreditsPageAsync(personDetails, personsMovieCredits);
                 }
                 else
-                    await _pageService.DisplayAlert("Error", $"Could not fetch persons movie participations, service responded with: {response.HttpStatusCode}", "Ok");
+                    await _pageService.DisplayAlert("Error", $"Could not fetch persons movie participations, service responded: GetPersonDetails():{personDetailsResponse.HttpStatusCode} and GetPersonsMovieCredits(): {movieCreditsResponse.HttpStatusCode}", "Ok");
             }
             catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not fetch persons movie participations, service responded with: {ex.Message}", "Ok"); }
         }

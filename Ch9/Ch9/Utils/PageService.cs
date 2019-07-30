@@ -1,5 +1,4 @@
-﻿using Ch9.ApiClient;
-using Ch9.Models;
+﻿using Ch9.Models;
 using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -13,12 +12,13 @@ namespace Ch9.Utils
         Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons);
         Task DisplayAlert(string title, string message, string cancel);
         Task<bool> DisplayAlert(string title, string message, string accept, string cancel);
+        Task OpenWeblink(string url);
         Task<object> PopCurrent();
         Task PopToRootAsync();
         Task PushAsync(MovieDetailModel movie);
         Task PushAsync(AddListPageViewModel viewModel);        
-        Task PushLargeImagePageAsync(MovieDetailPageViewModel viewModel);
-        Task PushPersonsMovieCreditsPageAsync(GetPersonsMovieCreditsModel personsMovieCredits);
+        Task PushLargeImagePageAsync(MovieDetailPageViewModel viewModel);        
+        Task PushPersonsMovieCreditsPageAsync(GetPersonsDetailsModel personDetails, GetPersonsMovieCreditsModel personsMovieCredits);
         Task PushRecommendationsPageAsync(MovieDetailModel movie);
         Task PushReviewsPage(MovieDetailPageViewModel model);
         Task PushVideoPageAsync(MovieDetailPageViewModel viewModel);
@@ -47,8 +47,8 @@ namespace Ch9.Utils
         public async Task PushVideoPageAsync(MovieDetailPageViewModel viewModel) =>
             await _currentPage.Navigation.PushAsync(new VideoPage(viewModel));
 
-        public async Task PushPersonsMovieCreditsPageAsync(GetPersonsMovieCreditsModel personsMovieCredits) =>
-            await _currentPage.Navigation.PushAsync(new PersonsMovieCreditsPage(personsMovieCredits));
+        public async Task PushPersonsMovieCreditsPageAsync(GetPersonsDetailsModel personDetails, GetPersonsMovieCreditsModel personsMovieCredits) =>
+            await _currentPage.Navigation.PushAsync(new PersonsMovieCreditsPage(personDetails, personsMovieCredits));
 
         public async Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons) =>        
              await _currentPage.DisplayActionSheet(title, cancel, destruction, buttons);        
@@ -66,5 +66,18 @@ namespace Ch9.Utils
         }
 
         public async Task PopToRootAsync() => await _currentPage.Navigation.PopToRootAsync();
+
+        public async Task OpenWeblink(string url)
+        {
+            try
+            {
+                Device.OpenUri(new Uri(url));
+            }
+            catch (Exception ex)
+            {
+                await _currentPage.DisplayAlert("Error", $"Could not open weblink: {ex.Message}", "Ok");
+            }
+            
+        }
     }
 }

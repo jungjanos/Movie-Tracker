@@ -24,6 +24,7 @@ namespace Ch9.Models
         string ProfilePath { get; set; }
         int Id { get; }
         string CreditId { get; }
+        string ProfileUrl { get; set; }
     }
 
     public class MovieCastModel : IStaffMemberRole
@@ -49,10 +50,14 @@ namespace Ch9.Models
         [JsonProperty("order")]
         public int Order { get; set; }
 
+        /// <summary>
+        /// Stores relative file url on the server: "/filename.extension" 
+        /// </summary>
         [JsonProperty("profile_path")]
         public string ProfilePath { get; set; }
+        public string ProfileUrl { get; set; }
 
-        public string Role => Character;
+        public string Role => Character;        
     }
 
     public class MovieCrewModel : IStaffMemberRole
@@ -77,7 +82,7 @@ namespace Ch9.Models
 
         [JsonProperty("profile_path")]
         public string ProfilePath { get; set; }
-
+        public string ProfileUrl { get; set; }
         public string Role => Job;
     }
 }

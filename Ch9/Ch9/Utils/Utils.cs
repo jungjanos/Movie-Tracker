@@ -102,13 +102,21 @@ namespace Ch9.Utils
             if (director != null)
                 staffMembers.Add(director);
 
-            if (writer != null)
-                staffMembers.Add(writer);
-
             foreach (var actor in firstCreditedActors)
                 staffMembers.Add(actor);
 
+            if (writer != null)
+                staffMembers.Add(writer);
+
             return staffMembers;
         }
+
+        //public static GetPersonsDetailsModel ExtractPersonWithPrimaryData(this IStaffMemberRole staffMemberRole) =>
+        //    new GetPersonsDetailsModel
+        //    {
+        //        Id = staffMemberRole.Id,
+        //        ProfilePath = staffMemberRole.ProfilePath,
+        //        Name = staffMemberRole.Name
+        //    };
     }
 }

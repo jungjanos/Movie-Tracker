@@ -1,12 +1,7 @@
 ﻿using Ch9.Models;
 using Ch9.Utils;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -21,13 +16,15 @@ namespace Ch9
             set => BindingContext = value;
         }
 
-        public PersonsMovieCreditsPage(GetPersonsMovieCreditsModel personsMovieCreditsModel)
+        public PersonsMovieCreditsPage(GetPersonsDetailsModel personDetails, GetPersonsMovieCreditsModel personsMovieCredits)
         {
             ViewModel = new PersonsMovieCreditsPageViewModel(
-                personsMovieCreditsModel,
+                personDetails,
+                personsMovieCredits,
                 ((App)Application.Current).Settings,
                 ((App)Application.Current).CachedSearchClient,                
-                ((App)Application.Current).MovieDetailModelConfigurator,                
+                ((App)Application.Current).MovieDetailModelConfigurator,
+                ((App)Application.Current).PersonDetailModelConfigurator,
                 new PageService(this)
                 );
 
@@ -42,5 +39,14 @@ namespace Ch9
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
             throw new NotImplementedException();        
+    }
+
+    public class StringToNotNullOremptyStringToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+            !string.IsNullOrEmpty((value as string));
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) 
+            => throw new NotImplementedException();
     }
 }

@@ -17,7 +17,7 @@ namespace Ch9.Models
     /// <summary>
     /// interface to display diferent types of staff (crew and actors) on the UI     
     /// </summary>
-    public interface IStaffMember
+    public interface IStaffMemberRole
     {        
         string Name { get; }
         string Role { get; }
@@ -26,7 +26,7 @@ namespace Ch9.Models
         string CreditId { get; }
     }
 
-    public class MovieCastModel : IStaffMember
+    public class MovieCastModel : IStaffMemberRole
     {
         [JsonProperty("cast_id")]
         public int CastId { get; set; }
@@ -55,7 +55,7 @@ namespace Ch9.Models
         public string Role => Character;
     }
 
-    public class MovieCrewModel : IStaffMember
+    public class MovieCrewModel : IStaffMemberRole
     {
         [JsonProperty("credit_id")]
         public string CreditId { get; set; }

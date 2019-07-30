@@ -90,9 +90,9 @@ namespace Ch9.Utils
         /// </summary>        
         /// <param name="numberOfActors">Number of actors to display after the director and writer</param>
         /// <returns>Collection to be bound to the UI</returns>
-        public static List<IStaffMember> ExtractStaffToDisplay(this MovieCreditsModel credits, int numberOfActors = 5)
+        public static List<IStaffMemberRole> ExtractStaffToDisplay(this MovieCreditsModel credits, int numberOfActors = 5)
         {
-            List<IStaffMember> staffMembers = new List<IStaffMember>();
+            List<IStaffMemberRole> staffMembers = new List<IStaffMemberRole>();
 
             var director = credits.Crew.FirstOrDefault(c => c.Role == "Director");
             var writer = credits.Crew.FirstOrDefault(c => (c.Role == "Writer") || (c.Department == "Writing"));

@@ -12,7 +12,7 @@ namespace Ch9.Utils
         void SetGalleryImageSources(MovieDetailModel movie);
         void SetGenreNamesFromGenreIds(IEnumerable<MovieDetailModel> movies);
         void SetImageSrc(IEnumerable<MovieDetailModel> movies);
-        void SetProfileImageSrc(IEnumerable<IStaffMember> staffMembers);
+        void SetProfileImageSrc(IEnumerable<IStaffMemberRole> staffMembers);
     }
 
     // TODO : This class should be composed into MovieDetailModel (static field ?)
@@ -81,7 +81,7 @@ namespace Ch9.Utils
             }
         }
 
-        public void SetProfileImageSrc(IEnumerable<IStaffMember> staffMembers)
+        public void SetProfileImageSrc(IEnumerable<IStaffMemberRole> staffMembers)
         {
             string baseUrl = ImageBaseUrl;
 

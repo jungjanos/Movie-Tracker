@@ -4,6 +4,7 @@ using Ch9.Utils;
 using FormsVideoLibrary;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -41,6 +42,14 @@ namespace Ch9
         {
             base.OnAppearing();
             await vMInitializer;
+        }
+
+        private void CollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.CurrentSelection?.FirstOrDefault() != null)
+                ViewModel.MovieCastPersonTappedCommand.Execute(e.CurrentSelection.First());
+
+            //movieCastList.SelectedItem = null;
         }
     }
 

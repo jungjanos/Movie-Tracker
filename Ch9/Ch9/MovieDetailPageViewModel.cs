@@ -76,8 +76,8 @@ namespace Ch9
             set => SetProperty(ref _showCredits, value);
         }
 
-        private List<IStaffMember> _staffs;
-        public List<IStaffMember> Staffs
+        private List<IStaffMemberRole> _staffs;
+        public List<IStaffMemberRole> Staffs
         {
             get => _staffs;
             set => SetProperty(ref _staffs, value);
@@ -92,6 +92,7 @@ namespace Ch9
         public ICommand TapImageCommand { get; private set; }
         public ICommand ChangeDisplayedImageTypeCommand { get; private set; }
         public ICommand ToggleCreditsCommand { get; private set; }
+        public ICommand MovieCastPersonTappedCommand { get; private set; }
 
         public MovieDetailPageViewModel(
             MovieDetailModel movie,
@@ -162,6 +163,11 @@ namespace Ch9
                 if (!ShowCredits)
                     await FetchCredits();
                 ShowCredits = !_showCredits;
+            });
+
+            MovieCastPersonTappedCommand = new Command<IStaffMemberRole>(async staffMemberRole => 
+            {
+                await FetchMovieCreditsOfstaffMember(staffMemberRole);
             });
 
             DisplayImages = Movie.MovieImages;
@@ -312,6 +318,22 @@ namespace Ch9
                 }
                 catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not fetch credits information, the following exception was thrown: {ex.Message}", "Ok"); }
             }
+        }
+
+        private async Task FetchMovieCreditsOfstaffMember(IStaffMemberRole staffMemberRole)
+        {
+            try
+            {
+                GetPersonsMovieCreditsResult response = await _cachedSearchClient.GetPersonsMovieCredits(staffMemberRole.Id, _settings.SearchLanguage, 0, 1000, fromCache: true);
+                if (response.HttpStatusCode.IsSuccessCode())
+                {
+                    GetPersonsMovieCreditsModel personsMovieCredits = JsonConvert.DeserializeObject<GetPersonsMovieCreditsModel>(response.Json);
+                    await _pageService.PushPersonsMovieCreditsPageAsync(personsMovieCredits);
+                }
+                else
+                    await _pageService.DisplayAlert("Error", $"Could not fetch persons movie participations, service responded with: {response.HttpStatusCode}", "Ok");
+            }
+            catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not fetch persons movie participations, service responded with: {ex.Message}", "Ok"); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

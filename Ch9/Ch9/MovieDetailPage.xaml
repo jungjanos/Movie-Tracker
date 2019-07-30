@@ -178,15 +178,26 @@
                     </StackLayout>
 
                     <Label Text="Top billed cast" FontSize="Medium" IsVisible="{Binding ShowCredits}"/>
-                    <CollectionView 
+                    <CollectionView
+                        x:Name="movieCastList"
                         ItemsSource="{Binding Staffs}"
                         IsVisible="{Binding ShowCredits}"
-                        
-                        >                        
-                        
+
+                        SelectionChanged="CollectionView_SelectionChanged"
+                        SelectionMode="Single"
+                        >
+
+
                         <CollectionView.ItemTemplate>
-                            <DataTemplate>
+                        
+                        <DataTemplate>
                                 <Grid Padding="5" ColumnSpacing="20">
+                                    <!--<Grid.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding MovieCastPersonTappedCommand}"
+                                            CommandParameter="{Binding .}"
+                                            />
+                                    </Grid.GestureRecognizers>-->
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />

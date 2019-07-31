@@ -55,7 +55,11 @@
                                 <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
                                     <Label Text="{Binding Title}" TextColor="Black"/>
                                     <StackLayout Orientation="Horizontal">
-                                        <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>
+                                        <Label 
+                                          TextColor="Gray" 
+                                          Text="{Binding Year}" 
+                                          IsVisible="{Binding Path=Year.HasValue}"
+                                          FontSize="Micro"/>
                                         <Label TextColor="Gray" Text="{Binding Genre}" FontSize="Micro"/>
                                     </StackLayout>
                                 </StackLayout>
@@ -97,7 +101,11 @@
                                 <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
                                     <Label Text="{Binding Title}" TextColor="Black"/>
                                     <StackLayout Orientation="Horizontal">
-                                        <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>
+                                        <Label 
+                                          TextColor="Gray" 
+                                          Text="{Binding Year}"
+                                          IsVisible="{Binding Path=Year.HasValue}"
+                                          FontSize="Micro"/>
                                         <Label TextColor="Gray" Text="{Binding Genre}" FontSize="Micro"/>
                                     </StackLayout>
                                 </StackLayout>

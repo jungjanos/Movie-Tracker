@@ -47,7 +47,7 @@ namespace Ch9.Models
 
         public string ImgSmSrc { get; set; }
 
-        public int Year => ReleaseDate.HasValue ? ReleaseDate.Value.Year : -1;
+        public int? Year => ReleaseDate.HasValue ? (ReleaseDate.Value.Year) as int? : null;
 
         public string Genre { get; set; }
     }
@@ -55,7 +55,7 @@ namespace Ch9.Models
     public class MovieDetailModel : MovieModel, INotifyPropertyChanged
     {
         public MovieDetailModel()
-        {            
+        {
             ImageDetailCollection = new ImageDetailCollection();
             _movieImages = new ObservableCollection<ImageModel>();
         }
@@ -178,6 +178,18 @@ namespace Ch9.Models
         }
 
         public int GetHashCode(MovieModel obj) => obj.Id;
+    }
+
+    public class MovieYearDescComparer : Comparer<MovieModel>
+    {
+        public override int Compare(MovieModel x, MovieModel y)
+        {
+            if (x.Year.HasValue && y.Year.HasValue)
+                return x.Year.Value.CompareTo(y.Year.Value) * -1;
+            else if (x.Year.HasValue)
+                return -1;
+            else return 1;
+        }
     }
 }
 

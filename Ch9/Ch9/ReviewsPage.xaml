@@ -21,7 +21,14 @@
             
             <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10">
                 <Label Text="{Binding Path=ParentPageViewModel.Movie.Title}" FontSize="Large" LineBreakMode="WordWrap" HorizontalOptions="Start"/>
-                <Label Text="{Binding Path=ParentPageViewModel.Movie.Year}" FontSize="Large" LineBreakMode="NoWrap" MaxLines="1"  HorizontalOptions="EndAndExpand" MinimumWidthRequest="150"/>
+                <Label 
+                    Text="{Binding Path=ParentPageViewModel.Movie.Year}" 
+                    IsVisible="{Binding Path=ParentPageViewModel.Movie.Year.HasValue}"
+                    FontSize="Large" 
+                    LineBreakMode="NoWrap" 
+                    MaxLines="1"  
+                    HorizontalOptions="EndAndExpand" 
+                    MinimumWidthRequest="150"/>
             </StackLayout>
 
             <Label Text="{Binding Path=ParentPageViewModel.Movie.Tagline}"/>

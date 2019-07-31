@@ -13,7 +13,7 @@
         <ResourceDictionary>
             <local:ActorOrCrewBoolToStringConverter x:Key="actorOrCrewBoolToString"/>
             <local:InverseBoolConverter x:Key="inverseBool" />
-            <local:StringToNotNullOremptyStringToBoolConverter x:Key="stringToNotNullOremptyStringToBool" />
+            <local:StringToNotNullOremptyStringToBoolConverter x:Key="stringToNotNullOremptyStringToBool" />            
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -78,22 +78,21 @@
 
                     </pancardview:CardsView>
 
-                    <Label
+                    <StackLayout 
                         Grid.Row="0"
-                        Grid.Column="1">
+                        Grid.Column="1"
+                        Spacing="0"
+                        Orientation="Horizontal">
 
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <FormattedString.Spans>
-                                    <Span  Text="{Binding Path=PersonsDetails.Name}" FontAttributes="Bold"/>
-                                    <Span Text=", "/>
-                                    <Span Text="{Binding Path=PersonsDetails.Age,StringFormat='{0}, '} "/>
-                                    <Span Text="{Binding Path=PersonsDetails.Popularity, StringFormat='  popularity: {0:F1}'}"/>
+                        <Label Text="{Binding Path=PersonsDetails.Name}" 
+                               FontAttributes="Bold"/>
+                        
+                        <Label Text="{Binding Path=PersonsDetails.Age,StringFormat=', {0}'}" 
+                               IsVisible="{Binding Path=PersonsDetails.Age.HasValue}"/>
+                        
+                        <Label Text="{Binding Path=PersonsDetails.Popularity,StringFormat=',  popularity: {0:F1}'}" />
 
-                                </FormattedString.Spans>
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
+                    </StackLayout>
 
                     <ScrollView
                         Grid.Row="1"
@@ -186,7 +185,11 @@
                                     <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
                                         <Label Text="{Binding Title}" TextColor="Black" LineBreakMode="TailTruncation"/>
                                         <StackLayout Orientation="Horizontal">
-                                            <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>
+                                            <Label 
+                                                TextColor="Gray" 
+                                                Text="{Binding Year}"
+                                                IsVisible="{Binding Path=Year.HasValue}"
+                                                FontSize="Micro"/>
                                             <Label TextColor="Gray" Text="{Binding Genre}" FontSize="Micro"/>
                                         </StackLayout>
 
@@ -237,7 +240,12 @@
                                     <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
                                         <Label Text="{Binding Title}" TextColor="Black" LineBreakMode="TailTruncation"/>
                                         <StackLayout Orientation="Horizontal">
-                                            <Label TextColor="Gray" Text="{Binding Year}" FontSize="Micro"/>
+                                            <Label 
+                                                TextColor="Gray" 
+                                                Text="{Binding Year}" 
+                                                IsVisible="{Binding Path=Year.HasValue}"
+                                                FontSize="Micro"
+                                                />
                                             <Label TextColor="Gray" Text="{Binding Genre}" FontSize="Micro"/>
                                         </StackLayout>
 

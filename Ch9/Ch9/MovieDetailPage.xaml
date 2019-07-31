@@ -143,7 +143,14 @@
                         </StackLayout.GestureRecognizers>
                         
                         <Label Text="{Binding Path=Movie.Title}" FontSize="Large" LineBreakMode="WordWrap" HorizontalOptions="Start"/>
-                        <Label Text="{Binding Path=Movie.Year}" FontSize="Large" LineBreakMode="NoWrap" MaxLines="1"  HorizontalOptions="EndAndExpand" MinimumWidthRequest="150"/>
+                        <Label 
+                            Text="{Binding Path=Movie.Year}" 
+                            IsVisible="{Binding Path=Movie.Year.HasValue}"
+                            FontSize="Large" 
+                            LineBreakMode="NoWrap" 
+                            MaxLines="1"  
+                            HorizontalOptions="EndAndExpand" 
+                            MinimumWidthRequest="150"/>
                     </StackLayout>
 
                     <Label Text="{Binding Path=Movie.Genre}" FontSize="Small"/>

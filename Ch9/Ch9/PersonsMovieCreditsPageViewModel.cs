@@ -1,14 +1,10 @@
 ﻿using Ch9.ApiClient;
 using Ch9.Models;
 using Ch9.Utils;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -16,8 +12,7 @@ namespace Ch9
 {
     public class PersonsMovieCreditsPageViewModel : INotifyPropertyChanged
     {
-        private readonly ISettings _settings;
-        private readonly ITmdbCachedSearchClient _cachedSearchClient;
+        private readonly ISettings _settings;        
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
         private readonly IPageService _pageService;
@@ -40,16 +35,14 @@ namespace Ch9
         public PersonsMovieCreditsPageViewModel(
             GetPersonsDetailsModel personDetails,
             GetPersonsMovieCreditsModel personsMovieCreditsModel,
-            ISettings settings,
-            ITmdbCachedSearchClient cachedSearchClient,
+            ISettings settings,            
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPersonDetailModelConfigurator personDetailModelConfigurator,
             IPageService pageService
             )
         {
 
-            _settings = settings;
-            _cachedSearchClient = cachedSearchClient;
+            _settings = settings;            
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _personDetailModelConfigurator = personDetailModelConfigurator;
             _pageService = pageService;
@@ -60,7 +53,9 @@ namespace Ch9
             _movieDetailModelConfigurator.SetGenreNamesFromGenreIds(personsMovieCreditsModel.MoviesAsCrewMember);
 
             PersonsDetails = personDetails;
+            personsMovieCreditsModel.SortMoviesByYearDesc();
             PersonsMovieCreditsModel = personsMovieCreditsModel;
+            
 
             var firstImage = new ImageModel();
             _personDetailModelConfigurator.SetProfileGalleryPictureImageSrc(firstImage, PersonsDetails);

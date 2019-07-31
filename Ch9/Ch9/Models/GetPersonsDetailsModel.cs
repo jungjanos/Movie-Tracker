@@ -8,7 +8,7 @@ namespace Ch9.Models
         [JsonProperty("birthday")]
         public string Birthday { get; set; }
 
-        public int Age
+        public int? Age
         {
             get
             {
@@ -19,7 +19,8 @@ namespace Ch9.Models
 
                     return bdayStillComming ? years - 1 : years;
                 }
-                return -1;
+                else
+                    return null;
             }
         }
         [JsonProperty("known_for_department")]

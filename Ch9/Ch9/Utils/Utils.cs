@@ -111,12 +111,10 @@ namespace Ch9.Utils
             return staffMembers;
         }
 
-        //public static GetPersonsDetailsModel ExtractPersonWithPrimaryData(this IStaffMemberRole staffMemberRole) =>
-        //    new GetPersonsDetailsModel
-        //    {
-        //        Id = staffMemberRole.Id,
-        //        ProfilePath = staffMemberRole.ProfilePath,
-        //        Name = staffMemberRole.Name
-        //    };
+        public static void SortMoviesByYearDesc(this GetPersonsMovieCreditsModel movieCredits)
+        {
+            Array.Sort(movieCredits.MoviesAsActor, new MovieYearDescComparer());
+            Array.Sort(movieCredits.MoviesAsCrewMember, new MovieYearDescComparer());
+        }
     }
 }

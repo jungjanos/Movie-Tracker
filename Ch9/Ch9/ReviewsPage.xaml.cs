@@ -24,6 +24,7 @@ namespace Ch9
         {
             ViewModel = new ReviewsPageViewModel(
                 parentViewModel,
+                ((App)Application.Current).Settings,
                 ((App)Application.Current).CachedSearchClient,
                 new PageService(this)
                 );

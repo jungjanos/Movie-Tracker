@@ -15,7 +15,8 @@ namespace Ch9
     public class ReviewsPageViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        
+
+        private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
         private readonly IPageService _pageService;
 
@@ -25,13 +26,13 @@ namespace Ch9
         public ICommand IncreaseRatingCommand { get; private set; }
         public MovieDetailPageViewModel ParentPageViewModel { get; set; }
 
-        public ReviewsPageViewModel(MovieDetailPageViewModel parent, ITmdbCachedSearchClient tmdbCachedSearchClient, IPageService pageService)
+        public ReviewsPageViewModel(MovieDetailPageViewModel parent, ISettings settings, ITmdbCachedSearchClient tmdbCachedSearchClient, IPageService pageService)
         {            
             _cachedSearchClient = tmdbCachedSearchClient;
             _pageService = pageService;
 
             ParentPageViewModel = parent;
-
+            _settings = settings;
             DeleteRatingCommand = new Command(async () => await OnDeleteRatingCommand());
             SetRatingCommand = new Command<string>(async str => {
                 decimal targetRating = decimal.Parse(str);
@@ -45,10 +46,14 @@ namespace Ch9
         // side wraps the rating into a variably typed Json object.
         public decimal? UsersRating
         {
-            get => ParentPageViewModel.MovieStates.Rating?.Value;
+            get => ParentPageViewModel.MovieStates?.Rating?.Value;
             set
             {
                 if (value == UsersRating)
+                    return;
+
+                // parents 'MovieStates' object CAN BE NULL
+                if (ParentPageViewModel.MovieStates == null)
                     return;
 
                 if (value == null)
@@ -131,15 +136,28 @@ namespace Ch9
 
         private async Task<bool> UpdateRating(decimal targetRating)
         {
-            int enumValue = (int)(targetRating * 2);
-            Rating rating = (Rating)enumValue;
+            if(!_settings.HasTmdbAccount)
+            {
+                await _pageService.DisplayAlert("Info", $"To vote, You need to log in with a user account", "Ok");
+                return false;
+            }                
 
-            var response = await _cachedSearchClient.RateMovie(rating, ParentPageViewModel.Movie.Id, null, 3, 1000);
+            try
+            {
+                int enumValue = (int)(targetRating * 2);
+                Rating rating = (Rating)enumValue;
 
-            if (!response.HttpStatusCode.IsSuccessCode())
-                await _pageService.DisplayAlert("Error", $"Could not update your rating, server response: {response.HttpStatusCode}", "Ok");
+                var response = await _cachedSearchClient.RateMovie(rating, ParentPageViewModel.Movie.Id, null, 1, 1000);
 
-            return response.HttpStatusCode.IsSuccessCode();
+                if (!response.HttpStatusCode.IsSuccessCode())
+                    await _pageService.DisplayAlert("Error", $"Could not update your vote, server response: {response.HttpStatusCode}", "Ok");
+
+                return response.HttpStatusCode.IsSuccessCode();
+            }
+            catch (Exception ex)
+            { await _pageService.DisplayAlert("Error", $"Could not update your vote, exception happened: {ex.Message}", "Ok"); }
+
+            return false;
         }
 
 

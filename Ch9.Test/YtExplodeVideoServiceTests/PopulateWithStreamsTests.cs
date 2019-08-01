@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Xunit.Abstractions;
 using System.Linq;
 using Ch9.ApiClient;
-using Ch9.Utils;
 using System;
+using Ch9.Services.VideoService;
 
 namespace Ch9.Test.YtExplodeVideoServiceTests
 {

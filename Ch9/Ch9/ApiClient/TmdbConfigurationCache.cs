@@ -1,8 +1,7 @@
-﻿using Ch9.Utils;
+﻿using Ch9.Models;
+using Ch9.Utils;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 

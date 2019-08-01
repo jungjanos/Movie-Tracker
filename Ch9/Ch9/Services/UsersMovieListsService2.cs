@@ -1,10 +1,11 @@
 ﻿using Ch9.ApiClient;
 using Ch9.Models;
+using Ch9.Utils;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Ch9.Utils
+namespace Ch9.Services
 {
     public class UsersMovieListsService2 : INotifyPropertyChanged
     {

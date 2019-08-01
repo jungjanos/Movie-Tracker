@@ -9,8 +9,9 @@ using YoutubeExplode.Models;
 using YoutubeExplode.Models.MediaStreams;
 using Newtonsoft.Json;
 using System;
+using Ch9.Utils;
 
-namespace Ch9.Utils
+namespace Ch9.Services.VideoService
 {
     /// <summary>
     /// Video service implementation based on YoutubeExplode. 
@@ -45,7 +46,7 @@ namespace Ch9.Utils
             GetMovieVideosResult movieVideosResponse = await _tmdbCachedSearchClient.GetMovieVideos(movieId, _settings.SearchLanguage, retryCount, delayMilliseconds, fromCache);
 
             if (movieVideosResponse.HttpStatusCode.IsSuccessCode())
-            {                
+            {
                 var tmdbVideosModel = JsonConvert.DeserializeObject<GetMovieVideosModel>(movieVideosResponse.Json);
 
                 foreach (TmdbVideoModel videoModel in tmdbVideosModel.VideoModels)
@@ -91,7 +92,7 @@ namespace Ch9.Utils
         }
 
         public async Task PopulateWithStreams(TmdbVideoModel attachedVideo)
-        {            
+        {
             try
             {
                 MediaStreamInfoSet streamInfoSet = await _youtubeClient.GetVideoMediaStreamInfosAsync(attachedVideo.Key);
@@ -102,19 +103,19 @@ namespace Ch9.Utils
             catch { }
         }
 
-        public static Models.Statistics GetStatistics(Video video) =>  new Models.Statistics(
+        public static Statistics GetStatistics(Video video) => new Statistics(
                  viewCount: video.Statistics.ViewCount,
                  likeCount: video.Statistics.LikeCount,
                  dislikeCount: video.Statistics.DislikeCount,
                  averageRating: video.Statistics.AverageRating
                 );
 
-        public static Models.VideoStreamInfo GetStreamInfo(MuxedStreamInfo muxedStreamInfo) => new Models.VideoStreamInfo(
+        public static VideoStreamInfo GetStreamInfo(MuxedStreamInfo muxedStreamInfo) => new VideoStreamInfo(
             streamUrl: muxedStreamInfo.Url,
-            quality: (Models.VideoQuality)muxedStreamInfo.VideoQuality,
+            quality: (VideoQuality)muxedStreamInfo.VideoQuality,
             qualityLabel: muxedStreamInfo.VideoQualityLabel,
             height: muxedStreamInfo.Resolution.Height,
-            width:muxedStreamInfo.Resolution.Width
+            width: muxedStreamInfo.Resolution.Width
             );
     }
 
@@ -124,24 +125,24 @@ namespace Ch9.Utils
 
         public YtVideoStreamSelector(ISettings settings) => _settings = settings;
 
-        public Models.VideoStreamInfo SelectVideoStream(IEnumerable<Models.VideoStreamInfo> streams)
+        public VideoStreamInfo SelectVideoStream(IEnumerable<VideoStreamInfo> streams)
         {
-            Models.VideoStreamInfo result = null;
+            VideoStreamInfo result = null;
 
             var orderedByQuality = streams.OrderByDescending(s => s.Quality);
 
             if (_settings.PlaybackQuality == VideoPlaybackQuality.High)
             {
-                result = orderedByQuality.Where(s => s.Quality > Models.VideoQuality.Medium480).LastOrDefault();
+                result = orderedByQuality.Where(s => s.Quality > VideoQuality.Medium480).LastOrDefault();
                 result = result ?? orderedByQuality.FirstOrDefault();
             }
             else if (_settings.PlaybackQuality == VideoPlaybackQuality.Low)
             {
-                result = orderedByQuality.Where(s => s.Quality < Models.VideoQuality.High720).FirstOrDefault();
+                result = orderedByQuality.Where(s => s.Quality < VideoQuality.High720).FirstOrDefault();
                 result = result ?? orderedByQuality.LastOrDefault();
             }
 
-            result = result ?? new Models.VideoStreamInfo(streamUrl: string.Empty, Models.VideoQuality.Invalid, "invalid video", -1, -1);
+            result = result ?? new VideoStreamInfo(streamUrl: string.Empty, VideoQuality.Invalid, "invalid video", -1, -1);
 
             return result;
         }

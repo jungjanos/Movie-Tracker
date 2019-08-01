@@ -1,5 +1,4 @@
-﻿using Ch9.ApiClient;
-using Ch9.Models;
+﻿using Ch9.Models;
 using System.Collections.Generic;
 using System.Linq;
 

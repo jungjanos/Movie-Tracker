@@ -10,8 +10,9 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
+using Ch9.Utils;
 
-namespace Ch9.Utils
+namespace Ch9.Services
 {
     public class FavoriteMoviesListService : INotifyPropertyChanged
     {
@@ -35,7 +36,7 @@ namespace Ch9.Utils
             {
                 if (SetProperty(ref _sortBy, value))
                     _sortOptionChangedCommand.Execute(null);
-            } 
+            }
         }
 
         public FavoriteMoviesListService(
@@ -58,8 +59,8 @@ namespace Ch9.Utils
                 {
                     await RefreshFavoriteMoviesList(1, 1000);
                 }
-                catch { };                
-            });            
+                catch { };
+            });
         }
 
         /// <summary>
@@ -81,7 +82,7 @@ namespace Ch9.Utils
 
             SearchResult moviesOnFavoriteList = JsonConvert.DeserializeObject<SearchResult>(getFavoriteList.Json);
 
-            Utils.AppendResult(FavoriteMovies, moviesOnFavoriteList, _movieDetailConfigurator);
+            Utils.Utils.AppendResult(FavoriteMovies, moviesOnFavoriteList, _movieDetailConfigurator);
         }
 
         public async Task TryLoadNextPage(int retryCount = 0, int delayMilliseconds = 1000)
@@ -99,11 +100,11 @@ namespace Ch9.Utils
 
             SearchResult moviesOnFavoriteListPage = JsonConvert.DeserializeObject<SearchResult>(getFavoriteList.Json);
 
-            Utils.AppendResult(FavoriteMovies, moviesOnFavoriteListPage, _movieDetailConfigurator);
+            Utils.Utils.AppendResult(FavoriteMovies, moviesOnFavoriteListPage, _movieDetailConfigurator);
             OnPropertyChanged(nameof(CanLoad));
         }
 
-        public bool CanLoad => FavoriteMovies.Page == 0 ? false : (FavoriteMovies.Page >= FavoriteMovies.TotalPages ? false : true);
+        public bool CanLoad => FavoriteMovies.Page == 0 ? false : FavoriteMovies.Page >= FavoriteMovies.TotalPages ? false : true;
 
         /// <summary>
         /// Can throw. 

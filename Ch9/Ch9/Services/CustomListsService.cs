@@ -1,5 +1,6 @@
 ﻿using Ch9.ApiClient;
 using Ch9.Models;
+using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace Ch9.Utils
+namespace Ch9.Services
 {
     public class CustomListsService : INotifyPropertyChanged
     {
@@ -119,7 +120,7 @@ namespace Ch9.Utils
 
                 var selectedListBackup = SelectedCustomList;
                 SelectedCustomList = null;
-                Utils.UpdateListviewCollection(UsersCustomLists, movieLists, new MovieListModelComparer());
+                Utils.Utils.UpdateListviewCollection(UsersCustomLists, movieLists, new MovieListModelComparer());
 
                 if (selectedListBackup != null)
                     SelectedCustomList = UsersCustomLists.Contains(selectedListBackup) ? selectedListBackup : UsersCustomLists.FirstOrDefault();
@@ -310,7 +311,7 @@ namespace Ch9.Utils
             if (target.Movies == null)
                 target.Movies = source.Movies;
             else
-                Utils.UpdateListviewCollection(target.Movies, source.Movies, new MovieModelComparer());
+                Utils.Utils.UpdateListviewCollection(target.Movies, source.Movies, new MovieModelComparer());
         }
 
 

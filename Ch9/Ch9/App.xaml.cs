@@ -5,6 +5,8 @@ using Xamarin.Forms.Xaml;
 using Ch9.Models;
 using System.Net.Http;
 using Ch9.Views;
+using Ch9.Services;
+using Ch9.Services.VideoService;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Ch9

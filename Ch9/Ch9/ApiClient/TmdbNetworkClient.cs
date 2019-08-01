@@ -9,7 +9,6 @@ using static Ch9.ApiClient.WebApiPathConstants;
 using Newtonsoft.Json;
 using System.Text;
 using Ch9.Utils;
-using Newtonsoft.Json.Serialization;
 
 namespace Ch9.ApiClient
 {

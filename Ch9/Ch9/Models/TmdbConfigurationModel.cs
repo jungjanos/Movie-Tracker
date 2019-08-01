@@ -1,9 +1,6 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Ch9.ApiClient
+namespace Ch9.Models
 {
     public class ImageSettingsModel
     {

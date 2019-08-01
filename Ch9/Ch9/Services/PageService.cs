@@ -5,7 +5,7 @@ using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace Ch9.Utils
+namespace Ch9.Services
 {
     // IPageService is injected into the ViewModel objects in order to access 
     // UI-page functions (navigation, page instantiation)
@@ -18,29 +18,29 @@ namespace Ch9.Utils
         Task<object> PopCurrent();
         Task PopToRootAsync();
         Task PushAsync(MovieDetailModel movie);
-        Task PushAsync(AddListPageViewModel viewModel);        
-        Task PushLargeImagePageAsync(MovieDetailPageViewModel viewModel);        
+        Task PushAsync(AddListPageViewModel viewModel);
+        Task PushLargeImagePageAsync(MovieDetailPageViewModel viewModel);
         Task PushPersonsMovieCreditsPageAsync(GetPersonsDetailsModel personDetails, GetPersonsMovieCreditsModel personsMovieCredits);
         Task PushRecommendationsPageAsync(MovieDetailModel movie);
         Task PushReviewsPage(MovieDetailPageViewModel model);
         Task PushVideoPageAsync(MovieDetailPageViewModel viewModel);
     }
-    
+
     public class PageService : IPageService
     {
         private readonly Page _currentPage;
 
-        public PageService(Page current) => _currentPage = current;        
+        public PageService(Page current) => _currentPage = current;
 
         public async Task PushAsync(MovieDetailModel movie) => await _currentPage.Navigation.PushAsync(new MovieDetailPage(movie));
-        
+
         public async Task PushReviewsPage(MovieDetailPageViewModel model) =>
             await _currentPage.Navigation.PushAsync(new ReviewsPage(model));
 
-        public async Task PushAsync(AddListPageViewModel viewModel) =>        
+        public async Task PushAsync(AddListPageViewModel viewModel) =>
             await _currentPage.Navigation.PushAsync(new AddListPage(viewModel));
 
-        public async Task PushRecommendationsPageAsync(MovieDetailModel movie) =>        
+        public async Task PushRecommendationsPageAsync(MovieDetailModel movie) =>
             await _currentPage.Navigation.PushAsync(new RecommendationsPage3(movie));
 
         public async Task PushLargeImagePageAsync(MovieDetailPageViewModel viewModel) =>
@@ -52,13 +52,13 @@ namespace Ch9.Utils
         public async Task PushPersonsMovieCreditsPageAsync(GetPersonsDetailsModel personDetails, GetPersonsMovieCreditsModel personsMovieCredits) =>
             await _currentPage.Navigation.PushAsync(new PersonsMovieCreditsPage(personDetails, personsMovieCredits));
 
-        public async Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons) =>        
-             await _currentPage.DisplayActionSheet(title, cancel, destruction, buttons);        
+        public async Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons) =>
+             await _currentPage.DisplayActionSheet(title, cancel, destruction, buttons);
 
-        public async Task DisplayAlert(string title, string message, string cancel)=>
-            await _currentPage.DisplayAlert(title, message, cancel);        
+        public async Task DisplayAlert(string title, string message, string cancel) =>
+            await _currentPage.DisplayAlert(title, message, cancel);
 
-        public async Task<bool> DisplayAlert(string title, string message, string accept, string cancel) => 
+        public async Task<bool> DisplayAlert(string title, string message, string accept, string cancel) =>
             await _currentPage.DisplayAlert(title, message, accept, cancel);
 
         public async Task<object> PopCurrent()
@@ -79,7 +79,7 @@ namespace Ch9.Utils
             {
                 await _currentPage.DisplayAlert("Error", $"Could not open weblink: {ex.Message}", "Ok");
             }
-            
+
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Ch9.Authentication
+namespace Ch9.Models
 {
     public class RequestToken
     {

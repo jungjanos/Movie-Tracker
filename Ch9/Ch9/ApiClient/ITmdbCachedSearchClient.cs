@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using Ch9.Models;
+using System.Threading.Tasks;
 
 namespace Ch9.ApiClient
 {

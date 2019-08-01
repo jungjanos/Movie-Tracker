@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Ch9.Authentication;
 using Ch9.Models;
 using Ch9.ApiClient;
 using Xunit;

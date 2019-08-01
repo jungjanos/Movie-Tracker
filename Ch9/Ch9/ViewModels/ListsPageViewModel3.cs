@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Ch9.Models;
-using Ch9.Utils;
+using Ch9.Services;
 using Xamarin.Forms;
 
 namespace Ch9.ViewModels

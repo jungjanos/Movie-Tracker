@@ -1,9 +1,9 @@
 ﻿using Ch9.ApiClient;
 using Ch9.Models;
+using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
-namespace Ch9.Utils
+namespace Ch9.Services
 {
     public class WatchlistService : INotifyPropertyChanged
     {
@@ -20,7 +20,7 @@ namespace Ch9.Utils
         private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
         private readonly ICommand _sortOptionChangedCommand;
 
-        private SearchResult _watchlist;        
+        private SearchResult _watchlist;
 
         public SearchResult Watchlist
         {
@@ -57,7 +57,8 @@ namespace Ch9.Utils
                 try
                 {
                     await RefreshWatchlist(1, 1000);
-                } catch { }                
+                }
+                catch { }
             });
         }
 
@@ -80,7 +81,7 @@ namespace Ch9.Utils
 
             SearchResult moviesOnWatchlist = JsonConvert.DeserializeObject<SearchResult>(getWatchlist.Json);
 
-            Utils.AppendResult(Watchlist, moviesOnWatchlist, _movieDetailConfigurator);
+            Utils.Utils.AppendResult(Watchlist, moviesOnWatchlist, _movieDetailConfigurator);
         }
 
         public async Task TryLoadNextPage(int retryCount = 0, int delayMilliseconds = 1000)
@@ -98,11 +99,11 @@ namespace Ch9.Utils
 
             SearchResult moviesOnWatchlistPage = JsonConvert.DeserializeObject<SearchResult>(getWatchlist.Json);
 
-            Utils.AppendResult(Watchlist, moviesOnWatchlistPage, _movieDetailConfigurator);
+            Utils.Utils.AppendResult(Watchlist, moviesOnWatchlistPage, _movieDetailConfigurator);
             OnPropertyChanged(nameof(CanLoad));
         }
 
-        public bool CanLoad => Watchlist.Page == 0 ? false : (Watchlist.Page >= Watchlist.TotalPages ? false : true);
+        public bool CanLoad => Watchlist.Page == 0 ? false : Watchlist.Page >= Watchlist.TotalPages ? false : true;
 
         /// <summary>
         /// Can throw. 

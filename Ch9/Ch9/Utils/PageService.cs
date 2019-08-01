@@ -1,4 +1,6 @@
 ﻿using Ch9.Models;
+using Ch9.ViewModels;
+using Ch9.Views;
 using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;

@@ -4,6 +4,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Ch9.Models;
 using System.Net.Http;
+using Ch9.Views;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Ch9

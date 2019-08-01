@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
+             xmlns:converters="clr-namespace:Ch9.Converters"
+             xmlns:controls="clr-namespace:Ch9.Controls;assembly=Ch9"
+             mc:Ignorable="d"
+             x:Class="Ch9.Views.ReviewsPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:RatingToGlyphConverter x:Key="ratingToGlyph"/>
+            <converters:NullableDecimalRatingToHasRatingConverter x:Key="nullableDecimalRatingToHasRating" />
+            <converters:NullableDecimalRatingToRatingNoticeConverter x:Key="nullableDecimalRatingToRatingNotice"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical" Padding="5,0,5,5">
+            
+            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10">
+                <Label Text="{Binding Path=ParentPageViewModel.Movie.Title}" FontSize="Large" LineBreakMode="WordWrap" HorizontalOptions="Start"/>
+                <Label 
+                    Text="{Binding Path=ParentPageViewModel.Movie.Year}" 
+                    IsVisible="{Binding Path=ParentPageViewModel.Movie.Year.HasValue}"
+                    FontSize="Large" 
+                    LineBreakMode="NoWrap" 
+                    MaxLines="1"  
+                    HorizontalOptions="EndAndExpand" 
+                    MinimumWidthRequest="150"/>
+            </StackLayout>
+
+            <Label Text="{Binding Path=ParentPageViewModel.Movie.Tagline}"/>
+            <Label Text="{Binding Path=ParentPageViewModel.Movie.Genre}" FontSize="Small"/>
+
+
+            <StackLayout Orientation="Horizontal">
+                <Label Text="{Binding Path= ParentPageViewModel.Movie.Duration, StringFormat='{0} mins'}" IsVisible="{Binding Path=ParentPageViewModel.Movie.Duration.HasValue}"/>
+                <Label Text="{Binding Path= ParentPageViewModel.Movie.VoteAverage, StringFormat='Score: {0:F1}'}"/>
+                <Label Text="{Binding Path= ParentPageViewModel.Movie.VoteCount, StringFormat='Votes: {0}'}"/>
+                <Label Text="{Binding Path= ParentPageViewModel.Movie.Countries}"/>
+            </StackLayout>
+
+            <Grid HorizontalOptions="Start"
+                  ColumnSpacing="0"
+                  Padding="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="25" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+
+                <Label  Grid.Row="0" Grid.Column="0"
+                        Text="{Binding UsersRating,Converter={StaticResource Key=nullableDecimalRatingToRatingNotice}}" 
+                        FontSize="Small" TextColor="Black"
+                        VerticalTextAlignment="Center"/>
+
+                <Button Grid.Row="0" Grid.Column="1"
+                        Command="{Binding DeleteRatingCommand}"
+                        IsVisible="{Binding UsersRating, Converter={StaticResource Key=nullableDecimalRatingToHasRating}}"
+                        BackgroundColor="Transparent">
+                    <Button.ImageSource>
+                        <!--trash can-->
+                        <FontImageSource Glyph="&#xf398;"
+                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                         Size="20"                
+                         Color="DarkGray"/>
+                    </Button.ImageSource>
+                </Button>
+                
+                <Button Grid.Row="0" Grid.Column="2"
+                        Command="{Binding SetRatingCommand}"
+                        CommandParameter="2"
+                        BackgroundColor="Transparent"
+                        HorizontalOptions="Center">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=0}"
+                         FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
+                         Size="20" 
+                         Color="Gold"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button Grid.Row="0" Grid.Column="3"
+                        Command="{Binding SetRatingCommand}"
+                        CommandParameter="4"
+                        BackgroundColor="Transparent">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=1}"
+                         FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
+                         Size="20" 
+                         Color="Gold"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button Grid.Row="0" Grid.Column="4"
+                        Command="{Binding SetRatingCommand}"
+                        CommandParameter="6"
+                        BackgroundColor="Transparent">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=2}"
+                         FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
+                         Size="20" 
+                         Color="Gold"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button Grid.Row="0" Grid.Column="5"
+                        Command="{Binding SetRatingCommand}"
+                        CommandParameter="8"
+                        BackgroundColor="Transparent">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=3}"
+                         FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
+                         Size="20" 
+                         Color="Gold"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button Grid.Row="0" Grid.Column="6"
+                        Command="{Binding SetRatingCommand}"
+                        CommandParameter="10"
+                        BackgroundColor="Transparent">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=4}"
+                         FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
+                         Size="20"
+                         Color="Gold"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button Grid.Row="0" Grid.Column="7"
+                        Command="{Binding DecreaseRatingCommand}"
+                        IsVisible="{Binding UsersRating, Converter={StaticResource Key=nullableDecimalRatingToHasRating}}"
+                        BackgroundColor="Transparent"
+                        HorizontalOptions="Center">
+                    <Button.ImageSource>
+                        <!--down arrow-->
+                        <FontImageSource Glyph="&#xf0ae;"
+                         FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
+                         Size="12" 
+                         Color="Black"/>
+                    </Button.ImageSource>
+                </Button>
+
+                <Label Grid.Row="0" Grid.Column="8"
+                    Text="{Binding UsersRating}"
+                       
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center"
+                       />
+
+                <Button Grid.Row="0" Grid.Column="9"
+                        Command="{Binding IncreaseRatingCommand}"
+                        IsVisible="{Binding UsersRating, Converter={StaticResource Key=nullableDecimalRatingToHasRating}}"
+                        BackgroundColor="Transparent"
+                        HorizontalOptions="Center">
+                    <Button.ImageSource>
+                        <!--up arrow-->
+                        <FontImageSource Glyph="&#xf0ad;"
+                         FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
+                         Size="12" 
+                         Color="Black"/>
+                    </Button.ImageSource>
+                </Button>
+
+            </Grid>
+
+
+
+            <!--<Label Text="Reviews" FontSize="Large" TextColor="DarkGray"/>-->
+            <Label Text="{Binding Path=ParentPageViewModel.Movie.Reviews.Count , StringFormat='Reviews ({0})'}" FontSize="Large" TextColor="DarkGray"/>
+
+            <ListView HasUnevenRows="True"
+                      ItemsSource="{Binding Path=ParentPageViewModel.Movie.Reviews}"
+                      SeparatorVisibility="Default"
+                      SeparatorColor="DarkSeaGreen">
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+
+                            <StackLayout Orientation="Vertical" Padding="5" Margin="10">
+                                <Label Text="{Binding Author}" FontSize="Large"/>
+                                <controls:ExtendedLabel Text="{Binding Content}" FontSize="Small"  Visual="Material" JustifyText="True"/>
+                            </StackLayout>
+
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+            </ListView>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

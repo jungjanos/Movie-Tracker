@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
+            xmlns:views="clr-namespace:Ch9.Views"            
+            mc:Ignorable="d"
+            x:Class="Ch9.Views.MainTabbedPage">
+
+    <!--Pages can be added as references or inline-->        
+    <views:MainPage3/>
+    <views:TrendingPage2/>
+    <views:ListsPage/>
+    <views:MainSettingsPage2/>
+
+</TabbedPage>

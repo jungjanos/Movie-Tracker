@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
+             xmlns:converters="clr-namespace:Ch9.Converters"
+             xmlns:controls="clr-namespace:Ch9.Controls"
+             mc:Ignorable="d"
+             x:Class="Ch9.Views.RecommendationsPage3"
+             Title="{Binding Path=Movie.Title}">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:RecommendationOrSimilarBoolToStringConverter x:Key="recommendationOrSimilarBoolToString"/>
+            <converters:InverseBoolConverter x:Key="inverseBool"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>        
+        <StackLayout>
+
+            <StackLayout Orientation="Horizontal" Padding="5" HorizontalOptions="FillAndExpand">
+                <Label Text="{Binding RecommendationsOrSimilars, Converter={StaticResource Key=recommendationOrSimilarBoolToString}}" VerticalTextAlignment="Center" HorizontalOptions="Start" FontSize="Large"/>
+                <Switch IsToggled="{Binding RecommendationsOrSimilars}" HorizontalOptions="EndAndExpand"/>
+            </StackLayout>
+
+            <controls:ExtendedListView  ItemsSource="{Binding Path=RecommendedMovies.MovieDetailModels}"
+                                        IsVisible="{Binding RecommendationsOrSimilars}"
+                                        TappedCommand="{Binding OnItemTappedCommand}"
+                                        IsPullToRefreshEnabled="True"                                        
+                                        IsRefreshing="{Binding IsRefreshing}"
+                                        RefreshCommand="{Binding RefreshRecommendedMoviesCommand}"
+                                        LoadMoreCommand="{Binding LoadNextRecommendedMoviesPageCommand}"
+                                        HasUnevenRows="False"
+                                        RowHeight="85">
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+
+                            <StackLayout Orientation="Horizontal" Padding="5">
+                                <Image Aspect="AspectFit"
+                                       VerticalOptions="FillAndExpand"
+                                       HorizontalOptions="Start"
+                                       HeightRequest="75"
+                                       WidthRequest="50">
+                                    <Image.Source>
+                                        <UriImageSource Uri="{Binding ImgSmSrc}"
+                                                    CacheValidity="0"
+                                                    CachingEnabled="False"                                                         
+                                                    />
+                                    </Image.Source>
+                                </Image>
+
+                                <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
+                                    <Label Text="{Binding Title}" TextColor="Black"/>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label 
+                                          TextColor="Gray" 
+                                          Text="{Binding Year}" 
+                                          IsVisible="{Binding Path=Year.HasValue}"
+                                          FontSize="Micro"/>
+                                        <Label TextColor="Gray" Text="{Binding Genre}" FontSize="Micro"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </StackLayout>
+                            
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </controls:ExtendedListView>
+
+            <controls:ExtendedListView  ItemsSource="{Binding Path=SimilarMovies.MovieDetailModels}"
+                                        IsVisible="{Binding RecommendationsOrSimilars, Converter={StaticResource Key=inverseBool}}"
+                                        TappedCommand="{Binding OnItemTappedCommand}"
+                                        IsPullToRefreshEnabled="True"                                        
+                                        IsRefreshing="{Binding IsRefreshing}"
+                                        RefreshCommand="{Binding RefreshSimilarMoviesCommand}"
+                                        LoadMoreCommand="{Binding LoadNextSimilarMoviesPageCommand}"                                        
+                                        HasUnevenRows="False"
+                                        RowHeight="85">
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+
+                            <StackLayout Orientation="Horizontal" Padding="5">
+                                <Image Aspect="AspectFit"
+                                       VerticalOptions="FillAndExpand"
+                                       HorizontalOptions="Start"
+                                       HeightRequest="75"
+                                       WidthRequest="50">
+                                    <Image.Source>
+                                        <UriImageSource Uri="{Binding ImgSmSrc}"
+                                                    CacheValidity="0"
+                                                    CachingEnabled="False"                                                         
+                                                    />
+                                    </Image.Source>
+                                </Image>
+
+                                <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
+                                    <Label Text="{Binding Title}" TextColor="Black"/>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label 
+                                          TextColor="Gray" 
+                                          Text="{Binding Year}"
+                                          IsVisible="{Binding Path=Year.HasValue}"
+                                          FontSize="Micro"/>
+                                        <Label TextColor="Gray" Text="{Binding Genre}" FontSize="Micro"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </StackLayout>
+                            
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </controls:ExtendedListView>
+
+        </StackLayout>        
+    </ContentPage.Content>        
+</ContentPage>

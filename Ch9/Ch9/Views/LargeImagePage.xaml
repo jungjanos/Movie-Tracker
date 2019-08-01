@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
+             xmlns:pancardview="clr-namespace:PanCardView;assembly=PanCardView"             
+             mc:Ignorable="d"
+             x:Class="Ch9.Views.LargeImagePage"
+             NavigationPage.HasNavigationBar="False"
+             >
+
+    <ContentPage.Content>
+        <pancardview:CardsView
+                        ItemsSource="{Binding DisplayImages}"
+                        SelectedIndex="{Binding SelectedGalleryImage}"
+                        >
+            <pancardview:CardsView.ItemTemplate>
+                <DataTemplate>
+                    <ContentView Padding="5"
+                                 BackgroundColor="WhiteSmoke">
+                        <Frame
+                            Padding="0" 
+                            HasShadow="false"
+                            IsClippedToBounds="true"
+                            CornerRadius="20"
+                            BackgroundColor="WhiteSmoke"                            
+                        >
+                            <Image Aspect="AspectFill">    
+
+                                <Image.Source>
+                                    <UriImageSource
+                                        Uri="{Binding Path=FilePath}"
+                                        CacheValidity="0"
+                                        CachingEnabled="False"
+                                    />
+                                </Image.Source>
+                            </Image>
+
+                        </Frame>
+                    </ContentView>
+                </DataTemplate>
+            </pancardview:CardsView.ItemTemplate>
+
+        </pancardview:CardsView>
+    </ContentPage.Content>
+</ContentPage>

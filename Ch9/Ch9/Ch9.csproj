@@ -20,52 +20,52 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="MovieDetailPage.xaml.cs">
+    <Compile Update="Views\MovieDetailPage.xaml.cs">
       <DependentUpon>MovieDetailPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="AddListPage.xaml">
+    <EmbeddedResource Update="Views\AddListPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="GenreSettingsPage.xaml">
+    <EmbeddedResource Update="Views\GenreSettingsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="LargeImagePage.xaml">
+    <EmbeddedResource Update="Views\LargeImagePage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="ListsPage.xaml">
+    <EmbeddedResource Update="Views\ListsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="LoadingPage.xaml">
+    <EmbeddedResource Update="Views\LoadingPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="MainPage3.xaml">
+    <EmbeddedResource Update="Views\MainPage3.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="MainSettingsPage2.xaml">
+    <EmbeddedResource Update="Views\MainSettingsPage2.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="MainTabbedPage.xaml">
+    <EmbeddedResource Update="Views\MainTabbedPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="MovieDetailPage.xaml">
+    <EmbeddedResource Update="Views\MovieDetailPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="PersonsMovieCreditsPage.xaml">
+    <EmbeddedResource Update="Views\PersonsMovieCreditsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="RecommendationsPage3.xaml">
+    <EmbeddedResource Update="Views\RecommendationsPage3.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="ReviewsPage.xaml">
+    <EmbeddedResource Update="Views\ReviewsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="TrendingPage2.xaml">
+    <EmbeddedResource Update="Views\TrendingPage2.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="VideoPage.xaml">
+    <EmbeddedResource Update="Views\VideoPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

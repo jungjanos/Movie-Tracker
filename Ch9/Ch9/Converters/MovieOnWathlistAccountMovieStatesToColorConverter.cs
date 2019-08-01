@@ -11,7 +11,7 @@ namespace Ch9.Converters
     {
         private readonly Color _positiveColor = Color.DarkGreen;
         private readonly Color _negativeColor = Color.DarkGray;
-        private readonly Color _invalidColor = Color.Gray;
+        private readonly Color _invalidColor = Color.DarkGray;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

@@ -27,6 +27,7 @@ namespace Ch9.ViewModels
         private readonly IVideoService _videoService;
         private readonly IPageService _pageService;
         private readonly Task _fetchGallery;
+        private Task _fetchMovieStates;
         private MovieCreditsModel _credits;
 
         private ObservableCollection<ImageModel> _displayImages;
@@ -46,13 +47,6 @@ namespace Ch9.ViewModels
         }
 
         public bool? MovieIsAlreadyOnActiveList => _movieListsService2.CustomListsService.CheckIfMovieIsOnActiveList(Movie.Id);
-
-        private bool _movieStatesFetchFinished;
-        public bool MovieStatesFetchFinished
-        {
-            get => _movieStatesFetchFinished;
-            set => SetProperty(ref _movieStatesFetchFinished, value);
-        }
 
         private AccountMovieStates _movieStates;
         public AccountMovieStates MovieStates
@@ -116,14 +110,13 @@ namespace Ch9.ViewModels
             _videoService = videoService;
             _pageService = pageService;
             _fetchGallery = UpdateImageCollection();
-            MovieStatesFetchFinished = false;
 
             HomeCommand = new Command(async () => await _pageService.PopToRootAsync());
             ReviewsCommand = new Command(async () => await _pageService.PushReviewsPage(this));
             RecommendationsCommand = new Command(async () => await _pageService.PushRecommendationsPageAsync(Movie));
             ToggleWatchlistCommand = new Command(async () => await OnToggleWatchlistCommand());
             AddToListCommand = new Command(async () => await OnAddToListCommand());
-            ToggleFavoriteCommand = new Command(async () => await OnToggleFavoriteCommand(), () => MovieStatesFetchFinished);
+            ToggleFavoriteCommand = new Command(async () => await OnToggleFavoriteCommand());
             TapImageCommand = new Command(async () =>
             {
                 if (SelectedGalleryImage == null)
@@ -170,7 +163,7 @@ namespace Ch9.ViewModels
                 ShowCredits = !_showCredits;
             });
 
-            MovieCastPersonTappedCommand = new Command<IStaffMemberRole>(async staffMemberRole => 
+            MovieCastPersonTappedCommand = new Command<IStaffMemberRole>(async staffMemberRole =>
             {
                 await FetchStaffMemberDetailsAndMovieCredits(staffMemberRole);
             });
@@ -180,7 +173,7 @@ namespace Ch9.ViewModels
 
         public async Task Initialize()
         {
-            _ = FetchMovieStates();
+            _fetchMovieStates = FetchMovieStates();
             FetchMovieDetailsResult movieDetailsResult = await _cachedSearchClient.FetchMovieDetails(Movie.Id, _settings.SearchLanguage);
             if (movieDetailsResult.HttpStatusCode.IsSuccessCode())
                 JsonConvert.PopulateObject(movieDetailsResult.Json, Movie);
@@ -227,6 +220,11 @@ namespace Ch9.ViewModels
                 await _pageService.DisplayAlert("Info", "You have to log in with a user account to use this function", "Ok");
                 return;
             }
+
+            await _fetchMovieStates;
+
+            if (MovieStates == null)
+                return;
 
             bool desiredState = !MovieStates.OnWatchlist;
 
@@ -280,6 +278,11 @@ namespace Ch9.ViewModels
                 return;
             }
 
+            await _fetchMovieStates;
+
+            if (MovieStates == null)
+                return;
+
             bool desiredState = !MovieStates.IsFavorite;
 
             try
@@ -294,25 +297,16 @@ namespace Ch9.ViewModels
 
         private async Task FetchMovieStates()
         {
-            //GetAccountMovieStatesResult response = await _cachedSearchClient.GetAccountMovieStates(Movie.Id, guestSessionId: null, retryCount: 3, delayMilliseconds: 1000);
-            //if (response.HttpStatusCode.IsSuccessCode())
-            //{
-            //    MovieStates = response.States;
-            //    MovieStatesFetchFinished = true;
-            //    RefreshCanExecutes();
-            //}
-
-            GetAccountMovieStatesResult response = await _cachedSearchClient.GetAccountMovieStates(Movie.Id, guestSessionId: null, retryCount: 3, delayMilliseconds: 1000);
-            if (response.HttpStatusCode.IsSuccessCode())
+            if (!_settings.HasTmdbAccount)
+                return;
+            try
             {
-                try
-                {
+                GetAccountMovieStatesResult response = await _cachedSearchClient.GetAccountMovieStates(Movie.Id, guestSessionId: null, retryCount: 1, delayMilliseconds: 1000);
+                if (response.HttpStatusCode.IsSuccessCode())
                     MovieStates = response.DeserializeJsonIntoModel();
-                    MovieStatesFetchFinished = true;
-                    RefreshCanExecutes();
-                }
-                catch { }
             }
+            catch (Exception ex)
+            { await _pageService.DisplayAlert("Error", $"Could not fetch movie states, service responded with: {ex.Message}", "Ok"); }
         }
 
         private async Task FetchCredits(int retryCount = 0, int delayMilliseconds = 1000)
@@ -357,11 +351,6 @@ namespace Ch9.ViewModels
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        private void RefreshCanExecutes()
-        {
-            ((Command)ToggleFavoriteCommand).ChangeCanExecute();
-        }
 
         private void OnPropertyChanged([CallerMemberName]string propertyName = null)
         {

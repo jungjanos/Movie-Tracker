@@ -1,10 +1,6 @@
-﻿using Ch9.Models;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System.Net;
-using System.Runtime.CompilerServices;
 
 namespace Ch9.ApiClient
 {
@@ -14,61 +10,28 @@ namespace Ch9.ApiClient
         public string Json { get; set; }
     }
 
+    // TmdbResponseBase's derived classes use the same result format,
+    // inheritacne is used only to give a more descriptive class names
+    // and provide information about the API call used to get the results
+
     public class TmdbConfigurationModelResult : TmdbResponseBase
     { }
 
     public class GenreNameFetchResult : TmdbResponseBase
     { }
 
-    public class SearchResult : TmdbResponseBase, INotifyPropertyChanged
-    {
-        [JsonProperty("page")]
-        public int Page { get; set; }
-
-        private ObservableCollection<MovieDetailModel> _movieDetailModels;
-        [JsonProperty("results")]
-        public ObservableCollection<MovieDetailModel> MovieDetailModels
-        {
-            get => _movieDetailModels;
-            set => SetProperty(ref _movieDetailModels, value);
-        }
-
-        [JsonProperty("total_results")]
-        public int TotalResults { get; set; }
-
-        [JsonProperty("total_pages")]
-        public int TotalPages { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName]string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(storage, value))
-                return false;
-
-            storage = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-    }
-
     public class SearchByMovieResult : TmdbResponseBase
     { }
 
-    // The two classes use the same result format,
-    // inheritacne is used only to give a more descriptive class name
-    public class TrendingMoviesResult : SearchByMovieResult { }
+    public class TrendingMoviesResult : TmdbResponseBase
+    { }
 
     public class FetchMovieDetailsResult : TmdbResponseBase
     { }
 
     public class GetMovieImagesResult : TmdbResponseBase
     { }
-    public class GetMovieVideosResult :TmdbResponseBase
+    public class GetMovieVideosResult : TmdbResponseBase
     { }
 
     public class GetMovieRecommendationsResult : TmdbResponseBase
@@ -137,6 +100,28 @@ namespace Ch9.ApiClient
     public class GetPersonsDetailsResult : TmdbResponseBase
     { }
 
+    public class GetAccountMovieStatesResult2 : TmdbResponseBase
+    {
+        /// <summary>
+        /// Can trow. 
+        /// If the HttpStatusCode property is 200(OK) then it tries to deserialize the Json response into 
+        /// the model.
+        /// </summary>
+        /// <returns>object containing the account's states for a particular movie (rating, on watchlit, on favorite list) </returns>
+        public AccountMovieStates DeserializeJsonIntoModel()
+        {
+            if (HttpStatusCode != HttpStatusCode.OK)
+                return null;
+
+            var jsonSettings = new JsonSerializerSettings()
+            {
+                Error = delegate (object sender, ErrorEventArgs args) { args.ErrorContext.Handled = true; }
+            };
+
+            return JsonConvert.DeserializeObject<AccountMovieStates>(Json, jsonSettings);
+        }
+    }
+
     // Because of the flexible object type of the Json object the WebAPI sends back as response,
     // The Api client itself handles the deserialization of the server's response.
     // this behavior diverges from normal case
@@ -188,5 +173,4 @@ namespace Ch9.ApiClient
         [JsonProperty("value")]
         public decimal Value { get; set; }
     }
-
 }

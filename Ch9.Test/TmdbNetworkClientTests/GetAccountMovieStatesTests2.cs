@@ -10,7 +10,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 {
     // INTEGRATION TESTS
     // for the critical TmdbNetworkClient.GetAccountMovieStates(...) function accessing the TMDB WebAPI    
-    public class GetAccountMovieStatesTests : IAsyncLifetime
+    public class GetAccountMovieStatesTests2 : IAsyncLifetime
     {
         private readonly ITestOutputHelper _output;
         readonly Dictionary<string, object> _settingsKeyValues;
@@ -20,7 +20,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         readonly int _movie = 60800; // Macskafogó
         readonly int _invalidMovie = 99999999;
 
-        public GetAccountMovieStatesTests(ITestOutputHelper output)
+        public GetAccountMovieStatesTests2(ITestOutputHelper output)
         {
             _output = output;
             _settingsKeyValues = new Dictionary<string, object>();
@@ -41,23 +41,24 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
         public Task DisposeAsync() => Task.CompletedTask;
 
-        [Fact]        
+        [Fact]
         // happy path
         public async Task WhenCalledOnValidMovie_ReturnsState()
         {
             bool isFavorite = false;
             bool onWatchlist = false;
 
-            GetAccountMovieStatesResult response = await _client.GetAccountMovieStates(mediaId: _movie, guestSessionId: null, retryCount: 0);
+            GetAccountMovieStatesResult2 response = await _client.GetAccountMovieStates2(mediaId: _movie, guestSessionId: null, retryCount: 0);
             _output.WriteLine($"TMDB server's response code {response.HttpStatusCode}");
             _output.WriteLine($"TMDB server's response message {response.Json}");
 
-            PrintAccountMovieStates(response.States);
+            AccountMovieStates states = response.DeserializeJsonIntoModel();
+            PrintAccountMovieStates(states);
 
             Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.OK);
-            Assert.True(response.States.IsFavorite == isFavorite);
-            Assert.True(response.States.Rating == null);            
-            Assert.True(response.States.OnWatchlist == onWatchlist);
+            Assert.True(states.IsFavorite == isFavorite);
+            Assert.True(states.Rating == null);
+            Assert.True(states.OnWatchlist == onWatchlist);
         }
         [Fact]
         // happy path
@@ -65,40 +66,41 @@ namespace Ch9.Test.TmdbNetworkClientTests
         {
             bool isFavorite = true;
             bool onWatchlist = false;
-            
+
             await _client.UpdateFavoriteList("movie", add: true, _movie);
 
-            GetAccountMovieStatesResult response = await _client.GetAccountMovieStates(mediaId: _movie, guestSessionId: null, retryCount: 0);
+            GetAccountMovieStatesResult2 response = await _client.GetAccountMovieStates2(mediaId: _movie, guestSessionId: null, retryCount: 0);
             _output.WriteLine($"TMDB server's response code {response.HttpStatusCode}");
             _output.WriteLine($"TMDB server's response message {response.Json}");
 
-            PrintAccountMovieStates(response.States);
+            AccountMovieStates states = response.DeserializeJsonIntoModel();
+            PrintAccountMovieStates(states);
 
             Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.OK);
-            Assert.True(response.States.IsFavorite == isFavorite);
-            Assert.True(response.States.Rating == null);
-            Assert.True(response.States.OnWatchlist == onWatchlist);
+            Assert.True(states.IsFavorite == isFavorite);
+            Assert.True(states.Rating == null);
+            Assert.True(states.OnWatchlist == onWatchlist);
         }
         [Fact]
         // happy path
         public async Task WhenCalledOnValidWatchlistMovie_ReturnsState()
         {
             bool isFavorite = false;
-            bool onWatchlist = true;            
-            
+            bool onWatchlist = true;
+
             await _client.UpdateWatchlist("movie", add: true, _movie);
-
-
-            GetAccountMovieStatesResult response = await _client.GetAccountMovieStates(mediaId: _movie, guestSessionId: null, retryCount: 0);
+            
+            GetAccountMovieStatesResult2 response = await _client.GetAccountMovieStates2(mediaId: _movie, guestSessionId: null, retryCount: 0);
             _output.WriteLine($"TMDB server's response code {response.HttpStatusCode}");
             _output.WriteLine($"TMDB server's response message {response.Json}");
 
-            PrintAccountMovieStates(response.States);
+            AccountMovieStates states = response.DeserializeJsonIntoModel();
+            PrintAccountMovieStates(states);
 
             Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.OK);
-            Assert.True(response.States.IsFavorite == isFavorite);
-            Assert.True(response.States.Rating == null);
-            Assert.True(response.States.OnWatchlist == onWatchlist);
+            Assert.True(states.IsFavorite == isFavorite);
+            Assert.True(states.Rating == null);
+            Assert.True(states.OnWatchlist == onWatchlist);
         }
         [Fact]
         // happy path
@@ -112,26 +114,27 @@ namespace Ch9.Test.TmdbNetworkClientTests
             // Server side (TMDB WebAPI) needs this delay to propagate changes...
             await Task.Delay(2000);
 
-            GetAccountMovieStatesResult response = await _client.GetAccountMovieStates(mediaId: _movie, guestSessionId: null, retryCount: 0);
+            GetAccountMovieStatesResult2 response = await _client.GetAccountMovieStates2(mediaId: _movie, guestSessionId: null, retryCount: 0);
             _output.WriteLine($"TMDB server's response code {response.HttpStatusCode}");
             _output.WriteLine($"TMDB server's response message {response.Json}");
 
-            PrintAccountMovieStates(response.States);
+            AccountMovieStates states = response.DeserializeJsonIntoModel();
+            PrintAccountMovieStates(states);
 
             Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.OK);
-            Assert.True(response.States.IsFavorite == isFavorite);
-            Assert.True(response.States.Rating.Value == rating.GetValue());
-            Assert.True(response.States.OnWatchlist == onWatchlist);
+            Assert.True(states.IsFavorite == isFavorite);
+            Assert.True(states.Rating.Value == rating.GetValue());
+            Assert.True(states.OnWatchlist == onWatchlist);
         }
 
 
         [Fact]
         // failure path
-        public async Task WhenCalledWithInvalidMovieId_Returns404()
+        public async Task WhenCalledWithInvalidSessionId_Returns401Unauthorized()
         {
             _settings.SessionId = "invalidSessionId";
 
-            GetAccountMovieStatesResult response = await _client.GetAccountMovieStates(mediaId: _movie, guestSessionId: null, retryCount: 0);
+            GetAccountMovieStatesResult2 response = await _client.GetAccountMovieStates2(mediaId: _movie, guestSessionId: null, retryCount: 0);
             _output.WriteLine($"TMDB server's response code {response.HttpStatusCode}");
 
             Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.Unauthorized);
@@ -139,9 +142,9 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
         [Fact]
         // failure path
-        public async Task WhenCalledWithInvalidSessionId_Returns401()
+        public async Task WhenCalledWithInvalidMovieId_Returns404()
         {
-            GetAccountMovieStatesResult response = await _client.GetAccountMovieStates(mediaId: _invalidMovie, guestSessionId: null, retryCount: 0);
+            GetAccountMovieStatesResult2 response = await _client.GetAccountMovieStates2(mediaId: _invalidMovie, guestSessionId: null, retryCount: 0);
             _output.WriteLine($"TMDB server's response code {response.HttpStatusCode}");
 
             Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.NotFound);

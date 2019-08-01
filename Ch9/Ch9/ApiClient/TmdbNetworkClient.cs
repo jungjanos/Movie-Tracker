@@ -558,6 +558,24 @@ namespace Ch9.ApiClient
             return result;
         }
 
+        public async Task<GetAccountMovieStatesResult2> GetAccountMovieStates2(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            if (!string.IsNullOrEmpty(guestSessionId))
+                throw new NotImplementedException($"Guest session is not supported by the method: {nameof(GetAccountMovieStates)}, parameter: {nameof(guestSessionId)}={guestSessionId}");
+
+            string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + mediaId + ACCOUNT_STATES_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+            query.Add(SESSION_ID_Key, _settings.SessionId);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            GetAccountMovieStatesResult2 result = await GetResponse<GetAccountMovieStatesResult2>(retryCount, delayMilliseconds, requestUri);
+
+            return result;
+        }
+
         public async Task<CreateListResult> CreateList(string name, string description, string language = "en", int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + LIST_path;

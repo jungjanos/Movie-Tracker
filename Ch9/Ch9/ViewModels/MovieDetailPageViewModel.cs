@@ -292,12 +292,24 @@ namespace Ch9.ViewModels
 
         private async Task FetchMovieStates()
         {
-            GetAccountMovieStatesResult response = await _cachedSearchClient.GetAccountMovieStates(Movie.Id, guestSessionId: null, retryCount: 3, delayMilliseconds: 1000);
+            //GetAccountMovieStatesResult response = await _cachedSearchClient.GetAccountMovieStates(Movie.Id, guestSessionId: null, retryCount: 3, delayMilliseconds: 1000);
+            //if (response.HttpStatusCode.IsSuccessCode())
+            //{
+            //    MovieStates = response.States;
+            //    MovieStatesFetchFinished = true;
+            //    RefreshCanExecutes();
+            //}
+
+            GetAccountMovieStatesResult2 response = await _cachedSearchClient.GetAccountMovieStates2(Movie.Id, guestSessionId: null, retryCount: 3, delayMilliseconds: 1000);
             if (response.HttpStatusCode.IsSuccessCode())
             {
-                MovieStates = response.States;
-                MovieStatesFetchFinished = true;
-                RefreshCanExecutes();
+                try
+                {
+                    MovieStates = response.DeserializeJsonIntoModel();
+                    MovieStatesFetchFinished = true;
+                    RefreshCanExecutes();
+                }
+                catch { }
             }
         }
 

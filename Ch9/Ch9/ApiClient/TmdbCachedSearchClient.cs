@@ -1,9 +1,10 @@
-﻿using Ch9.Utils;
+﻿using Ch9.Models;
+using Ch9.Utils;
 using LazyCache;
 using System.Threading.Tasks;
 
 namespace Ch9.ApiClient
-{    
+{
     // TODO : evaluate whether to remove empty async-await from calls
     // remark: whitepaper of Cleary
     public class TmdbCachedSearchClient : ITmdbCachedSearchClient
@@ -253,6 +254,11 @@ namespace Ch9.ApiClient
         public async Task<GetAccountMovieStatesResult> GetAccountMovieStates(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             return await _networkClient.GetAccountMovieStates(mediaId, guestSessionId, retryCount, delayMilliseconds);
+        }
+
+        public async Task<GetAccountMovieStatesResult2> GetAccountMovieStates2(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            return await _networkClient.GetAccountMovieStates2(mediaId, guestSessionId, retryCount, delayMilliseconds);
         }
 
         public async Task<UpdateFavoriteListResult> UpdateFavoriteList(string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)

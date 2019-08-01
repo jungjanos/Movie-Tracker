@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using Ch9.ApiClient;
+using System.Threading.Tasks;
 
-namespace Ch9.ApiClient
+namespace Ch9.Models
 {
     public interface ITmdbNetworkClient
-    {        
+    {
         Task<GenreNameFetchResult> FetchGenreIdsWithNames(string language = null, int retryCount = 0, int delayMilliseconds = 1000);
         Task<FetchMovieDetailsResult> FetchMovieDetails(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000);
         Task<GetMovieRecommendationsResult> GetMovieRecommendations(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000);
@@ -35,5 +36,6 @@ namespace Ch9.ApiClient
         Task<GetMovieCreditsResult> GetMovieCredits(int id, int retryCount = 0, int delayMilliseconds = 1000);
         Task<GetPersonsMovieCreditsResult> GetPersonsMovieCredits(int personId, string language = null, int retryCount = 0, int delayMilliseconds = 1000);
         Task<GetPersonsDetailsResult> GetPersonsDetails(int personId, string language = null, int retryCount = 0, int delayMilliseconds = 1000);
+        Task<GetAccountMovieStatesResult2> GetAccountMovieStates2(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000);
     }
 }

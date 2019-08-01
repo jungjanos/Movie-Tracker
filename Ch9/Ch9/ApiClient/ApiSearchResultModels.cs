@@ -100,7 +100,11 @@ namespace Ch9.ApiClient
     public class GetPersonsDetailsResult : TmdbResponseBase
     { }
 
-    public class GetAccountMovieStatesResult2 : TmdbResponseBase
+    /// <summary>
+    /// Because of the custom deserialization requirement (the WebAPI sends back flexible object type as response)
+    /// The deserialization is built into the response object itself. This behavior diverges from normal case
+    /// </summary>
+    public class GetAccountMovieStatesResult : TmdbResponseBase
     {
         /// <summary>
         /// Can trow. 
@@ -120,14 +124,6 @@ namespace Ch9.ApiClient
 
             return JsonConvert.DeserializeObject<AccountMovieStates>(Json, jsonSettings);
         }
-    }
-
-    // Because of the flexible object type of the Json object the WebAPI sends back as response,
-    // The Api client itself handles the deserialization of the server's response.
-    // this behavior diverges from normal case
-    public class GetAccountMovieStatesResult : TmdbResponseBase
-    {
-        public AccountMovieStates States { get; set; }
     }
 
     public enum Rating

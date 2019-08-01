@@ -256,11 +256,6 @@ namespace Ch9.ApiClient
             return await _networkClient.GetAccountMovieStates(mediaId, guestSessionId, retryCount, delayMilliseconds);
         }
 
-        public async Task<GetAccountMovieStatesResult2> GetAccountMovieStates2(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
-        {
-            return await _networkClient.GetAccountMovieStates2(mediaId, guestSessionId, retryCount, delayMilliseconds);
-        }
-
         public async Task<UpdateFavoriteListResult> UpdateFavoriteList(string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             return await _networkClient.UpdateFavoriteList(mediaType, add, mediaId, accountId, retryCount, delayMilliseconds);

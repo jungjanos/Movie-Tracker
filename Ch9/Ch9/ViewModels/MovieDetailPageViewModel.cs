@@ -300,7 +300,7 @@ namespace Ch9.ViewModels
             //    RefreshCanExecutes();
             //}
 
-            GetAccountMovieStatesResult2 response = await _cachedSearchClient.GetAccountMovieStates2(Movie.Id, guestSessionId: null, retryCount: 3, delayMilliseconds: 1000);
+            GetAccountMovieStatesResult response = await _cachedSearchClient.GetAccountMovieStates(Movie.Id, guestSessionId: null, retryCount: 3, delayMilliseconds: 1000);
             if (response.HttpStatusCode.IsSuccessCode())
             {
                 try

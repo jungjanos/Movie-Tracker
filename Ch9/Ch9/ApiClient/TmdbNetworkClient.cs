@@ -522,9 +522,6 @@ namespace Ch9.ApiClient
             return result;
         }
 
-        // Because of the flexible object type of the Json object the WebAPI sends back as response,
-        // The Api client itself handles the deserialization of the server's response.
-        // this behavior diverges from normal case
         public async Task<GetAccountMovieStatesResult> GetAccountMovieStates(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             if (!string.IsNullOrEmpty(guestSessionId))
@@ -539,39 +536,6 @@ namespace Ch9.ApiClient
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
             GetAccountMovieStatesResult result = await GetResponse<GetAccountMovieStatesResult>(retryCount, delayMilliseconds, requestUri);
-
-            if (result.HttpStatusCode.IsSuccessCode())
-            {
-                var jsonSettings = new JsonSerializerSettings()
-                {
-                    Error = delegate (object sender, ErrorEventArgs args) { args.ErrorContext.Handled = true; }
-                };
-                try
-                {
-                    result.States = JsonConvert.DeserializeObject<AccountMovieStates>(result.Json, jsonSettings);
-                }
-                catch (JsonException)
-                {
-                    result.HttpStatusCode = HttpStatusCode.InternalServerError;
-                }
-            }
-            return result;
-        }
-
-        public async Task<GetAccountMovieStatesResult2> GetAccountMovieStates2(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
-        {
-            if (!string.IsNullOrEmpty(guestSessionId))
-                throw new NotImplementedException($"Guest session is not supported by the method: {nameof(GetAccountMovieStates)}, parameter: {nameof(guestSessionId)}={guestSessionId}");
-
-            string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + mediaId + ACCOUNT_STATES_Path;
-
-            var query = new Dictionary<string, string>();
-            query.Add(API_KEY_Key, _settings.ApiKey);
-            query.Add(SESSION_ID_Key, _settings.SessionId);
-
-            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
-
-            GetAccountMovieStatesResult2 result = await GetResponse<GetAccountMovieStatesResult2>(retryCount, delayMilliseconds, requestUri);
 
             return result;
         }

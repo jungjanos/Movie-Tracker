@@ -5,6 +5,7 @@ namespace Ch9.Utils
 {
     public interface IPersonDetailModelConfigurator
     {
+        void SetProfileGalleryImageSources(ImageModel[] profileImages, int profileImageSize = 1);
         void SetProfileGalleryPictureImageSrc(ImageModel profileGalleryImage, GetPersonsDetailsModel personModel, int profileImageSize = 1);
         void SetProfileImageSrc(IEnumerable<IStaffMemberRole> staffMembers, int profileImageSize = 0);
     }
@@ -43,5 +44,13 @@ namespace Ch9.Utils
         /// <param name="profileImageSize">Quality selector 0: lowest, 1: high, 2 very high, 3: original. Uses TmdbConfigurationModel</param>
         public void SetProfileGalleryPictureImageSrc(ImageModel profileGalleryImage, GetPersonsDetailsModel personModel, int profileImageSize = 1) =>
             profileGalleryImage.FilePath = ImageBaseUrl + _tmdbConfiguration.Images.ProfileSizes[profileImageSize] + personModel.ProfilePath;
+
+        public void SetProfileGalleryImageSources(ImageModel[] profileImages, int profileImageSize = 1)
+        {
+            var urlPrefix = ImageBaseUrl + _tmdbConfiguration.Images.ProfileSizes[profileImageSize];
+
+            foreach (var profileImage in profileImages)
+                profileImage.FilePath = urlPrefix + profileImage.FilePath;
+        }
     }
 }

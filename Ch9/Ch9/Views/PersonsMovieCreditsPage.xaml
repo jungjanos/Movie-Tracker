@@ -13,7 +13,8 @@
         <ResourceDictionary>
             <converters:ActorOrCrewBoolToStringConverter x:Key="actorOrCrewBoolToString"/>
             <converters:InverseBoolConverter x:Key="inverseBool" />
-            <converters:StringToNotNullOremptyStringToBoolConverter x:Key="stringToNotNullOremptyStringToBool" />            
+            <converters:StringToNotNullOremptyStringToBoolConverter x:Key="stringToNotNullOremptyStringToBool" />
+            <converters:IntPlusOneToStringConverter x:Key="intPlusOneToString" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -21,8 +22,8 @@
         <ScrollView>
             <StackLayout>
                 <Grid
-                    HeightRequest="190"
-                    MinimumHeightRequest="190"
+                    HeightRequest="202"
+                    MinimumHeightRequest="202"
                     Padding="5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
@@ -31,6 +32,7 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="12"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="3*"/>
@@ -44,6 +46,7 @@
                         HeightRequest="190"
                         MinimumHeightRequest="190"
                         VerticalOptions="CenterAndExpand"
+                        x:Name="cardView"
                         ItemsSource="{Binding DisplayImages}"
                         IsCyclical="True">
 
@@ -173,6 +176,26 @@
                         </StackLayout>
 
                     </ScrollView>
+
+                    <StackLayout 
+                        Grid.Row="6" 
+                        Grid.Column="0"
+                        Orientation="Horizontal" 
+                        HorizontalOptions="Center"
+                        VerticalOptions="Start"
+                        Spacing="0"
+                        Margin="0"
+                        Padding="0">
+
+                        <Label BindingContext="{x:Reference cardView}"
+                               Text="{Binding SelectedIndex, Converter={StaticResource Key=intPlusOneToString}}" 
+                               FontSize="Micro"                                
+                               VerticalOptions="Start"/>
+
+                        <Label Text="{Binding Path=DisplayImages.Count}" 
+                               FontSize="Micro"                                
+                               VerticalOptions="Start"/>
+                    </StackLayout>
 
                 </Grid>
 

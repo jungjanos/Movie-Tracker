@@ -89,6 +89,21 @@ namespace Ch9.ApiClient
             return result;
         }
 
+        public async Task<GetPersonImagesResult> GetPersonImages(int id, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        {
+            string key = "$" + nameof(GetPersonImages) + id;
+
+            if (!fromCache)
+                _cache.Remove(key);
+
+            var result = _cache.Get<GetPersonImagesResult>(key) ?? await _networkClient.GetPersonImages(id, retryCount, delayMilliseconds);
+
+            if (result.HttpStatusCode.IsSuccessCode())
+                _cache.Add(key, result);
+
+            return result;
+        }
+
         public async Task<GetMovieRecommendationsResult> GetMovieRecommendations(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
             string key = "$" + nameof(GetMovieRecommendations) + id + (language ?? "") + (page?.ToString() ?? "");

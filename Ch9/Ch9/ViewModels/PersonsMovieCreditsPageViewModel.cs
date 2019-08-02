@@ -2,9 +2,12 @@
 using Ch9.Models;
 using Ch9.Services;
 using Ch9.Utils;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -19,6 +22,7 @@ namespace Ch9.ViewModels
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
         private readonly IPageService _pageService;
+        private readonly Task _fetchGalleryImages;
 
         public GetPersonsDetailsModel PersonsDetails { get; private set; }
         public GetPersonsMovieCreditsModel PersonsMovieCreditsModel { get; private set; }
@@ -59,8 +63,7 @@ namespace Ch9.ViewModels
 
             PersonsDetails = personDetails;
             personsMovieCreditsModel.SortMoviesByYearDesc();
-            PersonsMovieCreditsModel = personsMovieCreditsModel;
-            
+            PersonsMovieCreditsModel = personsMovieCreditsModel;            
 
             var firstImage = new ImageModel();
             _personDetailModelConfigurator.SetProfileGalleryPictureImageSrc(firstImage, PersonsDetails);
@@ -70,20 +73,32 @@ namespace Ch9.ViewModels
             OnItemTappedCommand = new Command<MovieDetailModel>(async mov => await _pageService.PushAsync(mov));
 
             OpenWeblinkCommand = new Command<string>(url => _pageService.OpenWeblink(url));
+
+            _fetchGalleryImages = UpdateImageCollection();
         }
 
         private async Task UpdateImageCollection()
         {
             try
             {
-                
+                GetPersonImagesResult response = await _cachedSearchClient.GetPersonImages(PersonsDetails.Id, retryCount: 1, delayMilliseconds: 1000, fromCache: true);
+                if (response.HttpStatusCode.IsSuccessCode())
+                {
+                    ImageModel[] imagesFetched = null;
+                    await Task.Run(() =>
+                    {
+                        imagesFetched = JsonConvert.DeserializeObject<ImageDetailCollection>(response.Json).Profiles;
+                        _personDetailModelConfigurator.SetProfileGalleryImageSources(imagesFetched);
+                    });                    
 
+                    var first = DisplayImages.FirstOrDefault();
 
-
-
-
+                    foreach(var image in imagesFetched)
+                        if (image.FilePath != first?.FilePath)
+                            DisplayImages.Add(image);                   
+                }
             }
-            catch { }
+            catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not load gallery, service responded with: {ex.Message}", "Ok"); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

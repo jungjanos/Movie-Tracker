@@ -106,7 +106,7 @@
                         </Image>
 
                         <StackLayout Grid.Row="0" Grid.Column="1"
-                                    Orientation="Horizontal" 
+                                     Orientation="Horizontal" 
                                      VerticalOptions="End"
                                      Spacing="0">
                             

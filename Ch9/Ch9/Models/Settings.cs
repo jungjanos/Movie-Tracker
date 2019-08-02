@@ -8,7 +8,7 @@ namespace Ch9.Models
 {
     // Settings uses Application.Properties dictionary with data binding to UI
     // Default values are currently hard coded
-    public class Settings : ISettings
+    public partial class Settings : ISettings
     {
         private readonly IDictionary<string, object> _appDictionary;        
 
@@ -144,7 +144,38 @@ namespace Ch9.Models
             }
             set => _appDictionary[nameof(MovieIdsOnActiveList)] = JsonConvert.SerializeObject(value);
         }
-        
+
+        /// <summary>
+        /// Xamarin forms does not allow to bind Enum source to Picker, only string is allowed
+        /// this translates between Picker, Application Dictionary and InformationLinkTargetHomePage enum
+        /// </summary>
+        public string InformationLinksTargetHomePageStr
+        {
+            get
+            {
+                if (_appDictionary.ContainsKey(nameof(InformationLinksTargetHomePageStr)))
+                    return _appDictionary[nameof(InformationLinksTargetHomePageStr)] as string;
+                else
+                    return InformationLinkTargetHomePage.IMDb.ToString();
+            }
+            set => _appDictionary[nameof(InformationLinksTargetHomePageStr)] = value;
+        }
+
+        public InformationLinkTargetHomePage InfoLinkTargetHomePage
+        {
+            get
+            {
+                if (InformationLinksTargetHomePageStr == InformationLinkTargetHomePage.Invalid.ToString())
+                    return InformationLinkTargetHomePage.Invalid;
+                else if (InformationLinksTargetHomePageStr == InformationLinkTargetHomePage.IMDb.ToString())
+                    return InformationLinkTargetHomePage.IMDb;
+                else if (InformationLinksTargetHomePageStr == InformationLinkTargetHomePage.TMDb.ToString())
+                    return InformationLinkTargetHomePage.TMDb;
+
+                else return InformationLinkTargetHomePage.Invalid;
+            }
+        }
+
         /// <summary>
         /// Xamarin forms does not allow to bind Enum source to Picker, only string is allowed
         /// this translates between Picker, Application Dictionary and VideoPlaybackQuality enum

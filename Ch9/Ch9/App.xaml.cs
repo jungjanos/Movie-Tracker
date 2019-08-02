@@ -23,6 +23,7 @@ namespace Ch9
         public ITmdbCachedSearchClient CachedSearchClient { get; private set; }
         public UsersMovieListsService2 UsersMovieListsService2 { get; private set; }
         public IVideoService VideoService { get; private set; }
+        public WeblinkComposer WeblinkComposer { get; private set; }
 
 
         public App(HttpClient httpClient = null)
@@ -33,6 +34,7 @@ namespace Ch9
             TmdbNetworkClient = new TmdbNetworkClient(Settings, httpClient);
             CachedSearchClient = new TmdbCachedSearchClient(TmdbNetworkClient);
             VideoService = new YtExplodeVideoService(httpClient, Settings, CachedSearchClient);
+            WeblinkComposer = new WeblinkComposer(Settings);
 
             InitializeComponent();
             MainPage = new LoadingPage();

@@ -103,40 +103,51 @@
 
                             <Label Text="{Binding Path=PersonsDetails.Age,StringFormat=', {0}'}" 
                                IsVisible="{Binding Path=PersonsDetails.Age.HasValue}"/>
-
-                        </StackLayout>
-
-                        <StackLayout
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            Orientation="Horizontal"
-                            VerticalOptions="Start"
-                            Spacing="0">
-
+                            
                             <Image 
                                 BackgroundColor="Transparent"
-                                VerticalOptions="Center"
-                                HorizontalOptions="EndAndExpand">
+                                VerticalOptions="Start"
+                                Margin="8,0,0,0">
+                                
                                 <Image.Source>
                                     <FontImageSource
                                         Glyph="&#xf25b;"
                                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                                         Color="Purple"
                                         Size="20" />
-                                    
-                                </Image.Source>                                
-                            </Image>                               
-                               
+                                </Image.Source>
+                            </Image>
+
                             <Label Text="{Binding Path=PersonsDetails.Popularity,StringFormat=' {0:F1}'}"
                                    FontSize="Micro"
-                                   TextColor="DarkGray"
-                                   HorizontalOptions="End" 
-                                   VerticalOptions="Center"/>
+                                   Margin="0,3,0,0"
+                                   TextColor="DarkGray"/>
 
                         </StackLayout>
+
+                            <Image 
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                BackgroundColor="Transparent"
+                                VerticalOptions="Start"
+                                HorizontalOptions="EndAndExpand"
+                                Margin="0,0,5,0">
+                                
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding OpenInfolinkCommand}"/>
+                                </Image.GestureRecognizers>
+                                
+                                <Image.Source>
+                                    <FontImageSource
+                                        Glyph="&#xf22e;"
+                                        FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                                        Color="Azure"
+                                        Size="20" />
+
+                                </Image.Source>
+                            </Image>
                         
-                    </Grid>
-                    
+                    </Grid>                    
 
                     <ScrollView
                         Grid.Row="1"

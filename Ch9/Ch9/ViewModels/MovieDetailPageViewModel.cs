@@ -25,6 +25,7 @@ namespace Ch9.ViewModels
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
         private readonly IVideoService _videoService;
+        private readonly WeblinkComposer _weblinkComposer;
         private readonly IPageService _pageService;
         private readonly Task _fetchGallery;
         private Task _fetchMovieStates;
@@ -90,6 +91,7 @@ namespace Ch9.ViewModels
         public ICommand ChangeDisplayedImageTypeCommand { get; private set; }
         public ICommand ToggleCreditsCommand { get; private set; }
         public ICommand MovieCastPersonTappedCommand { get; private set; }
+        public ICommand OpenInfolinkCommand { get; private set; }
 
         public MovieDetailPageViewModel(
             MovieDetailModel movie,
@@ -99,6 +101,7 @@ namespace Ch9.ViewModels
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPersonDetailModelConfigurator personDetailModelConfigurator,
             IVideoService videoService,
+            WeblinkComposer weblinkComposer,
             IPageService pageService)
         {
             Movie = movie;
@@ -108,6 +111,7 @@ namespace Ch9.ViewModels
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _personDetailModelConfigurator = personDetailModelConfigurator;
             _videoService = videoService;
+            _weblinkComposer = weblinkComposer;
             _pageService = pageService;
             _fetchGallery = UpdateImageCollection();
 
@@ -166,6 +170,14 @@ namespace Ch9.ViewModels
             MovieCastPersonTappedCommand = new Command<IStaffMemberRole>(async staffMemberRole =>
             {
                 await FetchStaffMemberDetailsAndMovieCredits(staffMemberRole);
+            });
+
+            OpenInfolinkCommand = new Command(async () =>
+            {
+                string weblink = _weblinkComposer.Compose(Movie);
+
+                if (!string.IsNullOrEmpty(weblink))
+                    await _pageService.OpenWeblink(weblink);
             });
 
             DisplayImages = Movie.MovieImages;

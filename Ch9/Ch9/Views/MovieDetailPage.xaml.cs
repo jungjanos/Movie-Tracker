@@ -29,6 +29,7 @@ namespace Ch9.Views
                 ((App)Application.Current).MovieDetailModelConfigurator,
                 ((App)Application.Current).PersonDetailModelConfigurator,
                 ((App)Application.Current).VideoService,
+                ((App)Application.Current).WeblinkComposer,
                 new PageService(this)
                 );
             vMInitializer = ViewModel.Initialize();

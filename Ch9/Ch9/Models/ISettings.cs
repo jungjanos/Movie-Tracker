@@ -20,6 +20,8 @@ namespace Ch9.Models
         VideoPlaybackQuality PlaybackQuality { get; }
         bool UseHttpsForImages { get; set; }
         string PlaybackQualityStr { get; set; }
+        string InformationLinksTargetHomePageStr { get; set; }
+        InformationLinkTargetHomePage InfoLinkTargetHomePage { get; }
 
         Task SavePropertiesAsync();
     }

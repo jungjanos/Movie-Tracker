@@ -21,6 +21,7 @@ namespace Ch9.ViewModels
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
+        private readonly WeblinkComposer _weblinkComposer;
         private readonly IPageService _pageService;
         private readonly Task _fetchGalleryImages;
 
@@ -38,6 +39,7 @@ namespace Ch9.ViewModels
 
         public ICommand OnItemTappedCommand { get; private set; }
         public ICommand OpenWeblinkCommand { get; private set; }
+        public ICommand OpenInfolinkCommand { get; private set; }
 
         public PersonsMovieCreditsPageViewModel(
             GetPersonsDetailsModel personDetails,
@@ -46,6 +48,7 @@ namespace Ch9.ViewModels
             ITmdbCachedSearchClient cachedSearchClient,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPersonDetailModelConfigurator personDetailModelConfigurator,
+            WeblinkComposer weblinkComposer,
             IPageService pageService
             )
         {
@@ -54,6 +57,7 @@ namespace Ch9.ViewModels
             _cachedSearchClient = cachedSearchClient;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _personDetailModelConfigurator = personDetailModelConfigurator;
+            _weblinkComposer = weblinkComposer;
             _pageService = pageService;
 
             _movieDetailModelConfigurator.SetImageSrc(personsMovieCreditsModel.MoviesAsActor);
@@ -63,7 +67,7 @@ namespace Ch9.ViewModels
 
             PersonsDetails = personDetails;
             personsMovieCreditsModel.SortMoviesByYearDesc();
-            PersonsMovieCreditsModel = personsMovieCreditsModel;            
+            PersonsMovieCreditsModel = personsMovieCreditsModel;
 
             var firstImage = new ImageModel();
             _personDetailModelConfigurator.SetProfileGalleryPictureImageSrc(firstImage, PersonsDetails);
@@ -72,7 +76,14 @@ namespace Ch9.ViewModels
 
             OnItemTappedCommand = new Command<MovieDetailModel>(async mov => await _pageService.PushAsync(mov));
 
-            OpenWeblinkCommand = new Command<string>(url => _pageService.OpenWeblink(url));
+            OpenWeblinkCommand = new Command<string>(async url => await _pageService.OpenWeblink(url));
+            OpenInfolinkCommand = new Command(async () =>
+            {
+                string weblink = _weblinkComposer.Compose(PersonsDetails);
+
+                if (!string.IsNullOrEmpty(weblink))
+                    await _pageService.OpenWeblink(weblink);
+            });
 
             _fetchGalleryImages = UpdateImageCollection();
         }
@@ -89,13 +100,13 @@ namespace Ch9.ViewModels
                     {
                         imagesFetched = JsonConvert.DeserializeObject<ImageDetailCollection>(response.Json).Profiles;
                         _personDetailModelConfigurator.SetProfileGalleryImageSources(imagesFetched);
-                    });                    
+                    });
 
                     var first = DisplayImages.FirstOrDefault();
 
-                    foreach(var image in imagesFetched)
+                    foreach (var image in imagesFetched)
                         if (image.FilePath != first?.FilePath)
-                            DisplayImages.Add(image);                   
+                            DisplayImages.Add(image);
                 }
             }
             catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not load gallery, service responded with: {ex.Message}", "Ok"); }

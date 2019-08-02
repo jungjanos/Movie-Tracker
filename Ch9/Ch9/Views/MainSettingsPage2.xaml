@@ -97,6 +97,23 @@
                             <Label Text="Configure search categories" VerticalTextAlignment="Center"/>
                         </StackLayout>
                     </ViewCell>
+
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal" Padding="13,0" HorizontalOptions="FillAndExpand">
+                            <Label Text="Info weblinks go to " VerticalTextAlignment="Center"/>
+
+                            <Picker x:Name="weblinkTargetPicker"                                      
+                                    SelectedItem="{Binding Path=Settings.InformationLinksTargetHomePageStr}"
+                                    HorizontalOptions="EndAndExpand"
+                                    WidthRequest="60">
+                                <Picker.Items>
+                                    <x:String>IMDb</x:String>
+                                    <x:String>TMDb</x:String>
+                                </Picker.Items>
+                            </Picker>
+                        </StackLayout>
+                    </ViewCell>
+                    
                 </TableSection>
 
                 <TableSection Title="Data transfer">

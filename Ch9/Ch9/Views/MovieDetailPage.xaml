@@ -168,7 +168,7 @@
 
                         <Image BackgroundColor="Transparent"
                                HorizontalOptions="EndAndExpand"
-                               Margin="0,0,10,0">
+                               Margin="0,0,15,0">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding ToggleCreditsCommand}"/>
                             </Image.GestureRecognizers>
@@ -177,7 +177,7 @@
                                      Glyph="&#xf47c;"
                                      FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                                      Color="{Binding ShowCredits, Converter={StaticResource Key=showCreditsToColor}}"
-                                     Size="20"/>
+                                     Size="25"/>
                                 
                             </Image.Source>
                         </Image>
@@ -192,8 +192,8 @@
                                 <FontImageSource 
                                      Glyph="&#xf22e;"
                                      FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                                     Color="LightBlue"
-                                     Size="20"/>
+                                     Color="Blue"
+                                     Size="25"/>
 
                             </Image.Source>
                         </Image>

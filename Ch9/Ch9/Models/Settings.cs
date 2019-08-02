@@ -211,7 +211,7 @@ namespace Ch9.Models
             {
                 if (_appDictionary.ContainsKey(nameof(UseHttpsForImages)))
                     return (bool)_appDictionary[nameof(UseHttpsForImages)];
-                else return false;
+                else return true;
             }
             set => _appDictionary[nameof(UseHttpsForImages)] = value;
         }

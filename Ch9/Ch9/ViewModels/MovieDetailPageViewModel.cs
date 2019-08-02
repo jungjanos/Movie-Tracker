@@ -188,6 +188,8 @@ namespace Ch9.ViewModels
                 var moveImagesResponse = await _cachedSearchClient.GetMovieImages(Movie.Id, _settings.SearchLanguage, null, true);
                 var success = moveImagesResponse.HttpStatusCode.IsSuccessCode();
                 if (success)
+                    // TODO : replace PopulateObject() which IS NOT object cache tolerant as it alters 
+                    // the object's state
                     await Task.Run(() => JsonConvert.PopulateObject(moveImagesResponse.Json, Movie.ImageDetailCollection));
 
                 if (success)

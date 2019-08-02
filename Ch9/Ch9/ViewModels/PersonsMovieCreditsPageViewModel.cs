@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -13,7 +14,8 @@ namespace Ch9.ViewModels
 {
     public class PersonsMovieCreditsPageViewModel : INotifyPropertyChanged
     {
-        private readonly ISettings _settings;        
+        private readonly ISettings _settings;
+        private readonly ITmdbCachedSearchClient _cachedSearchClient;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
         private readonly IPageService _pageService;
@@ -36,14 +38,16 @@ namespace Ch9.ViewModels
         public PersonsMovieCreditsPageViewModel(
             GetPersonsDetailsModel personDetails,
             GetPersonsMovieCreditsModel personsMovieCreditsModel,
-            ISettings settings,            
+            ISettings settings,
+            ITmdbCachedSearchClient cachedSearchClient,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPersonDetailModelConfigurator personDetailModelConfigurator,
             IPageService pageService
             )
         {
 
-            _settings = settings;            
+            _settings = settings;
+            _cachedSearchClient = cachedSearchClient;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _personDetailModelConfigurator = personDetailModelConfigurator;
             _pageService = pageService;
@@ -66,6 +70,20 @@ namespace Ch9.ViewModels
             OnItemTappedCommand = new Command<MovieDetailModel>(async mov => await _pageService.PushAsync(mov));
 
             OpenWeblinkCommand = new Command<string>(url => _pageService.OpenWeblink(url));
+        }
+
+        private async Task UpdateImageCollection()
+        {
+            try
+            {
+                
+
+
+
+
+
+            }
+            catch { }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

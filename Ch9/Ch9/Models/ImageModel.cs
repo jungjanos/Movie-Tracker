@@ -31,4 +31,20 @@ namespace Ch9.Models
 
         public TmdbVideoModel AttachedVideo { get; set; }
     }
+
+    /// <summary>
+    /// Image collection model used by different types (Movies, Persons..). 
+    /// Not all properties are necessarily populated.
+    /// </summary>
+    public class ImageDetailCollection
+    {
+        [JsonProperty("backdrops")]
+        public ImageModel[] Backdrops { get; set; }
+
+        [JsonProperty("posters")]
+        public ImageModel[] Posters { get; set; }
+
+        [JsonProperty("profiles")]
+        public ImageModel[] Profiles { get; set; }
+    }
 }

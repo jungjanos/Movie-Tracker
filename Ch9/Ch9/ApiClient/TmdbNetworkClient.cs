@@ -197,8 +197,6 @@ namespace Ch9.ApiClient
             return result;
         }
 
-        // Fetches the image paths of the gallery images from the TMDB server
-        // swallows exceptions, retries as required
         public async Task<GetMovieImagesResult> GetMovieImages(int id, string language = null, string otherLanguage = null, bool? includeLanguageless = true, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id + IMAGE_DETAIL_Path;
@@ -223,6 +221,20 @@ namespace Ch9.ApiClient
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
             GetMovieImagesResult result = await GetResponse<GetMovieImagesResult>(retryCount, delayMilliseconds, requestUri);
+
+            return result;
+        }
+
+        public async Task<GetPersonImagesResult> GetPersonImages(int id, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            string baseUrl = BASE_Address + BASE_Path + PERSON_Path + "/" + id + IMAGE_DETAIL_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            GetPersonImagesResult result = await GetResponse<GetPersonImagesResult>(retryCount, delayMilliseconds, requestUri);
 
             return result;
         }

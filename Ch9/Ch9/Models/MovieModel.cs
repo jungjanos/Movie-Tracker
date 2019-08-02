@@ -158,15 +158,6 @@ namespace Ch9.Models
         public string Name { get; set; }
     }
 
-    public class ImageDetailCollection
-    {
-        [JsonProperty("backdrops")]
-        public ImageModel[] Backdrops { get; set; }
-
-        [JsonProperty("posters")]
-        public ImageModel[] Posters { get; set; }
-    }
-
     public class MovieModelComparer : IEqualityComparer<MovieModel>
     {
         public bool Equals(MovieModel x, MovieModel y)

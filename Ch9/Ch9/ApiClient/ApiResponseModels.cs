@@ -32,6 +32,10 @@ namespace Ch9.ApiClient
 
     public class GetMovieImagesResult : TmdbResponseBase
     { }
+
+    public class GetPersonImagesResult : TmdbResponseBase
+    { }
+
     public class GetMovieVideosResult : TmdbResponseBase
     { }
 

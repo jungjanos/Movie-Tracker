@@ -20,8 +20,8 @@ namespace Ch9.ViewModels
 
         public GetPersonsDetailsModel PersonsDetails { get; private set; }
         public GetPersonsMovieCreditsModel PersonsMovieCreditsModel { get; private set; }
-
         public ObservableCollection<ImageModel> DisplayImages { get; private set; }
+        public int NumberOfMovies => (PersonsMovieCreditsModel.MoviesAsActor?.Length ?? 0) + (PersonsMovieCreditsModel.MoviesAsCrewMember?.Length ?? 0);
 
         private bool _actorOrCrewSwitch;
         public bool ActorOrCrewSwitch

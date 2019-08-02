@@ -135,24 +135,36 @@
                 </Grid>
 
                 <StackLayout 
-                Orientation="Horizontal" Padding="5"
-                HorizontalOptions="FillAndExpand">
-
-                    <Label Text="{Binding Path=PersonsDetails.Name, StringFormat='{0}s movie credits'}" 
-                       FontSize="Subtitle" 
-                       VerticalTextAlignment="Center"
-                       HorizontalOptions="StartAndExpand"/>
+                    Orientation="Horizontal" Padding="5"
+                    HorizontalOptions="FillAndExpand">
 
                     <Label 
-                    Text="{Binding ActorOrCrewSwitch, Converter={StaticResource Key=actorOrCrewBoolToString}}" 
-                    VerticalTextAlignment="Center"
-                    HorizontalOptions="End"/>
+                        Text="{Binding Path=PersonsDetails.Name, StringFormat='{0}´s movies'}" 
+                        FontSize="Subtitle" 
+                        VerticalTextAlignment="Center"
+                        LineBreakMode="TailTruncation"
+                        HorizontalOptions="Start"/>
+
+                    <Label 
+                        Text="{Binding NumberOfMovies, StringFormat=' ({0})'}" 
+                        Margin="0"
+                        FontSize="Subtitle" 
+                        VerticalTextAlignment="Center"
+                        HorizontalOptions="Start"/>
+
+                    <Label 
+                        Text="{Binding ActorOrCrewSwitch, Converter={StaticResource Key=actorOrCrewBoolToString}}" 
+                        VerticalTextAlignment="Center"
+                        HorizontalOptions="EndAndExpand"
+                        MinimumWidthRequest="100"
+                        LineBreakMode="NoWrap"/>
 
                     <Switch 
-                    IsToggled="{Binding ActorOrCrewSwitch}"
-                    HorizontalOptions="End"/>
+                        Margin="0"
+                        IsToggled="{Binding ActorOrCrewSwitch}"                        
+                        HorizontalOptions="End"/>
 
-                </StackLayout>
+                </StackLayout>                
 
                 <controls:ExtendedListView  
                     ItemsSource="{Binding Path=PersonsMovieCreditsModel.MoviesAsActor}"

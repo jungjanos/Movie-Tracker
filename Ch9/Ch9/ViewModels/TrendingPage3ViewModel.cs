@@ -164,7 +164,7 @@ namespace Ch9.ViewModels
                 IsRefreshing = true;
                 try
                 {
-                    var getNextPageResponse = await _tmdbCachedSearchClient.GetTrendingMovies(week: false, _settings.SearchLanguage, _settings.IncludeAdult, TrendingWeek.Page + 1, retryCount, delayMilliseconds);
+                    var getNextPageResponse = await _tmdbCachedSearchClient.GetTrendingMovies(week: false, _settings.SearchLanguage, _settings.IncludeAdult, TrendingDay.Page + 1, retryCount, delayMilliseconds);
                     if (!getNextPageResponse.HttpStatusCode.IsSuccessCode())
                     {
                         await _pageService.DisplayAlert("Error", $"Could not load the daily trending list, service responded with: {getNextPageResponse.HttpStatusCode}", "Ok");

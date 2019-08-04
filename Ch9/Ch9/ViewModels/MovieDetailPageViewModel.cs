@@ -197,17 +197,21 @@ namespace Ch9.ViewModels
             GalleryIsBusy = true;
             try
             {
-                var moveImagesResponse = await _cachedSearchClient.GetMovieImages(Movie.Id, _settings.SearchLanguage, null, true);
-                var success = moveImagesResponse.HttpStatusCode.IsSuccessCode();
-                if (success)
-                    // TODO : replace PopulateObject() which IS NOT object cache tolerant as it alters 
-                    // the object's state
-                    await Task.Run(() => JsonConvert.PopulateObject(moveImagesResponse.Json, Movie.ImageDetailCollection));
-
-                if (success)
+                GetMovieImagesResult response = await _cachedSearchClient.GetMovieImages(Movie.Id, _settings.SearchLanguage, otherLanguage: null, includeLanguageless: true, retryCount: 0, delayMilliseconds: 1000, fromCache: true);
+                
+                if (response.HttpStatusCode.IsSuccessCode())
+                {
+                    ImageDetailCollection imageCollection = null;
+                    await Task.Run(() =>
+                    {
+                        imageCollection = JsonConvert.DeserializeObject<ImageDetailCollection>(response.Json);
+                    });
+                    Movie.ImageDetailCollection = imageCollection;
+                    // TODO : refactor SetGalleryImageSources() to make it background friendly
                     _movieDetailModelConfigurator.SetGalleryImageSources(Movie);
+                }
             }
-            catch { }
+            catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not load gallery, service responded with: {ex.Message}", "Ok"); }
             finally { GalleryIsBusy = false; }
         }
         public async Task UpdateThumbnailCollection()

@@ -64,15 +64,13 @@ namespace Ch9.Utils
                     var firstDisplayImage = new ImageModel();
 
                     if (!string.IsNullOrEmpty(movie.ImgBackdropName))
-                    {
                         firstDisplayImage.FilePath = baseUrl + _tmdbConfiguration.Images.BackdropSizes[1] + movie.ImgBackdropName;
-                        movie.MovieImages.Add(firstDisplayImage);
-                    }                       
                     else if (!string.IsNullOrEmpty(movie.ImgPosterName))
-                    {
                         firstDisplayImage.FilePath = baseUrl + _tmdbConfiguration.Images.PosterSizes.Last() + movie.ImgPosterName;
-                        movie.MovieImages.Add(firstDisplayImage);
-                    }
+                    else
+                        firstDisplayImage.FilePath = @"https://invalidurl.jpg";
+                    
+                    movie.MovieImages.Add(firstDisplayImage);
                 }
             }
         }

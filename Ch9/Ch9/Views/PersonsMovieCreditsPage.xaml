@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
              xmlns:converters="clr-namespace:Ch9.Converters"
              xmlns:controls="clr-namespace:Ch9.Controls"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:pancardview="clr-namespace:PanCardView;assembly=PanCardView"
              mc:Ignorable="d"
              x:Class="Ch9.Views.PersonsMovieCreditsPage"
@@ -60,17 +61,18 @@
                                         CornerRadius="10"
                                         BackgroundColor="WhiteSmoke">
 
-                                        <Image Aspect="AspectFit">
+                                        <ffimageloading:CachedImage 
+                                            Aspect="AspectFit"
+                                            ErrorPlaceholder="person_placeholder2_lg"
+                                            RetryCount="1">
 
-                                            <Image.Source>
+                                            <ffimageloading:CachedImage.Source>
                                                 <UriImageSource
                                                     Uri="{Binding Path=FilePath}"
-                                                    CacheValidity="0"
-                                                    CachingEnabled="False"
                                                 />
-                                            </Image.Source>
+                                            </ffimageloading:CachedImage.Source>                                            
 
-                                        </Image>
+                                        </ffimageloading:CachedImage>
                                     </Frame>
                                 </ContentView>
                             </DataTemplate>
@@ -254,18 +256,16 @@
                             <ViewCell>
 
                                 <StackLayout Orientation="Horizontal" Padding="5">
-                                    <Image Aspect="AspectFit"
+                                    <ffimageloading:CachedImage Aspect="AspectFit"
                                        VerticalOptions="FillAndExpand"
                                        HorizontalOptions="Start"
                                        HeightRequest="75"
-                                       WidthRequest="50">
-                                        <Image.Source>
-                                            <UriImageSource Uri="{Binding ImgSmSrc}"
-                                                    CacheValidity="0"
-                                                    CachingEnabled="False"                                                         
-                                                    />
-                                        </Image.Source>
-                                    </Image>
+                                       WidthRequest="50"
+                                       Source="{Binding ImgSmSrc}"
+                                       LoadingPlaceholder="Poster_sm_placeholder"
+                                       RetryCount="1">
+
+                                    </ffimageloading:CachedImage>
 
                                     <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
                                         <Label Text="{Binding Title}" TextColor="Black" LineBreakMode="TailTruncation"/>
@@ -309,18 +309,17 @@
                             <ViewCell>
 
                                 <StackLayout Orientation="Horizontal" Padding="5">
-                                    <Image Aspect="AspectFit"
-                                       VerticalOptions="FillAndExpand"
-                                       HorizontalOptions="Start"
-                                       HeightRequest="75"
-                                       WidthRequest="50">
-                                        <Image.Source>
-                                            <UriImageSource Uri="{Binding ImgSmSrc}"
-                                                    CacheValidity="0"
-                                                    CachingEnabled="False"                                                         
-                                                    />
-                                        </Image.Source>
-                                    </Image>
+                                    <ffimageloading:CachedImage 
+                                        Aspect="AspectFit"
+                                        VerticalOptions="FillAndExpand"
+                                        HorizontalOptions="Start"
+                                        HeightRequest="75"
+                                        WidthRequest="50"
+                                        Source="{Binding ImgSmSrc}"
+                                        LoadingPlaceholder="Poster_sm_placeholder"
+                                        RetryCount="1">
+
+                                    </ffimageloading:CachedImage>
 
                                     <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
                                         <Label Text="{Binding Title}" TextColor="Black" LineBreakMode="TailTruncation"/>

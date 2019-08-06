@@ -5,7 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
              xmlns:converters="clr-namespace:Ch9.Converters"
              xmlns:controls="clr-namespace:Ch9.Controls"
-             xmlns:pancardview="clr-namespace:PanCardView;assembly=PanCardView"             
+             xmlns:pancardview="clr-namespace:PanCardView;assembly=PanCardView"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              mc:Ignorable="d"
              x:Class="Ch9.Views.MovieDetailPage"
              x:Name="movieDetailPage"
@@ -50,20 +51,21 @@
                                         CornerRadius="10"
                                         BackgroundColor="WhiteSmoke"
                                     >
-                                        <Image Aspect="AspectFit">
+                                        <ffimageloading:CachedImage 
+                                            Aspect="AspectFit"                                            
+                                            ErrorPlaceholder="movie_backdrop_placeholder_lg"
+                                            RetryCount="1">
 
-                                            <Image.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding  Path=BindingContext.TapImageCommand, Source={x:Reference movieDetailPage}}" />                                               
-                                            </Image.GestureRecognizers>
+                                            <ffimageloading:CachedImage.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding  Path=BindingContext.TapImageCommand, Source={x:Reference movieDetailPage}}" />
+                                            </ffimageloading:CachedImage.GestureRecognizers>
 
-                                            <Image.Source>
+                                            <ffimageloading:CachedImage.Source>
                                                 <UriImageSource
                                                     Uri="{Binding Path=FilePath}"
-                                                    CacheValidity="0"
-                                                    CachingEnabled="False"
                                                 />
-                                            </Image.Source>                                            
-                                        </Image>                                        
+                                            </ffimageloading:CachedImage.Source>                                            
+                                        </ffimageloading:CachedImage>                                        
                                     </Frame>                                    
                                 </ContentView>
                             </DataTemplate>
@@ -224,11 +226,15 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     
-                                    <Image Grid.RowSpan="2"
+                                    <ffimageloading:CachedImage 
+                                        Grid.RowSpan="2"
+                                        
                                         Source="{Binding ProfileUrl}"                                        
                                         Aspect="AspectFit"
-                                        HeightRequest="60" 
-                                        WidthRequest="60" />
+                                        HeightRequest="75" 
+                                        WidthRequest="50" 
+                                        ErrorPlaceholder="person_placeholder2_sm"
+                                        RetryCount="1"/>
                                     
                                     <Label Grid.Column="1" 
                                         Text="{Binding Name}" 

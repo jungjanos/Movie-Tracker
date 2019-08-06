@@ -4,6 +4,7 @@ using Android.OS;
 using System.Net.Http;
 using PanCardView.Droid;
 using Xamarin.Forms;
+using FFImageLoading.Forms.Platform;
 
 namespace Ch9.Droid
 {
@@ -18,6 +19,7 @@ namespace Ch9.Droid
             base.OnCreate(savedInstanceState);
             Forms.SetFlags("CollectionView_Experimental");
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+            CachedImageRenderer.Init(true);
 
             CardsViewRenderer.Preserve();
             HttpClient httpClient = new HttpClient(new Xamarin.Android.Net.AndroidClientHandler());

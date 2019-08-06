@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
              xmlns:converters="clr-namespace:Ch9.Converters"
              xmlns:controls="clr-namespace:Ch9.Controls"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              mc:Ignorable="d"
              x:Class="Ch9.Views.MainPage3"
              Title="Search">
@@ -27,13 +28,13 @@
             <Label Text="type at least three characters"
                    Margin="50,0,0,0"
                    x:Name="label">
-                <Label.IsVisible>
+                <!--<Label.IsVisible>
                     <Binding Path="SearchString" Converter="{StaticResource Key=searchStringToIsVisibleBool}">
                         <Binding.ConverterParameter>
                             <x:Int32>3</x:Int32>
                         </Binding.ConverterParameter>
                     </Binding>
-                </Label.IsVisible>
+                </Label.IsVisible>-->
             </Label>      
 
             <controls:ExtendedListView  ItemsSource="{Binding Path=SearchResults.MovieDetailModels}"
@@ -48,18 +49,16 @@
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout Orientation="Horizontal" Padding="5">
-                                <Image Aspect="AspectFit"
+                                <ffimageloading:CachedImage Aspect="AspectFit"
                                        VerticalOptions="FillAndExpand"
                                        HorizontalOptions="Start"
                                        HeightRequest="75"
-                                       WidthRequest="50">
-                                    <Image.Source>
-                                        <UriImageSource Uri="{Binding ImgSmSrc}"
-                                                    CacheValidity="0"
-                                                    CachingEnabled="False"                                                         
-                                                    />
-                                    </Image.Source>
-                                </Image>
+                                       WidthRequest="50"
+                                       Source="{Binding ImgSmSrc}"
+                                       ErrorPlaceholder="Poster_sm_placeholder"
+                                       RetryCount="1">
+
+                                </ffimageloading:CachedImage>
 
                                 <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
                                     <Label Text="{Binding Title}" TextColor="Black"/>

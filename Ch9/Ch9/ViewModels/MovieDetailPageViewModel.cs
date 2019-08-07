@@ -169,7 +169,7 @@ namespace Ch9.ViewModels
 
             MovieCastPersonTappedCommand = new Command<IStaffMemberRole>(async staffMemberRole =>
             {
-                await FetchStaffMemberDetailsAndMovieCredits(staffMemberRole);
+                await OpenPersonPage(staffMemberRole);
             });
 
             OpenInfolinkCommand = new Command(async () =>
@@ -349,23 +349,21 @@ namespace Ch9.ViewModels
             }
         }
 
-        private async Task FetchStaffMemberDetailsAndMovieCredits(IStaffMemberRole staffMemberRole)
+        private async Task OpenPersonPage(IStaffMemberRole staffMemberRole)
         {
             try
             {
                 GetPersonsDetailsResult personDetailsResponse = await _cachedSearchClient.GetPersonsDetails(staffMemberRole.Id, _settings.SearchLanguage, 0, 1000, fromCache: true);
-                GetPersonsMovieCreditsResult movieCreditsResponse = await _cachedSearchClient.GetPersonsMovieCredits(staffMemberRole.Id, _settings.SearchLanguage, 0, 1000, fromCache: true);
-                if (personDetailsResponse.HttpStatusCode.IsSuccessCode() && movieCreditsResponse.HttpStatusCode.IsSuccessCode())
-                {
-                    GetPersonsMovieCreditsModel personsMovieCredits = JsonConvert.DeserializeObject<GetPersonsMovieCreditsModel>(movieCreditsResponse.Json);
+                if (personDetailsResponse.HttpStatusCode.IsSuccessCode())
+                {                    
                     GetPersonsDetailsModel personDetails = JsonConvert.DeserializeObject<GetPersonsDetailsModel>(personDetailsResponse.Json);
 
-                    await _pageService.PushPersonsMovieCreditsPageAsync(personDetails, personsMovieCredits);
+                    await _pageService.PushPersonsMovieCreditsPageAsync(personDetails);
                 }
                 else
-                    await _pageService.DisplayAlert("Error", $"Could not fetch persons movie participations, service responded: GetPersonDetails():{personDetailsResponse.HttpStatusCode} and GetPersonsMovieCredits(): {movieCreditsResponse.HttpStatusCode}", "Ok");
+                    await _pageService.DisplayAlert("Error", $"Could not fetch persons details, service responded: GetPersonDetails():{personDetailsResponse.HttpStatusCode}", "Ok");
             }
-            catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not fetch persons movie participations, service responded with: {ex.Message}", "Ok"); }
+            catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not fetch persons details, service responded with: {ex.Message}", "Ok"); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

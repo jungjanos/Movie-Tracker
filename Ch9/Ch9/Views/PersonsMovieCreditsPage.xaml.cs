@@ -15,11 +15,10 @@ namespace Ch9.Views
             set => BindingContext = value;
         }
 
-        public PersonsMovieCreditsPage(GetPersonsDetailsModel personDetails, GetPersonsMovieCreditsModel personsMovieCredits)
+        public PersonsMovieCreditsPage(GetPersonsDetailsModel personDetails)
         {
             ViewModel = new PersonsMovieCreditsPageViewModel(
-                personDetails,
-                personsMovieCredits,
+                personDetails,                
                 ((App)Application.Current).Settings,
                 ((App)Application.Current).CachedSearchClient,
                 ((App)Application.Current).MovieDetailModelConfigurator,
@@ -30,5 +29,6 @@ namespace Ch9.Views
 
             InitializeComponent();
         }
+
     }
 }

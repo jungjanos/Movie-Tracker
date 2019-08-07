@@ -212,6 +212,11 @@
 
                 </Grid>
 
+                <ActivityIndicator IsVisible="{Binding WorkInProgress}"
+                                   IsRunning="{Binding WorkInProgress}"
+                                   HorizontalOptions="Center"
+                                   HeightRequest="20"/>
+
                 <StackLayout 
                     Orientation="Horizontal" Padding="5"
                     HorizontalOptions="FillAndExpand">

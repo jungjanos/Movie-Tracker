@@ -24,11 +24,20 @@ namespace Ch9.ViewModels
         private readonly WeblinkComposer _weblinkComposer;
         private readonly IPageService _pageService;
         private readonly Task _fetchGalleryImages;
+        private readonly Task _fetchPersonsMovieCredits;
 
         public GetPersonsDetailsModel PersonsDetails { get; private set; }
-        public GetPersonsMovieCreditsModel PersonsMovieCreditsModel { get; private set; }
+        public GetPersonsMovieCreditsModel PersonsMovieCreditsModel
+        {
+            get => _personsMovieCreditsModel;
+            set
+            {
+                if (SetProperty(ref _personsMovieCreditsModel, value))
+                    OnPropertyChanged(nameof(NumberOfMovies));                    
+            }
+        }
         public ObservableCollection<ImageModel> DisplayImages { get; private set; }
-        public int NumberOfMovies => (PersonsMovieCreditsModel.MoviesAsActor?.Length ?? 0) + (PersonsMovieCreditsModel.MoviesAsCrewMember?.Length ?? 0);
+        public int NumberOfMovies => (PersonsMovieCreditsModel?.MoviesAsActor?.Length ?? 0) + (PersonsMovieCreditsModel?.MoviesAsCrewMember?.Length ?? 0);
 
         private bool _actorOrCrewSwitch;
         public bool ActorOrCrewSwitch
@@ -37,22 +46,29 @@ namespace Ch9.ViewModels
             set => SetProperty(ref _actorOrCrewSwitch, value);
         }
 
+        private bool _workInProgress;
+        private GetPersonsMovieCreditsModel _personsMovieCreditsModel;
+
+        public bool WorkInProgress
+        {
+            get => _workInProgress;
+            set => SetProperty(ref _workInProgress, value);
+        }
+
         public ICommand OnItemTappedCommand { get; private set; }
         public ICommand OpenWeblinkCommand { get; private set; }
         public ICommand OpenInfolinkCommand { get; private set; }
 
         public PersonsMovieCreditsPageViewModel(
             GetPersonsDetailsModel personDetails,
-            GetPersonsMovieCreditsModel personsMovieCreditsModel,
             ISettings settings,
             ITmdbCachedSearchClient cachedSearchClient,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPersonDetailModelConfigurator personDetailModelConfigurator,
             WeblinkComposer weblinkComposer,
             IPageService pageService
-            )
+    )
         {
-
             _settings = settings;
             _cachedSearchClient = cachedSearchClient;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
@@ -60,14 +76,8 @@ namespace Ch9.ViewModels
             _weblinkComposer = weblinkComposer;
             _pageService = pageService;
 
-            _movieDetailModelConfigurator.SetImageSrc(personsMovieCreditsModel.MoviesAsActor);
-            _movieDetailModelConfigurator.SetImageSrc(personsMovieCreditsModel.MoviesAsCrewMember);
-            _movieDetailModelConfigurator.SetGenreNamesFromGenreIds(personsMovieCreditsModel.MoviesAsActor);
-            _movieDetailModelConfigurator.SetGenreNamesFromGenreIds(personsMovieCreditsModel.MoviesAsCrewMember);
-
             PersonsDetails = personDetails;
-            personsMovieCreditsModel.SortMoviesByYearDesc();
-            PersonsMovieCreditsModel = personsMovieCreditsModel;
+
 
             var firstImage = new ImageModel();
             _personDetailModelConfigurator.SetProfileGalleryPictureImageSrc(firstImage, PersonsDetails);
@@ -86,10 +96,13 @@ namespace Ch9.ViewModels
             });
 
             _fetchGalleryImages = UpdateImageCollection();
+            _fetchPersonsMovieCredits = _fetchGalleryImages.ContinueWith(async t => await FetchPersonsMovieCredits(), cancellationToken: System.Threading.CancellationToken.None, TaskContinuationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
         }
+
 
         private async Task UpdateImageCollection()
         {
+            WorkInProgress = true;
             try
             {
                 GetPersonImagesResult response = await _cachedSearchClient.GetPersonImages(PersonsDetails.Id, retryCount: 1, delayMilliseconds: 1000, fromCache: true);
@@ -110,6 +123,36 @@ namespace Ch9.ViewModels
                 }
             }
             catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not load gallery, service responded with: {ex.Message}", "Ok"); }
+            finally { WorkInProgress = false; }
+        }
+
+        private async Task FetchPersonsMovieCredits()
+        {
+            WorkInProgress = true;
+            try
+            {
+                GetPersonsMovieCreditsResult movieCreditsResponse = await _cachedSearchClient.GetPersonsMovieCredits(PersonsDetails.Id, _settings.SearchLanguage, 1, 1000, fromCache: true);
+                if (movieCreditsResponse.HttpStatusCode.IsSuccessCode())
+                {
+                    GetPersonsMovieCreditsModel personsMovieCredits = null;
+
+                    await Task.Run(() =>
+                    {
+                        personsMovieCredits = JsonConvert.DeserializeObject<GetPersonsMovieCreditsModel>(movieCreditsResponse.Json);
+
+                        _movieDetailModelConfigurator.SetImageSrc(personsMovieCredits.MoviesAsActor);
+                        _movieDetailModelConfigurator.SetImageSrc(personsMovieCredits.MoviesAsCrewMember);
+                        _movieDetailModelConfigurator.SetGenreNamesFromGenreIds(personsMovieCredits.MoviesAsActor);
+                        _movieDetailModelConfigurator.SetGenreNamesFromGenreIds(personsMovieCredits.MoviesAsCrewMember);
+                        personsMovieCredits.SortMoviesByYearDesc();
+                    });
+                    PersonsMovieCreditsModel = personsMovieCredits;
+                }
+                else
+                    await _pageService.DisplayAlert("Error", $"Could not fetch persons movie participations, service responded: FetchPersonsMovieCreditsDetails():{movieCreditsResponse.HttpStatusCode}", "Ok");
+            }
+            catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not fetch persons movie participations, exception at: FetchPersonsMovieCreditsDetails():{ex.Message}", "Ok"); }
+            finally { WorkInProgress = false; }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

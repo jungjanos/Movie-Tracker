@@ -24,6 +24,7 @@
             <converters:GalleryImageCountToColorConverter x:Key="galleryImageCountToColor"/>
             <converters:ShowCreditsToColorConverter x:Key="showCreditsToColor"/>
             <converters:IntIntMultiplierConverter x:Key="intIntMultiplier"/>
+            <converters:StringToNotNullOremptyStringToBoolConverter x:Key="stringToNotNullOremptyStringToBool"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -79,21 +80,30 @@
                         IsVisible="{Binding Path=BindingContext.GalleryIsBusy, Source={x:Reference movieDetailPage}}"
                         HorizontalOptions="CenterAndExpand" 
                         VerticalOptions="Start" 
-                        HeightRequest="10"/>
+                        HeightRequest="20"/>
 
-                    <Grid BackgroundColor="Transparent" Margin="5,0,5,0">
+                    <Grid BackgroundColor="AliceBlue" Margin="5,0,5,0">
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding Path=BindingContext.ChangeDisplayedImageTypeCommand, Source={x:Reference movieDetailPage}}"/>
                         </Grid.GestureRecognizers>
                         
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="13"/>
+                            <RowDefinition Height="15"/>
+                            <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="9*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>                            
                             
                         </Grid.ColumnDefinitions>
 
@@ -111,7 +121,8 @@
                         <StackLayout Grid.Row="0" Grid.Column="1"
                                      Orientation="Horizontal" 
                                      VerticalOptions="End"
-                                     Spacing="0">
+                                     Spacing="0"
+                                     BackgroundColor="LightBlue">
                             
                             <Label BindingContext="{x:Reference cardView}"
                                Text="{Binding SelectedIndex, Converter={StaticResource Key=intPlusOneToString}}" 
@@ -131,38 +142,47 @@
                                FontSize="Micro"
                                IsVisible="{Binding DisplayImageTypeSelector}" />
 
-                        <Label Grid.Row="0" Grid.Column="3"
+                        <Label Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="9"
                                BindingContext="{x:Reference cardView}"
                                Text="{Binding Path=SelectedItem.AttachedVideo.Title}"
                                FontSize="Micro"
                                IsVisible="{Binding DisplayImageTypeSelector}" />
 
-                    </Grid>
 
-                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10">
-                        <StackLayout.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding Path=BindingContext.ChangeDisplayedImageTypeCommand, Source={x:Reference movieDetailPage}}"/>
-                        </StackLayout.GestureRecognizers>
-                        
-                        <Label Text="{Binding Path=Movie.Title}" FontSize="Large" LineBreakMode="WordWrap" HorizontalOptions="Start"/>
-                        <Label 
+                        <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="10"
+                            Text="{Binding Path=Movie.Title}" 
+                               FontSize="Large" 
+                               LineBreakMode="TailTruncation" 
+                               HorizontalOptions="Start"/>
+
+                        <Label Grid.Row="1" Grid.Column="11" Grid.ColumnSpan="2"
                             Text="{Binding Path=Movie.Year}" 
                             IsVisible="{Binding Path=Movie.Year.HasValue}"
                             FontSize="Large" 
-                            LineBreakMode="NoWrap" 
-                            MaxLines="1"  
-                            HorizontalOptions="EndAndExpand" 
-                            MinimumWidthRequest="150"/>
-                    </StackLayout>
+                            LineBreakMode="NoWrap"                             
+                            HorizontalOptions="End"/>
 
-                    <Label Text="{Binding Path=Movie.Genre}" FontSize="Small"/>
-                    <Label Text="{Binding Path=Movie.Tagline}"/>
-                    <controls:ExtendedLabel Text="{Binding Path=Movie.Overview}" TextColor="DarkGray" FontSize="Medium" Visual="Material" JustifyText="True"/>
+                    </Grid>
+
+                    <Label 
+                        Text="{Binding Path=Movie.Genre}"
+                        IsVisible="{Binding Path=Movie.Genre, Converter={StaticResource Key=stringToNotNullOremptyStringToBool}}"
+                        FontSize="Small"/>
+                    
+                    <Label 
+                        Text="{Binding Path=Movie.Tagline}"
+                        IsVisible="{Binding Path=Movie.Tagline, Converter={StaticResource Key=stringToNotNullOremptyStringToBool}}"/>                    
+                    
+                    <controls:ExtendedLabel 
+                        Text="{Binding Path=Movie.Overview}" 
+                        TextColor="DarkGray" 
+                        FontSize="Medium" 
+                        Visual="Material" 
+                        JustifyText="True"/>
 
                     <StackLayout 
                         Orientation="Horizontal"
-                        HorizontalOptions="FillAndExpand"
-                        >
+                        HorizontalOptions="FillAndExpand">
                         
                         <Label Text="{Binding Path= Movie.Duration, StringFormat='{0} mins'}" IsVisible="{Binding Path=Movie.Duration.HasValue}"/>
                         <Label Text="{Binding Path= Movie.VoteAverage, StringFormat='Score: {0:F1}'}"/>

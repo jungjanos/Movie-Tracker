@@ -33,17 +33,27 @@ namespace Ch9.ViewModels
             set
             {
                 if (SetProperty(ref _personsMovieCreditsModel, value))
-                    OnPropertyChanged(nameof(NumberOfMovies));                    
+                {
+                    OnPropertyChanged(nameof(NumberOfMoviesInSelectedMovieCreditType));
+                    OnPropertyChanged(nameof(NumberOfMoviesAsActor));
+                    OnPropertyChanged(nameof(NumberOfMoviesAsCrew));                    
+                }
             }
         }
         public ObservableCollection<ImageModel> DisplayImages { get; private set; }
-        public int NumberOfMovies => (PersonsMovieCreditsModel?.MoviesAsActor?.Length ?? 0) + (PersonsMovieCreditsModel?.MoviesAsCrewMember?.Length ?? 0);
+        public int NumberOfMoviesInSelectedMovieCreditType => _actorOrCrewSwitch ? NumberOfMoviesAsCrew : NumberOfMoviesAsActor;
+        public int NumberOfMoviesAsActor => PersonsMovieCreditsModel?.MoviesAsActor?.Length ?? 0;
+        public int NumberOfMoviesAsCrew => PersonsMovieCreditsModel?.MoviesAsCrewMember?.Length ?? 0;
 
         private bool _actorOrCrewSwitch;
         public bool ActorOrCrewSwitch
         {
             get => _actorOrCrewSwitch;
-            set => SetProperty(ref _actorOrCrewSwitch, value);
+            set
+            {
+                if (SetProperty(ref _actorOrCrewSwitch, value))
+                    OnPropertyChanged(nameof(NumberOfMoviesInSelectedMovieCreditType));
+            }                
         }
 
         private bool _workInProgress;
@@ -66,8 +76,7 @@ namespace Ch9.ViewModels
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPersonDetailModelConfigurator personDetailModelConfigurator,
             WeblinkComposer weblinkComposer,
-            IPageService pageService
-    )
+            IPageService pageService)
         {
             _settings = settings;
             _cachedSearchClient = cachedSearchClient;

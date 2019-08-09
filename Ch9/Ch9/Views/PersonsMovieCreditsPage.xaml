@@ -13,9 +13,10 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:ActorOrCrewBoolToStringConverter x:Key="actorOrCrewBoolToString"/>
-            <converters:InverseBoolConverter x:Key="inverseBool" />
-            <converters:StringToNotNullOremptyStringToBoolConverter x:Key="stringToNotNullOremptyStringToBool" />
-            <converters:IntPlusOneToStringConverter x:Key="intPlusOneToString" />
+            <converters:InverseBoolConverter x:Key="inverseBool"/>
+            <converters:StringToNotNullOremptyStringToBoolConverter x:Key="stringToNotNullOremptyStringToBool"/>
+            <converters:IntPlusOneToStringConverter x:Key="intPlusOneToString"/>
+            <converters:IntIntMultiplierConverter x:Key="intIntMultiplier"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -228,18 +229,20 @@
                         LineBreakMode="TailTruncation"
                         HorizontalOptions="Start"/>
 
-                    <Label 
-                        Text="{Binding NumberOfMovies, StringFormat=' ({0})'}" 
+                    <Label                         
+                        Text="{Binding NumberOfMoviesInSelectedMovieCreditType, StringFormat=' ({0})'}" 
                         Margin="0"
                         FontSize="Subtitle" 
                         VerticalTextAlignment="Center"
-                        HorizontalOptions="Start"/>
+                        HorizontalOptions="StartAndExpand"
+                        LineBreakMode="NoWrap"
+                        WidthRequest="50"/>
 
-                    <Label 
+                    <Label                         
                         Text="{Binding ActorOrCrewSwitch, Converter={StaticResource Key=actorOrCrewBoolToString}}" 
                         VerticalTextAlignment="Center"
-                        HorizontalOptions="EndAndExpand"
-                        MinimumWidthRequest="100"
+                        HorizontalOptions="End"
+                        WidthRequest="70"
                         LineBreakMode="NoWrap"/>
 
                     <Switch 
@@ -253,7 +256,8 @@
                     ItemsSource="{Binding Path=PersonsMovieCreditsModel.MoviesAsActor}"
                     TappedCommand="{Binding OnItemTappedCommand}"
                     IsVisible="{Binding ActorOrCrewSwitch, Converter={StaticResource Key=inverseBool}}"
-                    HasUnevenRows="False"                                        
+                    HasUnevenRows="False"
+                    HeightRequest="{Binding NumberOfMoviesAsActor,Converter={StaticResource Key=intIntMultiplier},ConverterParameter=87}"
                     RowHeight="85">
 
                     <ListView.ItemTemplate>
@@ -304,9 +308,10 @@
 
                 <controls:ExtendedListView  
                     ItemsSource="{Binding Path=PersonsMovieCreditsModel.MoviesAsCrewMember}"
-                    TappedCommand="{Binding OnItemTappedCommand}"
-                    HasUnevenRows="False"
                     IsVisible="{Binding ActorOrCrewSwitch}"
+                    TappedCommand="{Binding OnItemTappedCommand}"
+                    HasUnevenRows="False"                    
+                    HeightRequest="{Binding NumberOfMoviesAsCrew,Converter={StaticResource Key=intIntMultiplier},ConverterParameter=87}"
                     RowHeight="85">
 
                     <ListView.ItemTemplate>

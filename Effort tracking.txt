@@ -42,3 +42,5 @@ effort: 2h (needs 1, solved first)
 Prio: 3
 
 8, IMPROVEMENT: MovieDetailPage should not be double scrollable
+effort 1h
+Prio. 2

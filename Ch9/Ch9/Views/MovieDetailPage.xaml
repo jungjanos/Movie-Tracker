@@ -23,6 +23,7 @@
             <converters:GalleryImageTypeToGlyphConverter x:Key="galleryImageTypeToGlyph" />
             <converters:GalleryImageCountToColorConverter x:Key="galleryImageCountToColor"/>
             <converters:ShowCreditsToColorConverter x:Key="showCreditsToColor"/>
+            <converters:IntIntMultiplierConverter x:Key="intIntMultiplier"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -207,12 +208,10 @@
                         x:Name="movieCastList"
                         ItemsSource="{Binding Staffs}"
                         IsVisible="{Binding ShowCredits}"
-
                         SelectionChanged="CollectionView_SelectionChanged"
                         SelectionMode="Single"
-                        >
-
-
+                        HeightRequest="{Binding Staffs.Count,Converter={StaticResource Key=intIntMultiplier},ConverterParameter=88}">
+                        
                         <CollectionView.ItemTemplate>
                         
                         <DataTemplate>

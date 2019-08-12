@@ -514,6 +514,7 @@ namespace Ch9.ApiClient
 
             return result;
         }
+
         public async Task<GetListsResult> GetLists(int? accountId = null, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             // no mistake here: missing "account_id" parameter add the string literal "{account_id}" as paths segment            
@@ -661,6 +662,22 @@ namespace Ch9.ApiClient
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
             GetListDetailsResult result = await GetResponse<GetListDetailsResult>(retryCount, delayMilliseconds, requestUri);
+
+            return result;
+        }
+
+        // https://developers.themoviedb.org/3/lists/check-item-status
+        public async Task<GetItemStatusOnTargetListResult> GetItemStatusOnTargetList(int listId, int movieId, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            string baseUrl = BASE_Address + BASE_Path + LIST_path + "/" + listId + ITEM_STATUS_Path;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+            query.Add(MOVIE_ID_Key, movieId.ToString());
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            GetItemStatusOnTargetListResult result = await GetResponse<GetItemStatusOnTargetListResult>(retryCount, delayMilliseconds, requestUri);
 
             return result;
         }

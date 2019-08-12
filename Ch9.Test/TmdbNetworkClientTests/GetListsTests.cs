@@ -19,7 +19,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
         public GetListsTests(ITestOutputHelper output)
         {
-            this._output = output;
+            _output = output;
 
             _settingsKeyValues = new Dictionary<string, object>();
             _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";

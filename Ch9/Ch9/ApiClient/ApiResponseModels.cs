@@ -105,6 +105,9 @@ namespace Ch9.ApiClient
     public class GetPersonsDetailsResult : TmdbResponseBase
     { }
 
+    public class GetItemStatusOnTargetListResult : TmdbResponseBase
+    { }
+
     /// <summary>
     /// Because of the custom deserialization requirement (the WebAPI sends back flexible object type as response)
     /// The deserialization is built into the response object itself. This behavior diverges from normal case

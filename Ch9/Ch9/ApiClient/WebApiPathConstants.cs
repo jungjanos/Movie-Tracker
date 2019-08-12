@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Ch9.ApiClient
+﻿namespace Ch9.ApiClient
 {
     public static class WebApiPathConstants
     {
@@ -50,5 +46,7 @@ namespace Ch9.ApiClient
         public const string ACCOUNT_STATES_Path = "/account_states";
         public const string YEAR_Key = "year";
         public const string PERSON_Path = "/person";
+        public const string ITEM_STATUS_Path = "/item_status";
+        public const string MOVIE_ID_Key = "movie_id";
     }
 }

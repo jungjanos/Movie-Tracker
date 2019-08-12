@@ -1,6 +1,5 @@
 ﻿using Ch9.Services;
 using Ch9.ViewModels;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -9,8 +8,6 @@ namespace Ch9.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ListsPage : ContentPage
     {
-        readonly Task vMInitializer;        
-
         public ListsPageViewModel3 ViewModel
         {
             get => BindingContext as ListsPageViewModel3;
@@ -23,13 +20,12 @@ namespace Ch9.Views
                     ((App)Application.Current).UsersMovieListsService2,                                    
                     new PageService(this));
 
-            vMInitializer = ViewModel.Initialize();
             InitializeComponent();
         }
 
         protected override async void OnAppearing()
         {
-            await vMInitializer;
+            await ViewModel.Initialize();
             base.OnAppearing();            
         }
     }

@@ -22,9 +22,9 @@ namespace Ch9.ViewModels
         }
 
         /// <summary>
-        /// 1 = CUSTOM, 2 = FAVORITES 3 = WATCHLIST
+        /// 0 = not defined (do not reset to it), 1 = CUSTOM, 2 = FAVORITES 3 = WATCHLIST
         /// </summary>
-        private int _selectedListType = 1;
+        private int _selectedListType = 0;
         public int SelectedListType
         {
             get => _selectedListType;
@@ -76,7 +76,7 @@ namespace Ch9.ViewModels
             IPageService pageService)
         {
             _pageService = pageService;
-            UsersMovieListsService2 = usersMovieListsService2;
+            UsersMovieListsService2 = usersMovieListsService2;            
 
             WatchlistViewSelectorCommand = new Command(async () =>
             {
@@ -110,8 +110,25 @@ namespace Ch9.ViewModels
                 SelectedListType = 2;
             });
 
-            CustomListsViewSelectorCommand = new Command(() => 
+            CustomListsViewSelectorCommand = new Command(async () => 
             {
+                if (UsersMovieListsService2.CustomListsService.UsersCustomLists.Count == 0)
+                {
+                    IsRefreshing = true;
+
+                    try
+                    {
+                        await UsersMovieListsService2.CustomListsService.UpdateCustomLists(retryCount: 1, 1000, fromCache: false);
+
+                        var selectedList = UsersMovieListsService2.CustomListsService.SelectedCustomList;
+
+                        if (selectedList != null)
+                            await UsersMovieListsService2.CustomListsService.UpdateSingleCustomList(selectedList.Id, retryCount: 1, 1000, fromCache: false);
+                    }
+                    catch (Exception ex)
+                    { await _pageService.DisplayAlert("Error", $"Could not refresh custom lists, service responded with: {ex.Message}", "Ok"); }
+                    IsRefreshing = false;
+                }
                 SelectedListType = 3;
             });
 
@@ -240,9 +257,24 @@ namespace Ch9.ViewModels
             }
         }
 
-        //public async Task Initialize() => await UsersMovieListsService2.CustomListsService.Initialize();
-        public async Task Initialize() => await UsersMovieListsService2.WatchlistService.RefreshWatchlist();
+        /// <summary>
+        /// Initializes the default active movie list shown on the page.
+        /// </summary>
+        public async Task Initialize()
+        {
+            if (0 < UsersMovieListsService2.WatchlistService.Watchlist.MovieDetailModels.Count)
+                return;
 
+            try
+            {
+                await UsersMovieListsService2.WatchlistService.RefreshWatchlist();
+                SelectedListType = 1;
+            }
+            catch (Exception ex)
+            {
+                await _pageService.DisplayAlert("Error", $"Could not load watchlist, service responded with {ex.Message}", "Ok");
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

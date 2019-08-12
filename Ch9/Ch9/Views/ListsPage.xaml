@@ -14,9 +14,8 @@
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <converters:ListsPageIntToVisibilityConverter x:Key="listsPageIntToVisibility"/>
+            <converters:ListsPageIntToVisibilityConverter x:Key="listsPageIntToVisibility"/>            
             <converters:ListsPageIntToButtonColorConverter x:Key="listsPageIntToButtonColor"/>
-            <converters:ListsPageIntToButtonColorConverter2 x:Key="listsPageIntToButtonColor2"/>
             <sys:Int32 x:Key="IntOne">1</sys:Int32>
             <sys:Int32 x:Key="IntTwo">2</sys:Int32>
             <sys:Int32 x:Key="IntThree">3</sys:Int32>
@@ -47,7 +46,7 @@
                         <FontImageSource Glyph="&#xf29f;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="30" 
-                         Color="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor2},ConverterParameter={StaticResource Key=IntOne}}"/>
+                         Color="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntOne}}"/>
                     </Button.ImageSource>
 
                 </Button>
@@ -60,7 +59,7 @@
                         <FontImageSource Glyph="&#xf308;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="30" 
-                         Color="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor2},ConverterParameter={StaticResource Key=IntTwo}}"/>
+                         Color="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntTwo}}"/>
                     </Button.ImageSource>
 
                 </Button>
@@ -73,105 +72,13 @@
                         <FontImageSource Glyph="&#xf2f5;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="30" 
-                         Color="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor2},ConverterParameter={StaticResource Key=IntThree}}"/>
+                         Color="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntThree}}"/>
                     </Button.ImageSource>
 
                 </Button>
 
             </Grid>
 
-
-            <Grid IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntThree}}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="50" />
-                </Grid.ColumnDefinitions>
-
-                <Picker Grid.Row="0" Grid.Column="0"
-                    x:Name="viewedListPicker"
-                                    ItemsSource="{Binding Path=UsersMovieListsService2.CustomListsService.UsersCustomLists, Mode=TwoWay}"
-                                    ItemDisplayBinding="{Binding Name, Mode=TwoWay}"
-                                    SelectedItem="{Binding Path=UsersMovieListsService2.CustomListsService.SelectedCustomList, Mode=TwoWay}"/>
-
-                <Button Grid.Row="0" Grid.Column="1"
-                        Command="{Binding RemoveCustomListCommand}">
-                    <Button.ImageSource>
-                        <FontImageSource Glyph="&#xf398;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Color="Black"/>
-                    </Button.ImageSource>
-                </Button>
-
-                <Button Grid.Row="0" Grid.Column="2"
-                        Command="{Binding AddCustomListCommand}">
-                    <Button.ImageSource>
-                        <FontImageSource Glyph="&#xf273;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Color="Black" />
-                    </Button.ImageSource>
-                </Button>
-
-                <Button Grid.Row="0" Grid.Column="3"
-                        Command="{Binding RefreshCustomCommand}">
-                    <Button.ImageSource>
-                        <FontImageSource Glyph="&#xf366;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Color="Black" />
-                    </Button.ImageSource>
-                </Button>
-
-            </Grid>
-
-
-            <controls:ExtendedListView  IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntThree}}"                                                                                
-                                        ItemsSource="{Binding Source={x:Reference viewedListPicker}, Path=SelectedItem.Movies, Mode=TwoWay}"
-                                        SelectedItem="{Binding SelectedMovie, Mode=TwoWay}"
-                                        TappedCommand="{Binding OnItemTappedCommand}"
-                                        IsPullToRefreshEnabled="True"
-                                        IsRefreshing="{Binding IsRefreshing}"
-                                        RefreshCommand="{Binding RefreshCustomListCommand}"
-                                        HasUnevenRows="False"
-                                        RowHeight="85">                                        
-
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <ViewCell.ContextActions>
-                                <MenuItem Command="{Binding Path=BindingContext.RemoveMovieFromCustomListCommand, Source={x:Reference Name=listsPage}}" CommandParameter="{Binding .}" Text="Remove" IsDestructive="True"/>
-                            </ViewCell.ContextActions>
-                            <StackLayout Orientation="Horizontal" Padding="5">
-                                <ffimageloading:CachedImage Aspect="AspectFit"
-                                       VerticalOptions="FillAndExpand"
-                                       HorizontalOptions="Start"
-                                       HeightRequest="75"
-                                       WidthRequest="50"
-                                       Source="{Binding ImgSmSrc}"
-                                       ErrorPlaceholder="Poster_sm_placeholder"
-                                       RetryCount="1">
-
-                                </ffimageloading:CachedImage>
-
-                                <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
-                                    <Label Text="{Binding Title}" TextColor="Black"/>
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label 
-                                          TextColor="Gray" 
-                                          Text="{Binding Year}"
-                                          IsVisible="{Binding Path=Year.HasValue}"
-                                          FontSize="Micro"/>
-                                        <Label TextColor="Gray" Text="{Binding Genre}" FontSize="Micro"/>
-                                    </StackLayout>
-                                </StackLayout>
-                            </StackLayout>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </controls:ExtendedListView>
 
             <StackLayout IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntOne}}"
                          Orientation="Horizontal"
@@ -310,6 +217,105 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </controls:ExtendedListView>
+
+
+            <Grid IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntThree}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="50" />
+                </Grid.ColumnDefinitions>
+
+                <Picker Grid.Row="0" Grid.Column="0"
+                    x:Name="viewedListPicker"
+                                    ItemsSource="{Binding Path=UsersMovieListsService2.CustomListsService.UsersCustomLists, Mode=TwoWay}"
+                                    ItemDisplayBinding="{Binding Name, Mode=TwoWay}"
+                                    SelectedItem="{Binding Path=UsersMovieListsService2.CustomListsService.SelectedCustomList, Mode=TwoWay}"/>
+
+                <Button Grid.Row="0" Grid.Column="1"
+                        Command="{Binding RemoveCustomListCommand}">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xf398;"
+                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                         Color="Black"/>
+                    </Button.ImageSource>
+                </Button>
+
+                <Button Grid.Row="0" Grid.Column="2"
+                        Command="{Binding AddCustomListCommand}">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xf273;"
+                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                         Color="Black" />
+                    </Button.ImageSource>
+                </Button>
+
+                <Button Grid.Row="0" Grid.Column="3"
+                        Command="{Binding RefreshCustomCommand}">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xf366;"
+                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                         Color="Black" />
+                    </Button.ImageSource>
+                </Button>
+
+            </Grid>
+
+
+            <controls:ExtendedListView  IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntThree}}"                                                                                
+                                        ItemsSource="{Binding Source={x:Reference viewedListPicker}, Path=SelectedItem.Movies, Mode=TwoWay}"
+                                        SelectedItem="{Binding SelectedMovie, Mode=TwoWay}"
+                                        TappedCommand="{Binding OnItemTappedCommand}"
+                                        IsPullToRefreshEnabled="True"
+                                        IsRefreshing="{Binding IsRefreshing}"
+                                        RefreshCommand="{Binding RefreshCustomListCommand}"
+                                        HasUnevenRows="False"
+                                        RowHeight="85">
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.ContextActions>
+                                <MenuItem 
+                                    Command="{Binding Path=BindingContext.RemoveMovieFromCustomListCommand, 
+                                    Source={x:Reference Name=listsPage}}" 
+                                    CommandParameter="{Binding .}" 
+                                    Text="Remove" IsDestructive="True"/>
+
+                            </ViewCell.ContextActions>
+                            <StackLayout Orientation="Horizontal" Padding="5">
+                                <ffimageloading:CachedImage Aspect="AspectFit"
+                                       VerticalOptions="FillAndExpand"
+                                       HorizontalOptions="Start"
+                                       HeightRequest="75"
+                                       WidthRequest="50"
+                                       Source="{Binding ImgSmSrc}"
+                                       ErrorPlaceholder="Poster_sm_placeholder"
+                                       RetryCount="1">
+
+                                </ffimageloading:CachedImage>
+
+                                <StackLayout HorizontalOptions="Start" Orientation="Vertical" Margin="10,8,0,0">
+                                    <Label Text="{Binding Title}" TextColor="Black"/>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label 
+                                          TextColor="Gray" 
+                                          Text="{Binding Year}"
+                                          IsVisible="{Binding Path=Year.HasValue}"
+                                          FontSize="Micro"/>
+                                        <Label TextColor="Gray" Text="{Binding Genre}" FontSize="Micro"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </controls:ExtendedListView>
+
 
         </StackLayout>
         

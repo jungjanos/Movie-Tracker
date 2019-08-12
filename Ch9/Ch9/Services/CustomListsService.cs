@@ -67,26 +67,6 @@ namespace Ch9.Services
             UsersCustomLists = new ObservableCollection<MovieListModel>();
         }
 
-        /// <summary>
-        /// Not allowed to throw. 
-        /// Awaiting this method must be the first call on the object after constructor.
-        /// Fetches the list of custom movie lists. 
-        /// If the user had previously selected a custom movie list as active, that list is queried for detailed info
-        /// </summary>        
-        public async Task Initialize(int retryCount = 1, int delayMilliseconds = 1000, bool fromCache = false)
-        {
-            try
-            {
-                await UpdateCustomLists(1, 1000, false);
-                if (_settings.ActiveMovieListId.HasValue)
-                    SelectedCustomList = UsersCustomLists.FirstOrDefault(list => list.Id == _settings.ActiveMovieListId);
-
-                if (SelectedCustomList != null)
-                    await UpdateSingleCustomList(SelectedCustomList.Id, retryCount, delayMilliseconds, fromCache);
-            }
-            catch { }
-        }
-
         private void ClearLists()
         {
             UsersCustomLists?.Clear();

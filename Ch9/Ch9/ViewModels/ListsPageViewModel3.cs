@@ -78,9 +78,24 @@ namespace Ch9.ViewModels
             _pageService = pageService;
             UsersMovieListsService2 = usersMovieListsService2;
 
-            CustomListsViewSelectorCommand = new Command(() => { SelectedListType = 1; });
+            WatchlistViewSelectorCommand = new Command(async () =>
+            {
+                if (!(0 < UsersMovieListsService2.WatchlistService.Watchlist.MovieDetailModels.Count))
+                {
+                    IsRefreshing = true;
+                    try
+                    {
+                        await UsersMovieListsService2.WatchlistService.RefreshWatchlist(1, 1000);
+                    }
+                    catch (Exception ex)
+                    { await _pageService.DisplayAlert("Error", $"Could not refresh the watchlist, service responded with: {ex.Message}", "Ok"); }
+                    IsRefreshing = false;
+                }
+                SelectedListType = 1;
+            });
+
             FavoritesListViewSelectorCommand = new Command(async () =>
-            {                
+            {
                 if (!(0 < UsersMovieListsService2.FavoriteMoviesListService.FavoriteMovies.MovieDetailModels.Count))
                 {
                     IsRefreshing = true;
@@ -94,19 +109,9 @@ namespace Ch9.ViewModels
                 }
                 SelectedListType = 2;
             });
-            WatchlistViewSelectorCommand = new Command(async () => 
-            {                
-                if (!(0 < UsersMovieListsService2.WatchlistService.Watchlist.MovieDetailModels.Count))
-                {
-                    IsRefreshing = true;
-                    try
-                    {
-                        await UsersMovieListsService2.WatchlistService.RefreshWatchlist(1, 1000);
-                    }
-                    catch (Exception ex)
-                    { await _pageService.DisplayAlert("Error", $"Could not refresh the watchlist, service responded with: {ex.Message}", "Ok"); }
-                    IsRefreshing = false;
-                }
+
+            CustomListsViewSelectorCommand = new Command(() => 
+            {
                 SelectedListType = 3;
             });
 
@@ -235,7 +240,9 @@ namespace Ch9.ViewModels
             }
         }
 
-        public async Task Initialize() => await UsersMovieListsService2.CustomListsService.Initialize();
+        //public async Task Initialize() => await UsersMovieListsService2.CustomListsService.Initialize();
+        public async Task Initialize() => await UsersMovieListsService2.WatchlistService.RefreshWatchlist();
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 

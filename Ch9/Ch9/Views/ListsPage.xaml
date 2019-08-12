@@ -83,24 +83,40 @@
             <StackLayout IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntOne}}"
                          Orientation="Horizontal"
                          Padding="5">
-                <Image>
-                    <Image.Source>
-                        <FontImageSource Glyph="&#xf2f7;"
-                        FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                        Size="30" 
-                        Color="DarkGray"/>
-                    </Image.Source>
-                </Image>
+
+                <Label Text="Watchlist"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Center"
+                       FontSize="Large"/>
+
+                <Label Text="{Binding Path=UsersMovieListsService2.WatchlistService.Watchlist.TotalResults, StringFormat='({0})'}"
+                       HorizontalOptions="StartAndExpand"
+                       VerticalOptions="Center"
+                       FontSize="Large"/>
+
 
                 <Picker SelectedItem="{Binding Path=UsersMovieListsService2.WatchlistService.SortBy,Mode=TwoWay}"
-                        HorizontalOptions="Start"
-                        Visual="Material">
+                        HorizontalOptions="End"
+                        VerticalOptions="Start"
+                        Visual="Material"
+                        FontSize="Small"
+                        TextColor="DarkGray">
 
                     <Picker.Items>
                         <x:String>created_at.desc</x:String>
                         <x:String>created_at.asc</x:String>
                     </Picker.Items>
                 </Picker>
+
+                <Image
+                    HorizontalOptions="End">
+                    <Image.Source>
+                        <FontImageSource Glyph="&#xf2f7;"
+                        FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                        Size="25" 
+                        Color="DarkGray"/>
+                    </Image.Source>
+                </Image>
 
             </StackLayout>
 
@@ -152,17 +168,20 @@
             <StackLayout IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntTwo}}"
                          Orientation="Horizontal"
                          Padding="5">
-                <Image>
-                    <Image.Source>
-                        <FontImageSource Glyph="&#xf2f7;"
-                        FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                        Size="30" 
-                        Color="DarkGray"/>
-                    </Image.Source>
-                </Image>
+
+                <Label Text="Favorites"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Center"
+                       FontSize="Large"/>
+
+                <Label Text="{Binding Path=UsersMovieListsService2.FavoriteMoviesListService.FavoriteMovies.TotalResults, StringFormat='({0})'}"
+                       HorizontalOptions="StartAndExpand"
+                       VerticalOptions="Center"
+                       FontSize="Large"/>
 
                 <Picker SelectedItem="{Binding Path=UsersMovieListsService2.FavoriteMoviesListService.SortBy,Mode=TwoWay}"
-                        HorizontalOptions="Start"
+                        HorizontalOptions="End"
+                        VerticalOptions="Start"
                         Visual="Material">
 
                     <Picker.Items>
@@ -170,6 +189,16 @@
                         <x:String>created_at.asc</x:String>
                     </Picker.Items>
                 </Picker>
+
+                <Image
+                    HorizontalOptions="End">
+                    <Image.Source>
+                        <FontImageSource Glyph="&#xf2f7;"
+                        FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                        Size="25" 
+                        Color="DarkGray"/>
+                    </Image.Source>
+                </Image>
 
             </StackLayout>
             

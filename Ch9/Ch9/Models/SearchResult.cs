@@ -20,8 +20,13 @@ namespace Ch9.ApiClient
             set => SetProperty(ref _movieDetailModels, value);
         }
 
+        private int _totalResults;
         [JsonProperty("total_results")]
-        public int TotalResults { get; set; }
+        public int TotalResults
+        {
+            get => _totalResults;
+            set => SetProperty(ref _totalResults, value);
+        }
 
         [JsonProperty("total_pages")]
         public int TotalPages { get; set; }

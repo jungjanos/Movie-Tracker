@@ -9,7 +9,7 @@ namespace Ch9.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ListsPage : ContentPage
     {
-        readonly Task vMInitializer;
+        readonly Task vMInitializer;        
 
         public ListsPageViewModel3 ViewModel
         {

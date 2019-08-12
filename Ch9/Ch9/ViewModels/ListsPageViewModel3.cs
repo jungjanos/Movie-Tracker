@@ -80,8 +80,7 @@ namespace Ch9.ViewModels
 
             CustomListsViewSelectorCommand = new Command(() => { SelectedListType = 1; });
             FavoritesListViewSelectorCommand = new Command(async () =>
-            {
-                SelectedListType = 2;
+            {                
                 if (!(0 < UsersMovieListsService2.FavoriteMoviesListService.FavoriteMovies.MovieDetailModels.Count))
                 {
                     IsRefreshing = true;
@@ -93,10 +92,10 @@ namespace Ch9.ViewModels
                     { await _pageService.DisplayAlert("Error", $"Could not refresh the favorites list, service responded with: {ex.Message}", "Ok"); }
                     IsRefreshing = false;
                 }
+                SelectedListType = 2;
             });
             WatchlistViewSelectorCommand = new Command(async () => 
-            {
-                SelectedListType = 3;
+            {                
                 if (!(0 < UsersMovieListsService2.WatchlistService.Watchlist.MovieDetailModels.Count))
                 {
                     IsRefreshing = true;
@@ -108,6 +107,7 @@ namespace Ch9.ViewModels
                     { await _pageService.DisplayAlert("Error", $"Could not refresh the watchlist, service responded with: {ex.Message}", "Ok"); }
                     IsRefreshing = false;
                 }
+                SelectedListType = 3;
             });
 
             RefreshCustomCommand = new Command(async () =>

@@ -26,9 +26,6 @@ as clickable weblink.
 effort: 2-3h
 Prio: 3
 
-DONE: 5, IMPROVEMENT: Bigger Picture/Video toggle Tap recognition area:
-UI would be less awkward.
-
 effort: 1h
 Prio: 2
 
@@ -41,14 +38,32 @@ Prio: 1
 effort: 2h (needs 1, solved first)
 Prio: 3
 
+
+8, Redesign the menu buttons on MovieDetailPage
+effort 1d
+Prio: 1
+
+
+9, Redesign ListsPage
+effort 1-2d
+Prio 1
+
+10, BUG: MovieDetailPage label layouts:
+Small displays truncate the text labels
+effort: 2h
+Prio 1
+
+
+_________________________
+
+
+DONE: 5, IMPROVEMENT: Bigger Picture/Video toggle Tap recognition area:
+UI would be less awkward.
+
 DONE: 8, IMPROVEMENT: MovieDetailPage should not be double scrollable
 effort 1h
 Prio: 2
 
-8, Redesign the menu buutons on MovieDetailPage
-effort 1d
+DONE: 10, IMPROVEMENT: Android native client for YtExplodeVideoService
 Prio: 1
-
-9, RedesignListsPage
-effort 1-2d
-Prio 1
+effort: 1d

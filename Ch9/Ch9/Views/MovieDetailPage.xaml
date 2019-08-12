@@ -82,7 +82,7 @@
                         VerticalOptions="Start" 
                         HeightRequest="20"/>
 
-                    <Grid BackgroundColor="AliceBlue" Margin="5,0,5,0">
+                    <Grid Margin="5,0,5,0">
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding Path=BindingContext.ChangeDisplayedImageTypeCommand, Source={x:Reference movieDetailPage}}"/>
                         </Grid.GestureRecognizers>

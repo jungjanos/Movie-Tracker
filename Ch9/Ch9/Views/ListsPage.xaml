@@ -250,47 +250,82 @@
             </controls:ExtendedListView>
 
 
+
+
+
+            <StackLayout IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntThree}}"
+                         Orientation="Horizontal"
+                         Padding="5">
+
+                <Label Text="User defined"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Center"
+                       FontSize="Large"/>
+
+                <Label Text="{Binding Path=UsersMovieListsService2.CustomListsService.UsersCustomLists.Count, StringFormat='({0})'}"
+                       HorizontalOptions="StartAndExpand"
+                       VerticalOptions="Center"
+                       FontSize="Large"/>
+
+            </StackLayout>
+
+
             <Grid IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntThree}}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/>
+                <Grid.RowDefinitions>                    
+                    <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <Picker Grid.Row="0" Grid.Column="0"
+                <Picker Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6"
                     x:Name="viewedListPicker"
                                     ItemsSource="{Binding Path=UsersMovieListsService2.CustomListsService.UsersCustomLists, Mode=TwoWay}"
                                     ItemDisplayBinding="{Binding Name, Mode=TwoWay}"
                                     SelectedItem="{Binding Path=UsersMovieListsService2.CustomListsService.SelectedCustomList, Mode=TwoWay}"/>
 
-                <Button Grid.Row="0" Grid.Column="1"
-                        Command="{Binding RemoveCustomListCommand}">
+                <Button Grid.Row="0" Grid.Column="6"
+                        Command="{Binding RemoveCustomListCommand}"
+                        BackgroundColor="Transparent">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="&#xf398;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Color="Black"/>
+                        <FontImageSource 
+                            Glyph="&#xf398;"
+                            FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                            Color="Red"
+                            Size="25"/>
                     </Button.ImageSource>
                 </Button>
 
-                <Button Grid.Row="0" Grid.Column="2"
-                        Command="{Binding AddCustomListCommand}">
+                <Button Grid.Row="0" Grid.Column="7"
+                        Command="{Binding AddCustomListCommand}"
+                        BackgroundColor="Transparent">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="&#xf273;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Color="Black" />
+                        <FontImageSource 
+                            Glyph="&#xf273;"
+                            FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                            Color="Green" 
+                            Size="25"/>
                     </Button.ImageSource>
                 </Button>
 
-                <Button Grid.Row="0" Grid.Column="3"
-                        Command="{Binding RefreshCustomCommand}">
+                <Button Grid.Row="0" Grid.Column="8"
+                        Command="{Binding RefreshCustomCommand}"
+                        BackgroundColor="Transparent">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="&#xf366;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Color="Black" />
+                        <FontImageSource 
+                            Glyph="&#xf366;"
+                            FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                            Color="DarkGray" 
+                            Size="25"/>
                     </Button.ImageSource>
                 </Button>
 
@@ -305,7 +340,9 @@
                                         IsRefreshing="{Binding IsRefreshing}"
                                         RefreshCommand="{Binding RefreshCustomListCommand}"
                                         HasUnevenRows="False"
-                                        RowHeight="85">
+                                        RowHeight="85"                                        
+                                        VerticalOptions="StartAndExpand"
+                                        HeightRequest="500">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>

@@ -44,16 +44,6 @@ effort 1d
 Prio: 1
 
 
-9, Redesign ListsPage
-effort 1-2d
-Prio 1
-
-10, BUG: MovieDetailPage label layouts:
-Small displays truncate the text labels
-effort: 2h
-Prio 1
-
-
 _________________________
 
 
@@ -67,3 +57,7 @@ Prio: 2
 DONE: 10, IMPROVEMENT: Android native client for YtExplodeVideoService
 Prio: 1
 effort: 1d
+
+DONE 9, Redesign ListsPage
+effort 6h
+Prio 1

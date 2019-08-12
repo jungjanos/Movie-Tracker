@@ -16,6 +16,7 @@
         <ResourceDictionary>
             <converters:ListsPageIntToVisibilityConverter x:Key="listsPageIntToVisibility"/>
             <converters:ListsPageIntToButtonColorConverter x:Key="listsPageIntToButtonColor"/>
+            <converters:ListsPageIntToButtonColorConverter2 x:Key="listsPageIntToButtonColor2"/>
             <sys:Int32 x:Key="IntOne">1</sys:Int32>
             <sys:Int32 x:Key="IntTwo">2</sys:Int32>
             <sys:Int32 x:Key="IntThree">3</sys:Int32>
@@ -51,7 +52,62 @@
                         BackgroundColor="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntThree}}"/>              
 
             </Grid>
-            
+
+            <Grid ColumnSpacing="0" Margin="0,5,0,0" Padding="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Row="0" Grid.Column="0" 
+                        Command="{Binding WatchlistViewSelectorCommand}"                        
+                        BackgroundColor="Transparent">
+
+                    <Button.ImageSource>
+                        <!--<ion-icon name="ion-md-bookmark"></ion-icon>-->
+                        <FontImageSource Glyph="&#xf29f;"
+                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                         Size="30" 
+                         Color="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor2},ConverterParameter={StaticResource Key=IntOne}}"/>
+                    </Button.ImageSource>
+
+                </Button>
+
+                <Button Grid.Row="0" Grid.Column="1"  
+                        Command="{Binding FavoritesListViewSelectorCommand}"
+                        BackgroundColor="Transparent">
+                    
+                    <Button.ImageSource>
+                        <!--<ion-icon name="ion-md-bookmark"></ion-icon>-->
+                        <FontImageSource Glyph="&#xf308;"
+                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                         Size="30" 
+                         Color="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor2},ConverterParameter={StaticResource Key=IntTwo}}"/>
+                    </Button.ImageSource>
+
+                </Button>
+
+                <Button Grid.Row="0" Grid.Column="2"
+                        Command="{Binding CustomListsViewSelectorCommand}"
+                        BackgroundColor="Transparent">
+                    
+                    <Button.ImageSource>
+                        <!--<ion-icon name="ion-md-bookmark"></ion-icon>-->
+                        <FontImageSource Glyph="&#xf2f5;"
+                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                         Size="30" 
+                         Color="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor2},ConverterParameter={StaticResource Key=IntThree}}"/>
+                    </Button.ImageSource>
+
+                </Button>
+
+            </Grid>
+
+
             <Grid IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntOne}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>

@@ -69,7 +69,7 @@ namespace Ch9.Services
 
         /// <summary>
         /// Not allowed to throw. 
-        /// Awaiting this method must be the first call on the object after constructor
+        /// Awaiting this method must be the first call on the object after constructor.
         /// Fetches the list of custom movie lists. 
         /// If the user had previously selected a custom movie list as active, that list is queried for detailed info
         /// </summary>        

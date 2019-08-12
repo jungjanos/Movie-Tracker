@@ -19,4 +19,33 @@ namespace Ch9.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>        
             throw new NotImplementedException();        
     }
+
+
+    public class ListsPageIntToButtonColorConverter2 : IValueConverter
+    {
+        private readonly Color _watchlistIsActive = Color.DarkGreen;
+        private readonly Color _favoritelistIsActive = Color.DarkRed;
+        private readonly Color _customListsAreActive = Color.DarkBlue;
+        private readonly Color _nonActiveColor = Color.Gray;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((int)value != (int)parameter)
+                return _nonActiveColor;
+
+            if ((int)value == 1)
+                return _watchlistIsActive;
+
+            if ((int)value == 2)
+                return _favoritelistIsActive;
+
+            if ((int)value == 3)
+                return _customListsAreActive;
+
+            else throw new ArgumentOutOfRangeException($"value={value.ToString()}, parameter={parameter.ToString()}");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+            throw new NotImplementedException();
+    }
 }

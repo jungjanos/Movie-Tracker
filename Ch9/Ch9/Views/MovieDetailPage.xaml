@@ -108,8 +108,8 @@
                         </Grid.ColumnDefinitions>
 
                         <Image Grid.Row="0" Grid.Column="0" 
-                               BackgroundColor="Transparent"
-                               >
+                               BackgroundColor="Transparent">
+                            
                             <Image.Source>
                                 <FontImageSource 
                                      Glyph="{Binding Path=DisplayImageTypeSelector, Converter={StaticResource Key=galleryImageTypeToGlyph}}"
@@ -121,8 +121,7 @@
                         <StackLayout Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
                                      Orientation="Horizontal" 
                                      VerticalOptions="End"
-                                     Spacing="0"
-                                     BackgroundColor="LightBlue">
+                                     Spacing="0">
                             
                             <Label BindingContext="{x:Reference cardView}"
                                Text="{Binding SelectedIndex, Converter={StaticResource Key=intPlusOneToString}}" 

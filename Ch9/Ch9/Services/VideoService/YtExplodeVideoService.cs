@@ -20,23 +20,20 @@ namespace Ch9.Services.VideoService
     /// </summary>
     public class YtExplodeVideoService : IVideoService
     {
-        private readonly HttpClient _httpClient;
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
         private readonly YoutubeClient _youtubeClient;
 
+        /// <param name="httpClient">The provided HttpClient object needs to have set the user agent string to mimic a desktop browser</param>
         public YtExplodeVideoService(
             HttpClient httpClient,
             ISettings settings,
             ITmdbCachedSearchClient tmdbCachedSearchClient
             )
-        {
-            _httpClient = httpClient ?? new HttpClient();
+        {            
             _settings = settings;
             _tmdbCachedSearchClient = tmdbCachedSearchClient;
-
-            // TODO : Raise bugreport: YoutubeExplode: currently can not handle the Android native HttpClient
-            _youtubeClient = /*new YoutubeClient(_httpClient)*/ new YoutubeClient();
+            _youtubeClient = httpClient == null ? new YoutubeClient() : new YoutubeClient(httpClient);
         }
 
         public async Task<List<ImageModel>> GetVideoThumbnails(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)

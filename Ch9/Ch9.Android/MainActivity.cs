@@ -23,6 +23,7 @@ namespace Ch9.Droid
 
             CardsViewRenderer.Preserve();
             HttpClient httpClient = new HttpClient(new Xamarin.Android.Net.AndroidClientHandler());
+            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows) Gecko Firefox");
 
             LoadApplication(new App(httpClient));
         }

@@ -182,7 +182,9 @@
                 <Picker SelectedItem="{Binding Path=UsersMovieListsService2.FavoriteMoviesListService.SortBy,Mode=TwoWay}"
                         HorizontalOptions="End"
                         VerticalOptions="Start"
-                        Visual="Material">
+                        Visual="Material"
+                        FontSize="Small"
+                        TextColor="DarkGray">
 
                     <Picker.Items>
                         <x:String>created_at.desc</x:String>

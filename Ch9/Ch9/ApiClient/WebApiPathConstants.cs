@@ -48,5 +48,7 @@
         public const string PERSON_Path = "/person";
         public const string ITEM_STATUS_Path = "/item_status";
         public const string MOVIE_ID_Key = "movie_id";
+        public const string APPEND_RESPONSE_Key = "append_to_response";
+        public const string ACCOUNT_STATES_Key = "account_states";
     }
 }

@@ -146,11 +146,9 @@ namespace Ch9.ApiClient
             GetFavoriteMoviesResult result = await GetResponse<GetFavoriteMoviesResult>(retryCount, delayMilliseconds, requestUri);
 
             return result;
-        }
-
-        // Fetches movie details, swallows exceptions
-        // retries as needed
-        public async Task<FetchMovieDetailsResult> FetchMovieDetails(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        }        
+        
+        public async Task<GetMovieDetailsResult> GetMovieDetails(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id;
 
@@ -162,7 +160,29 @@ namespace Ch9.ApiClient
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
-            FetchMovieDetailsResult result = await GetResponse<FetchMovieDetailsResult>(retryCount, delayMilliseconds, requestUri);
+            GetMovieDetailsResult result = await GetResponse<GetMovieDetailsResult>(retryCount, delayMilliseconds, requestUri);
+
+            return result;
+        }
+
+        public async Task<GetMovieDetailsWithAccountStatesResult> GetMovieDetailsWithAccountStates(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id;
+
+            var query = new Dictionary<string, string>();
+            query.Add(API_KEY_Key, _settings.ApiKey);
+            if (!string.IsNullOrEmpty(language))
+                query.Add(LANGUAGE_Key, language);
+
+            if (!string.IsNullOrEmpty(_settings.SessionId))
+            {
+                query.Add(SESSION_ID_Key, _settings.SessionId);
+                query.Add(APPEND_RESPONSE_Key, ACCOUNT_STATES_Key);
+            }
+
+            string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
+
+            GetMovieDetailsWithAccountStatesResult result = await GetResponse<GetMovieDetailsWithAccountStatesResult>(retryCount, delayMilliseconds, requestUri);
 
             return result;
         }

@@ -50,11 +50,11 @@ namespace Ch9.ApiClient
             return result;
         }
 
-        public async Task<FetchMovieDetailsResult> FetchMovieDetails(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<GetMovieDetailsResult> GetMovieDetails(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            string key = "$" + nameof(FetchMovieDetails) + id.ToString() + (language ?? "");
+            string key = "$" + nameof(GetMovieDetails) + id.ToString() + (language ?? "");
 
-            var result = _cache.Get<FetchMovieDetailsResult>(key) ?? await _networkClient.FetchMovieDetails(id, language, retryCount, delayMilliseconds);
+            var result = _cache.Get<GetMovieDetailsResult>(key) ?? await _networkClient.GetMovieDetails(id, language, retryCount, delayMilliseconds);
 
             if (result.HttpStatusCode.IsSuccessCode())
                 _cache.Add(key, result);
@@ -304,11 +304,16 @@ namespace Ch9.ApiClient
             return await _networkClient.GetFavoriteMovies(accountId, language, sortBy, page, retryCount, delayMilliseconds);
         }
 
-
         public async Task<GetMovieWatchlistResult> GetMovieWatchlist(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             return await _networkClient.GetMovieWatchlist(accountId, language, sortBy, page, retryCount, delayMilliseconds);
         }
+
+        public async Task<GetMovieDetailsWithAccountStatesResult> GetMovieDetailsWithAccountStates(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            return await _networkClient.GetMovieDetailsWithAccountStates(id, language, retryCount, delayMilliseconds);
+        }
+
         #endregion
     }
 }

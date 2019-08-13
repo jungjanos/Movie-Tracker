@@ -1,5 +1,6 @@
 ﻿using Ch9.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System.Net;
 
@@ -27,8 +28,33 @@ namespace Ch9.ApiClient
     public class TrendingMoviesResult : TmdbResponseBase
     { }
 
-    public class FetchMovieDetailsResult : TmdbResponseBase
+    public class GetMovieDetailsResult : TmdbResponseBase
     { }
+
+    public class GetMovieDetailsWithAccountStatesResult : TmdbResponseBase
+    {
+        /// <summary>
+        /// Can throw. 
+        /// Method encapsulating the special deserialization needs for the state object. 
+        /// </summary>
+        /// <returns>object containing account's states for the movie. If the states object is not present it returns null</returns>
+        public AccountMovieStates ExtractAccountStates()
+        {
+            if (HttpStatusCode != HttpStatusCode.OK)
+                return null;
+
+            var jsonSettings = new JsonSerializerSettings()
+            { Error = delegate (object sender, ErrorEventArgs args) { args.ErrorContext.Handled = true; } };
+
+            JObject tmdbResponse = JObject.Parse(Json);
+            var result = tmdbResponse["account_states"];
+
+            if (result == null)
+                return null;
+
+            return result.ToObject<AccountMovieStates>(JsonSerializer.Create(jsonSettings));            
+        }
+    }
 
     public class GetMovieImagesResult : TmdbResponseBase
     { }

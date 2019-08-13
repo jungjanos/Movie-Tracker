@@ -46,10 +46,10 @@ namespace Ch9.ViewModels
             set => SetProperty(ref _isRefreshing, value);
         }
 
-        #region VIEW_SELECTOR_COMMANDS
-        public Command CustomListsViewSelectorCommand { get; private set; }
-        public Command FavoritesListViewSelectorCommand { get; private set; }
+        #region VIEW_SELECTOR_COMMANDS        
         public Command WatchlistViewSelectorCommand { get; private set; }
+        public Command FavoritesListViewSelectorCommand { get; private set; }
+        public Command CustomListsViewSelectorCommand { get; private set; }        
         #endregion
 
         #region CUSTOM_LISTS_COMMANDS

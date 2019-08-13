@@ -19,7 +19,7 @@ namespace Ch9.Services
         private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
         private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
         private readonly Command _refreshActiveCustomListCommand;
-
+        private bool _isInitialized = false;
 
         private ObservableCollection<MovieListModel> _usersCustomLists;
         public ObservableCollection<MovieListModel> UsersCustomLists
@@ -67,19 +67,51 @@ namespace Ch9.Services
             UsersCustomLists = new ObservableCollection<MovieListModel>();
         }
 
+        /// <summary>
+        /// Can throw. 
+        /// Awaiting this method prior all checks on the movie list states is a MUST to ensure the lists are properly populated.        
+        /// </summary>        
+        public async Task TryEnsureInitialization(int retryCount = 1, int delayMilliseconds = 1000, bool fromCache = false)
+        {
+            if (!_settings.HasTmdbAccount)
+            {
+                ClearLists();
+                return;
+            }
+
+            if (_isInitialized)
+                return;
+
+            try
+            {
+                _isInitialized = await UpdateCustomLists(retryCount, delayMilliseconds, fromCache);
+                if (_settings.ActiveMovieListId.HasValue)
+                    SelectedCustomList = UsersCustomLists.FirstOrDefault(list => list.Id == _settings.ActiveMovieListId);
+
+                if (SelectedCustomList != null)
+                    await UpdateSingleCustomList(SelectedCustomList.Id, retryCount, delayMilliseconds, fromCache);
+            }
+            catch (Exception ex)
+            { throw new Exception($"{nameof(TryEnsureInitialization)} failed with exception {ex.Message}", ex); }
+        }
+
         private void ClearLists()
         {
             UsersCustomLists?.Clear();
             SelectedCustomList = null;
+            _isInitialized = false;
         }
 
         /// <summary>
         /// Can throw. 
         /// Tries to query the TMDB server for an update of the list of the users movie lists
         /// If fails the client side collection of the list of movie lists is reset.
-        /// </summary>        
-        public async Task UpdateCustomLists(int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = false)
+        /// </summary>
+        /// <returns>success flag (has side effects)</returns>
+        public async Task<bool> UpdateCustomLists(int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = false)
         {
+            bool result = false;
+
             if (!_settings.HasTmdbAccount)
             {
                 ClearLists();
@@ -106,12 +138,16 @@ namespace Ch9.Services
                     SelectedCustomList = UsersCustomLists.Contains(selectedListBackup) ? selectedListBackup : UsersCustomLists.FirstOrDefault();
                 else
                     SelectedCustomList = UsersCustomLists.FirstOrDefault();
+
+                result = true;
             }
             catch (Exception ex)
             {
                 ClearLists();
                 throw new Exception($"Exception happened when trying to fetch user's custom lists. Message: {ex.Message}", ex);
             }
+
+            return result;
         }
 
         /// <summary>
@@ -293,7 +329,6 @@ namespace Ch9.Services
             else
                 Utils.Utils.UpdateListviewCollection(target.Movies, source.Movies, new MovieModelComparer());
         }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -184,21 +184,28 @@ namespace Ch9.ViewModels
 
         public async Task Initialize()
         {
+            var t = _movieListsService2.CustomListsService.TryEnsureInitialization();
+
             try
             {
-                GetMovieDetailsWithAccountStatesResult movieDetailsResult = await _cachedSearchClient.GetMovieDetailsWithAccountStates(Movie.Id, _settings.SearchLanguage, retryCount: 1, delayMilliseconds: 1000);                
-                
+                GetMovieDetailsWithAccountStatesResult movieDetailsResult = await _cachedSearchClient.GetMovieDetailsWithAccountStates(Movie.Id, _settings.SearchLanguage, retryCount: 1, delayMilliseconds: 1000);
+
                 if (movieDetailsResult.HttpStatusCode.IsSuccessCode())
                 {
-                    // string.IsNullOrEmpty(Movie.ImdbId) indicates that the object has not been populated yet with full details
-                    if (string.IsNullOrEmpty(Movie.ImdbId))
-                        JsonConvert.PopulateObject(movieDetailsResult.Json, Movie);
-
+                    JsonConvert.PopulateObject(movieDetailsResult.Json, Movie);
                     MovieStates = movieDetailsResult.ExtractAccountStates();
-                }                 
+                }
             }
             catch (Exception ex)
             { await _pageService.DisplayAlert("Error", $"Could not fetch movie details, exception: {ex.Message}", "Ok"); }
+
+            try
+            {
+                await t;
+                OnPropertyChanged(nameof(MovieIsAlreadyOnActiveList));
+            }
+            catch (Exception ex)
+            { await _pageService.DisplayAlert("Error", $" Exception thrown from {nameof(_movieListsService2.CustomListsService)}.{nameof(_movieListsService2.CustomListsService.TryEnsureInitialization)}, message: {ex.Message}", "Ok"); }
         }
 
         // starts a hot task to fetch and adjust gallery image paths as early as possible        
@@ -272,14 +279,16 @@ namespace Ch9.ViewModels
                 return;
             }
 
-            if (MovieIsAlreadyOnActiveList == null)
-            {
-                await _pageService.DisplayAlert("Info", "You have to select a valid public list to be able to add movies to it", "Cancel");
-                return;
-            }
-
             try
             {
+                await _movieListsService2.CustomListsService.TryEnsureInitialization();
+
+                if (MovieIsAlreadyOnActiveList == null)
+                {
+                    await _pageService.DisplayAlert("Info", "You have to select a valid public list to be able to add movies to it", "Cancel");
+                    return;
+                }
+
                 if (MovieIsAlreadyOnActiveList == true)
                 {
                     await _movieListsService2.CustomListsService.RemoveMovieFromActiveList(Movie.Id);

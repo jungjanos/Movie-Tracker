@@ -28,7 +28,6 @@ namespace Ch9.ViewModels
         private readonly WeblinkComposer _weblinkComposer;
         private readonly IPageService _pageService;
         private readonly Task _fetchGallery;
-        private Task _fetchMovieStates;
         private MovieCreditsModel _credits;
 
         private ObservableCollection<ImageModel> _displayImages;
@@ -185,10 +184,21 @@ namespace Ch9.ViewModels
 
         public async Task Initialize()
         {
-            _fetchMovieStates = FetchMovieStates();
-            FetchMovieDetailsResult movieDetailsResult = await _cachedSearchClient.FetchMovieDetails(Movie.Id, _settings.SearchLanguage);
-            if (movieDetailsResult.HttpStatusCode.IsSuccessCode())
-                JsonConvert.PopulateObject(movieDetailsResult.Json, Movie);
+            try
+            {
+                GetMovieDetailsWithAccountStatesResult movieDetailsResult = await _cachedSearchClient.GetMovieDetailsWithAccountStates(Movie.Id, _settings.SearchLanguage, retryCount: 1, delayMilliseconds: 1000);                
+                
+                if (movieDetailsResult.HttpStatusCode.IsSuccessCode())
+                {
+                    // string.IsNullOrEmpty(Movie.ImdbId) indicates that the object has not been populated yet with full details
+                    if (string.IsNullOrEmpty(Movie.ImdbId))
+                        JsonConvert.PopulateObject(movieDetailsResult.Json, Movie);
+
+                    MovieStates = movieDetailsResult.ExtractAccountStates();
+                }                 
+            }
+            catch (Exception ex)
+            { await _pageService.DisplayAlert("Error", $"Could not fetch movie details, exception: {ex.Message}", "Ok"); }
         }
 
         // starts a hot task to fetch and adjust gallery image paths as early as possible        
@@ -198,7 +208,7 @@ namespace Ch9.ViewModels
             try
             {
                 GetMovieImagesResult response = await _cachedSearchClient.GetMovieImages(Movie.Id, _settings.SearchLanguage, otherLanguage: null, includeLanguageless: true, retryCount: 0, delayMilliseconds: 1000, fromCache: true);
-                
+
                 if (response.HttpStatusCode.IsSuccessCode())
                 {
                     ImageDetailCollection imageCollection = null;
@@ -238,8 +248,6 @@ namespace Ch9.ViewModels
                 await _pageService.DisplayAlert("Info", "You have to log in with a user account to use this function", "Ok");
                 return;
             }
-
-            await _fetchMovieStates;
 
             if (MovieStates == null)
                 return;
@@ -295,8 +303,6 @@ namespace Ch9.ViewModels
                 await _pageService.DisplayAlert("Info", "You have to log in with a user account to use this function", "Ok");
                 return;
             }
-
-            await _fetchMovieStates;
 
             if (MovieStates == null)
                 return;
@@ -355,7 +361,7 @@ namespace Ch9.ViewModels
             {
                 GetPersonsDetailsResult personDetailsResponse = await _cachedSearchClient.GetPersonsDetails(staffMemberRole.Id, _settings.SearchLanguage, 0, 1000, fromCache: true);
                 if (personDetailsResponse.HttpStatusCode.IsSuccessCode())
-                {                    
+                {
                     GetPersonsDetailsModel personDetails = JsonConvert.DeserializeObject<GetPersonsDetailsModel>(personDetailsResponse.Json);
 
                     await _pageService.PushPersonsMovieCreditsPageAsync(personDetails);

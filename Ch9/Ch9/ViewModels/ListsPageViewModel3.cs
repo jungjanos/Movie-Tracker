@@ -112,24 +112,20 @@ namespace Ch9.ViewModels
 
             CustomListsViewSelectorCommand = new Command(async () => 
             {
-                if (UsersMovieListsService2.CustomListsService.UsersCustomLists.Count == 0)
+                try
                 {
                     IsRefreshing = true;
-
-                    try
-                    {
-                        await UsersMovieListsService2.CustomListsService.UpdateCustomLists(retryCount: 1, 1000, fromCache: false);
-
-                        var selectedList = UsersMovieListsService2.CustomListsService.SelectedCustomList;
-
-                        if (selectedList != null)
-                            await UsersMovieListsService2.CustomListsService.UpdateSingleCustomList(selectedList.Id, retryCount: 1, 1000, fromCache: false);
-                    }
-                    catch (Exception ex)
-                    { await _pageService.DisplayAlert("Error", $"Could not refresh custom lists, service responded with: {ex.Message}", "Ok"); }
-                    IsRefreshing = false;
+                    await UsersMovieListsService2.CustomListsService.TryEnsureInitialization();
                 }
-                SelectedListType = 3;
+                catch (Exception ex)
+                {
+                    await _pageService.DisplayAlert("Error", $" Exception thrown from {nameof(UsersMovieListsService2.CustomListsService)}.{nameof(UsersMovieListsService2.CustomListsService.TryEnsureInitialization)}, message: {ex.Message}", "Ok");
+                }
+                finally
+                {
+                    IsRefreshing = false;
+                    SelectedListType = 3;
+                }
             });
 
             RefreshCustomCommand = new Command(async () =>

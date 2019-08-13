@@ -49,7 +49,7 @@ namespace Ch9.ViewModels
         #region VIEW_SELECTOR_COMMANDS        
         public Command WatchlistViewSelectorCommand { get; private set; }
         public Command FavoritesListViewSelectorCommand { get; private set; }
-        public Command CustomListsViewSelectorCommand { get; private set; }        
+        public Command CustomListsViewSelectorCommand { get; private set; }
         #endregion
 
         #region CUSTOM_LISTS_COMMANDS
@@ -59,7 +59,6 @@ namespace Ch9.ViewModels
         public Command RefreshCustomListCommand { get; private set; }
         public Command RemoveMovieFromCustomListCommand { get; private set; }
         #endregion
-
         #region FAVORITE_LIST_COMMANDS
         public Command RefreshFavoriteListCommand { get; private set; }
         public Command LoadNextFavoritesPageCommand { get; private set; }
@@ -70,47 +69,56 @@ namespace Ch9.ViewModels
         #endregion
         public ICommand OnItemTappedCommand { get; private set; }
 
-
         public ListsPageViewModel3(
             UsersMovieListsService2 usersMovieListsService2,
             IPageService pageService)
         {
             _pageService = pageService;
-            UsersMovieListsService2 = usersMovieListsService2;            
+            UsersMovieListsService2 = usersMovieListsService2;
 
             WatchlistViewSelectorCommand = new Command(async () =>
             {
-                if (!(0 < UsersMovieListsService2.WatchlistService.Watchlist.MovieDetailModels.Count))
+                try
                 {
-                    IsRefreshing = true;
-                    try
+                    if (SelectedListType == 1 || !(0 < UsersMovieListsService2.WatchlistService.Watchlist.MovieDetailModels.Count))
                     {
+                        IsRefreshing = true;
                         await UsersMovieListsService2.WatchlistService.RefreshWatchlist(1, 1000);
                     }
-                    catch (Exception ex)
-                    { await _pageService.DisplayAlert("Error", $"Could not refresh the watchlist, service responded with: {ex.Message}", "Ok"); }
-                    IsRefreshing = false;
                 }
-                SelectedListType = 1;
+                catch (Exception ex)
+                {
+                    await _pageService.DisplayAlert("Error", $"Could not refresh the watchlist, service responded with: {ex.Message}", "Ok");
+                }
+                finally
+                {
+                    IsRefreshing = false;
+                    SelectedListType = 1;
+                }
             });
 
             FavoritesListViewSelectorCommand = new Command(async () =>
             {
-                if (!(0 < UsersMovieListsService2.FavoriteMoviesListService.FavoriteMovies.MovieDetailModels.Count))
+                try
                 {
-                    IsRefreshing = true;
-                    try
+                    if (SelectedListType == 2 || !(0 < UsersMovieListsService2.FavoriteMoviesListService.FavoriteMovies.MovieDetailModels.Count))
                     {
+                        IsRefreshing = true;
                         await UsersMovieListsService2.FavoriteMoviesListService.RefreshFavoriteMoviesList(1, 1000);
                     }
-                    catch (Exception ex)
-                    { await _pageService.DisplayAlert("Error", $"Could not refresh the favorites list, service responded with: {ex.Message}", "Ok"); }
-                    IsRefreshing = false;
                 }
-                SelectedListType = 2;
+                catch (Exception ex)
+                {
+                    await _pageService.DisplayAlert("Error", $"Could not refresh the favorites list, service responded with: {ex.Message}", "Ok");
+                }
+                finally
+                {
+                    IsRefreshing = false;
+                    SelectedListType = 2;
+                }
             });
 
-            CustomListsViewSelectorCommand = new Command(async () => 
+            CustomListsViewSelectorCommand = new Command(async () =>
             {
                 try
                 {
@@ -191,7 +199,7 @@ namespace Ch9.ViewModels
                 catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Service responded with: {ex.Message}", "Ok"); }
             });
 
-            RefreshFavoriteListCommand = new Command(async () => 
+            RefreshFavoriteListCommand = new Command(async () =>
             {
                 IsRefreshing = true;
                 try
@@ -253,9 +261,10 @@ namespace Ch9.ViewModels
             }
         }
 
+        // TODO Replace this with Refresh or Selector Command.Execute()
         /// <summary>
         /// Initializes the default active movie list shown on the page.
-        /// </summary>
+        /// </summary>        
         public async Task Initialize()
         {
             if (0 < UsersMovieListsService2.WatchlistService.Watchlist.MovieDetailModels.Count)

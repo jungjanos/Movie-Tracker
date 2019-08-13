@@ -92,7 +92,8 @@
                 <Label Text="{Binding Path=UsersMovieListsService2.WatchlistService.Watchlist.TotalResults, StringFormat='({0})'}"
                        HorizontalOptions="StartAndExpand"
                        VerticalOptions="Center"
-                       FontSize="Large"/>
+                       FontSize="Large"                       
+                       WidthRequest="80"/>
 
 
                 <Picker SelectedItem="{Binding Path=UsersMovieListsService2.WatchlistService.SortBy,Mode=TwoWay}"
@@ -177,7 +178,8 @@
                 <Label Text="{Binding Path=UsersMovieListsService2.FavoriteMoviesListService.FavoriteMovies.TotalResults, StringFormat='({0})'}"
                        HorizontalOptions="StartAndExpand"
                        VerticalOptions="Center"
-                       FontSize="Large"/>
+                       FontSize="Large"
+                       WidthRequest="80"/>
 
                 <Picker SelectedItem="{Binding Path=UsersMovieListsService2.FavoriteMoviesListService.SortBy,Mode=TwoWay}"
                         HorizontalOptions="End"
@@ -265,7 +267,8 @@
                 <Label Text="{Binding Path=UsersMovieListsService2.CustomListsService.UsersCustomLists.Count, StringFormat='({0})'}"
                        HorizontalOptions="StartAndExpand"
                        VerticalOptions="Center"
-                       FontSize="Large"/>
+                       FontSize="Large"
+                       WidthRequest="80"/>
 
             </StackLayout>
 

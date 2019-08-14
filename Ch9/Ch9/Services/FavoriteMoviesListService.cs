@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -128,16 +127,32 @@ namespace Ch9.Services
                 if (desiredState) // we added the movie to the server's favorite list
                 {
                     if (!FavoriteMovies.MovieDetailModels.Select(movie_ => movie_.Id).Contains(movie.Id))
-                        FavoriteMovies.MovieDetailModels.Add(movie);
+                        //FavoriteMovies.MovieDetailModels.Add(movie);
+                        InsertItem(movie);
                 }
                 else // we removed the movie from the server's favorite list
                 {
                     var movieToRemove = FavoriteMovies.MovieDetailModels.FirstOrDefault(movie_ => movie_.Id == movie.Id);
                     FavoriteMovies.MovieDetailModels.Remove(movieToRemove);
+                    FavoriteMovies.TotalResults--;
                 }
             }
             else
                 throw new Exception($"Could not update favorite state, server responded with: {response.HttpStatusCode}");
+        }
+
+        private void InsertItem(MovieDetailModel movie)
+        {
+            FavoriteMovies.TotalResults++;
+            if (SortBy == "created_at.desc")
+                FavoriteMovies.MovieDetailModels.Insert(0, movie);
+            else if (SortBy == "created_at.asc")
+            {
+                if (!CanLoad)
+                    FavoriteMovies.MovieDetailModels.Add(movie);
+            }                
+            else
+                throw new ArgumentOutOfRangeException($"{nameof(InsertItem)}() encountered invalid value on {nameof(SortBy)} : \"{SortBy}\" was not accepted");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

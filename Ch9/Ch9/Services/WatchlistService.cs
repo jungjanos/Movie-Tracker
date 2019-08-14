@@ -39,6 +39,13 @@ namespace Ch9.Services
             }
         }
 
+        private bool _isDirtyState;
+        public bool IsDirtyState
+        {
+            get => _isDirtyState;
+            set => SetProperty(ref _isDirtyState, value);
+        }
+
         public WatchlistService(ISettings settings,
             ITmdbCachedSearchClient tmdbCachedSearchClient,
             IMovieDetailModelConfigurator movieDetailConfigurator)
@@ -48,6 +55,7 @@ namespace Ch9.Services
             _movieDetailConfigurator = movieDetailConfigurator;
 
             _sortBy = "created_at.desc";
+            _isDirtyState = false;
 
             _watchlist = new SearchResult();
             _watchlist.InitializeOrClearMovieCollection();
@@ -71,6 +79,7 @@ namespace Ch9.Services
         public async Task RefreshWatchlist(int retryCount = 0, int delayMilliseconds = 1000)
         {
             Watchlist.InitializeOrClearMovieCollection();
+            IsDirtyState = false;
 
             if (!_settings.HasTmdbAccount)
                 throw new Exception("Account error: user is not signed in");
@@ -127,16 +136,33 @@ namespace Ch9.Services
                 if (desiredState) // we added the movie to the server's watchlist
                 {
                     if (!Watchlist.MovieDetailModels.Select(movie_ => movie_.Id).Contains(movie.Id))
-                        Watchlist.MovieDetailModels.Add(movie);
+                        //Watchlist.MovieDetailModels.Add(movie);
+                        InsertAndMarkItem(movie);
                 }
                 else // we removed the movie from the server's watchlist
                 {
                     var movieToRemove = Watchlist.MovieDetailModels.FirstOrDefault(movie_ => movie_.Id == movie.Id);
                     Watchlist.MovieDetailModels.Remove(movieToRemove);
+                    Watchlist.TotalResults--;
                 }
             }
             else
                 throw new Exception($"Could not update watchlist state, server responded with: {response.HttpStatusCode}");
+        }
+
+        private void InsertAndMarkItem(MovieDetailModel movie)
+        {
+            Watchlist.TotalResults++;
+            if (SortBy == "created_at.desc")
+                Watchlist.MovieDetailModels.Insert(0, movie);
+            else if (SortBy == "created_at.asc")
+            {
+                Watchlist.MovieDetailModels.Add(movie);                
+                if (Watchlist.MovieDetailModels.Count != Watchlist.TotalResults)
+                    IsDirtyState = true;
+            }
+            else
+                throw new ArgumentOutOfRangeException($"{nameof(InsertAndMarkItem)}() encountered invalid value on {nameof(SortBy)} : \"{SortBy}\" was not accepted");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

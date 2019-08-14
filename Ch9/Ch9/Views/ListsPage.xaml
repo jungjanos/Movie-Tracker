@@ -14,7 +14,7 @@
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <converters:ListsPageIntToVisibilityConverter x:Key="listsPageIntToVisibility"/>            
+            <converters:ListsPageIntToVisibilityConverter x:Key="listsPageIntToVisibility"/>
             <converters:ListsPageIntToButtonColorConverter x:Key="listsPageIntToButtonColor"/>
             <sys:Int32 x:Key="IntOne">1</sys:Int32>
             <sys:Int32 x:Key="IntTwo">2</sys:Int32>
@@ -38,44 +38,74 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Button Grid.Row="0" Grid.Column="0" 
-                        Command="{Binding WatchlistViewSelectorCommand}"                        
+
+                <Image
+                    Grid.Row="0" Grid.Column="0"
+                    BackgroundColor="Transparent">
+
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding WatchlistViewSelectorCommand}"/>
+                    </Image.GestureRecognizers>
+
+                    <Image.Source>
+                        <FontImageSource
+                                Glyph="&#xf29f;"
+                                FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                                Size="30" 
+                                Color="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntOne}}"/>
+                    </Image.Source>
+
+                </Image>
+
+                <Image 
+                    Grid.Row="0" Grid.Column="0"
+                    IsVisible="{Binding Path=UsersMovieListsService2.WatchlistService.IsDirtyState}"
+                    InputTransparent="True"
+                    BackgroundColor="Transparent"
+                    HorizontalOptions="Center">
+
+                    <Image.Source>
+                        <FontImageSource 
+                                Glyph="&#xf366;"
+                                FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                                Size="20" 
+                                Color="WhiteSmoke"/>
+                    </Image.Source>
+                </Image>
+
+
+                <Image Grid.Row="0" Grid.Column="1"                        
                         BackgroundColor="Transparent">
 
-                    <Button.ImageSource>
-                        <FontImageSource Glyph="&#xf29f;"
-                         FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                         Size="30" 
-                         Color="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntOne}}"/>
-                    </Button.ImageSource>
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding FavoritesListViewSelectorCommand}"/>
+                    </Image.GestureRecognizers>
 
-                </Button>
 
-                <Button Grid.Row="0" Grid.Column="1"  
-                        Command="{Binding FavoritesListViewSelectorCommand}"
-                        BackgroundColor="Transparent">
-                    
-                    <Button.ImageSource>                        
+                    <Image.Source>
                         <FontImageSource Glyph="&#xf308;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="30" 
                          Color="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntTwo}}"/>
-                    </Button.ImageSource>
+                    </Image.Source>
 
-                </Button>
+                </Image>
 
-                <Button Grid.Row="0" Grid.Column="2"
-                        Command="{Binding CustomListsViewSelectorCommand}"
+                <Image Grid.Row="0" Grid.Column="2"                        
                         BackgroundColor="Transparent">
-                    
-                    <Button.ImageSource>
+
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding CustomListsViewSelectorCommand}"/>
+                    </Image.GestureRecognizers>
+
+                    <Image.Source>
                         <FontImageSource Glyph="&#xf2f5;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="30" 
                          Color="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToButtonColor},ConverterParameter={StaticResource Key=IntThree}}"/>
-                    </Button.ImageSource>
+                    </Image.Source>
 
-                </Button>
+                </Image>
 
             </Grid>
 
@@ -107,7 +137,7 @@
                         <x:String>created_at.desc</x:String>
                         <x:String>created_at.asc</x:String>
                     </Picker.Items>
-                </Picker>
+                </Picker>                
 
                 <Image
                     HorizontalOptions="End">
@@ -205,7 +235,7 @@
                 </Image>
 
             </StackLayout>
-            
+
             <controls:ExtendedListView  IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntTwo}}"                                        
                                         HorizontalOptions="Start"                                        
                                         ItemsSource="{Binding Path=UsersMovieListsService2.FavoriteMoviesListService.FavoriteMovies.MovieDetailModels}"
@@ -215,7 +245,7 @@
                                         RefreshCommand="{Binding RefreshFavoriteListCommand}"
                                         LoadMoreCommand="{Binding LoadNextFavoritesPageCommand}"
                                         HasUnevenRows="False"
-                                        RowHeight="85">                
+                                        RowHeight="85">
 
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -245,7 +275,7 @@
                                     </StackLayout>
                                 </StackLayout>
                             </StackLayout>
-                            
+
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -274,7 +304,7 @@
 
 
             <Grid IsVisible="{Binding SelectedListType, Converter={StaticResource Key=listsPageIntToVisibility},ConverterParameter={StaticResource Key=IntThree}}">
-                <Grid.RowDefinitions>                    
+                <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
@@ -389,6 +419,6 @@
 
 
         </StackLayout>
-        
+
     </ContentPage.Content>
 </ContentPage>

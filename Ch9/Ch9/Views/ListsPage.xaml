@@ -57,23 +57,6 @@
 
                 </Image>
 
-                <Image 
-                    Grid.Row="0" Grid.Column="0"
-                    IsVisible="{Binding Path=UsersMovieListsService2.WatchlistService.IsDirtyState}"
-                    InputTransparent="True"
-                    BackgroundColor="Transparent"
-                    HorizontalOptions="Center">
-
-                    <Image.Source>
-                        <FontImageSource 
-                                Glyph="&#xf366;"
-                                FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                                Size="20" 
-                                Color="WhiteSmoke"/>
-                    </Image.Source>
-                </Image>
-
-
                 <Image Grid.Row="0" Grid.Column="1"                        
                         BackgroundColor="Transparent">
 

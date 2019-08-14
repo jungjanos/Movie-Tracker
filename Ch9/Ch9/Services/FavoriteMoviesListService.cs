@@ -127,7 +127,6 @@ namespace Ch9.Services
                 if (desiredState) // we added the movie to the server's favorite list
                 {
                     if (!FavoriteMovies.MovieDetailModels.Select(movie_ => movie_.Id).Contains(movie.Id))
-                        //FavoriteMovies.MovieDetailModels.Add(movie);
                         InsertItem(movie);
                 }
                 else // we removed the movie from the server's favorite list

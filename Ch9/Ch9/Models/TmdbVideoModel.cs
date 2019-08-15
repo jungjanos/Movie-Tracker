@@ -27,7 +27,6 @@ namespace Ch9.Models
         [JsonProperty("type")]
         public string Type { get; set; } // allowed: Trailer, Teaser, Clip, Featurette, Behind the Scenes, Bloopers
 
-        public VideoInfo VideoInfo { get; set; }
         public VideoStreamInfoSet Streams { get; set; } 
     }
 }

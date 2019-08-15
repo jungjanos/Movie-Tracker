@@ -144,6 +144,7 @@ namespace Ch9.ViewModels
                 {
                     await _fetchGallery;
                     await UpdateThumbnailCollection();
+
                     DisplayImages = null;
                     DisplayImages = Movie.VideoThumbnails;
                 }

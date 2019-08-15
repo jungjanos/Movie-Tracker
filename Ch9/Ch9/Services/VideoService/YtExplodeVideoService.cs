@@ -30,11 +30,63 @@ namespace Ch9.Services.VideoService
             ISettings settings,
             ITmdbCachedSearchClient tmdbCachedSearchClient
             )
-        {            
+        {
             _settings = settings;
             _tmdbCachedSearchClient = tmdbCachedSearchClient;
             _youtubeClient = httpClient == null ? new YoutubeClient() : new YoutubeClient(httpClient);
         }
+
+        //public async Task<List<ImageModel>> GetVideoThumbnails(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        //{
+        //    List<ImageModel> resultingThumbnailsWithoutVideos = new List<ImageModel>();
+
+        //    GetMovieVideosResult movieVideosResponse = await _tmdbCachedSearchClient.GetMovieVideos(movieId, _settings.SearchLanguage, retryCount, delayMilliseconds, fromCache);
+
+        //    if (movieVideosResponse.HttpStatusCode.IsSuccessCode())
+        //    {
+        //        var tmdbVideosModel = JsonConvert.DeserializeObject<GetMovieVideosModel>(movieVideosResponse.Json);
+
+        //        foreach (TmdbVideoModel videoModel in tmdbVideosModel.VideoModels)
+        //        {
+        //            if (string.Equals(videoModel.Site, "YouTube", StringComparison.InvariantCultureIgnoreCase)
+        //                && string.Equals(videoModel.Type, "Trailer", StringComparison.InvariantCultureIgnoreCase)
+        //                && YoutubeClient.ValidateVideoId(videoModel.Key))
+        //            {
+        //                Video video = null;
+        //                try
+        //                {
+        //                    video = await _youtubeClient.GetVideoAsync(videoModel.Key);
+        //                }
+        //                catch { }
+        //                if (video != null)
+        //                {
+        //                    ImageModel videoThumbnail = new ImageModel
+        //                    {
+        //                        FilePath = video.Thumbnails.MediumResUrl,
+        //                        Iso = videoModel.Iso,
+        //                        HasAttachedVideo = true,
+        //                        AttachedVideo = videoModel,
+        //                    };
+
+        //                    videoModel.VideoInfo = new VideoInfo(
+        //                          author: video.Author,
+        //                          uploadDate: video.UploadDate,
+        //                          title: video.Title,
+        //                          description: video.Description,
+        //                          duration: video.Duration,
+        //                          statistics: GetStatistics(video)
+        //                        );
+
+        //                    resultingThumbnailsWithoutVideos.Add(videoThumbnail);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    else
+        //        throw new Exception($"TMDB server responded with {movieVideosResponse.HttpStatusCode}");
+
+        //    return resultingThumbnailsWithoutVideos;
+        //}
 
         public async Task<List<ImageModel>> GetVideoThumbnails(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
@@ -52,33 +104,14 @@ namespace Ch9.Services.VideoService
                         && string.Equals(videoModel.Type, "Trailer", StringComparison.InvariantCultureIgnoreCase)
                         && YoutubeClient.ValidateVideoId(videoModel.Key))
                     {
-                        Video video = null;
-                        try
+                        ImageModel videoThumbnail = new ImageModel
                         {
-                            video = await _youtubeClient.GetVideoAsync(videoModel.Key);
-                        }
-                        catch { }
-                        if (video != null)
-                        {
-                            ImageModel videoThumbnail = new ImageModel
-                            {
-                                FilePath = video.Thumbnails.MediumResUrl,
-                                Iso = videoModel.Iso,
-                                HasAttachedVideo = true,
-                                AttachedVideo = videoModel,
-                            };
-
-                            videoModel.VideoInfo = new VideoInfo(
-                                  author: video.Author,
-                                  uploadDate: video.UploadDate,
-                                  title: video.Title,
-                                  description: video.Description,
-                                  duration: video.Duration,
-                                  statistics: GetStatistics(video)
-                                );
-
-                            resultingThumbnailsWithoutVideos.Add(videoThumbnail);
-                        }
+                            FilePath = new ThumbnailSet(videoModel.Key).HighResUrl,
+                            Iso = videoModel.Iso,
+                            HasAttachedVideo = true,
+                            AttachedVideo = videoModel,
+                        };
+                        resultingThumbnailsWithoutVideos.Add(videoThumbnail);
                     }
                 }
             }

@@ -135,11 +135,11 @@
                                VerticalOptions="Start"/>
                         </StackLayout>
                         
-                        <Label Grid.Row="0" Grid.Column="3"
+                        <!--<Label Grid.Row="0" Grid.Column="3"
                                BindingContext="{x:Reference cardView}"
                                Text="{Binding Path=SelectedItem.AttachedVideo.VideoInfo.DurationStr, StringFormat='{0},'}"
                                FontSize="Micro"
-                               IsVisible="{Binding DisplayImageTypeSelector}" />
+                               IsVisible="{Binding DisplayImageTypeSelector}" />-->
 
                         <Label Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="8"
                                BindingContext="{x:Reference cardView}"

@@ -80,7 +80,15 @@
                         IsVisible="{Binding Path=BindingContext.GalleryIsBusy, Source={x:Reference movieDetailPage}}"
                         HorizontalOptions="CenterAndExpand" 
                         VerticalOptions="Start" 
+                        HeightRequest="20"/>                    
+
+                    <ActivityIndicator 
+                        IsRunning="{Binding Path=BindingContext.WaitingOnVideo, Source={x:Reference movieDetailPage}}" 
+                        IsVisible="{Binding Path=BindingContext.WaitingOnVideo, Source={x:Reference movieDetailPage}}"
+                        HorizontalOptions="CenterAndExpand" 
+                        VerticalOptions="Start" 
                         HeightRequest="20"/>
+
 
                     <Grid Margin="5,0,5,0">
                         <Grid.GestureRecognizers>
@@ -133,18 +141,14 @@
                                FontSize="Micro" 
                                HorizontalOptions="End" 
                                VerticalOptions="Start"/>
-                        </StackLayout>
-                        
-                        <!--<Label Grid.Row="0" Grid.Column="3"
-                               BindingContext="{x:Reference cardView}"
-                               Text="{Binding Path=SelectedItem.AttachedVideo.VideoInfo.DurationStr, StringFormat='{0},'}"
-                               FontSize="Micro"
-                               IsVisible="{Binding DisplayImageTypeSelector}" />-->
+                        </StackLayout>                        
 
-                        <Label Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="8"
+
+                        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="12"
                                BindingContext="{x:Reference cardView}"
                                Text="{Binding Path=SelectedItem.AttachedVideo.Title}"
                                FontSize="Micro"
+                               HorizontalOptions="Center"
                                IsVisible="{Binding DisplayImageTypeSelector}" />
 
 

@@ -22,8 +22,8 @@ namespace Ch9.Services
         Task PushLargeImagePageAsync(MovieDetailPageViewModel viewModel);
         Task PushPersonsMovieCreditsPageAsync(GetPersonsDetailsModel personDetails);
         Task PushRecommendationsPageAsync(MovieDetailModel movie);
-        Task PushReviewsPage(MovieDetailPageViewModel model);
-        Task PushVideoPageAsync(MovieDetailPageViewModel viewModel);
+        Task PushReviewsPage(MovieDetailPageViewModel model);        
+        Task PushVideoPageAsync(ImageModel videoThumbnailWithVideo);
     }
 
     public class PageService : IPageService
@@ -46,8 +46,9 @@ namespace Ch9.Services
         public async Task PushLargeImagePageAsync(MovieDetailPageViewModel viewModel) =>
             await _currentPage.Navigation.PushAsync(new LargeImagePage(viewModel));
 
-        public async Task PushVideoPageAsync(MovieDetailPageViewModel viewModel) =>
-            await _currentPage.Navigation.PushAsync(new VideoPage(viewModel));
+        public async Task PushVideoPageAsync(ImageModel videoThumbnailWithVideo) =>        
+            await _currentPage.Navigation.PushAsync(new VideoPage(videoThumbnailWithVideo));
+        
 
         public async Task PushPersonsMovieCreditsPageAsync(GetPersonsDetailsModel personDetails) =>
             await _currentPage.Navigation.PushAsync(new PersonsMovieCreditsPage(personDetails));

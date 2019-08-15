@@ -46,6 +46,13 @@ namespace Ch9.ViewModels
             set => SetProperty(ref _galleryIsBusy, value);
         }
 
+        private bool _waitingOnVideo;
+        public bool WaitingOnVideo
+        {
+            get => _waitingOnVideo;
+            set => SetProperty(ref _waitingOnVideo, value);
+        }
+
         public bool? MovieIsAlreadyOnActiveList => _movieListsService2.CustomListsService.CheckIfMovieIsOnActiveList(Movie.Id);
 
         private AccountMovieStates _movieStates;
@@ -122,18 +129,27 @@ namespace Ch9.ViewModels
             ToggleFavoriteCommand = new Command(async () => await OnToggleFavoriteCommand());
             TapImageCommand = new Command(async () =>
             {
-                if (SelectedGalleryImage == null)
+                var capture = SelectedGalleryImage;
+
+                if (capture == null)
                     return;
 
-                if (!SelectedGalleryImage.HasAttachedVideo)
+                if (!capture.HasAttachedVideo)
                     await _pageService.PushLargeImagePageAsync(this);
                 else
                 {
-                    if (SelectedGalleryImage.AttachedVideo?.Streams == null)
-                        await _videoService.PopulateWithStreams(SelectedGalleryImage.AttachedVideo);
+                    if (WaitingOnVideo)
+                        return;
+                    else
+                        WaitingOnVideo = true;
 
-                    if (SelectedGalleryImage.AttachedVideo?.Streams?.SelectedVideoStream != null)
-                        await _pageService.PushVideoPageAsync(this);
+
+                    if (capture.AttachedVideo?.Streams == null)
+                        await _videoService.PopulateWithStreams(capture.AttachedVideo);
+
+                    if (capture.AttachedVideo?.Streams?.SelectedVideoStream != null)
+                        await _pageService.PushVideoPageAsync(capture);
+                    WaitingOnVideo = false;
                 }
             });
             ChangeDisplayedImageTypeCommand = new Command(async () =>

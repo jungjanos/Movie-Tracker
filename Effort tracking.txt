@@ -10,14 +10,7 @@ Gain: clearer images for HDPI displays
 effort 2h
 Prio: 4
 
-3, FEATURE: Youtube web videos
-Gain: 
--massive speed gain for opening videos,
--would have the "official" way as backup when YoutubeExplode based Url 
-scraping is not working
 
-effort: 1-2d? (not yet evaluated)
-Prio: 2
 
 4, FEATURE: Weblinks to external reviews:
 Url-s would be extracted from the raw text of the user reviews and presented
@@ -26,13 +19,9 @@ as clickable weblink.
 effort: 2-3h
 Prio: 3
 
-effort: 1h
-Prio: 2
 
-6, BUG: by tapping too fast on the video thumbnail image, the video can be started multiple times as parallel instances.
 
-effort: 4-8h 
-Prio: 1
+
 
 7, IMPROVEMENT: ReviewPage icon should have state dependent color
 effort: 2h (needs 1, solved first)
@@ -43,7 +32,13 @@ Prio: 3
 effort 1d
 Prio: 1
 
+11, Add more supported video categories beside trailers 
 
+12, video title should not overlap with video index
+
+13, check that a video is available (Http dl-check)
+
+14 implement proper login menu
 _________________________
 
 
@@ -61,3 +56,17 @@ effort: 1d
 DONE 9, Redesign ListsPage
 effort 6h
 Prio 1
+
+DONE 3, FEATURE: Youtube web videos
+Gain: 
+-massive speed gain for opening videos,
+-would have the "official" way as backup when YoutubeExplode based Url 
+scraping is not working
+
+effort: 1-2d? (not yet evaluated) (was 1 d)
+Prio: 2
+
+DONE 6, BUG: by tapping too fast on the video thumbnail image, the video can be started multiple times as parallel instances.
+
+effort: 4-8h 
+Prio: 1

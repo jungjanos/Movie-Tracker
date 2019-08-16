@@ -39,8 +39,8 @@
                         ItemsSource="{Binding DisplayImages}"
                         SelectedIndex="{Binding GalleryIndex, Mode=OneWayToSource}"
                         SelectedItem="{Binding SelectedGalleryImage, Mode=OneWayToSource}"
-                        IsCyclical="True"                        
-                    >
+                        IsCyclical="True"
+                        IsViewReusingEnabled="False">
 
                         <pancardview:CardsView.ItemTemplate>
                             <DataTemplate>
@@ -53,19 +53,21 @@
                                         CornerRadius="10"
                                         BackgroundColor="WhiteSmoke">
                                         
-                                        <Image 
-                                            Aspect="AspectFit">
+                                        <ffimageloading:CachedImage 
+                                            Aspect="AspectFit"                                            
+                                            ErrorPlaceholder="movie_backdrop_placeholder_lg"
+                                            RetryCount="1">
 
-                                            <Image.GestureRecognizers>
+                                            <ffimageloading:CachedImage.GestureRecognizers>
                                                 <TapGestureRecognizer Command="{Binding  Path=BindingContext.TapImageCommand, Source={x:Reference movieDetailPage}}" />
-                                            </Image.GestureRecognizers>
+                                            </ffimageloading:CachedImage.GestureRecognizers>
 
-                                            <Image.Source>
+                                            <ffimageloading:CachedImage.Source>
                                                 <UriImageSource
                                                     Uri="{Binding Path=FilePath}"
                                                 />
-                                            </Image.Source>
-                                        </Image>
+                                            </ffimageloading:CachedImage.Source>                                            
+                                        </ffimageloading:CachedImage>                                        
                                     </Frame>                                    
                                 </ContentView>
                             </DataTemplate>

@@ -1,5 +1,7 @@
 ﻿using Ch9.Services.VideoService;
+using Ch9.Utils;
 using Newtonsoft.Json;
+using System;
 
 namespace Ch9.Models
 {
@@ -25,8 +27,24 @@ namespace Ch9.Models
         public int Size { get; set; } // allowed: 360, 480, 720, 1080
 
         [JsonProperty("type")]
-        public string Type { get; set; } // allowed: Trailer, Teaser, Clip, Featurette, Behind the Scenes, Bloopers
+        public string TypeStr { get; set; } // allowed: Trailer, Teaser, Clip, Featurette, Behind the Scenes, Bloopers
+
+        public VideoType Type => Utils.Utils.StringToVideoTypeStringToEnumConverter(TypeStr);
 
         public VideoStreamInfoSet Streams { get; set; } 
+    }
+
+    [Flags]
+    public enum VideoType
+    {
+        None = 0,
+        Unspecified = 1,
+        Trailer = 2,
+        Teaser = 4,
+        Clip = 8,
+        Featurette = 16,
+        BehindTheScene = 32,
+        Blooper = 64,
+        Other = 128
     }
 }

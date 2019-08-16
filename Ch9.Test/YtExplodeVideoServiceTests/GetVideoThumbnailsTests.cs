@@ -98,7 +98,7 @@ namespace Ch9.Test.YtExplodeVideoServiceTests
             _output.WriteLine($"Site (should be 'YouTube'): {image.AttachedVideo.Site}");
             _output.WriteLine($"Language: {image.AttachedVideo.Iso}");
             _output.WriteLine($"Video title: {image.AttachedVideo.Title}");
-            _output.WriteLine($"Video type (should be 'trailer'): {image.AttachedVideo.Type}");
+            _output.WriteLine($"Video type (should be 'trailer'): {image.AttachedVideo.TypeStr}");
         }
     }
 }

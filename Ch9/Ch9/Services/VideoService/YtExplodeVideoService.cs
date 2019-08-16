@@ -38,6 +38,8 @@ namespace Ch9.Services.VideoService
 
         public async Task<List<ImageModel>> GetVideoThumbnails(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
+            VideoType typeFilter = VideoType.Trailer | VideoType.Clip | VideoType.BehindTheScene | VideoType.Blooper;
+
             List<ImageModel> resultingThumbnailsWithoutVideos = new List<ImageModel>();
 
             GetMovieVideosResult movieVideosResponse = await _tmdbCachedSearchClient.GetMovieVideos(movieId, _settings.SearchLanguage, retryCount, delayMilliseconds, fromCache).ConfigureAwait(false);
@@ -49,7 +51,7 @@ namespace Ch9.Services.VideoService
                 foreach (TmdbVideoModel videoModel in tmdbVideosModel.VideoModels)
                 {
                     if (string.Equals(videoModel.Site, "YouTube", StringComparison.InvariantCultureIgnoreCase)
-                        && string.Equals(videoModel.Type, "Trailer", StringComparison.InvariantCultureIgnoreCase)
+                        && ((videoModel.Type & typeFilter) == videoModel.Type) 
                         && YoutubeClient.ValidateVideoId(videoModel.Key))
                     {
                         ImageModel videoThumbnail = new ImageModel

@@ -119,7 +119,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
                 _output.WriteLine($"name : {videoDetail.Title}");
                 _output.WriteLine($"site: {videoDetail.Site}");
                 _output.WriteLine($"video size: {videoDetail.Size}");
-                _output.WriteLine($"video type: {videoDetail.Type}");
+                _output.WriteLine($"video type: {videoDetail.TypeStr}");
             }
         }
     }

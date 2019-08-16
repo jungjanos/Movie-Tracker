@@ -51,23 +51,21 @@
                                         HasShadow="false"
                                         IsClippedToBounds="true"
                                         CornerRadius="10"
-                                        BackgroundColor="WhiteSmoke"
-                                    >
-                                        <ffimageloading:CachedImage 
-                                            Aspect="AspectFit"                                            
-                                            ErrorPlaceholder="movie_backdrop_placeholder_lg"
-                                            RetryCount="1">
+                                        BackgroundColor="WhiteSmoke">
+                                        
+                                        <Image 
+                                            Aspect="AspectFit">
 
-                                            <ffimageloading:CachedImage.GestureRecognizers>
+                                            <Image.GestureRecognizers>
                                                 <TapGestureRecognizer Command="{Binding  Path=BindingContext.TapImageCommand, Source={x:Reference movieDetailPage}}" />
-                                            </ffimageloading:CachedImage.GestureRecognizers>
+                                            </Image.GestureRecognizers>
 
-                                            <ffimageloading:CachedImage.Source>
+                                            <Image.Source>
                                                 <UriImageSource
                                                     Uri="{Binding Path=FilePath}"
                                                 />
-                                            </ffimageloading:CachedImage.Source>                                            
-                                        </ffimageloading:CachedImage>                                        
+                                            </Image.Source>
+                                        </Image>
                                     </Frame>                                    
                                 </ContentView>
                             </DataTemplate>

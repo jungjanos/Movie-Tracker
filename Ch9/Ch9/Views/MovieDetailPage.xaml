@@ -39,7 +39,7 @@
                         ItemsSource="{Binding DisplayImages}"
                         SelectedIndex="{Binding GalleryIndex, Mode=OneWayToSource}"
                         SelectedItem="{Binding SelectedGalleryImage, Mode=OneWayToSource}"
-                        IsCyclical="True"
+                        IsCyclical="True"                        
                     >
 
                         <pancardview:CardsView.ItemTemplate>
@@ -139,24 +139,22 @@
                                FontSize="Micro" 
                                HorizontalOptions="End" 
                                VerticalOptions="Start"/>
-                        </StackLayout>                        
-
+                        </StackLayout>
 
                         <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="12"
-                               BindingContext="{x:Reference cardView}"
+                               BindingContext="{x:Reference cardView}"                               
                                Text="{Binding Path=SelectedItem.AttachedVideo.Title}"
-                               FontSize="Micro"
+                               Margin="60,0,0,0"
                                HorizontalOptions="Center"
+                               FontSize="Micro"
                                IsVisible="{Binding DisplayImageTypeSelector}" />
-
 
                         <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="9"
                             Text="{Binding Path=Movie.Title}" 
                                FontSize="Large" 
                                MaxLines="2"
                                LineBreakMode="TailTruncation"
-                               HorizontalOptions="Start"
-                               />
+                               HorizontalOptions="Start"/>
 
                         <Label Grid.Row="1" Grid.Column="10" Grid.ColumnSpan="3"
                             Text="{Binding Path=Movie.Year}" 

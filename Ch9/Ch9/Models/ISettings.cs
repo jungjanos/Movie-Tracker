@@ -22,6 +22,7 @@ namespace Ch9.Models
         string PlaybackQualityStr { get; set; }
         string InformationLinksTargetHomePageStr { get; set; }
         InformationLinkTargetHomePage InfoLinkTargetHomePage { get; }
+        bool IsLoginPageDeactivationRequested { get; set; }
 
         Task SavePropertiesAsync();
     }

@@ -216,6 +216,17 @@ namespace Ch9.Models
             set => _appDictionary[nameof(UseHttpsForImages)] = value;
         }
 
+        public bool IsLoginPageDeactivationRequested
+        {
+            get
+            {
+                if (_appDictionary.ContainsKey(nameof(IsLoginPageDeactivationRequested)))
+                    return (bool)_appDictionary[nameof(IsLoginPageDeactivationRequested)];
+                else return false;
+            }
+            set => _appDictionary[nameof(IsLoginPageDeactivationRequested)] = value;
+        }
+
         public async Task SavePropertiesAsync()
         {
             await Application.Current.SavePropertiesAsync();

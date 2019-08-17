@@ -228,7 +228,7 @@ namespace Ch9.ViewModels
             result.NewSessionId = newSession?.SessionId;
 
             return result;
-        }        
+        }
 
         private async Task OnSearchLanguageChanged()
         {

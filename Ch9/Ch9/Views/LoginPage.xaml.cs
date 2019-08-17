@@ -1,4 +1,5 @@
-﻿using Ch9.ViewModels;
+﻿using Ch9.Services;
+using Ch9.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -15,8 +16,14 @@ namespace Ch9.Views
 
         public LoginPage()
         {
-            ViewModel = new LoginPageViewModel();
             InitializeComponent();
+
+            ViewModel = new LoginPageViewModel(
+                ((App)Application.Current).Settings,
+                ((App)Application.Current).TmdbNetworkClient,
+                new PageService(this)
+            );
+
         }
     }
 }

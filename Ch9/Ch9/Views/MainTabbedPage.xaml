@@ -10,8 +10,7 @@
     <!--Pages can be added as references or inline-->        
     <views:MainPage3/>
     <views:TrendingPage2/>
-    <views:ListsPage/>
-    <views:LoginPage/>
+    <views:ListsPage/>    
     <views:MainSettingsPage2/>
 
 </TabbedPage>

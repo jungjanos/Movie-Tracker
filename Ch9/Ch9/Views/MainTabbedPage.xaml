@@ -11,6 +11,7 @@
     <views:MainPage3/>
     <views:TrendingPage2/>
     <views:ListsPage/>
+    <views:LoginPage/>
     <views:MainSettingsPage2/>
 
 </TabbedPage>

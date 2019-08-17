@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Ch9.Views.LoginPage"
+             BackgroundColor="WhiteSmoke"
+             >
+
+    <ContentPage.Content>
+        <StackLayout 
+            Orientation="Vertical"
+            VerticalOptions="FillAndExpand"
+            Padding="30"
+            Spacing="20">
+
+            <StackLayout>
+                <Label 
+                    Text="Signin in to TMDb to:"
+                    FontSize="Title"
+                    FontAttributes="Bold"/>
+                
+                <Label 
+                    Text="&#x2714;   Track your Watchlist"
+                    FontSize="Medium"                    
+                    Margin="5,0,0,0"/>
+                
+                <Label 
+                    Text="&#x2714;   Track your Favorites"
+                    FontSize="Medium"                    
+                    Margin="5,0,0,0"/>
+                
+                <Label 
+                    Text="&#x2714;   Manage custom lists"
+                    FontSize="Medium"
+                    Margin="5,0,0,0"/>
+                
+                <Label 
+                    Text="&#x2714;   Rate movies"
+                    FontSize="Medium"
+                    Margin="5,0,0,0"/>
+
+                <StackLayout
+                    Margin="0,10,0,0"
+                Orientation="Horizontal"
+                HorizontalOptions="StartAndExpand"
+                VerticalOptions="Start">
+
+                    <CheckBox 
+                        IsChecked="{Binding IgnoreLoginFlag}" 
+                        Color="Gray"
+                        VerticalOptions="Start"
+                        HorizontalOptions="Start"/>
+
+                    <Label 
+                        VerticalOptions="Center"
+                        HorizontalOptions="StartAndExpand">
+                        <Label.Text>
+Hide this page! 
+You still can login from Settings...
+                        </Label.Text>
+                    </Label>
+
+                </StackLayout>
+                
+            </StackLayout>
+
+            <Entry  Text="{Binding Email}" 
+                    Placeholder="e-mail"   
+                    PlaceholderColor="LightGray" 
+                    Keyboard="Email"                      
+                    VerticalOptions="End"/>
+            
+            <Entry  Text="{Binding Password}" Placeholder="password"   
+                    PlaceholderColor="LightGray" 
+                    IsPassword="True"
+                    VerticalOptions="End"/>
+
+            <Button Command="{Binding SubmitCommand}" Text="Login" TextColor="White"  
+                    FontAttributes="Bold" FontSize="Medium" HorizontalOptions="FillAndExpand"  
+                    BackgroundColor="#088da5" 
+                    VerticalOptions="End"/>
+
+            
+
+            <Grid ColumnSpacing="0">
+                <Grid.ColumnDefinitions>                    
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                
+                <Button 
+                    Grid.Column="0"
+                    Command="{Binding SignUpCommand}" 
+                    Text="Sign up" 
+                    TextColor="White"  
+                    FontAttributes="Bold" 
+                    FontSize="Medium" 
+                    HorizontalOptions="FillAndExpand"  
+                    BackgroundColor="#088da5" 
+                    VerticalOptions="End"/>
+
+                <Button 
+                    Grid.Column="2"
+                    Command="{Binding CancelCommand}" 
+                    Text="Contunue" 
+                    TextColor="White"  
+                    FontAttributes="Bold" 
+                    FontSize="Medium" 
+                    HorizontalOptions="FillAndExpand"  
+                    BackgroundColor="#088da5" 
+                    VerticalOptions="End"/>
+
+            </Grid>
+            
+        </StackLayout>
+    </ContentPage.Content>
+
+
+</ContentPage>

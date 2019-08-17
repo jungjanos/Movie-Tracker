@@ -12,21 +12,64 @@
 
     <ContentPage.Resources>
         <converters:InverseBoolConverter x:Key="inverseBool"/>
+        <converters:StringToNotNullOremptyStringToBoolConverter x:Key="stringToNotNullOremptyStringToBool"/>
+        <converters:HasAccountToLogInGlyphBoolToGlyphConverter x:Key="hasAccountToLogInGlyphBoolToGlyph"/>
+        <converters:HasAccountToLoginGlyphColorConverter x:Key="hasAccountToLoginGlyphColor"/>
     </ContentPage.Resources>
     
     <ContentPage.Content>
         <TableView Intent="Settings">
             <TableRoot>
 
-                <TableSection Title="Account">
-                    
-                    <EntryCell Text="{Binding Path=Settings.ApiKey}" 
-                               Label="Api key"
-                               IsEnabled="False"/>
+                <TableSection Title="Account">                  
+ 
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal"
+                                     Padding="13,0" 
+                                     HorizontalOptions="FillAndExpand" 
+                                     Spacing="10">
+                            
 
-                    <EntryCell Text="{Binding Path=Settings.SessionId, Mode=TwoWay}" 
-                               Label="Session id"                               
-                               IsEnabled="False"/>
+                            <Label Text="{Binding Settings.AccountName, TargetNullValue='Not signed in'}"
+                                   HorizontalOptions="StartAndExpand"
+                                   FontSize="Medium"
+                                   VerticalOptions="Center"/>
+
+                            <Image>
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding LoginTappedCommand}"/>
+                                </Image.GestureRecognizers>
+                                
+                                <Image.Source>                                    
+                                    <FontImageSource 
+                                     Glyph="{Binding Settings.HasTmdbAccount, Converter={StaticResource Key=hasAccountToLogInGlyphBoolToGlyph}}"
+                                     FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
+                                     Color="{Binding Settings.HasTmdbAccount,Converter={StaticResource Key=hasAccountToLoginGlyphColor}}"
+                                     Size="30"/>
+                                </Image.Source>
+                            </Image>
+
+                        </StackLayout>
+
+                    </ViewCell>
+                    
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal"
+                                     Padding="13,0" 
+                                     HorizontalOptions="FillAndExpand" 
+                                     Spacing="10"
+                                     IsVisible="{Binding Settings.SessionId, Converter={StaticResource Key=stringToNotNullOremptyStringToBool}}"
+                                     >
+                            <Label Text="SessionId" VerticalTextAlignment="Center"/>
+                            
+                            <Label Text="{Binding Settings.SessionId}"                                   
+                                   HorizontalOptions="EndAndExpand"
+                                   VerticalOptions="Center"
+                                   FontSize="Small"/>
+                            
+                        </StackLayout>
+
+                    </ViewCell>
 
                     <SwitchCell On="{Binding ValidateAccountOnServerSwitch, Mode=TwoWay}"
                                 IsEnabled="{Binding UserProvidedAccountAndPasswordNotEmptyAndNotWaiting}"

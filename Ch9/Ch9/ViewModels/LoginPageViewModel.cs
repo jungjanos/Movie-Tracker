@@ -52,11 +52,14 @@ namespace Ch9.ViewModels
         public ICommand SignUpCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
 
-        public LoginPageViewModel(ISettings settings, ITmdbNetworkClient networkClient, IPageService pageService)
+        public LoginPageViewModel(ISettings settings, ITmdbNetworkClient networkClient, IPageService pageService, string username = null, string password = null)
         {
             _settings = settings;
             _tmdbClient = networkClient;
             _pageService = pageService;
+            UserName = username;
+            Password = password;
+            HideLoginPageFlag = _settings.IsLoginPageDeactivationRequested;
 
             SubmitCommand = new Command(async () => await OnSubmit());
 
@@ -124,15 +127,6 @@ namespace Ch9.ViewModels
             var result = (Success: false, NewSessionId: nullStr);
 
             SessionIdResponseModel newSession = null;
-
-            string sessionIdToDelete = _settings.SessionId;
-
-            try
-            {
-                if (!string.IsNullOrEmpty(sessionIdToDelete))
-                    await _tmdbClient.DeleteSession(sessionIdToDelete);
-            }
-            catch { }
 
             try
             {

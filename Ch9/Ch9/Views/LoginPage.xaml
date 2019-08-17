@@ -74,7 +74,7 @@ You still can login from Settings...
             </StackLayout>
 
             <Entry  Text="{Binding UserName}" 
-                    Placeholder="e-mail"   
+                    Placeholder="name"   
                     PlaceholderColor="LightGray" 
                     Keyboard="Email"                      
                     VerticalOptions="End"/>

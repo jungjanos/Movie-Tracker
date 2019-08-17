@@ -14,14 +14,16 @@ namespace Ch9.Views
             set => BindingContext = value;
         }
 
-        public LoginPage()
+        public LoginPage(string userName = null, string password = null)
         {
             InitializeComponent();
 
             ViewModel = new LoginPageViewModel(
                 ((App)Application.Current).Settings,
                 ((App)Application.Current).TmdbNetworkClient,
-                new PageService(this)
+                new PageService(this),
+                userName,
+                password
             );
 
         }

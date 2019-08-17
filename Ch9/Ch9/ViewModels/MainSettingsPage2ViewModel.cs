@@ -67,7 +67,7 @@ namespace Ch9.ViewModels
                         DeleteSessionIdCommand.Execute(sessionIdToDelete);
                         Settings.SessionId = null;
 
-                        Settings.HasTmdbAccount = false;                        
+                        Settings.HasTmdbAccount = false;
                         OnPropertyChanged(nameof(Settings));
                     }
                 }
@@ -93,7 +93,7 @@ namespace Ch9.ViewModels
             }
         }
 
-        private string _userProvidedPassword;       
+        private string _userProvidedPassword;
         public string UserProvidedPassword
         {
             get => _userProvidedPassword;
@@ -104,14 +104,13 @@ namespace Ch9.ViewModels
             }
         }
 
-        public bool UserProvidedAccountAndPasswordNotEmptyAndNotWaiting
-        {
-            get => !string.IsNullOrWhiteSpace(UserProvidedAccountName) && !string.IsNullOrWhiteSpace(UserProvidedPassword) && NotWaitingOnServer;
-        }
+        public bool UserProvidedAccountAndPasswordNotEmptyAndNotWaiting => !string.IsNullOrWhiteSpace(UserProvidedAccountName) && !string.IsNullOrWhiteSpace(UserProvidedPassword) && NotWaitingOnServer;
 
         private ICommand ValidateAccountOnServerCommand { get; set; }
-        public Command<string> DeleteSessionIdCommand { get; private set; }        
+        public Command<string> DeleteSessionIdCommand { get; private set; }
         public ICommand SearchLanguageChangedCommand { get; private set; }
+        public ICommand LoginTappedCommand { get; private set; }
+
 
         public MainSettingsPage2ViewModel(ISettings settings,
             MovieGenreSettings movieGenreSettings,
@@ -124,20 +123,25 @@ namespace Ch9.ViewModels
             _pageService = pageService;
             SearchLanguageChangedCommand = new Command(async () => await OnSearchLanguageChanged());
             ValidateAccountOnServerCommand = new Command(async () => await OnValidateAccountOnServer());
-            DeleteSessionIdCommand = new Command<string>(async sessionId => await OnDeleteSessionId(sessionId));            
+            DeleteSessionIdCommand = new Command<string>(async sessionId => await OnDeleteSessionId(sessionId));
+            LoginTappedCommand = new Command(async () =>
+            {
+                var hasAccount = _settings.HasTmdbAccount;
+                await OnLoginTapped(hasAccount);
+            });
 
             if (_validateAccountOnServerSwitch = Settings.HasTmdbAccount)
             {
                 _userProvidedAccountName = Settings.AccountName;
                 _userProvidedPassword = Settings.Password;
             }
-            _notWaitingOnServer = true;            
+            _notWaitingOnServer = true;
         }
 
         public async Task SaveChanges() => await Settings.SavePropertiesAsync();
 
         private async Task OnDeleteSessionId(string sessionIdToDelete)
-        {                      
+        {
             if (!string.IsNullOrEmpty(sessionIdToDelete))
                 await _tmdbClient.DeleteSession(sessionIdToDelete);
         }
@@ -152,14 +156,14 @@ namespace Ch9.ViewModels
                 Settings.SessionId = result.NewSessionId;
 
                 Settings.AccountName = UserProvidedAccountName;
-                Settings.Password = UserProvidedPassword;                
+                Settings.Password = UserProvidedPassword;
             }
             else
             {
                 Settings.SessionId = null;
                 ValidateAccountOnServerSwitch = false;
             }
-            OnPropertyChanged(nameof(Settings));            
+            OnPropertyChanged(nameof(Settings));
             NotWaitingOnServer = true;
         }
 
@@ -228,6 +232,22 @@ namespace Ch9.ViewModels
             result.NewSessionId = newSession?.SessionId;
 
             return result;
+        }
+
+        private async Task OnLoginTapped(bool hasAccount)
+        {
+            if (hasAccount)
+            {
+                var sessionIdToDelete = _settings.SessionId;
+
+                if (!string.IsNullOrEmpty(sessionIdToDelete))
+                    await _tmdbClient.DeleteSession(sessionIdToDelete);
+
+                _settings.AccountName = null;
+                _settings.Password = null;
+            }
+            else
+                await _pageService.PushLoginPageAsync();
         }
 
         private async Task OnSearchLanguageChanged()

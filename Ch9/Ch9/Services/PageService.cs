@@ -19,7 +19,8 @@ namespace Ch9.Services
         Task PopToRootAsync();
         Task PushAsync(MovieDetailModel movie);
         Task PushAsync(AddListPageViewModel viewModel);
-        Task PushLargeImagePageAsync(MovieDetailPageViewModel viewModel);
+        Task PushLargeImagePageAsync(MovieDetailPageViewModel viewModel);        
+        Task PushLoginPageAsync(string accountName = null, string password = null);
         Task PushPersonsMovieCreditsPageAsync(GetPersonsDetailsModel personDetails);
         Task PushRecommendationsPageAsync(MovieDetailModel movie);
         Task PushReviewsPage(MovieDetailPageViewModel model);        
@@ -47,11 +48,13 @@ namespace Ch9.Services
             await _currentPage.Navigation.PushAsync(new LargeImagePage(viewModel));
 
         public async Task PushVideoPageAsync(ImageModel videoThumbnailWithVideo) =>        
-            await _currentPage.Navigation.PushAsync(new VideoPage(videoThumbnailWithVideo));
-        
+            await _currentPage.Navigation.PushAsync(new VideoPage(videoThumbnailWithVideo));        
 
         public async Task PushPersonsMovieCreditsPageAsync(GetPersonsDetailsModel personDetails) =>
             await _currentPage.Navigation.PushAsync(new PersonsMovieCreditsPage(personDetails));
+
+        public async Task PushLoginPageAsync(string accountName = null, string password = null) =>
+            await _currentPage.Navigation.PushAsync(new LoginPage(accountName, password));
 
         public async Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons) =>
              await _currentPage.DisplayActionSheet(title, cancel, destruction, buttons);
@@ -80,7 +83,6 @@ namespace Ch9.Services
             {
                 await _currentPage.DisplayAlert("Error", $"Could not open weblink: {ex.Message}", "Ok");
             }
-
         }
     }
 }

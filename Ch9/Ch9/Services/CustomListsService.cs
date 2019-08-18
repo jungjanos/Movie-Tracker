@@ -73,7 +73,7 @@ namespace Ch9.Services
         /// </summary>        
         public async Task TryEnsureInitialization(int retryCount = 1, int delayMilliseconds = 1000, bool fromCache = false)
         {
-            if (!_settings.HasTmdbAccount)
+            if (!_settings.IsLoggedin)
             {
                 ClearLists();
                 return;
@@ -112,7 +112,7 @@ namespace Ch9.Services
         {
             bool result = false;
 
-            if (!_settings.HasTmdbAccount)
+            if (!_settings.IsLoggedin)
             {
                 ClearLists();
                 throw new Exception("Account error: user is not signed in");
@@ -159,7 +159,7 @@ namespace Ch9.Services
         /// <param name="description">optional: list description</param>
         public async Task AddAndMakeActiveCustomList(string name, string description, int retryCount = 1, int delayMilliseconds = 1000)
         {
-            if (!_settings.HasTmdbAccount)
+            if (!_settings.IsLoggedin)
                 throw new Exception("Account error: user is not signed in");
 
             CreateListResult result = await _tmdbCachedSearchClient.CreateList(name, description, _settings.SearchLanguage ?? "en", retryCount, delayMilliseconds);
@@ -187,7 +187,7 @@ namespace Ch9.Services
         /// </summary>
         public async Task RemoveActiveCustomList(int retryCount = 1, int delayMilliseconds = 1000)
         {
-            if (!_settings.HasTmdbAccount)
+            if (!_settings.IsLoggedin)
             {
                 ClearLists();
                 throw new Exception("Account error: user is not signed in");
@@ -217,7 +217,7 @@ namespace Ch9.Services
         /// </summary>
         public async Task RemoveMovieFromActiveList(int movieId, int retryCount = 1, int delayMilliseconds = 1000)
         {
-            if (!_settings.HasTmdbAccount)
+            if (!_settings.IsLoggedin)
                 throw new Exception("Account error: user is not signed in");
 
             if (SelectedCustomList == null)
@@ -244,7 +244,7 @@ namespace Ch9.Services
         /// </summary>
         public async Task AddMovieToActiveList(MovieDetailModel movie, int retryCount = 1, int delayMilliseconds = 1000)
         {
-            if (!_settings.HasTmdbAccount)
+            if (!_settings.IsLoggedin)
                 throw new Exception("Account error: user is not signed in");
 
             if (SelectedCustomList == null)
@@ -270,7 +270,7 @@ namespace Ch9.Services
         /// </summary>
         public async Task UpdateSingleCustomList(int listId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = false)
         {
-            if (!_settings.HasTmdbAccount)
+            if (!_settings.IsLoggedin)
             {
                 ClearLists();
                 throw new Exception("Account error: user is not signed in");
@@ -296,7 +296,7 @@ namespace Ch9.Services
         /// </summary> 
         public bool? CheckIfMovieIsOnActiveList(int movieId)
         {
-            if (!_settings.HasTmdbAccount)
+            if (!_settings.IsLoggedin)
                 return null;
 
             if (SelectedCustomList == null)

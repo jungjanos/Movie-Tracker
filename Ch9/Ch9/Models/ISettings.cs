@@ -9,7 +9,7 @@ namespace Ch9.Models
     {
         string AccountName { get; set; }
         string ApiKey { get; set; }
-        bool HasTmdbAccount { get; }
+        bool IsLoggedin { get; }
         bool IncludeAdult { get; set; }
         string Password { get; set; }
         string SearchLanguage { get; set; }

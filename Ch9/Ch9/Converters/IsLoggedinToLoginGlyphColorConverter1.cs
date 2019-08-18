@@ -4,7 +4,7 @@ using Xamarin.Forms;
 
 namespace Ch9.Converters
 {
-    public class HasAccountToLoginGlyphColorConverter : IValueConverter
+    public class IsLoggedinToLoginGlyphColorConverter : IValueConverter
     {
         private static Color _loginColor = Color.DarkGreen;
         private static Color _logoutColor = Color.DarkRed;

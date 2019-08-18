@@ -109,7 +109,7 @@ namespace Ch9.ViewModels
             }
             IsBusy = false;
 
-            if (_settings.HasTmdbAccount)
+            if (_settings.IsLoggedin)
                 await _pageService.PopCurrent();
         }
 

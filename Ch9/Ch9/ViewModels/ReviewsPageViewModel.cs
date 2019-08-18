@@ -137,7 +137,7 @@ namespace Ch9.ViewModels
 
         private async Task<bool> UpdateRating(decimal targetRating)
         {
-            if(!_settings.HasTmdbAccount)
+            if(!_settings.IsLoggedin)
             {
                 await _pageService.DisplayAlert("Info", $"To vote, You need to log in with a user account", "Ok");
                 return false;

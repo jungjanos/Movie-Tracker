@@ -13,8 +13,8 @@
     <ContentPage.Resources>
         <converters:InverseBoolConverter x:Key="inverseBool"/>
         <converters:StringToNotNullOremptyStringToBoolConverter x:Key="stringToNotNullOremptyStringToBool"/>
-        <converters:HasAccountToLogInGlyphBoolToGlyphConverter x:Key="hasAccountToLogInGlyphBoolToGlyph"/>
-        <converters:HasAccountToLoginGlyphColorConverter x:Key="hasAccountToLoginGlyphColor"/>
+        <converters:IsLoggedinToLoginGlyphBoolToGlyphConverter x:Key="isLoggedinToLoginGlyphBoolToGlyph"/>
+        <converters:IsLoggedinToLoginGlyphColorConverter x:Key="isLoggedinToLoginGlyphColor"/>
     </ContentPage.Resources>
     
     <ContentPage.Content>
@@ -42,9 +42,9 @@
                                 
                                 <Image.Source>                                    
                                     <FontImageSource 
-                                     Glyph="{Binding Settings.HasTmdbAccount, Converter={StaticResource Key=hasAccountToLogInGlyphBoolToGlyph}}"
+                                     Glyph="{Binding Settings.IsLoggedin, Converter={StaticResource Key=isLoggedinToLoginGlyphBoolToGlyph}}"
                                      FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
-                                     Color="{Binding Settings.HasTmdbAccount,Converter={StaticResource Key=hasAccountToLoginGlyphColor}}"
+                                     Color="{Binding Settings.IsLoggedin,Converter={StaticResource Key=isLoggedinToLoginGlyphColor}}"
                                      Size="30"/>
                                 </Image.Source>
                             </Image>

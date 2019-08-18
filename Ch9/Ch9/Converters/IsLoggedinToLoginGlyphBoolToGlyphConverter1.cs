@@ -4,7 +4,7 @@ using Xamarin.Forms;
 
 namespace Ch9.Converters
 {
-    public class HasAccountToLogInGlyphBoolToGlyphConverter : IValueConverter
+    public class IsLoggedinToLoginGlyphBoolToGlyphConverter : IValueConverter
     {
         private static string _loginGlyph = "\uf1b1";
         private static string _logoutGlyph = "\uf1b2";

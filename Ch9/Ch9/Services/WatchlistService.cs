@@ -72,7 +72,7 @@ namespace Ch9.Services
         {
             Watchlist.InitializeOrClearMovieCollection();
 
-            if (!_settings.HasTmdbAccount)
+            if (!_settings.IsLoggedin)
                 throw new Exception("Account error: user is not signed in");
 
             GetMovieWatchlistResult getWatchlist = await _tmdbCachedSearchClient.GetMovieWatchlist(language: _settings.SearchLanguage, sortBy: SortBy, page: 1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
@@ -86,7 +86,7 @@ namespace Ch9.Services
 
         public async Task TryLoadNextPage(int retryCount = 0, int delayMilliseconds = 1000)
         {
-            if (!_settings.HasTmdbAccount)
+            if (!_settings.IsLoggedin)
                 throw new Exception("Account error: user is not signed in");
 
             if (!CanLoad)
@@ -114,7 +114,7 @@ namespace Ch9.Services
         /// <param name="desiredState">true: tries to add, false: tries to remove</param>        
         public async Task ToggleWatchlistState(MovieDetailModel movie, bool desiredState, int retryCount = 1, int delayMilliseconds = 1000)
         {
-            if (!_settings.HasTmdbAccount)
+            if (!_settings.IsLoggedin)
                 throw new Exception("Account error: user is not signed in");
 
             if (movie == null)

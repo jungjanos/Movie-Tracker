@@ -31,7 +31,7 @@ namespace Ch9.Models
             set => _appDictionary[nameof(ApiKey)] = value;
         }
 
-        public bool HasTmdbAccount => !string.IsNullOrEmpty(SessionId);        
+        public bool IsLoggedin => !string.IsNullOrEmpty(SessionId);        
 
         public string SessionId
         {
@@ -48,7 +48,7 @@ namespace Ch9.Models
                 {
                     _appDictionary[nameof(SessionId)] = value;
                     OnPropertyChanged(nameof(SessionId));
-                    OnPropertyChanged(nameof(HasTmdbAccount));
+                    OnPropertyChanged(nameof(IsLoggedin));
                 }
             }
         }

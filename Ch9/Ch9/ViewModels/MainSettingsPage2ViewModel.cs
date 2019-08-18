@@ -125,11 +125,11 @@ namespace Ch9.ViewModels
             DeleteSessionIdCommand = new Command<string>(async sessionId => await OnDeleteSessionId(sessionId));
             LoginTappedCommand = new Command(async () =>
             {
-                var hasAccount = _settings.HasTmdbAccount;
+                var hasAccount = _settings.IsLoggedin;
                 await OnLoginTapped(hasAccount);
             });
 
-            if (_validateAccountOnServerSwitch = Settings.HasTmdbAccount)
+            if (_validateAccountOnServerSwitch = Settings.IsLoggedin)
             {
                 _userProvidedAccountName = Settings.AccountName;
                 _userProvidedPassword = Settings.Password;

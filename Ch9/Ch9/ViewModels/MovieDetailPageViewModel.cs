@@ -267,7 +267,7 @@ namespace Ch9.ViewModels
 
         public async Task OnToggleWatchlistCommand()
         {
-            if (!_settings.HasTmdbAccount)
+            if (!_settings.IsLoggedin)
             {
                 await _pageService.DisplayAlert("Info", "You have to log in with a user account to use this function", "Ok");
                 return;
@@ -290,7 +290,7 @@ namespace Ch9.ViewModels
 
         public async Task OnAddToListCommand()
         {
-            if (!_settings.HasTmdbAccount)
+            if (!_settings.IsLoggedin)
             {
                 await _pageService.DisplayAlert("Info", "You have to log in with a user account to use this function", "Ok");
                 return;
@@ -324,7 +324,7 @@ namespace Ch9.ViewModels
 
         public async Task OnToggleFavoriteCommand()
         {
-            if (!_settings.HasTmdbAccount)
+            if (!_settings.IsLoggedin)
             {
                 await _pageService.DisplayAlert("Info", "You have to log in with a user account to use this function", "Ok");
                 return;
@@ -347,7 +347,7 @@ namespace Ch9.ViewModels
 
         private async Task FetchMovieStates()
         {
-            if (!_settings.HasTmdbAccount)
+            if (!_settings.IsLoggedin)
                 return;
             try
             {

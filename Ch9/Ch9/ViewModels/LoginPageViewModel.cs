@@ -93,8 +93,7 @@ namespace Ch9.ViewModels
             var result = await TryTmdbSignin(userName, password, retryCount, delayMilliseconds);
 
             if (result.Success)
-            {
-                _settings.HasTmdbAccount = true;
+            {                
                 _settings.SessionId = result.NewSessionId;
 
                 _settings.AccountName = userName;
@@ -105,15 +104,14 @@ namespace Ch9.ViewModels
             else
             {
                 _settings.SessionId = null;
-                _settings.HasTmdbAccount = false;
-                ErrorMessage = "Signin failure";
+                await _settings.SavePropertiesAsync();
+                ErrorMessage = "Login failure";
             }
             IsBusy = false;
 
             if (_settings.HasTmdbAccount)
                 await _pageService.PopCurrent();
         }
-
 
         // Tries to generate a new SessionId for the account
         // Tries to dispose any previous SessionId if available (best effort)
@@ -192,7 +190,6 @@ namespace Ch9.ViewModels
 
         private void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
 
         protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
         {

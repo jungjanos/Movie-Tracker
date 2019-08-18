@@ -66,8 +66,7 @@ namespace Ch9.ViewModels
                         string sessionIdToDelete = Settings.SessionId;
                         DeleteSessionIdCommand.Execute(sessionIdToDelete);
                         Settings.SessionId = null;
-
-                        Settings.HasTmdbAccount = false;
+                        
                         OnPropertyChanged(nameof(Settings));
                     }
                 }
@@ -151,8 +150,7 @@ namespace Ch9.ViewModels
             NotWaitingOnServer = false;
             var result = await TryTmdbSignin();
             if (result.Success)
-            {
-                Settings.HasTmdbAccount = true;
+            {                
                 Settings.SessionId = result.NewSessionId;
 
                 Settings.AccountName = UserProvidedAccountName;
@@ -243,22 +241,22 @@ namespace Ch9.ViewModels
                 if (!string.IsNullOrEmpty(sessionIdToDelete))
                     await _tmdbClient.DeleteSession(sessionIdToDelete);
 
+                _settings.SessionId = null;
                 _settings.AccountName = null;
                 _settings.Password = null;
+                _settings.IsLoginPageDeactivationRequested = false;
+                await _settings.SavePropertiesAsync();
             }
             else
                 await _pageService.PushLoginPageAsync();
         }
 
-        private async Task OnSearchLanguageChanged()
-        {
-            await _movieGenreSettings.OnSearchLanguageChanged(Settings.SearchLanguage);
-        }
+        private async Task OnSearchLanguageChanged() =>        
+            await _movieGenreSettings.OnSearchLanguageChanged(Settings.SearchLanguage);        
 
-        private void OnPropertyChanged([CallerMemberName]string propertyName = null)
-        {
+        private void OnPropertyChanged([CallerMemberName]string propertyName = null) =>        
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        
         protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(storage, value))

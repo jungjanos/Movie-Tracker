@@ -1,6 +1,8 @@
 ﻿using Ch9.Services.VideoService;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -8,9 +10,9 @@ namespace Ch9.Models
 {
     // Settings uses Application.Properties dictionary with data binding to UI
     // Default values are currently hard coded
-    public partial class Settings : ISettings
+    public partial class Settings : ISettings, INotifyPropertyChanged
     {
-        private readonly IDictionary<string, object> _appDictionary;        
+        private readonly IDictionary<string, object> _appDictionary;
 
         public Settings(IDictionary<string, object> settingsDictionary = null)
         {
@@ -29,17 +31,7 @@ namespace Ch9.Models
             set => _appDictionary[nameof(ApiKey)] = value;
         }
 
-        public bool HasTmdbAccount
-        {
-            get
-            {
-                if (_appDictionary.ContainsKey(nameof(HasTmdbAccount)))
-                    return (bool)_appDictionary[nameof(HasTmdbAccount)];
-                else
-                    return false;
-            }
-            set => _appDictionary[nameof(HasTmdbAccount)] = value;
-        }
+        public bool HasTmdbAccount => !string.IsNullOrEmpty(SessionId);        
 
         public string SessionId
         {
@@ -50,7 +42,15 @@ namespace Ch9.Models
                 else
                     return null;
             }
-            set => _appDictionary[nameof(SessionId)] = value;
+            set
+            {
+                if ( SessionId != value)
+                {
+                    _appDictionary[nameof(SessionId)] = value;
+                    OnPropertyChanged(nameof(SessionId));
+                    OnPropertyChanged(nameof(HasTmdbAccount));
+                }
+            }
         }
 
         public string AccountName
@@ -62,7 +62,15 @@ namespace Ch9.Models
                 else
                     return null;
             }
-            set => _appDictionary[nameof(AccountName)] = value;
+            set
+            {
+                if (AccountName != value)
+                {
+                    _appDictionary[nameof(AccountName)] = value;
+                    OnPropertyChanged(nameof(AccountName));
+                }
+            }
+                
         }
 
         public string Password
@@ -227,9 +235,22 @@ namespace Ch9.Models
             set => _appDictionary[nameof(IsLoginPageDeactivationRequested)] = value;
         }
 
-        public async Task SavePropertiesAsync()
-        {
+        public async Task SavePropertiesAsync() =>
             await Application.Current.SavePropertiesAsync();
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(storage, value))
+                return false;
+
+            storage = value;
+            OnPropertyChanged(propertyName);
+            return true;
         }
     }
 }

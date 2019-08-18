@@ -10,18 +10,12 @@ Gain: clearer images for HDPI displays
 effort 2h
 Prio: 4
 
-
-
 4, FEATURE: Weblinks to external reviews:
 Url-s would be extracted from the raw text of the user reviews and presented
 as clickable weblink.
 
 effort: 2-3h
 Prio: 3
-
-
-
-
 
 7, IMPROVEMENT: ReviewPage icon should have state dependent color
 effort: 2h (needs 1, solved first)
@@ -32,13 +26,8 @@ Prio: 3
 effort 1d
 Prio: 1
 
-11, Add more supported video categories beside trailers 
-
-12, video title should not overlap with video index
-
 13, check that a video is available (Http dl-check)
 
-14 implement proper login menu
 _________________________
 
 
@@ -70,3 +59,15 @@ DONE 6, BUG: by tapping too fast on the video thumbnail image, the video can be 
 
 effort: 4-8h 
 Prio: 1
+
+DONE 12, video title should not overlap with video index
+effort 2h
+Prio 2
+
+DONE 11, Add more supported video categories beside trailers 
+effort 3h
+Prio 3
+
+DONE, 14 implement proper login menu
+effort 12h
+prio 1

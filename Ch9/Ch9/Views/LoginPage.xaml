@@ -76,7 +76,7 @@ You still can login from Settings...
             <Entry  Text="{Binding UserName}" 
                     Placeholder="name"   
                     PlaceholderColor="LightGray" 
-                    Keyboard="Email"                      
+                    Keyboard="Plain"
                     VerticalOptions="End"/>
             
             <Entry  Text="{Binding Password}" Placeholder="password"   

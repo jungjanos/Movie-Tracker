@@ -47,11 +47,10 @@ namespace Ch9
 
             MovieDetailModelConfigurator = new MovieDetailModelConfigurator(Settings, TmdbConfiguration, MovieGenreSettings);
             PersonDetailModelConfigurator = new PersonDetailModelConfigurator(Settings, TmdbConfiguration);
-            UsersMovieListsService2 = new UsersMovieListsService2(Settings, CachedSearchClient, MovieDetailModelConfigurator);
-            //MainPage = new NavigationPage(new MainTabbedPage());            
+            UsersMovieListsService2 = new UsersMovieListsService2(Settings, CachedSearchClient, MovieDetailModelConfigurator);            
 
             MainPage = new NavigationPage();
-
+            
             if (!Settings.IsLoginPageDeactivationRequested)
             {
                 var loginPage = new LoginPage();

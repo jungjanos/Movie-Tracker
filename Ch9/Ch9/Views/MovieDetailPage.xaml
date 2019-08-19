@@ -29,11 +29,31 @@
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+        <Grid 
+            HorizontalOptions="FillAndExpand" 
+            VerticalOptions="FillAndExpand">
 
-            <ScrollView VerticalOptions="FillAndExpand">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- scrollabe content, everything except bottom button bar -->
+            <ScrollView 
+                
+                Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="6"
+                VerticalOptions="FillAndExpand">
                 <StackLayout>
 
+                    <!-- swipeable cardsview -->
                     <pancardview:CardsView
                         x:Name="cardView"
                         ItemsSource="{Binding DisplayImages}"
@@ -51,10 +71,10 @@
                                         HasShadow="false"
                                         IsClippedToBounds="true"
                                         CornerRadius="10"
-                                        BackgroundColor="WhiteSmoke">
+                                        BackgroundColor="Black">
                                         
                                         <ffimageloading:CachedImage 
-                                            Aspect="AspectFit"                                            
+                                            Aspect="AspectFill"                                            
                                             ErrorPlaceholder="movie_backdrop_placeholder_lg"
                                             RetryCount="1">
 
@@ -90,6 +110,7 @@
                         HeightRequest="20"/>
 
 
+                    <!-- gallery counter, movie title and year -->
                     <Grid Margin="5,0,5,0">
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding Path=BindingContext.ChangeDisplayedImageTypeCommand, Source={x:Reference movieDetailPage}}"/>
@@ -278,20 +299,7 @@
                 </StackLayout>
             </ScrollView>
 
-            <Grid VerticalOptions="End" BackgroundColor="LightGray">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <Button Grid.Row="0" Grid.Column="0"
+                <Button Grid.Row="1" Grid.Column="0"
                         Command="{Binding HomeCommand}"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
@@ -303,7 +311,7 @@
                     </Button.ImageSource>
                 </Button>
 
-                <Button Grid.Row="0" Grid.Column="1"
+                <Button Grid.Row="1" Grid.Column="1"
                         Command="{Binding RecommendationsCommand}"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
@@ -315,7 +323,7 @@
                     </Button.ImageSource>
                 </Button>
 
-                <Button Grid.Row="0" Grid.Column="2"
+                <Button Grid.Row="1" Grid.Column="2"
                         Command="{Binding ReviewsCommand}"
                         IsVisible="true"
                         BackgroundColor="Transparent">
@@ -328,7 +336,7 @@
                     </Button.ImageSource>
                 </Button>
 
-                <Button Grid.Row="0" Grid.Column="3"
+                <Button Grid.Row="1" Grid.Column="3"
                         Command="{Binding ToggleWatchlistCommand}"
                         IsVisible="true"
                         BackgroundColor="Transparent">
@@ -341,7 +349,7 @@
                     </Button.ImageSource>
                 </Button>
 
-                <Button Grid.Row="0" Grid.Column="4"
+                <Button Grid.Row="1" Grid.Column="4"
                         Command="{Binding AddToListCommand}"                        
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
@@ -353,7 +361,7 @@
                     </Button.ImageSource>
                 </Button>
 
-                <Button Grid.Row="0" Grid.Column="5"
+                <Button Grid.Row="1" Grid.Column="5"
                         Command="{Binding ToggleFavoriteCommand}"
                         IsVisible="True"
                         BackgroundColor="Transparent">
@@ -364,10 +372,8 @@
                          Color="{Binding MovieStates, Converter={StaticResource Key=movieOnFavoriteListAccountMovieStatesToColor}, Mode=OneWay}"/>
                     </Button.ImageSource>
                 </Button>
-
-            </Grid>
             
-        </StackLayout>
+        </Grid>
     </ContentPage.Content>
     
 </ContentPage>

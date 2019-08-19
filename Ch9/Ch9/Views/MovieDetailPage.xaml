@@ -56,8 +56,7 @@
                     <!-- swipeable cardsview -->
                     <pancardview:CardsView
                         x:Name="cardView"
-                        ItemsSource="{Binding DisplayImages}"
-                        SelectedIndex="{Binding GalleryIndex, Mode=OneWayToSource}"
+                        ItemsSource="{Binding DisplayImages}"                        
                         SelectedItem="{Binding SelectedGalleryImage, Mode=OneWayToSource}"
                         IsCyclical="True"
                         IsViewReusingEnabled="False">
@@ -84,15 +83,14 @@
 
                                             <ffimageloading:CachedImage.Source>
                                                 <UriImageSource
-                                                    Uri="{Binding Path=FilePath}"
-                                                />
+                                                    Uri="{Binding Path=FilePath}"/>
+                                                
                                             </ffimageloading:CachedImage.Source>                                            
                                         </ffimageloading:CachedImage>                                        
                                     </Frame>                                    
                                 </ContentView>
                             </DataTemplate>
                         </pancardview:CardsView.ItemTemplate>
-
                     </pancardview:CardsView>                    
 
                     <ActivityIndicator 
@@ -108,7 +106,6 @@
                         HorizontalOptions="CenterAndExpand" 
                         VerticalOptions="Start" 
                         HeightRequest="20"/>
-
 
                     <!-- gallery counter, movie title and year -->
                     <Grid Margin="5,0,5,0">

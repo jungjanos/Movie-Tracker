@@ -5,10 +5,12 @@ using System.Net.Http;
 using PanCardView.Droid;
 using Xamarin.Forms;
 using FFImageLoading.Forms.Platform;
+using Ch9.Views;
+using Ch9.Services;
 
 namespace Ch9.Droid
 {
-    [Activity(Label = "Ch9", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "Ch9", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
@@ -20,12 +22,39 @@ namespace Ch9.Droid
             Forms.SetFlags("CollectionView_Experimental");
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             CachedImageRenderer.Init(true);
-
             CardsViewRenderer.Preserve();
+
+            SubscribeToMessages();
+
             HttpClient httpClient = new HttpClient(new Xamarin.Android.Net.AndroidClientHandler());
             httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows) Gecko Firefox");
 
             LoadApplication(new App(httpClient));
+        }
+
+        private void SubscribeToMessages()
+        {
+            //allowing the sender (Page) to request a fixed screen orientation
+            MessagingCenter.Subscribe<VideoPage>(this, MessagingCenterMessages.SET_LANDSCAPE, sender =>
+            {
+                RequestedOrientation = ScreenOrientation.Landscape;
+            });
+            
+            MessagingCenter.Subscribe<VideoPage>(this, MessagingCenterMessages.SET_PORTRAIT, sender =>
+            {
+                RequestedOrientation = ScreenOrientation.Portrait;
+            });
+
+            MessagingCenter.Subscribe<LargeImagePage>(this, MessagingCenterMessages.SET_LANDSCAPE, sender =>
+            {
+                RequestedOrientation = ScreenOrientation.Landscape;
+            });
+
+            MessagingCenter.Subscribe<LargeImagePage>(this, MessagingCenterMessages.SET_PORTRAIT, sender =>
+            {
+                RequestedOrientation = ScreenOrientation.Portrait;
+            });
+
         }
     }
 }

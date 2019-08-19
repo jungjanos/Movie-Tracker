@@ -1,6 +1,7 @@
-﻿using Ch9.Models;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Ch9.Models;
+using Ch9.Services;
 
 namespace Ch9.Views
 {
@@ -11,6 +12,18 @@ namespace Ch9.Views
         {           
             BindingContext = videoThumbnailWithVideo;
             InitializeComponent();
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            MessagingCenter.Send(this, MessagingCenterMessages.SET_LANDSCAPE);
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            MessagingCenter.Send(this, MessagingCenterMessages.SET_PORTRAIT);
         }
     }
 }

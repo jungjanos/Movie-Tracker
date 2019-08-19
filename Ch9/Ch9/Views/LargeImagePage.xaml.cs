@@ -1,4 +1,5 @@
-﻿using Ch9.ViewModels;
+﻿using Ch9.Services;
+using Ch9.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -14,10 +15,21 @@ namespace Ch9.Views
         }
 
         public LargeImagePage(MovieDetailPageViewModel viewModel)
-        {
-            ViewModel = viewModel;
-
+        {           
             InitializeComponent();
+            ViewModel = viewModel;
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            MessagingCenter.Send(this, MessagingCenterMessages.SET_LANDSCAPE);
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            MessagingCenter.Send(this, MessagingCenterMessages.SET_PORTRAIT);
         }
     }
 }

@@ -7,14 +7,19 @@
              xmlns:video="clr-namespace:FormsVideoLibrary"
              mc:Ignorable="d"
              x:Class="Ch9.Views.VideoPage"
-             x:Name="videoPage">
+             x:Name="videoPage"
+             NavigationPage.HasNavigationBar="False">    
+    
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:UrlStringToVideoSourceConverter x:Key="urlStringToVideoSource"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <video:VideoPlayer Source="{Binding Path=AttachedVideo.Streams.SelectedVideoStream.StreamUrl,Converter={StaticResource Key=urlStringToVideoSource}}" 
-                       AutoPlay="True"  BackgroundColor="Black"/>
+    <video:VideoPlayer Source="{Binding Path=AttachedVideo.Streams.SelectedVideoStream.StreamUrl,Converter={StaticResource Key=urlStringToVideoSource}}"                       
+                       AutoPlay="True"  
+                       HorizontalOptions="FillAndExpand"
+                       VerticalOptions="FillAndExpand"                       
+                       BackgroundColor="Black"/>
     
 </ContentPage>

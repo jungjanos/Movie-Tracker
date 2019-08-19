@@ -3,39 +3,42 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
-             xmlns:pancardview="clr-namespace:PanCardView;assembly=PanCardView"             
+             xmlns:pancardview="clr-namespace:PanCardView;assembly=PanCardView"     
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              mc:Ignorable="d"
              x:Class="Ch9.Views.LargeImagePage"
              NavigationPage.HasNavigationBar="False"
-             >
+             BackgroundColor="Black">
 
     <ContentPage.Content>
         <pancardview:CardsView
-                        ItemsSource="{Binding DisplayImages}"
-                        SelectedIndex="{Binding SelectedGalleryImage}"
-                        >
+            ItemsSource="{Binding DisplayImages}"
+            SelectedItem="{Binding SelectedGalleryImage, Mode=OneWayToSource}"            
+            IsViewReusingEnabled="False">
+            
             <pancardview:CardsView.ItemTemplate>
                 <DataTemplate>
-                    <ContentView Padding="5"
-                                 BackgroundColor="WhiteSmoke">
+                    <ContentView 
+                         Padding="5">
+                        
                         <Frame
                             Padding="0" 
                             HasShadow="false"
                             IsClippedToBounds="true"
                             CornerRadius="20"
-                            BackgroundColor="WhiteSmoke"                            
-                        >
-                            <Image Aspect="AspectFill">    
+                            BackgroundColor="Black">
+                            
+                            <ffimageloading:CachedImage 
+                                Aspect="AspectFill"
+                                ErrorPlaceholder="movie_backdrop_placeholder_lg"
+                                RetryCount="1">    
 
-                                <Image.Source>
+                                <ffimageloading:CachedImage.Source>
                                     <UriImageSource
-                                        Uri="{Binding Path=FilePath}"
-                                        CacheValidity="0"
-                                        CachingEnabled="False"
-                                    />
-                                </Image.Source>
-                            </Image>
-
+                                        Uri="{Binding Path=FilePath}"/>
+                                    
+                                </ffimageloading:CachedImage.Source>
+                            </ffimageloading:CachedImage>
                         </Frame>
                     </ContentView>
                 </DataTemplate>

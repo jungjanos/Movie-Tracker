@@ -143,12 +143,8 @@ namespace Ch9.ViewModels
                     else
                         WaitingOnVideo = true;
 
+                    await _videoService.PlayVideo(capture.AttachedVideo, _pageService);
 
-                    if (capture.AttachedVideo?.Streams == null)
-                        await _videoService.PopulateWithStreams(capture.AttachedVideo);
-
-                    if (capture.AttachedVideo?.Streams?.SelectedVideoStream != null)
-                        await _pageService.PushVideoPageAsync(capture);
                     WaitingOnVideo = false;
                 }
             });
@@ -343,20 +339,6 @@ namespace Ch9.ViewModels
             }
             catch (Exception ex)
             { await _pageService.DisplayAlert("Error", $"Could not change favorite state, service responded with: {ex.Message}", "Ok"); }
-        }
-
-        private async Task FetchMovieStates()
-        {
-            if (!_settings.IsLoggedin)
-                return;
-            try
-            {
-                GetAccountMovieStatesResult response = await _cachedSearchClient.GetAccountMovieStates(Movie.Id, guestSessionId: null, retryCount: 1, delayMilliseconds: 1000);
-                if (response.HttpStatusCode.IsSuccessCode())
-                    MovieStates = response.DeserializeJsonIntoModel();
-            }
-            catch (Exception ex)
-            { await _pageService.DisplayAlert("Error", $"Could not fetch movie states, service responded with: {ex.Message}", "Ok"); }
         }
 
         private async Task FetchCredits(int retryCount = 0, int delayMilliseconds = 1000)

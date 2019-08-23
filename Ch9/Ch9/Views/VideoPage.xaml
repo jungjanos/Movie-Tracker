@@ -16,10 +16,10 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <video:VideoPlayer Source="{Binding Path=AttachedVideo.Streams.SelectedVideoStream.StreamUrl,Converter={StaticResource Key=urlStringToVideoSource}}"                       
+    <video:VideoPlayer Source="{Binding Path=Streams.SelectedVideoStream.StreamUrl,Converter={StaticResource Key=urlStringToVideoSource}}"
                        AutoPlay="True"  
                        HorizontalOptions="FillAndExpand"
                        VerticalOptions="FillAndExpand"                       
                        BackgroundColor="Black"/>
-    
+
 </ContentPage>

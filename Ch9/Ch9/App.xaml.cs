@@ -33,7 +33,13 @@ namespace Ch9
             ResultFilter = new SearchResultFilter(Settings, MovieGenreSettings);
             TmdbNetworkClient = new TmdbNetworkClient(Settings, httpClient);
             CachedSearchClient = new TmdbCachedSearchClient(TmdbNetworkClient);
-            VideoService = new YtExplodeVideoService(httpClient, Settings, CachedSearchClient);
+
+#if GOOGLEPLAY
+    VideoService = new VanillaYtVideoService(Settings, CachedSearchClient);
+#else
+    VideoService = new YtExplodeVideoService(httpClient, Settings, CachedSearchClient);
+#endif
+            
             WeblinkComposer = new WeblinkComposer(Settings);
 
             InitializeComponent();

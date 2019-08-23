@@ -8,9 +8,9 @@ namespace Ch9.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class VideoPage : ContentPage
     {
-        public VideoPage(ImageModel videoThumbnailWithVideo)
-        {           
-            BindingContext = videoThumbnailWithVideo;
+        public VideoPage(TmdbVideoModel attachedVideo)
+        {
+            BindingContext = attachedVideo;
             InitializeComponent();
         }
 

@@ -6,6 +6,8 @@
     <IsPackable>false</IsPackable>
 
     <LangVersion>latest</LangVersion>
+
+    <Configurations>Debug;Release;GooglePlayRelease</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

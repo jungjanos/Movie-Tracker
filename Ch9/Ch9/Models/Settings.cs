@@ -85,16 +85,16 @@ namespace Ch9.Models
             set => _appDictionary[nameof(Password)] = value;
         }
 
-        public bool IncludeAdult
+        public bool SafeSearch
         {
             get
             {
-                if (_appDictionary.ContainsKey(nameof(IncludeAdult)))
-                    return (bool)_appDictionary[nameof(IncludeAdult)];
+                if (_appDictionary.ContainsKey(nameof(SafeSearch)))
+                    return (bool)_appDictionary[nameof(SafeSearch)];
                 else
-                    return false;
+                    return true;
             }
-            set => _appDictionary[nameof(IncludeAdult)] = value;
+            set => _appDictionary[nameof(SafeSearch)] = value;
         }
 
         public int SearchPeriod

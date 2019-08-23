@@ -98,7 +98,7 @@ namespace Ch9.ViewModels
                 IsRefreshing = true;
                 try
                 {
-                    var getNextPageResponse = await _cachedSearchClient.SearchByMovie(searchString: SearchString, _settings.SearchLanguage, _settings.IncludeAdult, SearchResults.Page + 1, year: null, retryCount, delayMilliseconds, fromCache: true);
+                    var getNextPageResponse = await _cachedSearchClient.SearchByMovie(searchString: SearchString, _settings.SearchLanguage, !_settings.SafeSearch, SearchResults.Page + 1, year: null, retryCount, delayMilliseconds, fromCache: true);
                     if (!getNextPageResponse.HttpStatusCode.IsSuccessCode())
                     {
                         await _pageService.DisplayAlert("Error", $"Could not load search results, service responded with: {getNextPageResponse.HttpStatusCode}", "Ok");
@@ -106,7 +106,7 @@ namespace Ch9.ViewModels
                     }
                     SearchResult moviesOnNextPage = JsonConvert.DeserializeObject<SearchResult>(getNextPageResponse.Json);
 
-                    var filteredResults =  _settings.IncludeAdult ?  _resultFilter.FilterBySearchSettingsIncludeAdult(moviesOnNextPage.MovieDetailModels) : _resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels);
+                    var filteredResults =  _settings.SafeSearch ? _resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels) : _resultFilter.FilterBySearchSettingsIncludeAdult(moviesOnNextPage.MovieDetailModels);
 
                     moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(filteredResults);
 

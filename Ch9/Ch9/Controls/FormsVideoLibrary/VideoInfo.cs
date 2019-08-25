@@ -1,6 +1,4 @@
-﻿using FormsVideoLibrary;
-
-namespace VideoPlayerDemos
+﻿namespace FormsVideoLibrary
 {
     public class VideoInfo
     {

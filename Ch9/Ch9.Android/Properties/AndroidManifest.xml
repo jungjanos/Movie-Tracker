@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.janos.jung" android:versionName="0.99.17b Internal Google Play release with VanillaYtVideoService" android:installLocation="auto" android:versionCode="48">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.janos.jung" android:versionName="0.99.18b Internal Google Play release with VanillaYtVideoService" android:installLocation="auto" android:versionCode="52">
 	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="28" />
 	<application android:label="MovieTracker" android:icon="@drawable/CinemaPic3"></application>
 </manifest>

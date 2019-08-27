@@ -1,4 +1,5 @@
-﻿using Ch9.ApiClient;
+﻿#if !GOOGLEPLAY
+using Ch9.ApiClient;
 using Ch9.Models;
 using System.Linq;
 using System.Collections.Generic;
@@ -87,3 +88,4 @@ namespace Ch9.Services.VideoService
         }
     }
 }
+#endif

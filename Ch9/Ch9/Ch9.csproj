@@ -16,6 +16,7 @@
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <DefineConstants>TRACE;DEBUG;GOOGLEPLAY</DefineConstants>
+    <Optimize>false</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GooglePlayRelease|AnyCPU'">
@@ -31,7 +32,7 @@
     <PackageReference Include="Xamarin.FFImageLoading" Version="2.4.11.982" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.11.982" />
     <PackageReference Include="Xamarin.Forms" Version="4.1.0.673156" />
-    <PackageReference Include="YoutubeExplode" Version="4.7.9" />
+    <PackageReference Include="YoutubeExplode" Version="4.7.9" Condition=" '$(Configuration)' != 'GooglePlayRelease' and '$(Configuration)' != 'GooglePlayDebug' " />
   </ItemGroup>
 
   <ItemGroup>

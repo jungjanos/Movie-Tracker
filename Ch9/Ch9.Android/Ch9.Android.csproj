@@ -76,6 +76,7 @@
     <AndroidLinkSkip>
     </AndroidLinkSkip>
     <DebugSymbols>false</DebugSymbols>
+    <Optimize>true</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'GooglePlayDebug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>

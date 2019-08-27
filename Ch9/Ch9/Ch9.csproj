@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <Configurations>Debug;Release;GooglePlayRelease;GooglePlayDebug</Configurations>
+    <Configurations>Debug;Release;GooglePlayRelease;GooglePlayDebug;DotfuscatedGPlayRelease</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -20,6 +20,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='GooglePlayRelease|AnyCPU'">
+    <DefineConstants>TRACE;GOOGLEPLAY</DefineConstants>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DotfuscatedGPlayRelease|AnyCPU'">
     <DefineConstants>TRACE;GOOGLEPLAY</DefineConstants>
     <Optimize>true</Optimize>
   </PropertyGroup>

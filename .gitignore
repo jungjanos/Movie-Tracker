@@ -346,3 +346,6 @@ MigrationBackup/
 # Xamarin.Forms Resource.designer
 **/Android/**/[Rr]esource.[Dd]esigner.cs
 Ch9/Ch9.Android/Resources/Resource.designer.cs
+
+#Dotfuscator reports
+DotfuscatorReports/

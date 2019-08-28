@@ -37,7 +37,7 @@
     <PackageReference Include="Xamarin.FFImageLoading" Version="2.4.11.982" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.11.982" />
     <PackageReference Include="Xamarin.Forms" Version="4.1.0.673156" />
-    <PackageReference Include="YoutubeExplode" Version="4.7.9" Condition=" '$(Configuration)' != 'GooglePlayRelease' and '$(Configuration)' != 'GooglePlayDebug' " />
+    <PackageReference Include="YoutubeExplode" Version="4.7.9" Condition=" '$(Configuration)' != 'GooglePlayRelease' and '$(Configuration)' != 'GooglePlayDebug' and '$(Configuration)' != 'DotfuscatedGPlayRelease' " />
   </ItemGroup>
 
   <ItemGroup>

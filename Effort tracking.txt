@@ -28,6 +28,10 @@ Prio: 1
 
 13, check that a video is available (Http dl-check)
 
+15, Smaller fonts for "Loading" screen (Nokia 1, 480 x 854px )
+
+16, remove navbar where not appropriate (e.g. MovieDetailPage)
+
 _________________________
 
 

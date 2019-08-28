@@ -47,6 +47,7 @@
       <referencerule rulekey="{494EA3BA-B947-44B5-BEE8-A11CC85AAF9B}" />
       <referencerule rulekey="{89769974-93E9-4e71-8D92-BE70E855ACFC}" />
       <referencerule rulekey="{4D81E604-A545-4631-8B6D-C3735F793F80}" />
+      <referencerule rulekey="{62bd3899-7d53-4336-8ca2-4e5dbae187d5}" />
     </referencerulelist>
   </renaming>
   <sos mergeruntime="true">

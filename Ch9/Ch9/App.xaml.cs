@@ -53,18 +53,16 @@ namespace Ch9
 
             MovieDetailModelConfigurator = new MovieDetailModelConfigurator(Settings, TmdbConfiguration, MovieGenreSettings);
             PersonDetailModelConfigurator = new PersonDetailModelConfigurator(Settings, TmdbConfiguration);
-            UsersMovieListsService2 = new UsersMovieListsService2(Settings, CachedSearchClient, MovieDetailModelConfigurator);            
+            UsersMovieListsService2 = new UsersMovieListsService2(Settings, CachedSearchClient, MovieDetailModelConfigurator);
 
-            MainPage = new NavigationPage();
-            
             if (!Settings.IsLoginPageDeactivationRequested)
             {
                 var loginPage = new LoginPage();
-                await MainPage.Navigation.PushAsync(loginPage);
+                MainPage = new NavigationPage(loginPage);
                 MainPage.Navigation.InsertPageBefore(new MainTabbedPage(), loginPage);
             }
-            else 
-                await MainPage.Navigation.PushAsync(new MainTabbedPage());
+            else
+                MainPage = new NavigationPage(new MainTabbedPage());
         }
 
         protected override void OnSleep()

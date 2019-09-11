@@ -80,9 +80,7 @@ namespace Ch9.Services.VideoService
             {
                 result = orderedByQuality.Where(s => s.Quality < VideoQuality.High720).FirstOrDefault();
                 result = result ?? orderedByQuality.LastOrDefault();
-            }
-
-            result = result ?? new VideoStreamInfo(streamUrl: string.Empty, VideoQuality.Invalid, "invalid video", -1, -1);
+            }            
 
             return result;
         }

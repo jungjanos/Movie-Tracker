@@ -225,5 +225,5 @@
     <DotfuscatorXamarinGenerateNewConfigFile>false</DotfuscatorXamarinGenerateNewConfigFile>
     <DotfuscatorXamarinEnabled Condition="'$(Configuration)' == 'DotfuscatedGPlayRelease'">true</DotfuscatorXamarinEnabled>
   </PropertyGroup>
-  <Import Project="../../PreEmptive.Dotfuscator.Xamarin_v1.4.0/PreEmptive.Dotfuscator.Xamarin.Targets" />
+  <Import Project="../../PreEmptive.Dotfuscator.Xamarin_v1.5.0/PreEmptive.Dotfuscator.Xamarin.Targets" />
 </Project>

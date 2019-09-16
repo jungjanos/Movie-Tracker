@@ -29,7 +29,7 @@ namespace Ch9.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            await ViewModel.InitializeVM();
+            await ViewModel.Initialize();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace Ch9.ViewModels
 {
@@ -11,6 +12,11 @@ namespace Ch9.ViewModels
         {
             get => _isBusy;
             set => SetProperty(ref _isBusy, value);
+        }
+
+        public virtual async Task Initialize()
+        {
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

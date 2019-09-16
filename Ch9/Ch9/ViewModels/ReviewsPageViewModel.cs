@@ -12,7 +12,7 @@ using Xamarin.Forms;
 namespace Ch9.ViewModels
 {
     public class ReviewsPageViewModel : ViewModelBase
-    {       
+    {
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
         private readonly IPageService _pageService;
@@ -24,14 +24,15 @@ namespace Ch9.ViewModels
         public MovieDetailPageViewModel ParentPageViewModel { get; set; }
 
         public ReviewsPageViewModel(MovieDetailPageViewModel parent, ISettings settings, ITmdbCachedSearchClient tmdbCachedSearchClient, IPageService pageService) : base()
-        {            
+        {
             _cachedSearchClient = tmdbCachedSearchClient;
             _pageService = pageService;
 
             ParentPageViewModel = parent;
             _settings = settings;
             DeleteRatingCommand = new Command(async () => await OnDeleteRatingCommand());
-            SetRatingCommand = new Command<string>(async str => {
+            SetRatingCommand = new Command<string>(async str =>
+            {
                 decimal targetRating = decimal.Parse(str);
                 await OnSetRatingCommand(targetRating);
             });
@@ -69,13 +70,13 @@ namespace Ch9.ViewModels
         /// <summary>
         /// Must be called when the View is appearing. Initializes the Review collection if not already done or if it is empty.
         /// </summary>        
-        public async Task InitializeVM()
+        public override async Task Initialize()
         {
-            if (! (ParentPageViewModel.Movie.Reviews?.Count > 0))
+            if (!(ParentPageViewModel.Movie.Reviews?.Count > 0))
                 await RefreshReviews(retryCount: 1, delayMilliseconds: 1000, fromCache: false);
         }
 
-        private async Task RefreshReviews(int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = false )
+        private async Task RefreshReviews(int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = false)
         {
             var getReviewResult = await _cachedSearchClient.GetMovieReviews(ParentPageViewModel.Movie.Id, language: null, page: null, retryCount: retryCount, delayMilliseconds: delayMilliseconds, fromCache: fromCache);
             if (getReviewResult.HttpStatusCode.IsSuccessCode())
@@ -133,11 +134,11 @@ namespace Ch9.ViewModels
 
         private async Task<bool> UpdateRating(decimal targetRating)
         {
-            if(!_settings.IsLoggedin)
+            if (!_settings.IsLoggedin)
             {
                 await _pageService.DisplayAlert("Info", $"To vote, You need to log in with a user account", "Ok");
                 return false;
-            }                
+            }
 
             try
             {

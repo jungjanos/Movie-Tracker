@@ -103,7 +103,7 @@ namespace Ch9.ViewModels
         /// Must be called from View's OnAppearing() method.
         /// Ensure initial population of recommended and similars lists
         /// </summary>
-        public async Task Initialize()
+        public override async Task Initialize()
         {
             Task tr = Task.CompletedTask;
             Task ts = Task.CompletedTask;

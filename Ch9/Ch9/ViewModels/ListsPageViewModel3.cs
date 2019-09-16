@@ -252,7 +252,7 @@ namespace Ch9.ViewModels
         /// <summary>
         /// Initializes the default active movie list shown on the page.
         /// </summary>        
-        public async Task Initialize()
+        public override async Task Initialize()
         {
             if (0 < UsersMovieListsService2.WatchlistService.Watchlist.MovieDetailModels.Count)
                 return;

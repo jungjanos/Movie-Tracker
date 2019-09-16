@@ -193,7 +193,7 @@ namespace Ch9.ViewModels
             DisplayImages = Movie.MovieImages;
         }
 
-        public async Task Initialize()
+        public override async Task Initialize()
         {
             var t = _movieListsService2.CustomListsService.TryEnsureInitialization();
 

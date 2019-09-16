@@ -88,9 +88,9 @@ namespace Ch9.ViewModels
 
         /// <summary>
         /// Must be called from View's OnAppearing() method.
-        /// Ensure initial population of trending lists
+        /// Ensures initial population of trending lists
         /// </summary>
-        public async Task Initialize()
+        public override async Task Initialize()
         {
             Task tw = Task.CompletedTask;
             Task td = Task.CompletedTask;

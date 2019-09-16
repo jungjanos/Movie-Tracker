@@ -1,18 +1,11 @@
 ﻿using Ch9.Services;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace Ch9.ViewModels
 {
-    public class AddListPageViewModel : INotifyPropertyChanged
+    public class AddListPageViewModel : ViewModelBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private string _name;
         public string Name
         {
@@ -30,13 +23,11 @@ namespace Ch9.ViewModels
 
         public bool Accepted { get; private set; }
 
-
         private readonly ListsPageViewModel3 _prevoiusPageViewModel3;
-
 
         public ICommand OkCommand { get; set; }
 
-        public AddListPageViewModel(ListsPageViewModel3 previousPageViewModel3)
+        public AddListPageViewModel(ListsPageViewModel3 previousPageViewModel3) : base()
         {
             _prevoiusPageViewModel3 = previousPageViewModel3;
             Description = string.Empty;
@@ -46,21 +37,6 @@ namespace Ch9.ViewModels
                 await PageService.PopCurrent();
                 await _prevoiusPageViewModel3.AddList(this);
             });
-        }
-
-        private void OnPropertyChanged([CallerMemberName]string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(storage, value))
-                return false;
-
-            storage = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }      
+        }    
     }
 }

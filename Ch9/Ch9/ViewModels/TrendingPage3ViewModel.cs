@@ -4,11 +4,7 @@ using Ch9.Services;
 using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
@@ -16,7 +12,7 @@ using Xamarin.Forms;
 namespace Ch9.ViewModels
 {
     // Tracks the trending movies for the current week and day
-    public class TrendingPage3ViewModel : INotifyPropertyChanged
+    public class TrendingPage3ViewModel : ViewModelBase
     {
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
@@ -29,13 +25,6 @@ namespace Ch9.ViewModels
         {
             get => _trendingWeek;
             set => SetProperty(ref _trendingWeek, value);
-        }
-
-        private bool _isRefreshing = false;
-        public bool IsRefreshing
-        {
-            get => _isRefreshing;
-            set => SetProperty(ref _isRefreshing, value);
         }
 
         private SearchResult _trendingDay;
@@ -64,7 +53,7 @@ namespace Ch9.ViewModels
             ITmdbCachedSearchClient tmdbCachedSearchClient,
             ISearchResultFilter resultFilter,
             IMovieDetailModelConfigurator movieDetailConfigurator,
-            IPageService pageService)
+            IPageService pageService) : base()
         {
             _settings = settings;
             _tmdbCachedSearchClient = tmdbCachedSearchClient;
@@ -133,7 +122,7 @@ namespace Ch9.ViewModels
         {
             if (TrendingWeek.Page == 0 || TrendingWeek.Page < TrendingWeek.TotalPages)
             {
-                IsRefreshing = true;
+                IsBusy = true;
                 try
                 {
                     var getNextPageResponse = await _tmdbCachedSearchClient.GetTrendingMovies(week: true, _settings.SearchLanguage, !_settings.SafeSearch, TrendingWeek.Page + 1, retryCount, delayMilliseconds);
@@ -148,7 +137,7 @@ namespace Ch9.ViewModels
                     Utils.Utils.AppendResult(TrendingWeek, moviesOnNextPage, _movieDetailConfigurator);
                 }
                 catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not load the weekly trending list, service responded with: {ex.Message}", "Ok"); }
-                finally { IsRefreshing = false; }
+                finally { IsBusy = false; }
             }
         }
         public async Task RefreshTrendingDayList(int retryCount = 0, int delayMilliseconds = 1000)
@@ -161,7 +150,7 @@ namespace Ch9.ViewModels
         {
             if (TrendingDay.Page == 0 || TrendingDay.Page < TrendingDay.TotalPages)
             {
-                IsRefreshing = true;
+                IsBusy = true;
                 try
                 {
                     var getNextPageResponse = await _tmdbCachedSearchClient.GetTrendingMovies(week: false, _settings.SearchLanguage, !_settings.SafeSearch, TrendingDay.Page + 1, retryCount, delayMilliseconds);
@@ -176,24 +165,8 @@ namespace Ch9.ViewModels
                     Utils.Utils.AppendResult(TrendingDay, moviesOnNextPage, _movieDetailConfigurator);
                 }
                 catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not load the daily trending list, service responded with: {ex.Message}", "Ok"); }
-                finally { IsRefreshing = false; }
+                finally { IsBusy = false; }
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName]string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(storage, value))
-                return false;
-
-            storage = value;
-            OnPropertyChanged(propertyName);
-            return true;
         }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Ch9.Models;
@@ -10,7 +7,7 @@ using Xamarin.Forms;
 
 namespace Ch9.ViewModels
 {
-    public class ListsPageViewModel3 : INotifyPropertyChanged
+    public class ListsPageViewModel3 : ViewModelBase
     {
         private readonly IPageService _pageService;
 
@@ -38,14 +35,6 @@ namespace Ch9.ViewModels
             set => SetProperty(ref _selectedMovie, value);
         }
 
-        private bool _isRefreshing = false;
-
-        public bool IsRefreshing
-        {
-            get => _isRefreshing;
-            set => SetProperty(ref _isRefreshing, value);
-        }
-
         #region VIEW_SELECTOR_COMMANDS        
         public Command WatchlistViewSelectorCommand { get; private set; }
         public Command FavoritesListViewSelectorCommand { get; private set; }
@@ -69,9 +58,7 @@ namespace Ch9.ViewModels
         #endregion
         public ICommand OnItemTappedCommand { get; private set; }
 
-        public ListsPageViewModel3(
-            UsersMovieListsService2 usersMovieListsService2,
-            IPageService pageService)
+        public ListsPageViewModel3(UsersMovieListsService2 usersMovieListsService2, IPageService pageService) : base()
         {
             _pageService = pageService;
             UsersMovieListsService2 = usersMovieListsService2;
@@ -82,7 +69,7 @@ namespace Ch9.ViewModels
                 {
                     if (SelectedListType == 1 || !(0 < UsersMovieListsService2.WatchlistService.Watchlist.MovieDetailModels.Count))
                     {
-                        IsRefreshing = true;
+                        IsBusy = true;
                         await UsersMovieListsService2.WatchlistService.RefreshWatchlist(1, 1000);
                     }
                 }
@@ -92,7 +79,7 @@ namespace Ch9.ViewModels
                 }
                 finally
                 {
-                    IsRefreshing = false;
+                    IsBusy = false;
                     SelectedListType = 1;
                 }
             });
@@ -103,7 +90,7 @@ namespace Ch9.ViewModels
                 {
                     if (SelectedListType == 2 || !(0 < UsersMovieListsService2.FavoriteMoviesListService.FavoriteMovies.MovieDetailModels.Count))
                     {
-                        IsRefreshing = true;
+                        IsBusy = true;
                         await UsersMovieListsService2.FavoriteMoviesListService.RefreshFavoriteMoviesList(1, 1000);
                     }
                 }
@@ -113,7 +100,7 @@ namespace Ch9.ViewModels
                 }
                 finally
                 {
-                    IsRefreshing = false;
+                    IsBusy = false;
                     SelectedListType = 2;
                 }
             });
@@ -122,7 +109,7 @@ namespace Ch9.ViewModels
             {
                 try
                 {
-                    IsRefreshing = true;
+                    IsBusy = true;
                     await UsersMovieListsService2.CustomListsService.TryEnsureInitialization();
                 }
                 catch (Exception ex)
@@ -131,14 +118,14 @@ namespace Ch9.ViewModels
                 }
                 finally
                 {
-                    IsRefreshing = false;
+                    IsBusy = false;
                     SelectedListType = 3;
                 }
             });
 
             RefreshCustomCommand = new Command(async () =>
             {
-                IsRefreshing = true;
+                IsBusy = true;
                 try
                 {
                     await UsersMovieListsService2.CustomListsService.UpdateCustomLists();
@@ -148,14 +135,14 @@ namespace Ch9.ViewModels
                     await _pageService.DisplayAlert("Error", $"Could not update custom lists: {ex.Message}", "Ok");
                 }
 
-                IsRefreshing = false;
+                IsBusy = false;
             });
 
             RefreshCustomListCommand = new Command(async () =>
             {
                 if (UsersMovieListsService2.CustomListsService.SelectedCustomList != null)
                 {
-                    IsRefreshing = true;
+                    IsBusy = true;
                     try
                     {
                         await UsersMovieListsService2.CustomListsService.UpdateSingleCustomList(UsersMovieListsService2.CustomListsService.SelectedCustomList.Id);
@@ -164,7 +151,7 @@ namespace Ch9.ViewModels
                     {
                         await _pageService.DisplayAlert("Error", $"could not refresh list: {ex.Message}", "Ok");
                     }
-                    IsRefreshing = false;
+                    IsBusy = false;
                 }
             });
 
@@ -201,50 +188,50 @@ namespace Ch9.ViewModels
 
             RefreshFavoriteListCommand = new Command(async () =>
             {
-                IsRefreshing = true;
+                IsBusy = true;
                 try
                 {
                     await UsersMovieListsService2.FavoriteMoviesListService.RefreshFavoriteMoviesList();
                 }
                 catch (Exception ex)
                 { await _pageService.DisplayAlert("Error", $"Could not refresh the favorites list, service responded with: {ex.Message}", "Ok"); }
-                IsRefreshing = false;
+                IsBusy = false;
             });
 
             LoadNextFavoritesPageCommand = new Command(async () =>
             {
-                IsRefreshing = true;
+                IsBusy = true;
                 try
                 {
                     await UsersMovieListsService2.FavoriteMoviesListService.TryLoadNextPage();
                 }
                 catch (Exception ex)
                 { await _pageService.DisplayAlert("Error", $"Could not load favorites, service responded with: {ex.Message}", "Ok"); }
-                IsRefreshing = false;
+                IsBusy = false;
             });
 
             RefreshWatchlistCommand = new Command(async () =>
             {
-                IsRefreshing = true;
+                IsBusy = true;
                 try
                 {
                     await UsersMovieListsService2.WatchlistService.RefreshWatchlist();
                 }
                 catch (Exception ex)
                 { await _pageService.DisplayAlert("Error", $"Could not refresh the watchlist, service responded with: {ex.Message}", "Ok"); }
-                IsRefreshing = false;
+                IsBusy = false;
             });
 
             LoadNextWatchlistPageCommand = new Command(async () =>
             {
-                IsRefreshing = true;
+                IsBusy = true;
                 try
                 {
                     await UsersMovieListsService2.WatchlistService.TryLoadNextPage();
                 }
                 catch (Exception ex)
                 { await _pageService.DisplayAlert("Error", $"Could not load watchlist items, service responded with: {ex.Message}", "Ok"); }
-                IsRefreshing = false;
+                IsBusy = false;
             });
             OnItemTappedCommand = new Command<MovieDetailModel>(async movie => await _pageService.PushAsync(movie));
         }
@@ -279,23 +266,6 @@ namespace Ch9.ViewModels
             {
                 await _pageService.DisplayAlert("Error", $"Could not load watchlist, service responded with {ex.Message}", "Ok");
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName]string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(storage, value))
-                return false;
-
-            storage = value;
-            OnPropertyChanged(propertyName);
-            return true;
         }
     }
 }

@@ -4,18 +4,15 @@ using Ch9.Services;
 using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace Ch9.ViewModels
 {
-    public class PersonsMovieCreditsPageViewModel : INotifyPropertyChanged
+    public class PersonsMovieCreditsPageViewModel : ViewModelBase
     {
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
@@ -27,6 +24,7 @@ namespace Ch9.ViewModels
         private readonly Task _fetchPersonsMovieCredits;
 
         public GetPersonsDetailsModel PersonsDetails { get; private set; }
+        private GetPersonsMovieCreditsModel _personsMovieCreditsModel;
         public GetPersonsMovieCreditsModel PersonsMovieCreditsModel
         {
             get => _personsMovieCreditsModel;
@@ -56,15 +54,6 @@ namespace Ch9.ViewModels
             }                
         }
 
-        private bool _workInProgress;
-        private GetPersonsMovieCreditsModel _personsMovieCreditsModel;
-
-        public bool WorkInProgress
-        {
-            get => _workInProgress;
-            set => SetProperty(ref _workInProgress, value);
-        }
-
         public ICommand OnItemTappedCommand { get; private set; }
         public ICommand OpenWeblinkCommand { get; private set; }
         public ICommand OpenInfolinkCommand { get; private set; }
@@ -76,7 +65,7 @@ namespace Ch9.ViewModels
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPersonDetailModelConfigurator personDetailModelConfigurator,
             WeblinkComposer weblinkComposer,
-            IPageService pageService)
+            IPageService pageService) : base()
         {
             _settings = settings;
             _cachedSearchClient = cachedSearchClient;
@@ -108,10 +97,9 @@ namespace Ch9.ViewModels
             _fetchPersonsMovieCredits = _fetchGalleryImages.ContinueWith(async t => await FetchPersonsMovieCredits(), cancellationToken: System.Threading.CancellationToken.None, TaskContinuationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-
         private async Task UpdateImageCollection()
         {
-            WorkInProgress = true;
+            IsBusy = true;
             try
             {
                 GetPersonImagesResult response = await _cachedSearchClient.GetPersonImages(PersonsDetails.Id, retryCount: 1, delayMilliseconds: 1000, fromCache: true);
@@ -132,12 +120,12 @@ namespace Ch9.ViewModels
                 }
             }
             catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not load gallery, service responded with: {ex.Message}", "Ok"); }
-            finally { WorkInProgress = false; }
+            finally { IsBusy = false; }
         }
 
         private async Task FetchPersonsMovieCredits()
         {
-            WorkInProgress = true;
+            IsBusy = true;
             try
             {
                 GetPersonsMovieCreditsResult movieCreditsResponse = await _cachedSearchClient.GetPersonsMovieCredits(PersonsDetails.Id, _settings.SearchLanguage, 1, 1000, fromCache: true);
@@ -161,21 +149,7 @@ namespace Ch9.ViewModels
                     await _pageService.DisplayAlert("Error", $"Could not fetch persons movie participations, service responded: FetchPersonsMovieCreditsDetails():{movieCreditsResponse.HttpStatusCode}", "Ok");
             }
             catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not fetch persons movie participations, exception at: FetchPersonsMovieCreditsDetails():{ex.Message}", "Ok"); }
-            finally { WorkInProgress = false; }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(storage, value))
-                return false;
-
-            storage = value;
-            OnPropertyChanged(propertyName);
-            return true;
+            finally { IsBusy = false; }
         }
     }
 }

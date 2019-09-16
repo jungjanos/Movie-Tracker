@@ -4,17 +4,14 @@ using Ch9.Services;
 using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace Ch9.ViewModels
 {
-    public class MainPage3ViewModel : INotifyPropertyChanged
+    public class MainPage3ViewModel : ViewModelBase
     {
         private const int MINIMUM_Search_Str_Length = 3;
 
@@ -45,13 +42,6 @@ namespace Ch9.ViewModels
             set => SetProperty(ref _searchResults, value);
         }
 
-        private bool _isRefreshing = false;      
-        public bool IsRefreshing
-        {
-            get => _isRefreshing;
-            set => SetProperty(ref _isRefreshing, value);
-        }
-
         public ICommand SearchCommand { get; private set; }
         public ICommand LoadNextResultPageCommand { get; private set; }
         public ICommand OnItemTappedCommand { get; private set; }
@@ -60,7 +50,7 @@ namespace Ch9.ViewModels
             ITmdbCachedSearchClient cachedSearchClient,
             ISearchResultFilter resultFilter,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
-            IPageService pageService)
+            IPageService pageService) : base ()
         {
             _settings = settings;
             _cachedSearchClient = cachedSearchClient;
@@ -95,7 +85,7 @@ namespace Ch9.ViewModels
         {
             if (SearchResults.Page == 0 || SearchResults.Page < SearchResults.TotalPages)
             {
-                IsRefreshing = true;
+                IsBusy = true;
                 try
                 {
                     var getNextPageResponse = await _cachedSearchClient.SearchByMovie(searchString: SearchString, _settings.SearchLanguage, !_settings.SafeSearch, SearchResults.Page + 1, year: null, retryCount, delayMilliseconds, fromCache: true);
@@ -113,24 +103,8 @@ namespace Ch9.ViewModels
                     Utils.Utils.AppendResult(SearchResults, moviesOnNextPage, _movieDetailModelConfigurator);
                 }
                 catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not load search results, service responded with: {ex.Message}", "Ok"); }
-                finally { IsRefreshing = false; }
+                finally { IsBusy = false; }
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName]string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(storage, value))
-                return false;
-
-            storage = value;
-            OnPropertyChanged(propertyName);
-            return true;
         }
     }
 }

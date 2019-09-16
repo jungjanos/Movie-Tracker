@@ -4,15 +4,13 @@ using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace Ch9.ViewModels
 {
-    public class LoginPageViewModel : INotifyPropertyChanged
+    public class LoginPageViewModel : ViewModelBase
     {
         private readonly ISettings _settings;
         private readonly ITmdbNetworkClient _tmdbClient;
@@ -34,13 +32,6 @@ namespace Ch9.ViewModels
         
         public bool HideLoginPageFlag { get; set; }
 
-        private bool _isBusy;
-        public bool IsBusy
-        {
-            get => _isBusy;
-            set => SetProperty(ref _isBusy, value);
-        }
-
         private string _errorMessage;
         public string ErrorMessage
         {
@@ -52,7 +43,13 @@ namespace Ch9.ViewModels
         public ICommand SignUpCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
 
-        public LoginPageViewModel(ISettings settings, ITmdbNetworkClient networkClient, IPageService pageService, string username = null, string password = null)
+        public LoginPageViewModel(
+            ISettings settings, 
+            ITmdbNetworkClient networkClient, 
+            IPageService pageService, 
+            string username = null, 
+            string password = null
+            ) : base()
         {
             _settings = settings;
             _tmdbClient = networkClient;
@@ -184,21 +181,6 @@ namespace Ch9.ViewModels
                 errorMessages.Add("password can not be empty");
 
             return string.Join(", ", errorMessages);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(storage, value))
-                return false;
-
-            storage = value;
-            OnPropertyChanged(propertyName);
-            return true;
         }
     }
 }

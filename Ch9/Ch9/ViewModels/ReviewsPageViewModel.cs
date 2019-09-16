@@ -5,18 +5,14 @@ using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace Ch9.ViewModels
 {
-    public class ReviewsPageViewModel : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
+    public class ReviewsPageViewModel : ViewModelBase
+    {       
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
         private readonly IPageService _pageService;
@@ -27,7 +23,7 @@ namespace Ch9.ViewModels
         public ICommand IncreaseRatingCommand { get; private set; }
         public MovieDetailPageViewModel ParentPageViewModel { get; set; }
 
-        public ReviewsPageViewModel(MovieDetailPageViewModel parent, ISettings settings, ITmdbCachedSearchClient tmdbCachedSearchClient, IPageService pageService)
+        public ReviewsPageViewModel(MovieDetailPageViewModel parent, ISettings settings, ITmdbCachedSearchClient tmdbCachedSearchClient, IPageService pageService) : base()
         {            
             _cachedSearchClient = tmdbCachedSearchClient;
             _pageService = pageService;
@@ -159,21 +155,6 @@ namespace Ch9.ViewModels
             { await _pageService.DisplayAlert("Error", $"Could not update your vote, exception happened: {ex.Message}", "Ok"); }
 
             return false;
-        }
-
-
-        private void OnPropertyChanged([CallerMemberName]string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(storage, value))
-                return false;
-
-            storage = value;
-            OnPropertyChanged(propertyName);
-            return true;
         }
     }
 }

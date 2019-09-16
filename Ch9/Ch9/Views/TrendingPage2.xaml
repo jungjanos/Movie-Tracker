@@ -30,7 +30,7 @@
                                         TappedCommand="{Binding OnItemTappedCommand}"
                                         IsPullToRefreshEnabled="True"
                                         RefreshCommand="{Binding RefreshTrendingWeekListCommand}"
-                                        IsRefreshing="{Binding IsRefreshing}"
+                                        IsRefreshing="{Binding IsBusy}"
                                         HasUnevenRows="False"
                                         RowHeight="85"
                                         LoadMoreCommand="{Binding LoadNextTrendingWeekPageCommand}">
@@ -75,7 +75,7 @@
                                         TappedCommand="{Binding OnItemTappedCommand}"
                                         IsPullToRefreshEnabled="True"
                                         RefreshCommand="{Binding RefreshTrendingDayListCommand}"
-                                        IsRefreshing="{Binding IsRefreshing}"                                                
+                                        IsRefreshing="{Binding IsBusy}"                                                
                                         HasUnevenRows="False"
                                         RowHeight="85"
                                         LoadMoreCommand="{Binding LoadNextTrendingDayPageCommand}">    

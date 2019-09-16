@@ -4,17 +4,14 @@ using Ch9.Services;
 using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace Ch9.ViewModels
 {
-    public class RecommendationsPage3ViewModel : INotifyPropertyChanged
+    public class RecommendationsPage3ViewModel : ViewModelBase
     {
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
@@ -46,12 +43,6 @@ namespace Ch9.ViewModels
             set => SetProperty(ref _recommendationsOrSimilars, value);
         }
 
-        private bool _isRefreshing;
-        public bool IsRefreshing
-        {
-            get => _isRefreshing;
-            set => SetProperty(ref _isRefreshing, value);
-        }
         public ICommand LoadNextRecommendedMoviesPageCommand { get; private set; }
         public ICommand LoadNextSimilarMoviesPageCommand { get; private set; }
         public ICommand RefreshRecommendedMoviesCommand { get; private set; }
@@ -63,7 +54,7 @@ namespace Ch9.ViewModels
             ITmdbCachedSearchClient tmdbCachedSearchClient,
             ISearchResultFilter searchResultFilter,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
-            IPageService pageService)
+            IPageService pageService) : base()
         {
             Movie = movie;
 
@@ -144,7 +135,7 @@ namespace Ch9.ViewModels
         {
             if (RecommendedMovies.Page == 0 || RecommendedMovies.Page < RecommendedMovies.TotalPages)
             {
-                IsRefreshing = true;
+                IsBusy = true;
                 try
                 {
                     var getNextPageResponse = await _tmdbCachedSearchClient.GetMovieRecommendations(Movie.Id, _settings.SearchLanguage, RecommendedMovies.Page+1, retryCount, delayMilliseconds);
@@ -158,7 +149,7 @@ namespace Ch9.ViewModels
 
                     Utils.Utils.AppendResult(RecommendedMovies, moviesOnNextPage, _movieDetailModelConfigurator);
                 } catch(Exception ex){ await _pageService.DisplayAlert("Error", $"Could not update the recommended movies list, service responded with: {ex.Message}", "Ok"); }
-                finally { IsRefreshing = false; }
+                finally { IsBusy = false; }
             }
         }
 
@@ -172,7 +163,7 @@ namespace Ch9.ViewModels
         {
             if (SimilarMovies.Page == 0 || SimilarMovies.Page < SimilarMovies.TotalPages)
             {
-                IsRefreshing = true;
+                IsBusy = true;
                 try
                 {
                     var getNextPageResponse = await _tmdbCachedSearchClient.GetSimilarMovies(Movie.Id, _settings.SearchLanguage, SimilarMovies.Page + 1, retryCount, delayMilliseconds);
@@ -187,23 +178,8 @@ namespace Ch9.ViewModels
                     Utils.Utils.AppendResult(SimilarMovies, moviesOnNextPage, _movieDetailModelConfigurator);
                 }
                 catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not update the similar movies list, service responded with: {ex.Message}", "Ok"); }
-                finally { IsRefreshing = false; }
+                finally { IsBusy = false; }
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName]string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(storage, value))
-                return false;
-
-            storage = value;
-            OnPropertyChanged(propertyName);
-            return true;
         }
     }
 }

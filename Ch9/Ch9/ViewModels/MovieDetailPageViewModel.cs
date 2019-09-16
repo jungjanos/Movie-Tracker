@@ -7,16 +7,14 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace Ch9.ViewModels
 {
-    public class MovieDetailPageViewModel : INotifyPropertyChanged
+    public class MovieDetailPageViewModel : ViewModelBase
     {
         public MovieDetailModel Movie { get; set; }
         private readonly ISettings _settings;
@@ -108,7 +106,7 @@ namespace Ch9.ViewModels
             IPersonDetailModelConfigurator personDetailModelConfigurator,
             IVideoService videoService,
             WeblinkComposer weblinkComposer,
-            IPageService pageService)
+            IPageService pageService) : base()
         {
             Movie = movie;
             _settings = settings;
@@ -378,22 +376,6 @@ namespace Ch9.ViewModels
                     await _pageService.DisplayAlert("Error", $"Could not fetch persons details, service responded: GetPersonDetails():{personDetailsResponse.HttpStatusCode}", "Ok");
             }
             catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not fetch persons details, service responded with: {ex.Message}", "Ok"); }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName]string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(storage, value))
-                return false;
-
-            storage = value;
-            OnPropertyChanged(propertyName);
-            return true;
         }
     }
 }

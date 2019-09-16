@@ -40,7 +40,7 @@
             <controls:ExtendedListView  ItemsSource="{Binding Path=SearchResults.MovieDetailModels}"
                                         TappedCommand="{Binding OnItemTappedCommand}"
                                         IsPullToRefreshEnabled="False"
-                                        IsRefreshing="{Binding IsRefreshing}"                                        
+                                        IsRefreshing="{Binding IsBusy}"                                        
                                         LoadMoreCommand="{Binding LoadNextResultPageCommand}"
                                         HasUnevenRows="False"
                                         RowHeight="85">

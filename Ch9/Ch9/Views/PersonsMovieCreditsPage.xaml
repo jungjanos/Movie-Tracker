@@ -213,8 +213,8 @@
 
                 </Grid>
 
-                <ActivityIndicator IsVisible="{Binding WorkInProgress}"
-                                   IsRunning="{Binding WorkInProgress}"
+                <ActivityIndicator IsVisible="{Binding IsBusy}"
+                                   IsRunning="{Binding IsBusy}"
                                    HorizontalOptions="Center"
                                    HeightRequest="20"/>
 

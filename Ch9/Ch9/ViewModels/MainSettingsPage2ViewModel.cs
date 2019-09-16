@@ -1,18 +1,13 @@
 ﻿using Ch9.Models;
 using Ch9.Services;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace Ch9.ViewModels
 {
-    public class MainSettingsPage2ViewModel : INotifyPropertyChanged
+    public class MainSettingsPage2ViewModel : ViewModelBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private ISettings _settings;
         private readonly MovieGenreSettings _movieGenreSettings;
         private readonly ITmdbNetworkClient _tmdbClient;
@@ -31,8 +26,8 @@ namespace Ch9.ViewModels
                 ISettings settings,
                 MovieGenreSettings movieGenreSettings,
                 ITmdbNetworkClient tmdbClient,
-                PageService pageService
-            )
+                IPageService pageService
+            ) : base()
         {
             _settings = settings;
             _movieGenreSettings = movieGenreSettings;
@@ -73,18 +68,5 @@ namespace Ch9.ViewModels
 
         private async Task OnSearchLanguageChanged() =>
             await _movieGenreSettings.OnSearchLanguageChanged(Settings.SearchLanguage);
-
-        private void OnPropertyChanged([CallerMemberName]string propertyName = null) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(storage, value))
-                return false;
-
-            storage = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
     }
 }

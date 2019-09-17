@@ -11,13 +11,12 @@ namespace Ch9.Views
         public AddListPageViewModel ViewModel {
             get => BindingContext as AddListPageViewModel;
             private set => BindingContext = value;
-        }        
+        }
 
-        public AddListPage(AddListPageViewModel viewModel)
+        public AddListPage(ListsPageViewModel3 previousPageViewModel)
         {
-            viewModel.PageService = new PageService(this);
-            ViewModel = viewModel;
+            ViewModel = new AddListPageViewModel(previousPageViewModel, new PageService(this));
             InitializeComponent();
-        }        
+        }
     }
 }

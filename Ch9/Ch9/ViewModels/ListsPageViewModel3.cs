@@ -9,8 +9,6 @@ namespace Ch9.ViewModels
 {
     public class ListsPageViewModel3 : ViewModelBase
     {
-        private readonly IPageService _pageService;
-
         private UsersMovieListsService2 _usersMovieListsService2;
         public UsersMovieListsService2 UsersMovieListsService2
         {
@@ -40,7 +38,6 @@ namespace Ch9.ViewModels
         public Command FavoritesListViewSelectorCommand { get; private set; }
         public Command CustomListsViewSelectorCommand { get; private set; }
         #endregion
-
         #region CUSTOM_LISTS_COMMANDS
         public Command RemoveCustomListCommand { get; private set; }
         public Command AddCustomListCommand { get; private set; }
@@ -58,9 +55,8 @@ namespace Ch9.ViewModels
         #endregion
         public ICommand OnItemTappedCommand { get; private set; }
 
-        public ListsPageViewModel3(UsersMovieListsService2 usersMovieListsService2, IPageService pageService) : base()
+        public ListsPageViewModel3(UsersMovieListsService2 usersMovieListsService2, IPageService pageService) : base(pageService)
         {
-            _pageService = pageService;
             UsersMovieListsService2 = usersMovieListsService2;
 
             WatchlistViewSelectorCommand = new Command(async () =>
@@ -175,7 +171,7 @@ namespace Ch9.ViewModels
                 }
             });
 
-            AddCustomListCommand = new Command(async () => await _pageService.PushAsync(new AddListPageViewModel(this)));
+            AddCustomListCommand = new Command(async () => await _pageService.PushAddListPageAsync(this));
 
             RemoveMovieFromCustomListCommand = new Command<MovieDetailModel>(async movie =>
             {
@@ -234,6 +230,25 @@ namespace Ch9.ViewModels
                 IsBusy = false;
             });
             OnItemTappedCommand = new Command<MovieDetailModel>(async movie => await _pageService.PushAsync(movie));
+
+            // if Watchlist is empty, try to populate it
+            Func<Task> initializationAction = async () =>
+            {
+                if (0 < UsersMovieListsService2.WatchlistService.Watchlist.MovieDetailModels.Count)
+                    return;
+
+                try
+                {
+                    await UsersMovieListsService2.WatchlistService.RefreshWatchlist();
+                    SelectedListType = 1;
+                }
+                catch (Exception ex)
+                {
+                    await _pageService.DisplayAlert("Error", $"Could not load watchlist, service responded with {ex.Message}", "Ok");
+                }
+            };
+
+            ConfigureInitialization(initializationAction, runOnlyOnce: false);
         }
 
         public async Task AddList(AddListPageViewModel addListPageViewModel)
@@ -245,26 +260,6 @@ namespace Ch9.ViewModels
             catch (Exception ex)
             {
                 await _pageService.DisplayAlert("Error", $"Could not add list: {ex.Message}", "Ok");
-            }
-        }
-
-        // TODO Replace this with Refresh or Selector Command.Execute()
-        /// <summary>
-        /// Initializes the default active movie list shown on the page.
-        /// </summary>        
-        public override async Task Initialize()
-        {
-            if (0 < UsersMovieListsService2.WatchlistService.Watchlist.MovieDetailModels.Count)
-                return;
-
-            try
-            {
-                await UsersMovieListsService2.WatchlistService.RefreshWatchlist();
-                SelectedListType = 1;
-            }
-            catch (Exception ex)
-            {
-                await _pageService.DisplayAlert("Error", $"Could not load watchlist, service responded with {ex.Message}", "Ok");
             }
         }
     }

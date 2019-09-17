@@ -19,7 +19,6 @@ namespace Ch9.ViewModels
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
         private readonly WeblinkComposer _weblinkComposer;
-        private readonly IPageService _pageService;
         private readonly Task _fetchGalleryImages;
         private readonly Task _fetchPersonsMovieCredits;
 
@@ -65,17 +64,15 @@ namespace Ch9.ViewModels
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPersonDetailModelConfigurator personDetailModelConfigurator,
             WeblinkComposer weblinkComposer,
-            IPageService pageService) : base()
+            IPageService pageService) : base(pageService)
         {
             _settings = settings;
             _cachedSearchClient = cachedSearchClient;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _personDetailModelConfigurator = personDetailModelConfigurator;
             _weblinkComposer = weblinkComposer;
-            _pageService = pageService;
 
             PersonsDetails = personDetails;
-
 
             var firstImage = new ImageModel();
             _personDetailModelConfigurator.SetProfileGalleryPictureImageSrc(firstImage, PersonsDetails);

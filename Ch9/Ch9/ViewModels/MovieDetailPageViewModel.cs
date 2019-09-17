@@ -24,7 +24,6 @@ namespace Ch9.ViewModels
         private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
         private readonly IVideoService _videoService;
         private readonly WeblinkComposer _weblinkComposer;
-        private readonly IPageService _pageService;
         private readonly Task _fetchGallery;
         private MovieCreditsModel _credits;
 
@@ -106,7 +105,7 @@ namespace Ch9.ViewModels
             IPersonDetailModelConfigurator personDetailModelConfigurator,
             IVideoService videoService,
             WeblinkComposer weblinkComposer,
-            IPageService pageService) : base()
+            IPageService pageService) : base(pageService)
         {
             Movie = movie;
             _settings = settings;
@@ -116,7 +115,6 @@ namespace Ch9.ViewModels
             _personDetailModelConfigurator = personDetailModelConfigurator;
             _videoService = videoService;
             _weblinkComposer = weblinkComposer;
-            _pageService = pageService;
             _fetchGallery = UpdateImageCollection();
 
             HomeCommand = new Command(async () => await _pageService.PopToRootAsync());
@@ -169,19 +167,16 @@ namespace Ch9.ViewModels
                 ((Command)ChangeDisplayedImageTypeCommand).ChangeCanExecute();
 
             }, () => !GalleryIsBusy);
-
             ToggleCreditsCommand = new Command(async () =>
             {
                 if (!ShowCredits)
                     await FetchCredits();
                 ShowCredits = !_showCredits;
             });
-
             MovieCastPersonTappedCommand = new Command<IStaffMemberRole>(async staffMemberRole =>
             {
                 await OpenPersonPage(staffMemberRole);
             });
-
             OpenInfolinkCommand = new Command(async () =>
             {
                 string weblink = _weblinkComposer.Compose(Movie);
@@ -191,32 +186,36 @@ namespace Ch9.ViewModels
             });
 
             DisplayImages = Movie.MovieImages;
-        }
 
-        public override async Task Initialize()
-        {
-            var t = _movieListsService2.CustomListsService.TryEnsureInitialization();
-
-            try
+            // Ensures that the custom list service is initialized (to show the Movie's status on the active custom list)
+            // Ensures that account movie states have been fetched
+            Func<Task> initializationAction = async () =>
             {
-                GetMovieDetailsWithAccountStatesResult movieDetailsResult = await _cachedSearchClient.GetMovieDetailsWithAccountStates(Movie.Id, _settings.SearchLanguage, retryCount: 1, delayMilliseconds: 1000);
+                var t = _movieListsService2.CustomListsService.TryEnsureInitialization();
 
-                if (movieDetailsResult.HttpStatusCode.IsSuccessCode())
+                try
                 {
-                    JsonConvert.PopulateObject(movieDetailsResult.Json, Movie);
-                    MovieStates = movieDetailsResult.ExtractAccountStates();
-                }
-            }
-            catch (Exception ex)
-            { await _pageService.DisplayAlert("Error", $"Could not fetch movie details, exception: {ex.Message}", "Ok"); }
+                    GetMovieDetailsWithAccountStatesResult movieDetailsResult = await _cachedSearchClient.GetMovieDetailsWithAccountStates(Movie.Id, _settings.SearchLanguage, retryCount: 1, delayMilliseconds: 1000);
 
-            try
-            {
-                await t;
-                OnPropertyChanged(nameof(MovieIsAlreadyOnActiveList));
-            }
-            catch (Exception ex)
-            { await _pageService.DisplayAlert("Error", $" Exception thrown from {nameof(_movieListsService2.CustomListsService)}.{nameof(_movieListsService2.CustomListsService.TryEnsureInitialization)}, message: {ex.Message}", "Ok"); }
+                    if (movieDetailsResult.HttpStatusCode.IsSuccessCode())
+                    {
+                        JsonConvert.PopulateObject(movieDetailsResult.Json, Movie);
+                        MovieStates = movieDetailsResult.ExtractAccountStates();
+                    }
+                }
+                catch (Exception ex)
+                { await _pageService.DisplayAlert("Error", $"Could not fetch movie details, exception: {ex.Message}", "Ok"); }
+
+                try
+                {
+                    await t;
+                    OnPropertyChanged(nameof(MovieIsAlreadyOnActiveList));
+                }
+                catch (Exception ex)
+                { await _pageService.DisplayAlert("Error", $" Exception thrown from {nameof(_movieListsService2.CustomListsService)}.{nameof(_movieListsService2.CustomListsService.TryEnsureInitialization)}, message: {ex.Message}", "Ok"); }
+            };
+
+            ConfigureInitialization(initializationAction, runOnlyOnce: true);
         }
 
         // starts a hot task to fetch and adjust gallery image paths as early as possible        

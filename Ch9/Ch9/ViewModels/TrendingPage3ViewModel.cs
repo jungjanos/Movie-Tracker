@@ -18,7 +18,6 @@ namespace Ch9.ViewModels
         private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
         private readonly ISearchResultFilter _resultFilter;
         private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
-        private readonly IPageService _pageService;
 
         private SearchResult _trendingWeek;
         public SearchResult TrendingWeek
@@ -53,13 +52,12 @@ namespace Ch9.ViewModels
             ITmdbCachedSearchClient tmdbCachedSearchClient,
             ISearchResultFilter resultFilter,
             IMovieDetailModelConfigurator movieDetailConfigurator,
-            IPageService pageService) : base()
+            IPageService pageService) : base(pageService)
         {
             _settings = settings;
             _tmdbCachedSearchClient = tmdbCachedSearchClient;
             _resultFilter = resultFilter;
             _movieDetailConfigurator = movieDetailConfigurator;
-            _pageService = pageService;
             _weekOrDaySwitch = true;
 
             _trendingWeek = new SearchResult();
@@ -84,24 +82,23 @@ namespace Ch9.ViewModels
             });
 
             OnItemTappedCommand = new Command<MovieDetailModel>(async movie => await _pageService.PushAsync(movie));
-        }
 
-        /// <summary>
-        /// Must be called from View's OnAppearing() method.
-        /// Ensures initial population of trending lists
-        /// </summary>
-        public override async Task Initialize()
-        {
-            Task tw = Task.CompletedTask;
-            Task td = Task.CompletedTask;
+            /// Ensures initial population of trending lists
+            Func<Task> initializationAction = async () =>
+            {
+                Task tw = Task.CompletedTask;
+                Task td = Task.CompletedTask;
 
-            if (TrendingWeek.Page == 0)
-                tw = TryLoadingNextWeekPage(1, 1000);
+                if (TrendingWeek.Page == 0)
+                    tw = TryLoadingNextWeekPage(1, 1000);
 
-            if (TrendingDay.Page == 0)
-                td = TryLoadingNextDayPage(1, 1000);
+                if (TrendingDay.Page == 0)
+                    td = TryLoadingNextDayPage(1, 1000);
 
-            await Task.WhenAll(tw, td);
+                await Task.WhenAll(tw, td);
+            };
+            
+            ConfigureInitialization(initializationAction, false);
         }
 
         private void ClearList(SearchResult list)

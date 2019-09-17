@@ -11,10 +11,9 @@ namespace Ch9.ViewModels
         {
             get => _name;
             set => SetProperty(ref _name, value);
-        }
-        private string _description;
-        public IPageService PageService { get; set; }
+        }                
 
+        private string _description;
         public string Description
         {
             get => _description;
@@ -23,19 +22,20 @@ namespace Ch9.ViewModels
 
         public bool Accepted { get; private set; }
 
-        private readonly ListsPageViewModel3 _prevoiusPageViewModel3;
+        private readonly ListsPageViewModel3 _prevoiusPageViewModel;
 
         public ICommand OkCommand { get; set; }
 
-        public AddListPageViewModel(ListsPageViewModel3 previousPageViewModel3) : base()
+        public AddListPageViewModel(ListsPageViewModel3 previousPageViewModel, IPageService pageService) : base(pageService)
         {
-            _prevoiusPageViewModel3 = previousPageViewModel3;
+            _prevoiusPageViewModel = previousPageViewModel;
+
             Description = string.Empty;
             Accepted = false;
             OkCommand = new Command(async () =>
             {
-                await PageService.PopCurrent();
-                await _prevoiusPageViewModel3.AddList(this);
+                await _pageService.PopCurrent();
+                await _prevoiusPageViewModel.AddList(this);
             });
         }    
     }

@@ -17,8 +17,6 @@ namespace Ch9.Views
             set => BindingContext = value;
         }
 
-        readonly Task vMInitializer;
-
         public MovieDetailPage(MovieDetailModel movie)
         {
             ViewModel = new MovieDetailPageViewModel(
@@ -31,16 +29,15 @@ namespace Ch9.Views
                 ((App)Application.Current).VideoService,
                 ((App)Application.Current).WeblinkComposer,
                 new PageService(this)
-                );
-            vMInitializer = ViewModel.Initialize();
+                );            
 
             InitializeComponent();
         }
 
         protected override async void OnAppearing()
         {
+            await ViewModel.Initialize();
             base.OnAppearing();
-            await vMInitializer;
         }
 
         private void CollectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)

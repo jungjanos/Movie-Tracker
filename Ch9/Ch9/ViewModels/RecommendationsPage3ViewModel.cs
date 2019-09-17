@@ -17,7 +17,6 @@ namespace Ch9.ViewModels
         private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
         private readonly ISearchResultFilter _searchResultFilter;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
-        private readonly IPageService _pageService;
 
         public MovieDetailModel Movie { get; private set; }
 
@@ -54,7 +53,7 @@ namespace Ch9.ViewModels
             ITmdbCachedSearchClient tmdbCachedSearchClient,
             ISearchResultFilter searchResultFilter,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
-            IPageService pageService) : base()
+            IPageService pageService) : base(pageService)
         {
             Movie = movie;
 
@@ -62,7 +61,6 @@ namespace Ch9.ViewModels
             _tmdbCachedSearchClient = tmdbCachedSearchClient;
             _searchResultFilter = searchResultFilter;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
-            _pageService = pageService;
             _recommendationsOrSimilars = true;
 
             _recommendedMovies = new SearchResult
@@ -97,24 +95,23 @@ namespace Ch9.ViewModels
             });
 
             OnItemTappedCommand = new Command<MovieDetailModel>(async mov => await _pageService.PushAsync(mov));
-        }
 
-        /// <summary>
-        /// Must be called from View's OnAppearing() method.
-        /// Ensure initial population of recommended and similars lists
-        /// </summary>
-        public override async Task Initialize()
-        {
-            Task tr = Task.CompletedTask;
-            Task ts = Task.CompletedTask;
+            // Ensures that both the recommendations and the similars lists are populated
+            Func<Task> initializationAction = async () =>
+            {
+                Task tr = Task.CompletedTask;
+                Task ts = Task.CompletedTask;
 
-            if (RecommendedMovies.Page == 0)
-                tr = TryLoadingNextRecommendedMoviesPage(1, 1000);
+                if (RecommendedMovies.Page == 0)
+                    tr = TryLoadingNextRecommendedMoviesPage(1, 1000);
 
-            if (SimilarMovies.Page == 0)
-                ts = TryLoadingNextSimilarMoviesPage(1, 1000);
+                if (SimilarMovies.Page == 0)
+                    ts = TryLoadingNextSimilarMoviesPage(1, 1000);
 
-            await Task.WhenAll(tr, ts);
+                await Task.WhenAll(tr, ts);
+            };
+
+            ConfigureInitialization(initializationAction, false);
         }
 
         private void ClearList(SearchResult list)

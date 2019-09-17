@@ -17,8 +17,8 @@ namespace Ch9.Services
         Task OpenWeblink(string url);
         Task<object> PopCurrent();
         Task PopToRootAsync();
+        Task PushAddListPageAsync(ListsPageViewModel3 listsPageViewModel);
         Task PushAsync(MovieDetailModel movie);
-        Task PushAsync(AddListPageViewModel viewModel);
         Task PushLargeImagePageAsync(MovieDetailPageViewModel viewModel);
         Task PushLoginPageAsync(string accountName = null, string password = null);
         Task PushPersonsMovieCreditsPageAsync(GetPersonsDetailsModel personDetails);
@@ -38,8 +38,8 @@ namespace Ch9.Services
         public async Task PushReviewsPage(MovieDetailPageViewModel model) =>
             await _currentPage.Navigation.PushAsync(new ReviewsPage(model));
 
-        public async Task PushAsync(AddListPageViewModel viewModel) =>
-            await _currentPage.Navigation.PushAsync(new AddListPage(viewModel));
+        public async Task PushAddListPageAsync(ListsPageViewModel3 listsPageViewModel) =>
+            await _currentPage.Navigation.PushAsync(new AddListPage(listsPageViewModel));
 
         public async Task PushRecommendationsPageAsync(MovieDetailModel movie) =>
             await _currentPage.Navigation.PushAsync(new RecommendationsPage3(movie));

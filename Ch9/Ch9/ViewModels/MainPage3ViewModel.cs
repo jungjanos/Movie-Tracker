@@ -19,7 +19,6 @@ namespace Ch9.ViewModels
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
         private readonly ISearchResultFilter _resultFilter;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
-        private readonly IPageService _pageService;
 
         private string _searchString;
         public string SearchString
@@ -50,13 +49,12 @@ namespace Ch9.ViewModels
             ITmdbCachedSearchClient cachedSearchClient,
             ISearchResultFilter resultFilter,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
-            IPageService pageService) : base ()
+            IPageService pageService) : base (pageService)
         {
             _settings = settings;
             _cachedSearchClient = cachedSearchClient;
             _resultFilter = resultFilter;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
-            _pageService = pageService;
 
             _searchResults = new SearchResult();
             _searchResults.InitializeOrClearMovieCollection();

@@ -11,7 +11,6 @@ namespace Ch9.ViewModels
         private ISettings _settings;
         private readonly MovieGenreSettings _movieGenreSettings;
         private readonly ITmdbNetworkClient _tmdbClient;
-        private readonly IPageService _pageService;
 
         public ISettings Settings
         {
@@ -27,12 +26,11 @@ namespace Ch9.ViewModels
                 MovieGenreSettings movieGenreSettings,
                 ITmdbNetworkClient tmdbClient,
                 IPageService pageService
-            ) : base()
+            ) : base(pageService)
         {
             _settings = settings;
             _movieGenreSettings = movieGenreSettings;
             _tmdbClient = tmdbClient;
-            _pageService = pageService;
             SearchLanguageChangedCommand = new Command(async () => await OnSearchLanguageChanged());
 
             LoginTappedCommand = new Command(async () =>

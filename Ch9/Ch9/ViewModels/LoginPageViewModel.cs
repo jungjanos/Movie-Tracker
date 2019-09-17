@@ -14,7 +14,6 @@ namespace Ch9.ViewModels
     {
         private readonly ISettings _settings;
         private readonly ITmdbNetworkClient _tmdbClient;
-        private readonly IPageService _pageService;
 
         private string _userName;
         public string UserName
@@ -49,11 +48,10 @@ namespace Ch9.ViewModels
             IPageService pageService, 
             string username = null, 
             string password = null
-            ) : base()
+            ) : base(pageService)
         {
             _settings = settings;
             _tmdbClient = networkClient;
-            _pageService = pageService;
             UserName = username;
             Password = password;
             HideLoginPageFlag = _settings.IsLoginPageDeactivationRequested;

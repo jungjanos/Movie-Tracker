@@ -15,18 +15,15 @@ namespace Ch9.ViewModels
     {
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
-        private readonly IPageService _pageService;
-
         public ICommand DeleteRatingCommand { get; private set; }
         public ICommand SetRatingCommand { get; private set; }
         public ICommand DecreaseRatingCommand { get; private set; }
         public ICommand IncreaseRatingCommand { get; private set; }
         public MovieDetailPageViewModel ParentPageViewModel { get; set; }
 
-        public ReviewsPageViewModel(MovieDetailPageViewModel parent, ISettings settings, ITmdbCachedSearchClient tmdbCachedSearchClient, IPageService pageService) : base()
+        public ReviewsPageViewModel(MovieDetailPageViewModel parent, ISettings settings, ITmdbCachedSearchClient tmdbCachedSearchClient, IPageService pageService) : base(pageService)
         {
             _cachedSearchClient = tmdbCachedSearchClient;
-            _pageService = pageService;
 
             ParentPageViewModel = parent;
             _settings = settings;
@@ -38,6 +35,16 @@ namespace Ch9.ViewModels
             });
             DecreaseRatingCommand = new Command(async () => await OnDecreaseRatingCommand());
             IncreaseRatingCommand = new Command(async () => await OnIncreaseRatingCommand());
+
+            
+            // Ensures that the Review collection is populated if not already done or if it is empty.
+            Func<Task> initializationAction = async () =>
+            {
+                if (!(ParentPageViewModel.Movie.Reviews?.Count > 0))
+                    await RefreshReviews(retryCount: 1, delayMilliseconds: 1000, fromCache: false);
+            };
+
+            ConfigureInitialization(initializationAction, false);
         }
 
         // This stupidity is required bc the way the Server 
@@ -65,15 +72,6 @@ namespace Ch9.ViewModels
                 }
                 OnPropertyChanged(nameof(UsersRating));
             }
-        }
-
-        /// <summary>
-        /// Must be called when the View is appearing. Initializes the Review collection if not already done or if it is empty.
-        /// </summary>        
-        public override async Task Initialize()
-        {
-            if (!(ParentPageViewModel.Movie.Reviews?.Count > 0))
-                await RefreshReviews(retryCount: 1, delayMilliseconds: 1000, fromCache: false);
         }
 
         private async Task RefreshReviews(int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = false)

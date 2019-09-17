@@ -20,6 +20,9 @@ namespace Ch9.Services.VideoService
     {
         private readonly YoutubeClient _youtubeClient;
 
+        // fallback when YtExplodeVideoService is broken due to changes on the YT webpage
+        private readonly IVideoService _fallback;
+
         /// <param name="httpClient">The provided HttpClient object needs to have set the user agent string to mimic a desktop browser</param>
         public YtExplodeVideoService(
             HttpClient httpClient,
@@ -28,6 +31,7 @@ namespace Ch9.Services.VideoService
             ) : base(settings, tmdbCachedSearchClient)
         {
             _youtubeClient = httpClient == null ? new YoutubeClient() : new YoutubeClient(httpClient);
+            _fallback = new VanillaYtVideoService(settings, tmdbCachedSearchClient);
         }
 
         public async Task PopulateWithStreams(TmdbVideoModel attachedVideo)
@@ -55,7 +59,9 @@ namespace Ch9.Services.VideoService
                 await PopulateWithStreams(attachedVideo);
 
             if (attachedVideo.Streams?.SelectedVideoStream != null)
-                await pageService.PushVideoPageAsync(attachedVideo);            
+                await pageService.PushVideoPageAsync(attachedVideo);
+            else
+                await _fallback.PlayVideo(attachedVideo, pageService);
         }
     }
 

@@ -30,14 +30,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CardsView" Version="2.2.1" />
+    <PackageReference Include="CardsView" Version="2.2.2" />
     <PackageReference Include="LazyCache" Version="2.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="Xamarin.FFImageLoading" Version="2.4.11.982" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.11.982" />
     <PackageReference Include="Xamarin.Forms" Version="4.2.0.709249" />
-    <PackageReference Include="YoutubeExplode" Version="4.7.9" Condition=" '$(Configuration)' != 'GooglePlayRelease' and '$(Configuration)' != 'GooglePlayDebug' and '$(Configuration)' != 'DotfuscatedGPlayRelease' " />
+    <PackageReference Include="YoutubeExplode" Version="4.7.10" Condition=" '$(Configuration)' != 'GooglePlayRelease' and '$(Configuration)' != 'GooglePlayDebug' and '$(Configuration)' != 'DotfuscatedGPlayRelease' " />
   </ItemGroup>
 
   <ItemGroup>

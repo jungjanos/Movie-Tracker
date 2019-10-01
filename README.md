@@ -73,11 +73,6 @@ The app -as of version nr. 55-  currently provides the following features
 
 ![Search for keyword_SM.png](https://bitbucket.org/repo/ypdRoon/images/1381114406-Search%20for%20keyword_SM.png "Title") ![Search for keyword_SM.png](https://bitbucket.org/repo/ypdRoon/images/1381114406-Search%20for%20keyword_SM.png)
 
-![trending page_SM.png](https://bitbucket.org/repo/ypdRoon/images/1501933268-trending%20page_SM.png)
-![trending page_SM.png](https://bitbucket.org/repo/ypdRoon/images/1501933268-trending%20page_SM.png)
-
-![trending page_SM.png](https://bitbucket.org/repo/ypdRoon/images/1501933268-trending%20page_SM.png)
-
 <figure>
   <img src="/Documentation_images/Search_for_keyword_SM.png" alt="my alt text"/>
   <figcaption>This is my caption text.</figcaption>
@@ -89,6 +84,10 @@ The app -as of version nr. 55-  currently provides the following features
 ![bbbb](/Documentation_images/Search_for_keyword_SM.png)
 
 ![aaaa](/Documentation_images/Search_for_keyword_SM.png) ![](/Documentation_images/Search_for_keyword_SM.png)
+
+| ![space-1.jpg](http://www.storywarren.com/wp-content/uploads/2016/09/space-1.jpg) | 
+|:--:| 
+| *Space* |
 
 ## Wiki features:
 

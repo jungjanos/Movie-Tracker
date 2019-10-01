@@ -70,12 +70,23 @@ The app -as of version nr. 55-  currently provides the following features
 
 # Screenshots
 
+## Searching and recommendations
 
 | *keyword search* | *results filter settings* |
 |:--:|:--:|
 | ![](/Documentation_images/Search_for_keyword_SM.png) | ![](/Documentation_images/search_settings_SM.png ) |
+ 
 
-
-| *trending movies* |  |
+| *trending movies* | *recommendations and similars* |
 |:--:|:--:|
-| ![](/Documentation_images/trending_page_SM.png) |  |
+| ![](/Documentation_images/trending_page_SM.png) | ![](/Documentation_images/recommended_similars_SM.png) |
+
+## Movie details
+
+| *movie details* | *movie cast loaded* |
+|:--:|:--:|
+| ![](/Documentation_images/movie_detail_page_SM.png) | ![](/Documentation_images/movie_cast_SM.png) |
+
+| *actors details* | *reviews* |
+|:--:|:--:|
+| ![](/Documentation_images/actors_page_SM.png ) | ![](/Documentation_images/reviews_page_SM.png) |

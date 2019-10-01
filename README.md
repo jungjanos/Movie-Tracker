@@ -1,3 +1,8 @@
+# Distributions
+## Google Play
+[Movie Tracker](https://play.google.com/store/apps/details?id=org.janos.jung)
+
+
 # Abstract 
 
 The aim of this project is to produce a searcher/tracker/detailer mobile application for movies. The app is based on [TMDb](https://www.themoviedb.org/)'s open [WebAPI](https://developers.themoviedb.org/3/getting-started/introduction) and implements the most important features the API exposes.

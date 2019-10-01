@@ -1,13 +1,13 @@
 # Abstract 
 
-The aim of this project is to produce a movie searcher/tracker/detailer mobile application based on [TMDb](https://www.themoviedb.org/)'s open [WebAPI](https://developers.themoviedb.org/3/getting-started/introduction) implementing the most important features the API exposes.
+The aim of this project is to produce a searcher/tracker/detailer mobile application for movies. The app is based on [TMDb](https://www.themoviedb.org/)'s open [WebAPI](https://developers.themoviedb.org/3/getting-started/introduction) and implements the most important features the API exposes.
 
-Platform code is kept to a minimum to provide a base for future code sharing with a possible iOS client: currently 98% of the app's code resides in the shared project. 
+Platform specific code is kept to a minimum to provide a base for future code sharing with a possible iOS client: currently 98% of the app's code resides in the shared project. 
 
 # Technology
 
 * Xamarin.Forms as UI framework with MVVM pattern
-* Using my own HTTP based REST client implementation 
+* Fielding my own HTTPS based REST client implementation 
 * XUnit for integration testing with API server and YouTube scraper
 * Newtonsoft.Json
 * FFImageLoading for image caching
@@ -19,7 +19,8 @@ Platform code is kept to a minimum to provide a base for future code sharing wit
 
 # Features
 
-The app -as of version nr. 55-  currently provides the following features 
+As of version nr. 60, the app provides the features listed below. Refer to the app-screen images at the bottom of the page for how the feature is integrated into the UI (subject to change with further versions).
+
 
 ### Searching, listing and getting recommendations:
 
@@ -33,16 +34,17 @@ The app -as of version nr. 55-  currently provides the following features
 ### Get the movie's detailed info:  
 
 * Tap a movie entry in a list to display its details (descriptions, length, score, countries, etc..)
-* Tap on the people icon on the movie's detail page to have the movie's cast displayed in order 
-* Tap on one person in the cast to open that person's detail page with swipeable gallery, biography and popularity index, list his movie participations separately as actor and crew member 
+* Tap on the people icon on the movie's detail page to have the movie's cast displayed in descending order 
+* Tap on one person in the cast to open that person's detail page with swipeable gallery, biography and popularity index, list his movie participations separately as being actor or crew member 
 * Tap on the web-link icon to open the movie's page on your favorite movie website 
-* Tap on the text icon to have any reviews displayed on a separate page. Here you also can rate the movie (need to be logged in)
+* Tap on the text icon to have any reviews displayed on a separate page. Here you also can rate the movie (you need to be logged in)
 
 ### Gallery pictures and associated videos (trailers, behind the scenes etc):
 
 * Swipe the gallery to view the movie's backdrop pictures, tap to view the picture in large
 * Tap under the gallery to view trailer and other associated video clip thumbnails
 * Tap a video thumbnail to watch the short video clip. Depending on the distribution platform the video is either played via the device default YouTube player (GooglePlay distribution) or (in case of an ad-hoc distribution) stream-scraped from Youtube and played with the apps built in player this circumvents any ads from YouTube. 
+* In case YouTube scraping fails (e.g. due to future changes to YouTube page DOM),  the YouTube player is used as auto-failback.
 * In case of YouTube-scraping the target video quality of the scraped YouTube stream can be controlled from the Settings
 
 ### Favorite-, Watchlist and custom lists management: 
@@ -63,7 +65,7 @@ The app -as of version nr. 55-  currently provides the following features
 * Set your preferred language which governs the content's display language (descriptions, genre tags, posters etc...)
 * Filter out old movies
 * Configure your favorite movie genre categories, not matching items will be filtered out where appropriate
-* Configure to which supported movie site the "more detail weblink" will direct you when opening external detailed movie, actor or crew info links. 
+* Configure to which supported movie site the "more detail weblink" will direct you when opening external infolinks to view movie or actor details. 
 * Set your preferred YouTube stream quality (only applies to non GooglePlay distributions) for stream-scraping
 * Configure HTTP/HTTPS option for fetching images (HTTPS is strongly recommended)
 
@@ -104,6 +106,9 @@ The app -as of version nr. 55-  currently provides the following features
 | *manage your custom lists* |  |
 |:--:|:--:|
 | ![](/Documentation_images/user_defined_lists_SM.png) |  |
+
+&nbsp;
+
 
 ## Login and settings
 

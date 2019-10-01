@@ -86,9 +86,9 @@ The app -as of version nr. 55-  currently provides the following features
 ![](Documentation_images/Search_for_keyword_SM.png)
 
 
-![](/Documentation_images/Search_for_keyword_SM.png)
+![bbbb](/Documentation_images/Search_for_keyword_SM.png)
 
-![](/Documentation_images/Search_for_keyword_SM.png) ![](/Documentation_images/Search_for_keyword_SM.png)
+![aaaa](/Documentation_images/Search_for_keyword_SM.png) ![](/Documentation_images/Search_for_keyword_SM.png)
 
 ## Wiki features:
 

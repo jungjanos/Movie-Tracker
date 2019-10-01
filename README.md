@@ -78,6 +78,11 @@ The app -as of version nr. 55-  currently provides the following features
 
 ![trending page_SM.png](https://bitbucket.org/repo/ypdRoon/images/1501933268-trending%20page_SM.png)
 
+<figure>
+  <img src="Documentation_images/Search_for_keyword_SM.png" alt="my alt text"/>
+  <figcaption>This is my caption text.</figcaption>
+</figure>
+
 
 
 ## Wiki features:

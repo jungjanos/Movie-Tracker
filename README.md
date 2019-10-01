@@ -90,3 +90,13 @@ The app -as of version nr. 55-  currently provides the following features
 | *actors details* | *reviews* |
 |:--:|:--:|
 | ![](/Documentation_images/actors_page_SM.png ) | ![](/Documentation_images/reviews_page_SM.png) |
+
+## Warchlist, Favorites and custom lists
+
+| *live account states display* | *server synced lists* |
+|:--:|:--:|
+| ![](/Documentation_images/synchronized_movie_states_SM.png) | ![](/Documentation_images/personal_watchlist_SM.png) |
+
+| *manage your custom lists* |  |
+|:--:|:--:|
+| ![](/Documentation_images/user_defined_lists_SM.png) |  |

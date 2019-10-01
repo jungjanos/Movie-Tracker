@@ -1,45 +1,120 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
+# Abstract 
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
+The aim of this project is to produce a movie searcher/tracker/detailer mobile application based on [TMDb](https://www.themoviedb.org/)'s open [WebAPI](https://developers.themoviedb.org/3/getting-started/introduction) implementing the most important features the API exposes.
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+Platform code is kept to a minimum to provide a base for future code sharing with a possible iOS client: currently 98% of the app's code resides in the shared project. 
 
----
+# Technology
 
-## Edit a file
+* Xamarin.Forms as UI framework with MVVM pattern
+* Using my own HTTP based REST client implementation 
+* XUnit for integration testing with API server and YouTube scraper
+* Newtonsoft.Json
+* FFImageLoading for image caching
+* LazyCache for object caching
+* YoutubeExplode for YouTube video scraping (only when not targeting Google Play)
+* CardsView for swipe based gallery with cards animation
+* Dotfuscator for assembly obfuscation (currently not thoroughly tested, **don't build with it, has known problems**)
+* Extensive care has been taken to provide a smooth, non blocking UI experience based on the Task-async pattern
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
+# Features
 
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
+The app -as of version nr. 55-  currently provides the following features 
 
----
+### Searching, listing and getting recommendations:
 
-## Create a file
+* Search for movies based on keywords
+* Configure search filters based on movies age, genre preferences, adult switch
+* Top trending movies for the current week and day 
+* Get the list of similar movies for the currently selected movie by tapping on the compass icon
+* Get the list of recommended movies for the currently selected movie
+* All result lists implement infinite scrolling  
 
-Next, you’ll add a new file to this repository.
+### Get the movie's detailed info:  
 
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
+* Tap a movie entry in a list to display its details (descriptions, length, score, countries, etc..)
+* Tap on the people icon on the movie's detail page to have the movie's cast displayed in order 
+* Tap on one person in the cast to open that person's detail page with swipeable gallery, biography and popularity index, list his movie participations separately as actor and crew member 
+* Tap on the web-link icon to open the movie's page on your favorite movie website 
+* Tap on the text icon to have any reviews displayed on a separate page. Here you also can rate the movie (need to be logged in)
 
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
+### Gallery pictures and associated videos (trailers, behind the scenes etc):
 
----
+* Swipe the gallery to view the movie's backdrop pictures, tap to view the picture in large
+* Tap under the gallery to view trailer and other associated video clip thumbnails
+* Tap a video thumbnail to watch the short video clip. Depending on the distribution platform the video is either played via the device default YouTube player (GooglePlay distribution) or (in case of an ad-hoc distribution) stream-scraped from Youtube and played with the apps built in player this circumvents any ads from YouTube. 
+* In case of YouTube-scraping the target video quality of the scraped YouTube stream can be controlled from the Settings
 
-## Clone a repository
+### Favorite-, Watchlist and custom lists management: 
+(**needs an account on TMDb** and the user needs to sign in on the app)
 
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
+* View your personal Watchlist (bucket list) and Favorite lists
+* Display and edit your user defined lists, set one of them as active
+* Watchlist, Favorite list and user defined lists are server side features synchronized to the device
+* Add any movie to your personal Watchlist or Favorite list by tapping on the bookmark or heart icon on the movie's page
+* Add any movie to your currently selected custom list by taping on the '+' sign 
+* Visual real time feedback of the movie's status in relation to your Watchlist, Favorite list, currently active custom list and your signed-in-status when opening the movie's detail page (green, red, gray colors) 
 
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
+### Login and Settings:
 
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+* When starting up the application, you can opt out from logging in with your TMDb account
+* Display your login status on the Settings page
+* Configure safe search (porn) 
+* Set your preferred language which governs the content's display language (descriptions, genre tags, posters etc...)
+* Filter out old movies
+* Configure your favorite movie genre categories, not matching items will be filtered out where appropriate
+* Configure to which supported movie site the "more detail weblink" will direct you when opening external detailed movie, actor or crew info links. 
+* Set your preferred YouTube stream quality (only applies to non GooglePlay distributions) for stream-scraping
+* Configure HTTP/HTTPS option for fetching images (HTTPS is strongly recommended)
+
+
+# Screenshots
+
+
+![Search for keyword_SM.png](https://bitbucket.org/repo/ypdRoon/images/1381114406-Search%20for%20keyword_SM.png "Title") ![Search for keyword_SM.png](https://bitbucket.org/repo/ypdRoon/images/1381114406-Search%20for%20keyword_SM.png)
+
+![trending page_SM.png](https://bitbucket.org/repo/ypdRoon/images/1501933268-trending%20page_SM.png)
+![trending page_SM.png](https://bitbucket.org/repo/ypdRoon/images/1501933268-trending%20page_SM.png)
+
+![trending page_SM.png](https://bitbucket.org/repo/ypdRoon/images/1501933268-trending%20page_SM.png)
+
+
+
+## Wiki features:
+
+This wiki uses the [Markdown](http://daringfireball.net/projects/markdown/) syntax. The [MarkDownDemo tutorial](https://bitbucket.org/tutorials/markdowndemo) shows how various elements are rendered. The [Bitbucket documentation](https://confluence.atlassian.com/x/FA4zDQ) has more information about using a wiki.
+
+The wiki itself is actually a git repository, which means you can clone it, edit it locally/offline, add images or any other file type, and push it back to us. It will be live immediately.
+
+Go ahead and try:
+
+```
+$ git clone https://j4ni@bitbucket.org/j4ni/tmdb-client.git/wiki
+```
+
+Wiki pages are normal files, with the .md extension. You can edit them locally, as well as creating new ones.
+
+## Syntax highlighting
+
+
+You can also highlight snippets of text (we use the excellent [Pygments][] library).
+
+[Pygments]: http://pygments.org/
+
+
+Here's an example of some Python code:
+
+```
+#!python
+
+def wiki_rocks(text):
+    formatter = lambda t: "funky"+t
+    return formatter(text)
+```
+
+
+You can check out the source of this page to see how that's done, and make sure to bookmark [the vast library of Pygment lexers][lexers], we accept the 'short name' or the 'mimetype' of anything in there.
+[lexers]: http://pygments.org/docs/lexers/
+
+
+Have fun!

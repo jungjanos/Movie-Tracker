@@ -85,9 +85,10 @@ The app -as of version nr. 55-  currently provides the following features
 
 ![aaaa](/Documentation_images/Search_for_keyword_SM.png) ![](/Documentation_images/Search_for_keyword_SM.png)
 
-| ![space-1.jpg](http://www.storywarren.com/wp-content/uploads/2016/09/space-1.jpg) | 
-|:--:| 
-| *Space* |
+| ![space-1.jpg](http://www.storywarren.com/wp-content/uploads/2016/09/space-1.jpg) | ![space-1.jpg](http://www.storywarren.com/wp-content/uploads/2016/09/space-1.jpg) |
+|:--:| :--:|
+| *Space* | *Space* |
+
 
 ## Wiki features:
 

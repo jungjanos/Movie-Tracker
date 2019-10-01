@@ -91,6 +91,10 @@ The app -as of version nr. 55-  currently provides the following features
 |:--:|:--:|
 | ![](/Documentation_images/actors_page_SM.png ) | ![](/Documentation_images/reviews_page_SM.png) |
 
+| *browse and play the trailers from Youtube* | *add free trailers (not in GooglePlay version)* |
+|:--:|:--:|
+| ![](/Documentation_images/movie_trailer_thumbnails_SM.png) | ![](/Documentation_images/trailer_playback_SM.png) | 
+
 ## Warchlist, Favorites and custom lists
 
 | *live account states display* | *server synced lists* |
@@ -100,3 +104,9 @@ The app -as of version nr. 55-  currently provides the following features
 | *manage your custom lists* |  |
 |:--:|:--:|
 | ![](/Documentation_images/user_defined_lists_SM.png) |  |
+
+## Login and settings
+
+| *login option* | *settings page* |
+|:--:|:--:|
+| ![](/Documentation_images/login_page_SM.png) | ![](/Documentation_images/settings_SM.png) |

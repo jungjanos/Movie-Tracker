@@ -74,7 +74,7 @@ As of version nr. 60, the app provides the features listed below. Refer to the a
 
 ## Searching and recommendations
 
-| *keyword search* | *results filter settings* |
+| *keyword search* | *result filter settings* |
 |:--:|:--:|
 | ![](/Documentation_images/Search_for_keyword_SM.png) | ![](/Documentation_images/search_settings_SM.png ) |
  
@@ -85,21 +85,21 @@ As of version nr. 60, the app provides the features listed below. Refer to the a
 
 ## Movie details
 
-| *movie details* | *movie cast loaded* |
+| *movie details* | *movie cast* |
 |:--:|:--:|
 | ![](/Documentation_images/movie_detail_page_SM.png) | ![](/Documentation_images/movie_cast_SM.png) |
 
-| *actors details* | *reviews* |
+| *actor's details* | *reviews* |
 |:--:|:--:|
 | ![](/Documentation_images/actors_page_SM.png ) | ![](/Documentation_images/reviews_page_SM.png) |
 
-| *browse and play the trailers from Youtube* | *add free trailers (not in GooglePlay version)* |
+| *browse and play the trailers from Youtube* | *ad-free clips (not in GooglePlay version)* |
 |:--:|:--:|
 | ![](/Documentation_images/movie_trailer_thumbnails_SM.png) | ![](/Documentation_images/trailer_playback_SM.png) | 
 
 ## Warchlist, Favorites and custom lists
 
-| *live account states display* | *server synced lists* |
+| *live state display* | *server synced lists* |
 |:--:|:--:|
 | ![](/Documentation_images/synchronized_movie_states_SM.png) | ![](/Documentation_images/personal_watchlist_SM.png) |
 
@@ -107,11 +107,9 @@ As of version nr. 60, the app provides the features listed below. Refer to the a
 |:--:|:--:|
 | ![](/Documentation_images/user_defined_lists_SM.png) |  |
 
-&nbsp;
-
 
 ## Login and settings
 
-| *login option* | *settings page* |
+| *login options* | *settings page* |
 |:--:|:--:|
 | ![](/Documentation_images/login_page_SM.png) | ![](/Documentation_images/settings_SM.png) |

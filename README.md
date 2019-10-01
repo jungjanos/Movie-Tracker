@@ -71,68 +71,11 @@ The app -as of version nr. 55-  currently provides the following features
 # Screenshots
 
 
-![Search for keyword_SM.png](https://bitbucket.org/repo/ypdRoon/images/1381114406-Search%20for%20keyword_SM.png "Title") ![Search for keyword_SM.png](https://bitbucket.org/repo/ypdRoon/images/1381114406-Search%20for%20keyword_SM.png)
-
-<figure>
-  <img src="/Documentation_images/Search_for_keyword_SM.png" alt="my alt text"/>
-  <figcaption>This is my caption text.</figcaption>
-</figure>
-
-![](Documentation_images/Search_for_keyword_SM.png)
-
-
-![bbbb](/Documentation_images/Search_for_keyword_SM.png)
-
-![aaaa](/Documentation_images/Search_for_keyword_SM.png) ![](/Documentation_images/Search_for_keyword_SM.png)
-
-| *Space* | *Space* |
+| *keyword search* | *results filter settings* |
 |:--:|:--:|
-| ![space-1.jpg](http://www.storywarren.com/wp-content/uploads/2016/09/space-1.jpg) | ![space-1.jpg](http://www.storywarren.com/wp-content/uploads/2016/09/space-1.jpg) |
+| ![](/Documentation_images/Search_for_keyword_SM.png) | ![](/Documentation_images/search_settings_SM.png ) |
+
+
+| *trending movies* |  |
 |:--:|:--:|
-| *Space* | *Space* |
-
-
-| *Space* | *Space* |
-|:--:|:--:|
-| ![](/Documentation_images/Search_for_keyword_SM.png) | ![](/Documentation_images/Search_for_keyword_SM.png) |
-
-
-
-## Wiki features:
-
-This wiki uses the [Markdown](http://daringfireball.net/projects/markdown/) syntax. The [MarkDownDemo tutorial](https://bitbucket.org/tutorials/markdowndemo) shows how various elements are rendered. The [Bitbucket documentation](https://confluence.atlassian.com/x/FA4zDQ) has more information about using a wiki.
-
-The wiki itself is actually a git repository, which means you can clone it, edit it locally/offline, add images or any other file type, and push it back to us. It will be live immediately.
-
-Go ahead and try:
-
-```
-$ git clone https://j4ni@bitbucket.org/j4ni/tmdb-client.git/wiki
-```
-
-Wiki pages are normal files, with the .md extension. You can edit them locally, as well as creating new ones.
-
-## Syntax highlighting
-
-
-You can also highlight snippets of text (we use the excellent [Pygments][] library).
-
-[Pygments]: http://pygments.org/
-
-
-Here's an example of some Python code:
-
-```
-#!python
-
-def wiki_rocks(text):
-    formatter = lambda t: "funky"+t
-    return formatter(text)
-```
-
-
-You can check out the source of this page to see how that's done, and make sure to bookmark [the vast library of Pygment lexers][lexers], we accept the 'short name' or the 'mimetype' of anything in there.
-[lexers]: http://pygments.org/docs/lexers/
-
-
-Have fun!
+| ![](/Documentation_images/trending_page_SM.png) |  |

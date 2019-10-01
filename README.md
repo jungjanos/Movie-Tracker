@@ -88,6 +88,8 @@ The app -as of version nr. 55-  currently provides the following features
 
 ![](/Documentation_images/Search_for_keyword_SM.png)
 
+![](/Documentation_images/Search_for_keyword_SM.png) ![](/Documentation_images/Search_for_keyword_SM.png)
+
 ## Wiki features:
 
 This wiki uses the [Markdown](http://daringfireball.net/projects/markdown/) syntax. The [MarkDownDemo tutorial](https://bitbucket.org/tutorials/markdowndemo) shows how various elements are rendered. The [Bitbucket documentation](https://confluence.atlassian.com/x/FA4zDQ) has more information about using a wiki.

@@ -1,4 +1,4 @@
-# Distributions
+# Distribution
 
 There are two ways to get Movie Tracker installed on your phone:
 * Either install it from Google Play
@@ -14,8 +14,7 @@ Get [Movie Tracker from GooglePlay](https://play.google.com/store/apps/details?i
 
 You can directly download the APK from the below link. 
 Please not that it might be necessary to enable App installation from external sources on your phone. The app is perfectly safe and does not require any special permission.
-
-
+[Movie Tracker binaries](https://github.com/jungjanos/Movie-Tracker/releases)
 
 # Abstract 
 

@@ -46,6 +46,7 @@ Global
 		{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{EC2254D3-EA22-43F0-923C-6FBABEAAB3A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC2254D3-EA22-43F0-923C-6FBABEAAB3A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC2254D3-EA22-43F0-923C-6FBABEAAB3A4}.DotfuscatedGPlayRelease|Any CPU.ActiveCfg = DotfuscatedGPlayRelease|Any CPU
 		{EC2254D3-EA22-43F0-923C-6FBABEAAB3A4}.GooglePlayDebug|Any CPU.ActiveCfg = GooglePlayDebug|Any CPU
 		{EC2254D3-EA22-43F0-923C-6FBABEAAB3A4}.GooglePlayRelease|Any CPU.ActiveCfg = GooglePlayRelease|Any CPU

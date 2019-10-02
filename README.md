@@ -1,6 +1,16 @@
 # Distributions
 ## Google Play
+Get movie tracker from GooglePlay (no Youtube stream ripping)
+
 [Movie Tracker](https://play.google.com/store/apps/details?id=org.janos.jung)
+
+![](/Documentation_images/gplay.png)
+
+## Download APK
+
+You can directly download the APK from the below links. 
+Please not that it might be necessary to enable App installation from external sources on your phone. The app is perfectly safe and does not require any special permission.
+
 
 
 # Abstract 

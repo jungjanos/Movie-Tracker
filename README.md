@@ -1,8 +1,6 @@
 # Distributions
 ## Google Play
-Get movie tracker from GooglePlay (no Youtube stream ripping)
-
-[Movie Tracker](https://play.google.com/store/apps/details?id=org.janos.jung)
+Get [Movie Tracker from GooglePlay](https://play.google.com/store/apps/details?id=org.janos.jung) (no Youtube stream ripping)
 
 ![](/Documentation_images/gplay.png)
 

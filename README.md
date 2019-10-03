@@ -14,10 +14,9 @@ Get [Movie Tracker from GooglePlay](https://play.google.com/store/apps/details?i
 
 ### Download APK
 
-You can directly download the APK from the below link. 
-Please not that it might be necessary to enable App installation from external sources on your phone. The app is perfectly safe and does not require any special permission.
+You can directly download the APK from the link: [Movie Tracker standalone APK](https://github.com/jungjanos/Movie-Tracker/releases/latest)
 
-[Movie Tracker standalone APK](https://github.com/jungjanos/Movie-Tracker/releases/latest)
+Please not that it might be necessary to enable App installation from external sources on your phone. The app is perfectly safe and does not require any special permission.
 
 # Abstract 
 

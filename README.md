@@ -4,6 +4,8 @@ There are two ways to get Movie Tracker installed on your phone:
 * Either install it from Google Play
 * Or directly download the APK as described below
 
+The minor difference between the two distributions is, that the non-Google Play version scrapes (parses and extracts information from) the YouTube website for movie trailer video streams and plays them inside the app whereas the Google Play version opens the YouTube stream with the device's default YouTube player. The result is, that the non-Google Play version circumvents YouTube ads whereas the Google Play version is in line with Google's code of conduct. 
+
 ### Google Play
 
 Get [Movie Tracker from GooglePlay](https://play.google.com/store/apps/details?id=org.janos.jung) (no Youtube stream ripping)

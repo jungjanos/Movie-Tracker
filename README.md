@@ -35,11 +35,11 @@ Platform specific code is kept to a minimum to provide a base for future code sh
 * YoutubeExplode for YouTube video scraping (only when not targeting Google Play)
 * CardsView for swipe based gallery with cards animation
 * Dotfuscator for assembly obfuscation (currently not thoroughly tested, **don't build with it, has known problems**)
-* Extensive care has been taken to provide a smooth, non blocking UI experience based on the Task-async pattern
+* Extensive care has been taken to provide a smooth, non-blocking UI experience based on the Task-async pattern
 
 # Features
 
-As of version nr. 60, the app provides the features listed below. Refer to the app-screen images at the bottom of the page for how the feature is integrated into the UI (subject to change with further versions).
+As of version nr. 62, the app provides the features listed below. Refer to the app-screen images at the bottom of the page for how the features are integrated into the UI (subject to change with further versions).
 
 
 ### Searching, listing and getting recommendations:

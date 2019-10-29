@@ -8,7 +8,7 @@ The minor difference between the two distributions is, that the non-Google Play 
 
 ### Google Play
 
-Get [Movie Tracker from GooglePlay](https://play.google.com/store/apps/details?id=org.janos.jung) (no Youtube stream ripping)
+Get [Movie Tracker from GooglePlay](https://play.google.com/store/apps/details?id=org.janos.jung.movietracker) (no Youtube stream ripping)
 
 ![](/Documentation_images/gplay.png)
 

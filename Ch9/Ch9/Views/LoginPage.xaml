@@ -121,7 +121,7 @@ You still can login from Settings...
                 <Button 
                     Grid.Column="2"
                     Command="{Binding CancelCommand}" 
-                    Text="Continue" 
+                    Text="Skip" 
                     TextColor="White"  
                     FontAttributes="Bold" 
                     FontSize="Medium" 

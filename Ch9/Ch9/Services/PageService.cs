@@ -4,6 +4,7 @@ using Ch9.Views;
 using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Xamarin.Essentials;
 
 namespace Ch9.Services
 {
@@ -77,7 +78,7 @@ namespace Ch9.Services
         {
             try
             {
-                Device.OpenUri(new Uri(url));
+                await Browser.OpenAsync(url, BrowserLaunchMode.SystemPreferred);
             }
             catch (Exception ex)
             {

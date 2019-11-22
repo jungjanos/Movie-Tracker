@@ -1,11 +1,11 @@
-﻿using Ch9.Models;
-using Ch9.Utils;
+﻿using Ch9.Utils;
+using Ch9.ApiClient;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace Ch9.ApiClient
+namespace Ch9.Models
 {
     // tries to get the TMDB configuration from the server, caches the result in the property dictionary
     // if contacting the server fails, it consults the property dictionary

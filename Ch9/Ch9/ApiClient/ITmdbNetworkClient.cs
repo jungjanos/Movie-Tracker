@@ -1,7 +1,7 @@
-﻿using Ch9.ApiClient;
+﻿using Ch9.Models;
 using System.Threading.Tasks;
 
-namespace Ch9.Models
+namespace Ch9.ApiClient
 {
     public interface ITmdbNetworkClient
     {

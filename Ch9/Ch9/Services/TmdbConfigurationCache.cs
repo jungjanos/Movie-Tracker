@@ -4,8 +4,9 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Ch9.Models;
 
-namespace Ch9.Models
+namespace Ch9.Services
 {
     // tries to get the TMDB configuration from the server, caches the result in the property dictionary
     // if contacting the server fails, it consults the property dictionary

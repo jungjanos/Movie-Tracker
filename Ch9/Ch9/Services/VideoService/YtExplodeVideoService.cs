@@ -53,7 +53,7 @@ namespace Ch9.Services.VideoService
             width: muxedStreamInfo.Resolution.Width
             );
 
-        public async Task PlayVideo(TmdbVideoModel attachedVideo, IPageService pageService)
+        public override async Task PlayVideo(TmdbVideoModel attachedVideo, IPageService pageService)
         {
             if (attachedVideo.Streams == null)
                 await PopulateWithStreams(attachedVideo);

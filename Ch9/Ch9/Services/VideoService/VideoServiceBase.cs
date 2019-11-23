@@ -12,7 +12,7 @@ namespace Ch9.Services.VideoService
     /// <summary>
     /// Base class for video service implementations.
     /// </summary>
-    public abstract class VideoServiceBase
+    public abstract class VideoServiceBase : IVideoService
     {
         protected readonly ISettings _settings;
         protected readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
@@ -73,5 +73,6 @@ namespace Ch9.Services.VideoService
         }
 
         protected virtual string GetThumbnailFilePath(string id) => $"https://img.youtube.com/vi/{id}/hqdefault.jpg";
+        public abstract Task PlayVideo(TmdbVideoModel attachedVideo, IPageService pageService);
     }
 }

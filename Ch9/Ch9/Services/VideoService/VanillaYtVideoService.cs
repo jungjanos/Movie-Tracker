@@ -10,7 +10,7 @@ namespace Ch9.Services.VideoService
     /// 
     /// Hogy google barátunk valmelyik robotja ne auto-termináljon minket...
     /// </summary>
-    public class VanillaYtVideoService : VideoServiceBase, IVideoService
+    public class VanillaYtVideoService : VideoServiceBase
     {
         private string GetVideoUrlFromId(string id) => $"http://www.youtube.com/watch?v={id}";
 
@@ -20,7 +20,7 @@ namespace Ch9.Services.VideoService
             base(settings, tmdbCachedSearchClient)
         { }
 
-        public async Task PlayVideo(TmdbVideoModel attachedVideo, IPageService pageService) =>
+        public override async Task PlayVideo(TmdbVideoModel attachedVideo, IPageService pageService) =>
             await pageService.OpenWeblink(GetVideoUrlFromId(attachedVideo.Key));
     }
 }

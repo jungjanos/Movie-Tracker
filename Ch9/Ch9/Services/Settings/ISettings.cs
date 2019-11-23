@@ -1,9 +1,8 @@
-﻿using Ch9.Services.VideoService;
-using Ch9.Utils;
+﻿using Ch9.Models;
+using Ch9.Services.VideoService;
 using System.Threading.Tasks;
-using static Ch9.Models.Settings;
 
-namespace Ch9.Models
+namespace Ch9.Services
 {
     public interface ISettings
     {

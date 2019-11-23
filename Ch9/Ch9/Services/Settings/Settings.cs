@@ -1,4 +1,5 @@
-﻿using Ch9.Services.VideoService;
+﻿using Ch9.Models;
+using Ch9.Services.VideoService;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace Ch9.Models
+namespace Ch9.Services
 {
     // Settings uses Application.Properties dictionary with data binding to UI
     // Default values are currently hard coded

@@ -22,6 +22,7 @@ namespace Ch9.Services
         string InformationLinksTargetHomePageStr { get; set; }
         InformationLinkTargetHomePage InfoLinkTargetHomePage { get; }
         bool IsLoginPageDeactivationRequested { get; set; }
+        VideoType PreferredVideoTypes { get; }
 
         Task SavePropertiesAsync();
     }

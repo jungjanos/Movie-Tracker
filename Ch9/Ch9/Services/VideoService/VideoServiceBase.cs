@@ -31,7 +31,7 @@ namespace Ch9.Services.VideoService
         /// <returns>List of thumbnails each with an attached video object</returns>
         public virtual async Task<List<ImageModel>> GetVideoThumbnails(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            VideoType typeFilter = VideoType.Trailer | VideoType.Clip | VideoType.BehindTheScene | VideoType.Blooper;
+            VideoType typeFilter = _settings.PreferredVideoTypes;
 
             List<ImageModel> resultingThumbnailsWithoutVideos = new List<ImageModel>();
 

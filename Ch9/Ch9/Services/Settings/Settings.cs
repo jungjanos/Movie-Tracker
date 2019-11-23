@@ -214,6 +214,9 @@ namespace Ch9.Services
             }
         }
 
+        public VideoType PreferredVideoTypes => VideoType.Trailer | VideoType.Clip | VideoType.BehindTheScene | VideoType.Blooper;
+
+
         public bool UseHttpsForImages
         {
             get

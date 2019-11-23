@@ -13,6 +13,5 @@ namespace Ch9.Models
 
         [JsonProperty("request_token")]
         public string Token { get; set; }
-
     }
 }

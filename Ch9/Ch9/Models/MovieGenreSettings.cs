@@ -1,17 +1,14 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace Ch9.Models
 {
-
     public class GenreItem : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -51,14 +48,14 @@ namespace Ch9.Models
     // contains the movie genre preferences of the user to filter the results of WebAPI queries
     public class MovieGenreSettings
     {
-        private IDictionary<string, object> appDictionary;
+        private IDictionary<string, object> _appDictionary;
         public ObservableCollection<GenreItem> GenreSelectionDisplay;
 
         public HashSet<int> PreferredCategories => new HashSet<int>(GenreSelectionDisplay.Where(x => x.IsSelected).Select(y => y.Id));        
 
         public MovieGenreSettings()
         {
-            appDictionary = Application.Current.Properties;
+            _appDictionary = Application.Current.Properties;
             InitializeGenreSelectionDisplay();
         }
 
@@ -67,8 +64,8 @@ namespace Ch9.Models
         // or creates a new default one
         private void InitializeGenreSelectionDisplay()
         {
-            if (appDictionary.ContainsKey(nameof(GenreSelectionDisplay)))
-                GenreSelectionDisplay = JsonConvert.DeserializeObject<ObservableCollection<GenreItem>>(appDictionary[nameof(GenreSelectionDisplay)].ToString());
+            if (_appDictionary.ContainsKey(nameof(GenreSelectionDisplay)))
+                GenreSelectionDisplay = JsonConvert.DeserializeObject<ObservableCollection<GenreItem>>(_appDictionary[nameof(GenreSelectionDisplay)].ToString());
             else
             {
                 GenreSelectionDisplay = new ObservableCollection<GenreItem>();
@@ -137,7 +134,7 @@ namespace Ch9.Models
 
         public void SaveGenreSelectionDisplay()
         {
-            appDictionary[nameof(GenreSelectionDisplay)] = JsonConvert.SerializeObject(GenreSelectionDisplay);
+            _appDictionary[nameof(GenreSelectionDisplay)] = JsonConvert.SerializeObject(GenreSelectionDisplay);
         }
 
         public async Task OnSearchLanguageChanged(string newLanguage)

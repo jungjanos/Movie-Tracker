@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using YoutubeExplode;
 using YoutubeExplode.Models.MediaStreams;
+using System;
 
 namespace Ch9.Services.VideoService
 {    
@@ -18,10 +19,11 @@ namespace Ch9.Services.VideoService
     /// </summary>        
     public class YtExplodeVideoService : VideoServiceBase, IVideoService
     {
-        private readonly YoutubeClient _youtubeClient;
-
         // fallback when YtExplodeVideoService is broken due to changes on the YT webpage
         private readonly IVideoService _fallback;
+
+        private readonly YoutubeClient _youtubeClient;
+        private readonly IVideoStreamSelector _streamSelector;
 
         /// <param name="httpClient">The provided HttpClient object needs to have set the user agent string to mimic a desktop browser</param>
         public YtExplodeVideoService(
@@ -30,8 +32,11 @@ namespace Ch9.Services.VideoService
             ITmdbCachedSearchClient tmdbCachedSearchClient
             ) : base(settings, tmdbCachedSearchClient)
         {
-            _youtubeClient = httpClient == null ? new YoutubeClient() : new YoutubeClient(httpClient);
             _fallback = new VanillaYtVideoService(settings, tmdbCachedSearchClient);
+
+            _youtubeClient = httpClient == null ? new YoutubeClient() : new YoutubeClient(httpClient);
+            _streamSelector = new YtVideoStreamSelector(settings);
+
         }
 
         public async Task PopulateWithStreams(TmdbVideoModel attachedVideo)
@@ -41,7 +46,7 @@ namespace Ch9.Services.VideoService
                 MediaStreamInfoSet streamInfoSet = await _youtubeClient.GetVideoMediaStreamInfosAsync(attachedVideo.Key);
                 var streams = streamInfoSet.Muxed.Select(stream => GetStreamInfo(stream));
 
-                attachedVideo.Streams = new VideoStreamInfoSet(streams, streamInfoSet.ValidUntil, new YtVideoStreamSelector(_settings));
+                attachedVideo.Streams = new VideoStreamInfoSet(streams, streamInfoSet.ValidUntil);
             } catch { }
         }
 
@@ -55,11 +60,13 @@ namespace Ch9.Services.VideoService
 
         public override async Task PlayVideo(TmdbVideoModel attachedVideo, IPageService pageService)
         {
-            if (attachedVideo.Streams == null)
+            if (attachedVideo.Streams == null || attachedVideo.Streams.ValidUntil < DateTimeOffset.UtcNow)
                 await PopulateWithStreams(attachedVideo);
 
-            if (attachedVideo.Streams?.SelectedVideoStream != null)
-                await pageService.PushVideoPageAsync(attachedVideo);
+            var selectedStream = attachedVideo.Streams == null ? null : _streamSelector.SelectVideoStream(attachedVideo.Streams.VideoStreams);
+
+            if (selectedStream != null)
+                await pageService.PushVideoPageAsync(selectedStream.StreamUrl);
             else
                 await _fallback.PlayVideo(attachedVideo, pageService);
         }

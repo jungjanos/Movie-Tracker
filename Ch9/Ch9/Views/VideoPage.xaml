@@ -16,7 +16,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <video:VideoPlayer Source="{Binding Path=Streams.SelectedVideoStream.StreamUrl,Converter={StaticResource Key=urlStringToVideoSource}}"
+    <video:VideoPlayer Source="{Binding .,Converter={StaticResource Key=urlStringToVideoSource}}"
                        AutoPlay="True"  
                        HorizontalOptions="FillAndExpand"
                        VerticalOptions="FillAndExpand"                       

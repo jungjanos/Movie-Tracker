@@ -26,9 +26,7 @@ namespace Ch9.Models
         public int Size { get; set; } // allowed: 360, 480, 720, 1080
 
         [JsonProperty("type")]
-        public string TypeStr { get; set; } // allowed: Trailer, Teaser, Clip, Featurette, Behind the Scenes, Bloopers
-
-        public VideoType Type => Utils.Utils.StringToVideoTypeStringToEnumConverter(TypeStr);
+        public string TypeStr { get; set; } // allowed: Trailer, Teaser, Clip, Featurette, Behind the Scenes, Bloopers        
 
         public VideoStreamInfoSet Streams { get; set; } 
     }

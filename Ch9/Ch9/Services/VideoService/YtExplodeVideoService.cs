@@ -36,7 +36,6 @@ namespace Ch9.Services.VideoService
 
             _youtubeClient = httpClient == null ? new YoutubeClient() : new YoutubeClient(httpClient);
             _streamSelector = new YtVideoStreamSelector(settings);
-
         }
 
         public async Task PopulateWithStreams(TmdbVideoModel attachedVideo)

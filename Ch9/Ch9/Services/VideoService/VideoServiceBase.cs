@@ -16,6 +16,7 @@ namespace Ch9.Services.VideoService
     {
         protected readonly ISettings _settings;
         protected readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
+        private readonly StringToVideoTypeConverter _converter = new StringToVideoTypeConverter();
         
         public VideoServiceBase(
             ISettings settings,
@@ -43,9 +44,12 @@ namespace Ch9.Services.VideoService
 
                 foreach (TmdbVideoModel videoModel in tmdbVideosModel.VideoModels)
                 {
-                    if (string.Equals(videoModel.Site, "YouTube", StringComparison.InvariantCultureIgnoreCase)
-                        && ((videoModel.Type & typeFilter) == videoModel.Type)
-                        && ValidateVideoId(videoModel.Key))
+                    var videoType = _converter.Convert(videoModel.TypeStr);
+
+                    if (string.Equals(videoModel.Site, "YouTube", StringComparison.InvariantCultureIgnoreCase)                        
+                        && ((videoType & typeFilter) == videoType)
+                        && ValidateVideoId(videoModel.Key)
+                        )
                     {
                         ImageModel videoThumbnail = new ImageModel
                         {

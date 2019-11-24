@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using Newtonsoft.Json;
+using Ch9.Services;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -17,7 +18,6 @@ namespace Ch9.Test.TmdbNetworkClientTests
         readonly Settings _settings;
         readonly TmdbNetworkClient _client;        
         readonly int _actor = 11856; // Daniel Day-Lewis
-        readonly int _actor2 = 679; // Franka Potente        
         readonly int _invalidActor = 9999999;
 
         public GetPersonsDetailsTests(ITestOutputHelper output)

@@ -7,6 +7,7 @@ using System.Linq;
 using Ch9.ApiClient;
 using System;
 using Ch9.Services.VideoService;
+using Ch9.Services;
 
 namespace Ch9.Test.YtExplodeVideoServiceTests
 {

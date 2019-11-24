@@ -1,8 +1,7 @@
 ﻿using Ch9.ApiClient;
 using Ch9.Models;
-using System;
+using Ch9.Services;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;

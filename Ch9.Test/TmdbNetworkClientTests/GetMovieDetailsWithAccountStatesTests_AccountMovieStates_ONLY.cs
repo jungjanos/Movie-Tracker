@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Xunit.Abstractions;
 using Ch9.Utils;
+using Ch9.Services;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Xunit.Abstractions;
 using System.Linq;
 using Ch9.Utils;
+using Ch9.Services;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {

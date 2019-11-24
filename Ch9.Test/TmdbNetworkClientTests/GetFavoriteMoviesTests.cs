@@ -1,10 +1,10 @@
 ﻿using Ch9.ApiClient;
 using Ch9.Models;
+using Ch9.Services;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;

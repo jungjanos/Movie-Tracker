@@ -8,10 +8,11 @@ using Ch9.ApiClient;
 using Ch9.Services.VideoService;
 using Ch9.Services;
 using Moq;
+using System;
 
 namespace Ch9.Test.YtExplodeVideoServiceTests
 {
-    public class PopulateWithStreamsTests
+    public class PlayVideoTests
     {
         private readonly ITestOutputHelper _output;
         private YtExplodeVideoService _ytExplodeVideoService;
@@ -19,8 +20,10 @@ namespace Ch9.Test.YtExplodeVideoServiceTests
 
         private string _youtubetMovieTrailer = "w7pYhpJaJW8"; // Alita        
         private string _invalidYoutubeKey = "-bBzMeBFqFV";
+        private Mock<IPageService> _mockPageService = new Mock<IPageService>();
+        private string streamUrlResult = null;
 
-        public PopulateWithStreamsTests(ITestOutputHelper output)
+        public PlayVideoTests(ITestOutputHelper output)
         {
             _output = output;
             var settingsKeyValues = new Dictionary<string, object>();
@@ -30,47 +33,40 @@ namespace Ch9.Test.YtExplodeVideoServiceTests
             var settings = new Settings(settingsKeyValues);
             var tmdbCachedSearchClient = new TmdbCachedSearchClient(new TmdbNetworkClient(settings, new System.Net.Http.HttpClient()));
             _ytExplodeVideoService = new YtExplodeVideoService(null, settings, tmdbCachedSearchClient);
+
+            _mockPageService.Setup(ps => ps.PushVideoPageAsync(It.IsAny<string>())).Callback<string>(streamUrl => streamUrlResult = streamUrl);
         }
 
-        //happy path
+        // happy path
         [Fact]
-        public async Task WhenCalledOnValidYoutubeId_PopulatesObject()
+        public async Task WhenCalledOnVideoWithValidStreams_CallsPageService()
         {
+            // Arrange
             TmdbVideoModel videoModel = new TmdbVideoModel { Key = _youtubetMovieTrailer };
             await _ytExplodeVideoService.PopulateWithStreams(videoModel);
 
-            PrintStreamSetDetails(videoModel.Streams);
+            // Act
+            await _ytExplodeVideoService.PlayVideo(videoModel, _mockPageService.Object);
 
-            Assert.True(videoModel.Streams.VideoStreams.Count() > 0);
+            // Assert
+            _mockPageService.Verify(m => m.PushVideoPageAsync(It.Is<string>(str => !string.IsNullOrEmpty(str))), Times.Once);
+            _output.WriteLine($"Selected stream Url: {streamUrlResult}");
         }
 
-        // failure path
+        //failure
         [Fact]
-        public async Task WhenCalledOnInvalidYoutubeId_DoesNotThrowPopulatesNull()
+        public async Task WhenCalledOnVideoWithInvalidVideo_DoesntCallPageService()
         {
+            // Arrange
             TmdbVideoModel videoModel = new TmdbVideoModel { Key = _invalidYoutubeKey };
             await _ytExplodeVideoService.PopulateWithStreams(videoModel);
 
-            Assert.Null(videoModel.Streams);
-        }
+            //Act
+            await _ytExplodeVideoService.PlayVideo(videoModel, _mockPageService.Object);
 
-
-        private void PrintStreamSetDetails(VideoStreamInfoSet streamSet)
-        {
-            _output.WriteLine($"Number of streams: {streamSet.VideoStreams.Count()}");
-            _output.WriteLine($"List of streams: ");
-            foreach (var stream in streamSet.VideoStreams)
-                PrintStreamDetails(stream);
-        }
-
-        private void PrintStreamDetails(VideoStreamInfo stream)
-        {
-            _output.WriteLine("------------");
-            _output.WriteLine($"Url: {stream.StreamUrl}");
-            _output.WriteLine($"Quality label: {stream.QualityLabel}");
-            _output.WriteLine($"Quality: {stream.Quality}");
-            _output.WriteLine($"Height: {stream.Height}");
-            _output.WriteLine($"Width: {stream.Width}");
+            //Assert
+            _mockPageService.Verify(m => m.PushVideoPageAsync(It.IsAny<string>()), Times.Never);
+            _output.WriteLine($"Selected stream Url: {streamUrlResult}");
         }
     }
 }

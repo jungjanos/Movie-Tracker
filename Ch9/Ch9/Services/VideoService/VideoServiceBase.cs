@@ -1,5 +1,5 @@
 ﻿using Ch9.ApiClient;
-using Ch9.Models;
+using Ch9.Ui.Contracts.Models;
 using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
@@ -17,13 +17,13 @@ namespace Ch9.Services.VideoService
         protected readonly ISettings _settings;
         protected readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
         private readonly StringToVideoTypeConverter _converter = new StringToVideoTypeConverter();
-        
+
         public VideoServiceBase(
             ISettings settings,
             ITmdbCachedSearchClient tmdbCachedSearchClient)
         {
             _settings = settings;
-            _tmdbCachedSearchClient = tmdbCachedSearchClient;            
+            _tmdbCachedSearchClient = tmdbCachedSearchClient;
         }
         /// <summary>
         /// Gets list of associated video entries from TMDb for the given Movie
@@ -46,7 +46,7 @@ namespace Ch9.Services.VideoService
                 {
                     var videoType = _converter.Convert(videoModel.TypeStr);
 
-                    if (string.Equals(videoModel.Site, "YouTube", StringComparison.InvariantCultureIgnoreCase)                        
+                    if (string.Equals(videoModel.Site, "YouTube", StringComparison.InvariantCultureIgnoreCase)
                         && ((videoType & typeFilter) == videoType)
                         && ValidateVideoId(videoModel.Key)
                         )
@@ -66,7 +66,7 @@ namespace Ch9.Services.VideoService
                 throw new Exception($"TMDB server responded with {movieVideosResponse.HttpStatusCode}");
 
             return resultingThumbnailsWithoutVideos;
-        }        
+        }
 
         protected virtual bool ValidateVideoId(string id)
         {

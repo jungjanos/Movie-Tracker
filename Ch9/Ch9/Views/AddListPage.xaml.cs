@@ -8,7 +8,8 @@ namespace Ch9.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AddListPage : ContentPage
     {
-        public AddListPageViewModel ViewModel {
+        public AddListPageViewModel ViewModel
+        {
             get => BindingContext as AddListPageViewModel;
             private set => BindingContext = value;
         }

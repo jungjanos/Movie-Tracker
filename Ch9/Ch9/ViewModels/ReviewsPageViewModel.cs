@@ -1,6 +1,6 @@
 ﻿using Ch9.ApiClient;
-using Ch9.Models;
 using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
 using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
@@ -36,7 +36,7 @@ namespace Ch9.ViewModels
             DecreaseRatingCommand = new Command(async () => await OnDecreaseRatingCommand());
             IncreaseRatingCommand = new Command(async () => await OnIncreaseRatingCommand());
 
-            
+
             // Ensures that the Review collection is populated if not already done or if it is empty.
             Func<Task> initializationAction = async () =>
             {

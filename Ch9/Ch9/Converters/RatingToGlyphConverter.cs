@@ -42,7 +42,7 @@ namespace Ch9.Converters
             return _favoriteStar;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => 
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
             throw new NotImplementedException();
     }
 

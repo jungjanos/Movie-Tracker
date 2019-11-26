@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-using LazyCache;
-using Ch9.Data.Contracts;
+﻿using Ch9.Data.Contracts;
 using Ch9.Infrastructure.Extensions;
+using LazyCache;
+using System.Threading.Tasks;
 
 namespace Ch9.Data.ApiClient
 {
@@ -14,7 +14,7 @@ namespace Ch9.Data.ApiClient
 
         public TmdbCachedSearchClient(ITmdbNetworkClient theMovieDatabaseClient)
         {
-            _cache = new CachingService(); 
+            _cache = new CachingService();
             _networkClient = theMovieDatabaseClient;
         }
 
@@ -42,7 +42,7 @@ namespace Ch9.Data.ApiClient
             if (!fromCache)
                 _cache.Remove(key);
 
-            var result =  _cache.Get<SearchByMovieResult>(key) ?? await _networkClient.SearchByMovie(searchString, language, includeAdult, page, year, retryCount, delayMilliseconds);
+            var result = _cache.Get<SearchByMovieResult>(key) ?? await _networkClient.SearchByMovie(searchString, language, includeAdult, page, year, retryCount, delayMilliseconds);
 
             if (result.HttpStatusCode.IsSuccessCode())
                 _cache.Add(key, result);

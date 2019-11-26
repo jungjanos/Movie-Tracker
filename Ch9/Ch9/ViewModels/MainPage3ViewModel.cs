@@ -1,6 +1,6 @@
 ﻿using Ch9.ApiClient;
-using Ch9.Models;
 using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
 using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
@@ -49,7 +49,7 @@ namespace Ch9.ViewModels
             ITmdbCachedSearchClient cachedSearchClient,
             ISearchResultFilter resultFilter,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
-            IPageService pageService) : base (pageService)
+            IPageService pageService) : base(pageService)
         {
             _settings = settings;
             _cachedSearchClient = cachedSearchClient;
@@ -94,7 +94,7 @@ namespace Ch9.ViewModels
                     }
                     SearchResult moviesOnNextPage = JsonConvert.DeserializeObject<SearchResult>(getNextPageResponse.Json);
 
-                    var filteredResults =  _settings.SafeSearch ? _resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels) : _resultFilter.FilterBySearchSettingsIncludeAdult(moviesOnNextPage.MovieDetailModels);
+                    var filteredResults = _settings.SafeSearch ? _resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels) : _resultFilter.FilterBySearchSettingsIncludeAdult(moviesOnNextPage.MovieDetailModels);
 
                     moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(filteredResults);
 

@@ -1,13 +1,12 @@
 ﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
-using System.Net.Http;
-using PanCardView.Droid;
-using Xamarin.Forms;
-using Xamarin.Essentials;
-using FFImageLoading.Forms.Platform;
-using Ch9.Views;
 using Ch9.Services;
+using Ch9.Views;
+using FFImageLoading.Forms.Platform;
+using PanCardView.Droid;
+using System.Net.Http;
+using Xamarin.Forms;
 
 namespace Ch9.Droid
 {
@@ -41,7 +40,7 @@ namespace Ch9.Droid
             {
                 RequestedOrientation = ScreenOrientation.Landscape;
             });
-            
+
             MessagingCenter.Subscribe<VideoPage>(this, MessagingCenterMessages.SET_PORTRAIT, sender =>
             {
                 RequestedOrientation = ScreenOrientation.Portrait;

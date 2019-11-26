@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Ch9.Ui.Contracts.Models;
+using System.Collections.Generic;
 
 namespace Ch9.Services.VideoService
 {

@@ -1,5 +1,5 @@
 ﻿using Ch9.ApiClient;
-using Ch9.Models;
+using Ch9.Ui.Contracts.Models;
 using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
@@ -126,7 +126,7 @@ namespace Ch9.Services
             {
                 if (desiredState) // we added the movie to the server's watchlist
                 {
-                    if (!Watchlist.MovieDetailModels.Select(movie_ => movie_.Id).Contains(movie.Id))                        
+                    if (!Watchlist.MovieDetailModels.Select(movie_ => movie_.Id).Contains(movie.Id))
                         InsertItem(movie);
                 }
                 else // we removed the movie from the server's watchlist

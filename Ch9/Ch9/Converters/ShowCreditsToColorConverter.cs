@@ -11,7 +11,7 @@ namespace Ch9.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => (bool)value ? _expanded : _closed;
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => 
-            throw new NotImplementedException(); 
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+            throw new NotImplementedException();
     }
 }

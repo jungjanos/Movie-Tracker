@@ -1,12 +1,12 @@
 ﻿using Ch9.ApiClient;
-using Ch9.Utils;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 using Ch9.Models;
-using System.Net.Http;
-using Ch9.Views;
 using Ch9.Services;
 using Ch9.Services.VideoService;
+using Ch9.Utils;
+using Ch9.Views;
+using System.Net.Http;
+using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Ch9
@@ -37,9 +37,9 @@ namespace Ch9
 #if GOOGLEPLAY
     VideoService = new VanillaYtVideoService(Settings, CachedSearchClient);
 #else
-    VideoService = new YtExplodeVideoService(httpClient, Settings, CachedSearchClient);
+            VideoService = new YtExplodeVideoService(httpClient, Settings, CachedSearchClient);
 #endif
-            
+
             WeblinkComposer = new WeblinkComposer(Settings);
 
             InitializeComponent();

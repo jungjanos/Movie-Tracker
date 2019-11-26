@@ -1,7 +1,6 @@
-﻿using Xamarin.Forms;
+﻿using Ch9.Services;
+using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using Ch9.Models;
-using Ch9.Services;
 
 namespace Ch9.Views
 {

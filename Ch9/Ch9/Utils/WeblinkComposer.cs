@@ -1,5 +1,5 @@
-﻿using Ch9.Models;
-using Ch9.Services;
+﻿using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
 
 namespace Ch9.Utils
 {

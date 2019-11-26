@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using Ch9.Models;
-using Ch9.ApiClient;
-using Xunit;
-using Newtonsoft.Json;
-using System.Threading.Tasks;
-using Xunit.Abstractions;
+﻿using Ch9.ApiClient;
 using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
 
 // INTEGRATION TESTS
 // for the critical TmdbNetworkClient.GetItemStatusOnTargetList(...) function accessing the TMDB WebAPI
@@ -30,7 +30,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _output = output;
 
             _settingsKeyValues = new Dictionary<string, object>();
-            _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";            
+            _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";
             _settings = new Settings(_settingsKeyValues);
             _client = new TmdbNetworkClient(_settings, null);
         }
@@ -55,7 +55,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
             ItemStatusOnTargetList statusObject = JsonConvert.DeserializeObject<ItemStatusOnTargetList>(result.Json);
 
-            Assert.True(statusObject.ItemPresent);            
+            Assert.True(statusObject.ItemPresent);
         }
 
         [Fact]
@@ -78,7 +78,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _output.WriteLine($"Json: {result.HttpStatusCode}");
             _output.WriteLine($"Json: {result.Json}");
 
-            Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);            
+            Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
         }
 
         [Fact]

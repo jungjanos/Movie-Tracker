@@ -13,7 +13,7 @@ namespace Ch9.Ui.Contracts.Models
         public VideoStreamInfoSet(IEnumerable<VideoStreamInfo> videoStreams, DateTimeOffset validUntil)
         {
             VideoStreams = videoStreams;
-            ValidUntil = validUntil;            
+            ValidUntil = validUntil;
         }
 
         public IEnumerable<VideoStreamInfo> VideoStreams { get; }

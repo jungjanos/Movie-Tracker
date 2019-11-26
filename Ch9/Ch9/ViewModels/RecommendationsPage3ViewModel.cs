@@ -1,6 +1,6 @@
 ﻿using Ch9.ApiClient;
-using Ch9.Models;
 using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
 using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
@@ -135,7 +135,7 @@ namespace Ch9.ViewModels
                 IsBusy = true;
                 try
                 {
-                    var getNextPageResponse = await _tmdbCachedSearchClient.GetMovieRecommendations(Movie.Id, _settings.SearchLanguage, RecommendedMovies.Page+1, retryCount, delayMilliseconds);
+                    var getNextPageResponse = await _tmdbCachedSearchClient.GetMovieRecommendations(Movie.Id, _settings.SearchLanguage, RecommendedMovies.Page + 1, retryCount, delayMilliseconds);
                     if (!getNextPageResponse.HttpStatusCode.IsSuccessCode())
                     {
                         await _pageService.DisplayAlert("Error", $"Could not update the recommended movies list, service responded with: {getNextPageResponse.HttpStatusCode}", "Ok");
@@ -145,7 +145,8 @@ namespace Ch9.ViewModels
                     moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_searchResultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
 
                     Utils.Utils.AppendResult(RecommendedMovies, moviesOnNextPage, _movieDetailModelConfigurator);
-                } catch(Exception ex){ await _pageService.DisplayAlert("Error", $"Could not update the recommended movies list, service responded with: {ex.Message}", "Ok"); }
+                }
+                catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not update the recommended movies list, service responded with: {ex.Message}", "Ok"); }
                 finally { IsBusy = false; }
             }
         }

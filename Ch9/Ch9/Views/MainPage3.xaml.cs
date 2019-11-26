@@ -18,8 +18,8 @@ namespace Ch9.Views
             InitializeComponent();
 
             ViewModel = new MainPage3ViewModel(
-                ((App)Application.Current).Settings,
-                ((App)Application.Current).CachedSearchClient,
+                ((App)Application.Current).Settings,                
+                ((App)Application.Current).TmdbApiService,
                 ((App)Application.Current).ResultFilter,
                 ((App)Application.Current).MovieDetailModelConfigurator,
                 new PageService(this));

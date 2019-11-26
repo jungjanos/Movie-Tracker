@@ -114,10 +114,15 @@ namespace Ch9.Services.ApiCommunicationService
             var result = await _cachedSearchClient.RemoveMovie(listId, mediaId, retryCount, delayMilliseconds);
             return result.HttpStatusCode;
         }
-        public async Task<HttpStatusCode> TrySearchByMovie(string searchString, string language = null, bool? includeAdult = null, int? page = null, int? year = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        public async Task<TrySearchByMovieResponse> TrySearchByMovie(string searchString, string language = null, bool? includeAdult = null, int? page = null, int? year = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            var result = await _cachedSearchClient.SearchByMovie(searchString, language, includeAdult, page, year, retryCount, delayMilliseconds, fromCache);
-            return result.HttpStatusCode;
+            var response = await _cachedSearchClient.SearchByMovie(searchString, language, includeAdult, page, year, retryCount, delayMilliseconds, fromCache);
+            SearchResult searchResult = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                searchResult = JsonConvert.DeserializeObject<SearchResult>(response.Json);
+
+            return new TrySearchByMovieResponse(response.HttpStatusCode, searchResult);
         }
         public async Task<HttpStatusCode> TryUpdateFavoriteList(string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {

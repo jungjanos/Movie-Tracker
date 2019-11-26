@@ -41,4 +41,15 @@ namespace Ch9.Services.Contracts
         }
     }
 
+    public class TrySearchByMovieResponse : ApiCommunicationServiceResponseBase
+    {
+        public SearchResult SearchResult{ get; private set; }
+
+        public TrySearchByMovieResponse (HttpStatusCode statusCode, SearchResult searchResult)
+        {
+            HttpStatusCode = statusCode;
+            SearchResult = searchResult;
+        }
+    }
+
 }

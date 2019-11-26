@@ -1,8 +1,7 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
+﻿using Ch9.Services;
 using Ch9.Ui.Contracts.Models;
+using Ch9.Services.Contracts;
 using Ch9.Utils;
-using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -15,8 +14,8 @@ namespace Ch9.ViewModels
     {
         private const int MINIMUM_Search_Str_Length = 3;
 
-        private readonly ISettings _settings;
-        private readonly ITmdbCachedSearchClient _cachedSearchClient;
+        private readonly ISettings _settings;        
+        private readonly ITmdbApiService _tmdbApiService;
         private readonly ISearchResultFilter _resultFilter;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
 
@@ -45,14 +44,14 @@ namespace Ch9.ViewModels
         public ICommand LoadNextResultPageCommand { get; private set; }
         public ICommand OnItemTappedCommand { get; private set; }
 
-        public MainPage3ViewModel(ISettings settings,
-            ITmdbCachedSearchClient cachedSearchClient,
+        public MainPage3ViewModel(ISettings settings,            
+            ITmdbApiService tmdbApiService,
             ISearchResultFilter resultFilter,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPageService pageService) : base(pageService)
         {
-            _settings = settings;
-            _cachedSearchClient = cachedSearchClient;
+            _settings = settings;            
+            _tmdbApiService = tmdbApiService;
             _resultFilter = resultFilter;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
 
@@ -86,19 +85,18 @@ namespace Ch9.ViewModels
                 IsBusy = true;
                 try
                 {
-                    var getNextPageResponse = await _cachedSearchClient.SearchByMovie(searchString: SearchString, _settings.SearchLanguage, !_settings.SafeSearch, SearchResults.Page + 1, year: null, retryCount, delayMilliseconds, fromCache: true);
-                    if (!getNextPageResponse.HttpStatusCode.IsSuccessCode())
+                    var getNextPageResponse = await _tmdbApiService.TrySearchByMovie(searchString: SearchString, _settings.SearchLanguage, !_settings.SafeSearch, SearchResults.Page + 1, year: null, retryCount, delayMilliseconds, fromCache: true);
+                    if (getNextPageResponse.HttpStatusCode.IsSuccessCode())
                     {
-                        await _pageService.DisplayAlert("Error", $"Could not load search results, service responded with: {getNextPageResponse.HttpStatusCode}", "Ok");
-                        return;
+                        SearchResult moviesOnNextPage = getNextPageResponse.SearchResult;
+
+                        var filteredResults = _settings.SafeSearch ? _resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels) : _resultFilter.FilterBySearchSettingsIncludeAdult(moviesOnNextPage.MovieDetailModels);
+                        moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(filteredResults);
+
+                        Utils.Utils.AppendResult(SearchResults, moviesOnNextPage, _movieDetailModelConfigurator);
                     }
-                    SearchResult moviesOnNextPage = JsonConvert.DeserializeObject<SearchResult>(getNextPageResponse.Json);
-
-                    var filteredResults = _settings.SafeSearch ? _resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels) : _resultFilter.FilterBySearchSettingsIncludeAdult(moviesOnNextPage.MovieDetailModels);
-
-                    moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(filteredResults);
-
-                    Utils.Utils.AppendResult(SearchResults, moviesOnNextPage, _movieDetailModelConfigurator);
+                    else
+                        await _pageService.DisplayAlert("Error", $"Could not load search results, service responded with: {getNextPageResponse.HttpStatusCode}", "Ok");
                 }
                 catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not load search results, service responded with: {ex.Message}", "Ok"); }
                 finally { IsBusy = false; }

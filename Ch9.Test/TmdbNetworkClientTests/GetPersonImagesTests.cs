@@ -1,11 +1,11 @@
 ﻿using Ch9.ApiClient;
-using Ch9.Models;
+using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using Newtonsoft.Json;
-using Ch9.Services;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -17,7 +17,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         readonly Dictionary<string, object> _settingsKeyValues;
         readonly Settings _settings;
         readonly TmdbNetworkClient _client;
-        readonly int _actor = 11856;         
+        readonly int _actor = 11856;
         readonly int _invalidActor = 9999999;
 
         public GetPersonImagesTests(ITestOutputHelper output)
@@ -52,7 +52,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
             PrintImageDetail(images);
 
-            Assert.True(images.Length > 0);            
+            Assert.True(images.Length > 0);
         }
 
         [Fact]
@@ -69,7 +69,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         {
             _output.WriteLine($"{images.Count} images");
 
-            foreach(var image in images)
+            foreach (var image in images)
             {
                 _output.WriteLine("----------------------------------");
                 _output.WriteLine($"Filepath: \t\t {image.FilePath}");

@@ -39,7 +39,7 @@ namespace Ch9.Views
         {
             ViewModel.SearchLanguageChangedCommand.Execute(null);
         }
-        
+
         private async void OnSelectGenres_Tapped(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new GenreSettingsPage());

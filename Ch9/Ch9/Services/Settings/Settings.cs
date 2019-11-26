@@ -1,5 +1,5 @@
-﻿using Ch9.Models;
-using Ch9.Services.VideoService;
+﻿using Ch9.Ui.Contracts;
+using Ch9.Ui.Contracts.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -32,7 +32,7 @@ namespace Ch9.Services
             set => _appDictionary[nameof(ApiKey)] = value;
         }
 
-        public bool IsLoggedin => !string.IsNullOrEmpty(SessionId);        
+        public bool IsLoggedin => !string.IsNullOrEmpty(SessionId);
 
         public string SessionId
         {
@@ -45,7 +45,7 @@ namespace Ch9.Services
             }
             set
             {
-                if ( SessionId != value)
+                if (SessionId != value)
                 {
                     _appDictionary[nameof(SessionId)] = value;
                     OnPropertyChanged(nameof(SessionId));
@@ -71,7 +71,7 @@ namespace Ch9.Services
                     OnPropertyChanged(nameof(AccountName));
                 }
             }
-                
+
         }
 
         public string Password

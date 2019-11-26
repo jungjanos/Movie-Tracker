@@ -13,7 +13,7 @@ namespace Ch9.Converters
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-            throw new NotImplementedException(); 
+            throw new NotImplementedException();
     }
 
 }

@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Ch9.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Ch9.Services;
 
 namespace Ch9.ViewModels
 {

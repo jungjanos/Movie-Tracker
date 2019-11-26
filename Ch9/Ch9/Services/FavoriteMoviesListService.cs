@@ -1,15 +1,15 @@
 ﻿using Ch9.ApiClient;
-using Ch9.Models;
+using Ch9.Ui.Contracts.Models;
+using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
-using Ch9.Utils;
 
 namespace Ch9.Services
 {
@@ -149,7 +149,7 @@ namespace Ch9.Services
             {
                 if (!CanLoad)
                     FavoriteMovies.MovieDetailModels.Add(movie);
-            }                
+            }
             else
                 throw new ArgumentOutOfRangeException($"{nameof(InsertItem)}() encountered invalid value on {nameof(SortBy)} : \"{SortBy}\" was not accepted");
         }

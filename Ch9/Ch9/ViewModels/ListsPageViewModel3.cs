@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
+using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Ch9.Models;
-using Ch9.Services;
 using Xamarin.Forms;
 
 namespace Ch9.ViewModels

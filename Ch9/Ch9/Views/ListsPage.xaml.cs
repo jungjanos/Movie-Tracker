@@ -17,7 +17,7 @@ namespace Ch9.Views
         public ListsPage()
         {
             ViewModel = new ListsPageViewModel3(
-                    ((App)Application.Current).UsersMovieListsService2,                                    
+                    ((App)Application.Current).UsersMovieListsService2,
                     new PageService(this));
 
             InitializeComponent();
@@ -26,7 +26,7 @@ namespace Ch9.Views
         protected override async void OnAppearing()
         {
             await ViewModel.Initialize();
-            base.OnAppearing();            
+            base.OnAppearing();
         }
     }
 }

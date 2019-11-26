@@ -1,6 +1,6 @@
 ﻿using Ch9.ApiClient;
-using Ch9.Models;
 using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
 using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
@@ -33,7 +33,7 @@ namespace Ch9.ViewModels
                 {
                     OnPropertyChanged(nameof(NumberOfMoviesInSelectedMovieCreditType));
                     OnPropertyChanged(nameof(NumberOfMoviesAsActor));
-                    OnPropertyChanged(nameof(NumberOfMoviesAsCrew));                    
+                    OnPropertyChanged(nameof(NumberOfMoviesAsCrew));
                 }
             }
         }
@@ -50,7 +50,7 @@ namespace Ch9.ViewModels
             {
                 if (SetProperty(ref _actorOrCrewSwitch, value))
                     OnPropertyChanged(nameof(NumberOfMoviesInSelectedMovieCreditType));
-            }                
+            }
         }
 
         public ICommand OnItemTappedCommand { get; private set; }
@@ -79,7 +79,7 @@ namespace Ch9.ViewModels
 
             DisplayImages = new ObservableCollection<ImageModel>(new ImageModel[] { firstImage });
 
-            OnItemTappedCommand = new Command<MovieDetailModel>(async mov => await _pageService.PushAsync(mov));
+            OnItemTappedCommand = new Command<Ui.Contracts.Models.MovieDetailModel>(async mov => await _pageService.PushAsync(mov));
 
             OpenWeblinkCommand = new Command<string>(async url => await _pageService.OpenWeblink(url));
             OpenInfolinkCommand = new Command(async () =>

@@ -1,5 +1,5 @@
-﻿using Ch9.Models;
-using Ch9.Services.VideoService;
+﻿using Ch9.Ui.Contracts;
+using Ch9.Ui.Contracts.Models;
 using System.Threading.Tasks;
 
 namespace Ch9.Services

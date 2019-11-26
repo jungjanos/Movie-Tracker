@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using Ch9.Models;
-using Xunit;
-using System.Threading.Tasks;
-using Xunit.Abstractions;
-using System.Linq;
-using Ch9.ApiClient;
-using Ch9.Services.VideoService;
+﻿using Ch9.ApiClient;
 using Ch9.Services;
-using Moq;
+using Ch9.Services.VideoService;
+using Ch9.Ui.Contracts;
+using Ch9.Ui.Contracts.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace Ch9.Test.YtExplodeVideoServiceTests
 {

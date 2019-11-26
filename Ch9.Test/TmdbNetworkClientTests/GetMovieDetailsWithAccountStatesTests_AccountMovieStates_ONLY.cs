@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using Ch9.Models;
-using Ch9.ApiClient;
-using Xunit;
-using Newtonsoft.Json;
-using System.Threading.Tasks;
-using Xunit.Abstractions;
-using Ch9.Utils;
+﻿using Ch9.ApiClient;
 using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
+using Ch9.Utils;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -21,7 +21,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         TmdbNetworkClient _client;
 
         readonly int _movie = 60800; // Macskafogó
-        readonly int _invalidMovie = 99999999;        
+        readonly int _invalidMovie = 99999999;
 
         public GetMovieDetailsWithAccountStatesTests_AccountMovieStates_ONLY(ITestOutputHelper output)
         {

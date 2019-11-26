@@ -1,8 +1,7 @@
-﻿using Ch9.Models;
-using Ch9.Services;
+﻿using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
 using Ch9.ViewModels;
 using System.Linq;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -29,7 +28,7 @@ namespace Ch9.Views
                 ((App)Application.Current).VideoService,
                 ((App)Application.Current).WeblinkComposer,
                 new PageService(this)
-                );            
+                );
 
             InitializeComponent();
         }
@@ -45,9 +44,9 @@ namespace Ch9.Views
             if (e.CurrentSelection?.FirstOrDefault() != null)
             {
                 var selectedPerson = e.CurrentSelection?.FirstOrDefault();
-                movieCastList.SelectedItem = null;                
+                movieCastList.SelectedItem = null;
                 ViewModel.MovieCastPersonTappedCommand.Execute(selectedPerson);
-            }            
+            }
         }
     }
 }

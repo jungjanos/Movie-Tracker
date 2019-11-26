@@ -1,5 +1,5 @@
-﻿using Ch9.Models;
-using Ch9.Services;
+﻿using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +19,13 @@ namespace Ch9.Utils
     public class SearchResultFilter : ISearchResultFilter
     {
         private readonly ISettings settings;
-        private readonly MovieGenreSettings genreSettings;
+        private readonly Models.MovieGenreSettings genreSettings;
 
 
         private Func<IEnumerable<MovieDetailModel>, IEnumerable<MovieDetailModel>> filterByTimeframe;
         private Func<IEnumerable<MovieDetailModel>, IEnumerable<MovieDetailModel>> filterByGenres;
 
-        public SearchResultFilter(ISettings settings, MovieGenreSettings genreSettings)
+        public SearchResultFilter(ISettings settings, Models.MovieGenreSettings genreSettings)
         {
             this.settings = settings;
             this.genreSettings = genreSettings;

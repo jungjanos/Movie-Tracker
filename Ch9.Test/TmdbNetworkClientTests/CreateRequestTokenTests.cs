@@ -1,11 +1,11 @@
-using System.Collections.Generic;
-using Ch9.Models;
 using Ch9.ApiClient;
-using Xunit;
+using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Ch9.Services;
+using Xunit;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -16,12 +16,12 @@ namespace Ch9.Test.TmdbNetworkClientTests
     // WebAPI Http 404 error conditions is unclear (when should we receive code 404 ? )
     public class CreateRequestTokenTests
     {
-        Dictionary<string, object> _settingsKeyValues;        
+        Dictionary<string, object> _settingsKeyValues;
         Settings _settings;
         TmdbNetworkClient _client;
 
         public CreateRequestTokenTests()
-        {            
+        {
             _settingsKeyValues = new Dictionary<string, object>();
             _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";
             _settings = new Settings(_settingsKeyValues);
@@ -61,13 +61,13 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenApiKeyIsInvalid_DoesNotBreakAndGivesErrorCode()
         {
             //Arrange            
-            _settingsKeyValues[nameof(Settings.ApiKey)] = "invalidkeytest1012";            
+            _settingsKeyValues[nameof(Settings.ApiKey)] = "invalidkeytest1012";
 
             //Act
-            CreateRequestTokenResult result = await _client.CreateRequestToken();           
+            CreateRequestTokenResult result = await _client.CreateRequestToken();
 
             //Assert
-            Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.Unauthorized);            
+            Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.Unauthorized);
         }
 
         [Fact]

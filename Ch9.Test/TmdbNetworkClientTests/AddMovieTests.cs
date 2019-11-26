@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using Ch9.Models;
-using Ch9.ApiClient;
-using Xunit;
-using Newtonsoft.Json;
-using System.Threading.Tasks;
-using Xunit.Abstractions;
-using System.Linq;
-using Ch9.Utils;
+﻿using Ch9.ApiClient;
 using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
+using Ch9.Utils;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -18,7 +18,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
     public class AddMovieTests : IAsyncLifetime
     {
         private int _listId;
-        private readonly List<int> _validMovieIds; 
+        private readonly List<int> _validMovieIds;
 
         private readonly ITestOutputHelper _output;
         readonly Dictionary<string, object> _settingsKeyValues;
@@ -81,7 +81,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenValidMovieIds_AddsMovies()
         {
             // Act
-            foreach(var mediaId in _validMovieIds)
+            foreach (var mediaId in _validMovieIds)
             {
                 var result = await _client.AddMovie(_listId, mediaId);
                 _output.WriteLine($"{nameof(_client.AddMovie)}(list: {_listId}, mediaId: {mediaId}) responded with: {result.HttpStatusCode}");
@@ -93,11 +93,11 @@ namespace Ch9.Test.TmdbNetworkClientTests
             MovieListModel listDetails = null;
             if (listDetailResult.HttpStatusCode.IsSuccessCode())
             {
-                 listDetails = JsonConvert.DeserializeObject<MovieListModel>(listDetailResult.Json);
+                listDetails = JsonConvert.DeserializeObject<MovieListModel>(listDetailResult.Json);
                 _output.WriteLine($"After update list contains {listDetails.Movies.Count}");
             }
 
-             // Assert
+            // Assert
             Assert.True(listDetails.Movies.Count == _validMovieIds.Count);
         }
 

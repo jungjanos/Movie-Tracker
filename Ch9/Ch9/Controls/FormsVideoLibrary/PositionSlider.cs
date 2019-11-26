@@ -10,7 +10,7 @@ namespace FormsVideoLibrary
                                     propertyChanged: (bindable, oldValue, newValue) =>
                                     {
                                         double seconds = ((TimeSpan)newValue).TotalSeconds;
-                                        ((Slider)bindable).Maximum = seconds <= 0 ? 1 : seconds; 
+                                        ((Slider)bindable).Maximum = seconds <= 0 ? 1 : seconds;
                                     });
 
         public TimeSpan Duration

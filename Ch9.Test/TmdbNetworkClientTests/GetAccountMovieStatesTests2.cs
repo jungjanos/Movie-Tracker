@@ -1,6 +1,6 @@
 ﻿using Ch9.ApiClient;
-using Ch9.Models;
 using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
 using Ch9.Utils;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -90,7 +90,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             bool onWatchlist = true;
 
             await _client.UpdateWatchlist("movie", add: true, _movie);
-            
+
             GetAccountMovieStatesResult response = await _client.GetAccountMovieStates(mediaId: _movie, guestSessionId: null, retryCount: 0);
             _output.WriteLine($"TMDB server's response code {response.HttpStatusCode}");
             _output.WriteLine($"TMDB server's response message {response.Json}");

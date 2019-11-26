@@ -22,7 +22,7 @@ namespace Ch9.ViewModels
         private readonly Task _fetchGalleryImages;
         private readonly Task _fetchPersonsMovieCredits;
 
-        public Models.GetPersonsDetailsModel PersonsDetails { get; private set; }
+        public GetPersonsDetailsModel PersonsDetails { get; private set; }
         private GetPersonsMovieCreditsModel _personsMovieCreditsModel;
         public GetPersonsMovieCreditsModel PersonsMovieCreditsModel
         {
@@ -58,7 +58,7 @@ namespace Ch9.ViewModels
         public ICommand OpenInfolinkCommand { get; private set; }
 
         public PersonsMovieCreditsPageViewModel(
-            Models.GetPersonsDetailsModel personDetails,
+            GetPersonsDetailsModel personDetails,
             ISettings settings,
             ITmdbCachedSearchClient cachedSearchClient,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,

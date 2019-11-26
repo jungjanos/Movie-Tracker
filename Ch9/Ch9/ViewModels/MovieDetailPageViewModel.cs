@@ -11,7 +11,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
-using GetPersonsDetailsModel = Ch9.Models.GetPersonsDetailsModel;
 
 namespace Ch9.ViewModels
 {

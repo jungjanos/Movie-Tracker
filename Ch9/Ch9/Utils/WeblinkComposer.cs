@@ -21,7 +21,7 @@ namespace Ch9.Utils
             _settings = settings;
         }
 
-        public string Compose(Models.GetPersonsDetailsModel person)
+        public string Compose(GetPersonsDetailsModel person)
         {
             if (_settings.InfoLinkTargetHomePage == InformationLinkTargetHomePage.IMDb)
             {

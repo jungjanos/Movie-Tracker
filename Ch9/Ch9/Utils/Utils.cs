@@ -1,5 +1,5 @@
 ﻿using Ch9.ApiClient;
-using Ch9.Ui.Contracts.Models;
+using Ch9.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

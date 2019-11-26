@@ -9,7 +9,7 @@ namespace Ch9.Droid
     public class ExtendedLabelRenderer : LabelRenderer
     {
         public ExtendedLabelRenderer(Context context) : base(context)
-        { }
+        {}
 
         protected override void OnElementChanged(ElementChangedEventArgs<Label> e)
         {

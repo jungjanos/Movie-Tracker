@@ -1,4 +1,4 @@
-﻿using Ch9.Ui.Contracts.Models;
+﻿using Ch9.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -6,7 +6,7 @@ namespace Ch9.Services.VideoService
 {
     public interface IVideoService
     {
-        Task<List<ImageModel>> GetVideoThumbnails(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true);
+        Task<List<ImageModel>> GetVideoThumbnails(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true);        
         Task PlayVideo(TmdbVideoModel attachedVideo, IPageService pageService);
     }
 }

@@ -1,6 +1,6 @@
-﻿using Ch9.ApiClient;
-using Ch9.Ui.Contracts.Models;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Ch9.ApiClient;
+using Ch9.Models;
 
 namespace Ch9.Services.VideoService
 {
@@ -16,7 +16,7 @@ namespace Ch9.Services.VideoService
 
         public VanillaYtVideoService(
             ISettings settings,
-            ITmdbCachedSearchClient tmdbCachedSearchClient) :
+            ITmdbCachedSearchClient tmdbCachedSearchClient) : 
             base(settings, tmdbCachedSearchClient)
         { }
 

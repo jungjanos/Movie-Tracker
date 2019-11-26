@@ -1,4 +1,4 @@
-﻿using Ch9.Ui.Contracts.Models;
+﻿using Ch9.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -52,7 +52,7 @@ namespace Ch9.ApiClient
             if (result == null)
                 return null;
 
-            return result.ToObject<AccountMovieStates>(JsonSerializer.Create(jsonSettings));
+            return result.ToObject<AccountMovieStates>(JsonSerializer.Create(jsonSettings));            
         }
     }
 

@@ -1,12 +1,11 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
-using Ch9.Ui.Contracts.Models;
+﻿using System.Collections.Generic;
 using Ch9.Utils;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Ch9.ApiClient;
 using Xunit;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
 using Xunit.Abstractions;
+using Ch9.Services;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -97,7 +96,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             var movies_page_4 = JsonConvert.DeserializeObject<SearchResult>(result_page_4.Json);
             var movies_page_5 = JsonConvert.DeserializeObject<SearchResult>(result_page_5.Json);
 
-            Assert.True(movies_page_4.MovieDetailModels.Count > 0 && movies_page_5.MovieDetailModels.Count > 0);
+            Assert.True(movies_page_4.MovieDetailModels.Count  > 0 && movies_page_5.MovieDetailModels.Count > 0);
             Assert.True(movies_page_4.Page == 4);
             Assert.True(movies_page_5.Page == 5);
         }

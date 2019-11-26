@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Ch9.Ui.Contracts.Models
-{
+{    
     public class GetListsModel
     {
         [JsonProperty("page")]
@@ -41,7 +41,7 @@ namespace Ch9.Ui.Contracts.Models
             set => SetProperty(ref _itemCount, value);
         }
 
-        private ObservableCollection<MovieDetailModel> _movies;
+        private ObservableCollection<MovieDetailModel> _movies;       
         [JsonProperty("items")]
         public ObservableCollection<MovieDetailModel> Movies
         {

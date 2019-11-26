@@ -1,5 +1,4 @@
-﻿using Ch9.Ui.Contracts.Models;
-
+﻿using Ch9.Models;
 namespace Ch9.Services.VideoService
 {
     class StringToVideoTypeConverter

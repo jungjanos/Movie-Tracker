@@ -1,10 +1,10 @@
-﻿using Ch9.ApiClient;
-using Ch9.Models;
-using Ch9.Utils;
+﻿using Ch9.Utils;
+using Ch9.ApiClient;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Ch9.Models;
 
 namespace Ch9.Services
 {
@@ -39,7 +39,7 @@ namespace Ch9.Services
 
         public TmdbConfigurationCache(
             ITmdbCachedSearchClient tmdbCachedSearchClient,
-            IDictionary<string, object> appDictionary = null,
+            IDictionary<string, object> appDictionary = null, 
             Application xamarinApplication = null
             )
         {

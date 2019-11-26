@@ -1,6 +1,6 @@
 ﻿using Ch9.ApiClient;
+using Ch9.Models;
 using Ch9.Services;
-using Ch9.Ui.Contracts.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -46,7 +46,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
             _output.WriteLine($"TMDB server's response code {response.HttpStatusCode}");
             _output.WriteLine($"TMDB server's response message {response.Json}");
-            Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.Created);
+            Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.Created);          
         }
         [Fact]
         // happy path
@@ -75,7 +75,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _output.WriteLine($"TMDB server's response code {response.HttpStatusCode}");
             _output.WriteLine($"TMDB server's response message {response.Json}");
             Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.Created);
-        }
+        }      
 
         [Fact]
         // failure path

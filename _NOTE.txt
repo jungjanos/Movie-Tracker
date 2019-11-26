@@ -1,5 +1,0 @@
-This branch is a work in progress architecture refactoring branch.
-For the current stable code and design please look at the main branch!!
-
--Structure is twisted with duplicate classes in different assemblies
--Many tests are temporarily broken

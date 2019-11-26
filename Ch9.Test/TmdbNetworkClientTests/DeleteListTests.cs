@@ -1,11 +1,11 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
-using Ch9.Ui.Contracts.Models;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Ch9.Models;
+using Ch9.ApiClient;
 using Xunit;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
 using Xunit.Abstractions;
+using Ch9.Services;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -41,17 +41,17 @@ namespace Ch9.Test.TmdbNetworkClientTests
             var createListResult = await _client.CreateList(name, description, language);
             var createResponse = JsonConvert.DeserializeObject<ListCrudResponseModel>(createListResult?.Json);
 
-            int? id = createResponse?.ListId;
+            int? id = createResponse?.ListId; 
 
             _output.WriteLine($"{nameof(_client.CreateList)}({name}, .., ..) called");
             _output.WriteLine($"TMDB server responded: {createListResult.HttpStatusCode}");
             _output.WriteLine($"with id: {id}");
 
             // Act
-            var deleteResult = await _client.DeleteList(id.Value);
+            var deleteResult = await _client.DeleteList(id.Value);            
 
             _output.WriteLine($"Calling {nameof(_client.DeleteList)}({id})");
-            _output.WriteLine($"TMDB server responded: {deleteResult.HttpStatusCode}");
+            _output.WriteLine($"TMDB server responded: {deleteResult.HttpStatusCode}");            
 
             // Assert
             Assert.True(deleteResult.HttpStatusCode == System.Net.HttpStatusCode.InternalServerError);
@@ -62,13 +62,13 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenListDoesNotExists_ReturnsNotFound404()
         {
             // Arrange some invalid Id:
-            int id = 123456;
+            int id = 123456; 
 
             // Act
             var deleteResult = await _client.DeleteList(id);
 
             _output.WriteLine($"Calling {nameof(_client.DeleteList)}({id})");
-            _output.WriteLine($"TMDB server responded: {deleteResult.HttpStatusCode}");
+            _output.WriteLine($"TMDB server responded: {deleteResult.HttpStatusCode}");            
 
             // Assert
             Assert.True(deleteResult.HttpStatusCode == System.Net.HttpStatusCode.NotFound);

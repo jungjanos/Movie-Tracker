@@ -1,15 +1,15 @@
-﻿using Ch9.Services;
-using Ch9.Ui.Contracts.Models;
-using Ch9.Utils;
-using Microsoft.AspNetCore.WebUtilities;
-using Newtonsoft.Json;
+﻿using Ch9.Models;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Net;
 using static Ch9.ApiClient.WebApiPathConstants;
+using Newtonsoft.Json;
+using System.Text;
+using Ch9.Utils;
+using Ch9.Services;
 
 namespace Ch9.ApiClient
 {
@@ -147,8 +147,8 @@ namespace Ch9.ApiClient
             GetFavoriteMoviesResult result = await GetResponse<GetFavoriteMoviesResult>(retryCount, delayMilliseconds, requestUri);
 
             return result;
-        }
-
+        }        
+        
         public async Task<GetMovieDetailsResult> GetMovieDetails(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id;

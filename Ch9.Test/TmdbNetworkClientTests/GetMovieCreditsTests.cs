@@ -1,12 +1,12 @@
 ﻿using Ch9.ApiClient;
-using Ch9.Services;
-using Ch9.Ui.Contracts.Models;
+using Ch9.Models;
 using Ch9.Utils;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
+using Newtonsoft.Json;
+using Ch9.Services;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -71,7 +71,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
                 _output.WriteLine($"Id: {actor.Id}");
                 _output.WriteLine($"Name: {actor.Name}");
                 _output.WriteLine($"Order: {actor.Order}");
-                _output.WriteLine($"Profile path: {actor.ProfilePath}");
+                _output.WriteLine($"Profile path: {actor.ProfilePath}");                
 
                 _output.WriteLine("-------------");
             }

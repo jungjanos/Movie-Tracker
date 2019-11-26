@@ -18,7 +18,7 @@ namespace Ch9.Ui.Contracts.Models
     /// interface to display diferent types of staff (crew and actors) on the UI     
     /// </summary>
     public interface IStaffMemberRole
-    {
+    {        
         string Name { get; }
         string Role { get; }
         string ProfilePath { get; set; }
@@ -57,7 +57,7 @@ namespace Ch9.Ui.Contracts.Models
         public string ProfilePath { get; set; }
         public string ProfileUrl { get; set; }
 
-        public string Role => Character;
+        public string Role => Character;        
     }
 
     public class MovieCrewModel : IStaffMemberRole

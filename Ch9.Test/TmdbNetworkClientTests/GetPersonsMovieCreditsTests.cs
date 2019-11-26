@@ -1,12 +1,12 @@
 ﻿using Ch9.ApiClient;
-using Ch9.Services;
-using Ch9.Ui.Contracts.Models;
-using Newtonsoft.Json;
+using Ch9.Models;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
+using Newtonsoft.Json;
+using System.Linq;
+using Ch9.Services;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -67,7 +67,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenCalledOnInvalidPerson_Return404NotFound()
         {
             GetPersonsMovieCreditsResult response = await _client.GetPersonsMovieCredits(personId: _invalidActor, language: null, retryCount: 0, delayMilliseconds: 1000);
-            _output.WriteLine(response.HttpStatusCode.ToString());
+            _output.WriteLine(response.HttpStatusCode.ToString());            
             Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.NotFound);
         }
 
@@ -101,7 +101,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
                 _output.WriteLine($"Character: {credit.Character}");
                 _output.WriteLine($"Credit id: {credit.CreditId}");
 
-                _output.WriteLine("-------------------------");
+                _output.WriteLine("-------------------------");                
             }
         }
 

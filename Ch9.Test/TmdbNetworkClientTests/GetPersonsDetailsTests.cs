@@ -1,11 +1,11 @@
 ﻿using Ch9.ApiClient;
-using Ch9.Services;
-using Ch9.Ui.Contracts.Models;
-using Newtonsoft.Json;
+using Ch9.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
+using Newtonsoft.Json;
+using Ch9.Services;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -16,7 +16,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         private readonly ITestOutputHelper _output;
         readonly Dictionary<string, object> _settingsKeyValues;
         readonly Settings _settings;
-        readonly TmdbNetworkClient _client;
+        readonly TmdbNetworkClient _client;        
         readonly int _actor = 11856; // Daniel Day-Lewis
         readonly int _invalidActor = 9999999;
 
@@ -41,7 +41,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             GetPersonsDetailsModel personsDetails = JsonConvert.DeserializeObject<GetPersonsDetailsModel>(response.Json);
             PrintPersonsDetails(personsDetails);
 
-            Assert.Contains("Daniel Day-Lewis", personsDetails.Name, System.StringComparison.InvariantCultureIgnoreCase);
+            Assert.Contains("Daniel Day-Lewis", personsDetails.Name, System.StringComparison.InvariantCultureIgnoreCase);            
         }
 
         [Fact]
@@ -54,7 +54,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
         // NO, server currently does not return localized biographies
         // TmdbNetworkClient call should be initiated without language option set
-
+        
         //[Fact]
         //// happy path
         //public async Task WhenCalledWithLanguageOption_ReturnsResultsInLanguage()
@@ -78,7 +78,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _output.WriteLine($"Birthday: {person.Birthday}");
             _output.WriteLine($"Place of birth: {person.PlaceOfBirth}");
             _output.WriteLine($"Death day: {person.DeathDay ?? ""}");
-
+            
             _output.WriteLine($"Sex: {person.Sex}");
             _output.WriteLine($"Popularity: {person.Popularity}");
             _output.WriteLine($"Profile: {person.ProfilePath}");

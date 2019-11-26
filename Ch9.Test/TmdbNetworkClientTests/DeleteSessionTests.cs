@@ -1,12 +1,12 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
-using Ch9.Ui.Contracts.Models;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Ch9.Models;
+using Ch9.ApiClient;
 using Xunit;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
 using Xunit.Abstractions;
+using System;
+using Ch9.Services;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -35,7 +35,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settingsKeyValues[nameof(Settings.AccountName)] = "j4nitest";
             _settingsKeyValues[nameof(Settings.Password)] = "awx123.";
             _settings = new Settings(_settingsKeyValues);
-            _client = new TmdbNetworkClient(_settings, null);
+            _client = new TmdbNetworkClient(_settings, null);            
         }
 
         public async Task InitializeAsync()
@@ -55,7 +55,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             {
                 _output.WriteLine(ex.Message);
                 _output.WriteLine(ex.StackTrace);
-            }
+            }            
         }
 
         public async Task DisposeAsync()
@@ -72,7 +72,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenSessionIsValid_DeletesSession(int retryCount, int delayMilliseconds)
         {
             // Act
-            var result = await _client.DeleteSession(SessionId, retryCount, delayMilliseconds);
+            var result = await _client.DeleteSession(SessionId, retryCount, delayMilliseconds );
 
             // Assert
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
@@ -85,10 +85,10 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenSessionIsInvalid_Returns200Code()
         {
             // Act
-            var result = await _client.DeleteSession("thisisaninvalidsessionid");
+            var result = await _client.DeleteSession("thisisaninvalidsessionid");            
             _output.WriteLine($"Server returned {result.HttpStatusCode}, {result.Json}");
             // Assert
-            Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
+            Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);   
         }
     }
 }

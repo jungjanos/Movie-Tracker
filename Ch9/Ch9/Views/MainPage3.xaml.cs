@@ -23,6 +23,6 @@ namespace Ch9.Views
                 ((App)Application.Current).ResultFilter,
                 ((App)Application.Current).MovieDetailModelConfigurator,
                 new PageService(this));
-        }
+        }          
     }
 }

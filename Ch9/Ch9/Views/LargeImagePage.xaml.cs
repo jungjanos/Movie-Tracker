@@ -15,7 +15,7 @@ namespace Ch9.Views
         }
 
         public LargeImagePage(MovieDetailPageViewModel viewModel)
-        {
+        {           
             InitializeComponent();
             ViewModel = viewModel;
         }

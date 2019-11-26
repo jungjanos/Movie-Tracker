@@ -1,6 +1,7 @@
 ﻿using Ch9.Services;
 using Ch9.ViewModels;
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 
 namespace Ch9.Views
 {

@@ -1,11 +1,11 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
-using Ch9.Ui.Contracts.Models;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Ch9.Models;
+using Ch9.ApiClient;
 using Xunit;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
 using Xunit.Abstractions;
+using Ch9.Services;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -100,8 +100,8 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
             // Act
             var result = await _client.CreateList(name, description, language);
-            _settings.SessionId = temp;
-
+            _settings.SessionId = temp;            
+            
             _output.WriteLine($"TMDB server responded: {result.HttpStatusCode.ToString()}");
 
             // Assert
@@ -115,7 +115,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             // Arrange
             string name = "New list ( )  ";
             string description = "description";
-            string language = "en";
+            string language = "en";            
 
             await _client.CreateList(name, description, language);
 

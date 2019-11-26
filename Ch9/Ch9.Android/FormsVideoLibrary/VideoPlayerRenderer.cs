@@ -1,11 +1,13 @@
-﻿using Android.Content;
-using Android.Widget;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.IO;
+
+using Android.Content;
+using Android.Widget;
+using ARelativeLayout = Android.Widget.RelativeLayout;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
-using ARelativeLayout = Android.Widget.RelativeLayout;
 
 [assembly: ExportRenderer(typeof(FormsVideoLibrary.VideoPlayer),
                           typeof(FormsVideoLibrary.Droid.VideoPlayerRenderer))]
@@ -166,7 +168,7 @@ namespace FormsVideoLibrary.Droid
                     hasSetSource = true;
                 }
             }
-
+              
             if (hasSetSource && Element.AutoPlay)
             {
                 videoView.Start();

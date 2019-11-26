@@ -10,9 +10,9 @@ namespace Ch9.Converters
         private static string _logoutGlyph = "\uf1b2";
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-            (bool)value ? _logoutGlyph : _loginGlyph;
+            (bool)value ? _logoutGlyph : _loginGlyph;        
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-            throw new NotImplementedException();
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>        
+            throw new NotImplementedException();        
     }
 }

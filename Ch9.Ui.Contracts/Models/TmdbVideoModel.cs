@@ -16,7 +16,7 @@ namespace Ch9.Ui.Contracts.Models
         public string Key { get; set; }
 
         [JsonProperty("name")]
-        public string Title { get; set; }
+        public string Title { get; set; }        
 
         [JsonProperty("site")]
         public string Site { get; set; }
@@ -27,7 +27,7 @@ namespace Ch9.Ui.Contracts.Models
         [JsonProperty("type")]
         public string TypeStr { get; set; } // allowed: Trailer, Teaser, Clip, Featurette, Behind the Scenes, Bloopers        
 
-        public VideoStreamInfoSet Streams { get; set; }
+        public VideoStreamInfoSet Streams { get; set; } 
     }
 
     [Flags]

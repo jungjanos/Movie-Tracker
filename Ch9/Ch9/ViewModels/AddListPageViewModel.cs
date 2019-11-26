@@ -11,14 +11,14 @@ namespace Ch9.ViewModels
         {
             get => _name;
             set => SetProperty(ref _name, value);
-        }
+        }                
 
         private string _description;
         public string Description
         {
             get => _description;
             set => SetProperty(ref _description, value);
-        }
+        } 
 
         public bool Accepted { get; private set; }
 
@@ -37,6 +37,6 @@ namespace Ch9.ViewModels
                 await _pageService.PopCurrent();
                 await _prevoiusPageViewModel.AddList(this);
             });
-        }
+        }    
     }
 }

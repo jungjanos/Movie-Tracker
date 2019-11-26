@@ -1,6 +1,6 @@
 ﻿using Ch9.ApiClient;
+using Ch9.Models;
 using Ch9.Services;
-using Ch9.Ui.Contracts.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         readonly TmdbNetworkClient _client;
         readonly int _movie = 399579;
         readonly int _movieWithoutVideos = 131223;
-        readonly int _movieWithout_hu_Videos = 114013;
+        readonly int _movieWithout_hu_Videos = 114013; 
 
         readonly int _invalidMovieId = 99999999;
         public GetMovieVideosTests(ITestOutputHelper output)
@@ -62,7 +62,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         {
             var result = await _client.GetMovieVideos(_invalidMovieId, language: null);
 
-            _output.WriteLine($"Server returned {result.HttpStatusCode}");
+            _output.WriteLine($"Server returned {result.HttpStatusCode}");            
 
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.NotFound);
         }
@@ -84,12 +84,12 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenCalledWithLanguageOption_ReturnsResultsInSpecificLanguage()
         {
             var language = "hu";
-            var result = await _client.GetMovieVideos(_movie, language: language);
+            var result = await _client.GetMovieVideos(_movie, language: language);            
             var tmdbVideosModel = JsonConvert.DeserializeObject<GetMovieVideosModel>(result.Json);
 
             PrintVideoDetails(tmdbVideosModel.VideoModels);
 
-            bool resultsInCorrectLanguage = tmdbVideosModel.VideoModels.All(videoDetail => videoDetail.Iso == language);
+            bool resultsInCorrectLanguage =  tmdbVideosModel.VideoModels.All(videoDetail => videoDetail.Iso == language);
 
             Assert.True(resultsInCorrectLanguage);
         }
@@ -99,10 +99,10 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenNoVideosInRequestedLanguage_DoesNotFallBack_ReturnsEmpty()
         {
             var language = "hu";
-            var result = await _client.GetMovieVideos(_movieWithout_hu_Videos, language: language);
+            var result = await _client.GetMovieVideos(_movieWithout_hu_Videos, language: language);            
             var tmdbVideosModel = JsonConvert.DeserializeObject<GetMovieVideosModel>(result.Json);
 
-            PrintVideoDetails(tmdbVideosModel.VideoModels);
+            PrintVideoDetails(tmdbVideosModel.VideoModels);            
 
             Assert.True(tmdbVideosModel.VideoModels.Count == 0);
         }

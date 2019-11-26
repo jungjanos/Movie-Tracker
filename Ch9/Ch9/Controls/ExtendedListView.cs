@@ -21,7 +21,7 @@ namespace Ch9.Controls
 
         // LoadMoreCommandProperty Property and field, which will be the one we will call
         // If we need to Load more data as our control needs it.
-        public static readonly BindableProperty LoadMoreCommandProperty
+        public static readonly BindableProperty LoadMoreCommandProperty 
             = BindableProperty.Create(nameof(LoadMoreCommand), typeof(ICommand), typeof(ExtendedListView), default(ICommand));
 
         public ICommand LoadMoreCommand

@@ -5,14 +5,14 @@ using Xamarin.Forms.Xaml;
 namespace Ch9.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class GenreSettingsPage : ContentPage
-    {
+	public partial class GenreSettingsPage : ContentPage
+	{
         private MovieGenreSettings movieGenreSettings;
 
-        public GenreSettingsPage()
-        {
+		public GenreSettingsPage ()
+		{
             movieGenreSettings = ((App)Application.Current).MovieGenreSettings;
-            InitializeComponent();
+			InitializeComponent ();            
             genreListView.ItemsSource = movieGenreSettings.GenreSelectionDisplay;
         }
 

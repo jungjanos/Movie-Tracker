@@ -1,5 +1,4 @@
-﻿using Ch9.Ui.Contracts.Models;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -52,7 +51,7 @@ namespace Ch9.Models
         private IDictionary<string, object> _appDictionary;
         public ObservableCollection<GenreItem> GenreSelectionDisplay;
 
-        public HashSet<int> PreferredCategories => new HashSet<int>(GenreSelectionDisplay.Where(x => x.IsSelected).Select(y => y.Id));
+        public HashSet<int> PreferredCategories => new HashSet<int>(GenreSelectionDisplay.Where(x => x.IsSelected).Select(y => y.Id));        
 
         public MovieGenreSettings()
         {
@@ -88,7 +87,7 @@ namespace Ch9.Models
                 GenreSelectionDisplay.Add(new GenreItem { Id = 10770, GenreName = "TV Movie", IsSelected = false });
                 GenreSelectionDisplay.Add(new GenreItem { Id = 53, GenreName = "Thriller", IsSelected = true });
                 GenreSelectionDisplay.Add(new GenreItem { Id = 10752, GenreName = "War", IsSelected = true });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 37, GenreName = "Western", IsSelected = true });
+                GenreSelectionDisplay.Add(new GenreItem { Id = 37, GenreName = "Western", IsSelected = true });                
             }
 
             //ToDo: check whether serialization also gets the public event property serialized!!!
@@ -140,7 +139,7 @@ namespace Ch9.Models
 
         public async Task OnSearchLanguageChanged(string newLanguage)
         {
-            var result = await ((App)Application.Current).CachedSearchClient.FetchGenreIdsWithNames(newLanguage, 2, 1000);
+            var result = await ((App)Application.Current).CachedSearchClient.FetchGenreIdsWithNames(newLanguage, 2, 1000);            
             if (199 < (int)result.HttpStatusCode && (int)result.HttpStatusCode < 300)
             {
                 //UpdateExistingGenreCategories(result.IdNamePairs);

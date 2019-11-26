@@ -42,10 +42,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Ch9.Ui.Contracts\Ch9.Ui.Contracts.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Views\MovieDetailPage.xaml.cs">
       <DependentUpon>MovieDetailPage.xaml</DependentUpon>
     </Compile>

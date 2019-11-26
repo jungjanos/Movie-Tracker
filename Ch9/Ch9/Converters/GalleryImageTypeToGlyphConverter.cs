@@ -15,7 +15,7 @@ namespace Ch9.Converters
         /// <returns>Glyph icon as string containing unicode glyph code </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => (bool)value ? _youtubeGlyph : _imagesGlyph;
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-            throw new NotImplementedException();
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => 
+            throw new NotImplementedException(); 
     }
 }

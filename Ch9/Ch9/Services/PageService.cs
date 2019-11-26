@@ -1,10 +1,10 @@
-﻿using Ch9.Ui.Contracts.Models;
+﻿using Ch9.Models;
 using Ch9.ViewModels;
 using Ch9.Views;
 using System;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
 using Xamarin.Forms;
+using Xamarin.Essentials;
 
 namespace Ch9.Services
 {
@@ -24,7 +24,7 @@ namespace Ch9.Services
         Task PushLoginPageAsync(string accountName = null, string password = null);
         Task PushPersonsMovieCreditsPageAsync(GetPersonsDetailsModel personDetails);
         Task PushRecommendationsPageAsync(MovieDetailModel movie);
-        Task PushReviewsPage(MovieDetailPageViewModel model);
+        Task PushReviewsPage(MovieDetailPageViewModel model);        
         Task PushVideoPageAsync(string streamUrl);
     }
 

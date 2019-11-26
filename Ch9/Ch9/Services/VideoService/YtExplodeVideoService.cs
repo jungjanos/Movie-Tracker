@@ -1,17 +1,16 @@
 ﻿#if !GOOGLEPLAY
 using Ch9.ApiClient;
-using Ch9.Ui.Contracts;
-using Ch9.Ui.Contracts.Models;
-using System;
-using System.Collections.Generic;
+using Ch9.Models;
 using System.Linq;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using YoutubeExplode;
 using YoutubeExplode.Models.MediaStreams;
+using System;
 
 namespace Ch9.Services.VideoService
-{
+{    
     /// <summary>
     /// Video service implementation based on YoutubeExplode. 
     /// Extracts stream information and lets play videos ads free without a Youtube Api key. 
@@ -47,13 +46,12 @@ namespace Ch9.Services.VideoService
                 var streams = streamInfoSet.Muxed.Select(stream => GetStreamInfo(stream));
 
                 attachedVideo.Streams = new VideoStreamInfoSet(streams, streamInfoSet.ValidUntil);
-            }
-            catch { }
+            } catch { }
         }
 
-        private static Ui.Contracts.Models.VideoStreamInfo GetStreamInfo(MuxedStreamInfo muxedStreamInfo) => new Ui.Contracts.Models.VideoStreamInfo(
+        private static VideoStreamInfo GetStreamInfo(MuxedStreamInfo muxedStreamInfo) => new VideoStreamInfo(
             streamUrl: muxedStreamInfo.Url,
-            quality: (Ui.Contracts.VideoQuality)muxedStreamInfo.VideoQuality,
+            quality: (VideoQuality)muxedStreamInfo.VideoQuality,
             qualityLabel: muxedStreamInfo.VideoQualityLabel,
             height: muxedStreamInfo.Resolution.Height,
             width: muxedStreamInfo.Resolution.Width
@@ -79,22 +77,22 @@ namespace Ch9.Services.VideoService
 
         public YtVideoStreamSelector(ISettings settings) => _settings = settings;
 
-        public Ui.Contracts.Models.VideoStreamInfo SelectVideoStream(IEnumerable<Ui.Contracts.Models.VideoStreamInfo> streams)
+        public VideoStreamInfo SelectVideoStream(IEnumerable<VideoStreamInfo> streams)
         {
-            Ui.Contracts.Models.VideoStreamInfo result = null;
+            VideoStreamInfo result = null;
 
             var orderedByQuality = streams.OrderByDescending(s => s.Quality);
 
             if (_settings.PlaybackQuality == VideoPlaybackQuality.High)
             {
-                result = orderedByQuality.Where(s => s.Quality > Ui.Contracts.VideoQuality.Medium480).LastOrDefault();
+                result = orderedByQuality.Where(s => s.Quality > VideoQuality.Medium480).LastOrDefault();
                 result = result ?? orderedByQuality.FirstOrDefault();
             }
             else if (_settings.PlaybackQuality == VideoPlaybackQuality.Low)
             {
-                result = orderedByQuality.Where(s => s.Quality < Ui.Contracts.VideoQuality.High720).FirstOrDefault();
+                result = orderedByQuality.Where(s => s.Quality < VideoQuality.High720).FirstOrDefault();
                 result = result ?? orderedByQuality.LastOrDefault();
-            }
+            }            
 
             return result;
         }

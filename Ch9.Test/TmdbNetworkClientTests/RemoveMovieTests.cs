@@ -1,13 +1,13 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
-using Ch9.Ui.Contracts.Models;
-using Ch9.Utils;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Ch9.Models;
+using Ch9.ApiClient;
 using Xunit;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
 using Xunit.Abstractions;
+using System.Linq;
+using Ch9.Utils;
+using Ch9.Services;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -54,7 +54,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
                 var result = await _client.AddMovie(_listId, mediaId);
                 _output.WriteLine($"{nameof(InitializeAsync)}: {nameof(_client.AddMovie)}(list: {_listId}, mediaId: {mediaId}) responded with: {result.HttpStatusCode}");
             }
-
+                
         }
         // Teardown: remove the list created by the Setup code
         public async Task DisposeAsync()

@@ -25,7 +25,7 @@ namespace Ch9.Converters
             return _empty;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-            throw new NotImplementedException();
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => 
+            throw new NotImplementedException(); 
     }
 }

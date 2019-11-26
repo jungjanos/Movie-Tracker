@@ -1,6 +1,6 @@
 ﻿using Ch9.ApiClient;
+using Ch9.Models;
 using Ch9.Services;
-using Ch9.Ui.Contracts.Models;
 using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
-
 
 namespace Ch9.ViewModels
 {
@@ -30,7 +29,7 @@ namespace Ch9.ViewModels
             get => _password;
             set => SetProperty(ref _password, value);
         }
-
+        
         public bool HideLoginPageFlag { get; set; }
 
         private string _errorMessage;
@@ -45,10 +44,10 @@ namespace Ch9.ViewModels
         public ICommand CancelCommand { get; private set; }
 
         public LoginPageViewModel(
-            ISettings settings,
-            ITmdbNetworkClient networkClient,
-            IPageService pageService,
-            string username = null,
+            ISettings settings, 
+            ITmdbNetworkClient networkClient, 
+            IPageService pageService, 
+            string username = null, 
             string password = null
             ) : base(pageService)
         {
@@ -90,7 +89,7 @@ namespace Ch9.ViewModels
             var result = await TryTmdbSignin(userName, password, retryCount, delayMilliseconds);
 
             if (result.Success)
-            {
+            {                
                 _settings.SessionId = result.NewSessionId;
 
                 _settings.AccountName = userName;

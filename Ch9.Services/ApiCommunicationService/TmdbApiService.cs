@@ -184,10 +184,15 @@ namespace Ch9.Services.ApiCommunicationService
             var result = await _cachedSearchClient.GetItemStatusOnTargetList(listId, movieId, retryCount, delayMilliseconds);
             return result.HttpStatusCode;
         }
-        public async Task<HttpStatusCode> TryGetPersonImages(int id, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        public async Task<TryGetPersonImagesResponse> TryGetPersonImages(int id, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            var result = await _cachedSearchClient.GetPersonImages(id, retryCount, delayMilliseconds, fromCache);
-            return result.HttpStatusCode;
+            var response = await _cachedSearchClient.GetPersonImages(id, retryCount, delayMilliseconds, fromCache);
+            ImageModel[] images = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                images = (JsonConvert.DeserializeObject<ImageDetailCollection>(response.Json)).Profiles;
+
+            return new TryGetPersonImagesResponse(response.HttpStatusCode, images);
         }
     }
 }

@@ -52,4 +52,15 @@ namespace Ch9.Services.Contracts
         }
     }
 
+    public class TryGetPersonImagesResponse : ApiCommunicationServiceResponseBase
+    {
+        public ImageModel[] Images{ get; private set; }
+
+        public TryGetPersonImagesResponse(HttpStatusCode statusCode, ImageModel[] images)
+        {
+            HttpStatusCode = statusCode;
+            Images = images;
+        }
+    }
+
 }

@@ -1,6 +1,7 @@
 ﻿using Ch9.ApiClient;
 using Ch9.Services;
 using Ch9.Ui.Contracts.Models;
+using Ch9.Services.Contracts;
 using Ch9.Utils;
 using Newtonsoft.Json;
 using System;
@@ -16,6 +17,7 @@ namespace Ch9.ViewModels
     {
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
+        private readonly ITmdbApiService _tmdbApiService;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
         private readonly WeblinkComposer _weblinkComposer;
@@ -61,6 +63,7 @@ namespace Ch9.ViewModels
             PersonsDetailsModel personDetails,
             ISettings settings,
             ITmdbCachedSearchClient cachedSearchClient,
+            ITmdbApiService tmdbApiService,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPersonDetailModelConfigurator personDetailModelConfigurator,
             WeblinkComposer weblinkComposer,
@@ -68,6 +71,7 @@ namespace Ch9.ViewModels
         {
             _settings = settings;
             _cachedSearchClient = cachedSearchClient;
+            _tmdbApiService = tmdbApiService;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _personDetailModelConfigurator = personDetailModelConfigurator;
             _weblinkComposer = weblinkComposer;
@@ -99,15 +103,12 @@ namespace Ch9.ViewModels
             IsBusy = true;
             try
             {
-                GetPersonImagesResult response = await _cachedSearchClient.GetPersonImages(PersonsDetails.Id, retryCount: 1, delayMilliseconds: 1000, fromCache: true);
+                var response = await _tmdbApiService.TryGetPersonImages(PersonsDetails.Id, retryCount: 1, delayMilliseconds: 1000, fromCache: true);
+
                 if (response.HttpStatusCode.IsSuccessCode())
                 {
-                    ImageModel[] imagesFetched = null;
-                    await Task.Run(() =>
-                    {
-                        imagesFetched = JsonConvert.DeserializeObject<ImageDetailCollection>(response.Json).Profiles;
-                        _personDetailModelConfigurator.SetProfileGalleryImageSources(imagesFetched);
-                    });
+                    ImageModel[] imagesFetched = response.Images;
+                    _personDetailModelConfigurator.SetProfileGalleryImageSources(imagesFetched);
 
                     var first = DisplayImages.FirstOrDefault();
 

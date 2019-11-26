@@ -63,4 +63,14 @@ namespace Ch9.Services.Contracts
         }
     }
 
+    public class TryGetPersonsMovieCreditsResponse : ApiCommunicationServiceResponseBase
+    {
+        public PersonsMovieCreditsModel PersonsMovieCreditsModel{ get; private set; }
+
+        public TryGetPersonsMovieCreditsResponse(HttpStatusCode statusCode, PersonsMovieCreditsModel personsMovieCreditsModel)
+        {
+            HttpStatusCode = statusCode;
+            PersonsMovieCreditsModel = personsMovieCreditsModel;
+        }
+    }
 }

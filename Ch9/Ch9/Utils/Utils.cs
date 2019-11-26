@@ -111,7 +111,7 @@ namespace Ch9.Utils
             return staffMembers;
         }
 
-        public static void SortMoviesByYearDesc(this GetPersonsMovieCreditsModel movieCredits)
+        public static void SortMoviesByYearDesc(this PersonsMovieCreditsModel movieCredits)
         {
             Array.Sort(movieCredits.MoviesAsActor, new MovieYearDescComparer());
             Array.Sort(movieCredits.MoviesAsCrewMember, new MovieYearDescComparer());

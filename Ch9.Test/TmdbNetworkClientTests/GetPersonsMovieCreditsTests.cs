@@ -41,7 +41,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             GetPersonsMovieCreditsResult response = await _client.GetPersonsMovieCredits(personId: _actor, language: null, retryCount: 0, delayMilliseconds: 1000);
             Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.OK);
 
-            GetPersonsMovieCreditsModel personsCredits = JsonConvert.DeserializeObject<GetPersonsMovieCreditsModel>(response.Json);
+            PersonsMovieCreditsModel personsCredits = JsonConvert.DeserializeObject<PersonsMovieCreditsModel>(response.Json);
             PrintActorsCredits(personsCredits.MoviesAsActor);
 
             Assert.True(personsCredits.MoviesAsActor.Length >= 32);
@@ -55,7 +55,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             GetPersonsMovieCreditsResult response = await _client.GetPersonsMovieCredits(personId: _director, language: null, retryCount: 0, delayMilliseconds: 1000);
             Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.OK);
 
-            GetPersonsMovieCreditsModel personsCredits = JsonConvert.DeserializeObject<GetPersonsMovieCreditsModel>(response.Json);
+            PersonsMovieCreditsModel personsCredits = JsonConvert.DeserializeObject<PersonsMovieCreditsModel>(response.Json);
             PrintCrewMembersCredits(personsCredits.MoviesAsCrewMember);
 
             Assert.True(personsCredits.MoviesAsCrewMember.Length >= 1);
@@ -81,7 +81,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
             Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.OK);
 
-            GetPersonsMovieCreditsModel personsCredits = JsonConvert.DeserializeObject<GetPersonsMovieCreditsModel>(response.Json);
+            PersonsMovieCreditsModel personsCredits = JsonConvert.DeserializeObject<PersonsMovieCreditsModel>(response.Json);
             PrintActorsCredits(personsCredits.MoviesAsActor);
 
             Assert.Contains(hungarianTitle, response.Json, System.StringComparison.OrdinalIgnoreCase);

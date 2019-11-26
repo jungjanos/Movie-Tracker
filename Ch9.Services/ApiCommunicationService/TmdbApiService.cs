@@ -159,10 +159,16 @@ namespace Ch9.Services.ApiCommunicationService
 
             return new TryGetMovieCreditsResponse(response.HttpStatusCode, movieCredits);
         }
-        public async Task<HttpStatusCode> TryGetPersonsMovieCredits(int personId, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        public async Task<TryGetPersonsMovieCreditsResponse> TryGetPersonsMovieCredits(int personId, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            var result = await _cachedSearchClient.GetPersonsMovieCredits(personId, language, retryCount, delayMilliseconds, fromCache);
-            return result.HttpStatusCode;
+            var response = await _cachedSearchClient.GetPersonsMovieCredits(personId, language, retryCount, delayMilliseconds, fromCache);
+
+            PersonsMovieCreditsModel personsMovieCredits = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                personsMovieCredits = JsonConvert.DeserializeObject<PersonsMovieCreditsModel>(response.Json);
+
+            return new TryGetPersonsMovieCreditsResponse(response.HttpStatusCode, personsMovieCredits);
         }
         public async Task<TryGetPersonsDetailsResponse> TryGetPersonsDetails(int personId, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {

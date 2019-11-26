@@ -1,9 +1,7 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
+﻿using Ch9.Services;
 using Ch9.Ui.Contracts.Models;
 using Ch9.Services.Contracts;
 using Ch9.Utils;
-using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -15,8 +13,7 @@ namespace Ch9.ViewModels
 {
     public class PersonsMovieCreditsPageViewModel : ViewModelBase
     {
-        private readonly ISettings _settings;
-        private readonly ITmdbCachedSearchClient _cachedSearchClient;
+        private readonly ISettings _settings;        
         private readonly ITmdbApiService _tmdbApiService;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
@@ -25,8 +22,8 @@ namespace Ch9.ViewModels
         private readonly Task _fetchPersonsMovieCredits;
 
         public PersonsDetailsModel PersonsDetails { get; private set; }
-        private GetPersonsMovieCreditsModel _personsMovieCreditsModel;
-        public GetPersonsMovieCreditsModel PersonsMovieCreditsModel
+        private PersonsMovieCreditsModel _personsMovieCreditsModel;
+        public PersonsMovieCreditsModel PersonsMovieCreditsModel
         {
             get => _personsMovieCreditsModel;
             set
@@ -61,16 +58,14 @@ namespace Ch9.ViewModels
 
         public PersonsMovieCreditsPageViewModel(
             PersonsDetailsModel personDetails,
-            ISettings settings,
-            ITmdbCachedSearchClient cachedSearchClient,
+            ISettings settings,            
             ITmdbApiService tmdbApiService,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPersonDetailModelConfigurator personDetailModelConfigurator,
             WeblinkComposer weblinkComposer,
             IPageService pageService) : base(pageService)
         {
-            _settings = settings;
-            _cachedSearchClient = cachedSearchClient;
+            _settings = settings;            
             _tmdbApiService = tmdbApiService;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _personDetailModelConfigurator = personDetailModelConfigurator;
@@ -126,15 +121,13 @@ namespace Ch9.ViewModels
             IsBusy = true;
             try
             {
-                GetPersonsMovieCreditsResult movieCreditsResponse = await _cachedSearchClient.GetPersonsMovieCredits(PersonsDetails.Id, _settings.SearchLanguage, 1, 1000, fromCache: true);
-                if (movieCreditsResponse.HttpStatusCode.IsSuccessCode())
+                var response = await _tmdbApiService.TryGetPersonsMovieCredits(PersonsDetails.Id, _settings.SearchLanguage, 1, 1000, fromCache: true);
+                if (response.HttpStatusCode.IsSuccessCode())
                 {
-                    GetPersonsMovieCreditsModel personsMovieCredits = null;
+                    var personsMovieCredits = response.PersonsMovieCreditsModel;
 
                     await Task.Run(() =>
                     {
-                        personsMovieCredits = JsonConvert.DeserializeObject<GetPersonsMovieCreditsModel>(movieCreditsResponse.Json);
-
                         _movieDetailModelConfigurator.SetImageSrc(personsMovieCredits.MoviesAsActor);
                         _movieDetailModelConfigurator.SetImageSrc(personsMovieCredits.MoviesAsCrewMember);
                         _movieDetailModelConfigurator.SetGenreNamesFromGenreIds(personsMovieCredits.MoviesAsActor);
@@ -144,7 +137,7 @@ namespace Ch9.ViewModels
                     PersonsMovieCreditsModel = personsMovieCredits;
                 }
                 else
-                    await _pageService.DisplayAlert("Error", $"Could not fetch persons movie participations, service responded: FetchPersonsMovieCreditsDetails():{movieCreditsResponse.HttpStatusCode}", "Ok");
+                    await _pageService.DisplayAlert("Error", $"Could not fetch persons movie participations, service responded: FetchPersonsMovieCreditsDetails():{response.HttpStatusCode}", "Ok");
             }
             catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not fetch persons movie participations, exception at: FetchPersonsMovieCreditsDetails():{ex.Message}", "Ok"); }
             finally { IsBusy = false; }

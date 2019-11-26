@@ -5,7 +5,10 @@ using System;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+<<<<<<< HEAD
 using GetPersonsDetailsModel = Ch9.Models.GetPersonsDetailsModel;
+=======
+>>>>>>> Switch-to-Ui-Models
 
 namespace Ch9.Services
 {

@@ -1,6 +1,11 @@
 ﻿using Ch9.ApiClient;
+<<<<<<< HEAD
 using Ch9.Models;
 using Ch9.Services;
+=======
+using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
+>>>>>>> Switch-to-Ui-Models
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;

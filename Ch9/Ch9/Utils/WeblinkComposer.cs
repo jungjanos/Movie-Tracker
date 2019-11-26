@@ -1,5 +1,5 @@
-﻿using Ch9.Models;
-using Ch9.Services;
+﻿using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
 
 namespace Ch9.Utils
 {
@@ -21,7 +21,7 @@ namespace Ch9.Utils
             _settings = settings;
         }
 
-        public string Compose(GetPersonsDetailsModel person)
+        public string Compose(Models.GetPersonsDetailsModel person)
         {
             if (_settings.InfoLinkTargetHomePage == InformationLinkTargetHomePage.IMDb)
             {

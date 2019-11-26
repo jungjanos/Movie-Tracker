@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using Ch9.Models;
-using Ch9.ApiClient;
-using Xunit;
-using Newtonsoft.Json;
-using System.Threading.Tasks;
-using Xunit.Abstractions;
+﻿using Ch9.ApiClient;
 using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {

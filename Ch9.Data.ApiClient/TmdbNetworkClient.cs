@@ -1,16 +1,16 @@
-﻿using System;
-using System.Text;
+﻿using Ch9.Data.Contracts;
+using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using static Ch9.Data.ApiClient.WebApiPathConstants;
-using Ch9.Data.Contracts;
 
 namespace Ch9.Data.ApiClient
-{    
+{
     public class TmdbNetworkClient : ITmdbNetworkClient
     {
         private HttpClient HttpClient { get; }
@@ -146,8 +146,8 @@ namespace Ch9.Data.ApiClient
             GetFavoriteMoviesResult result = await GetResponse<GetFavoriteMoviesResult>(retryCount, delayMilliseconds, requestUri);
 
             return result;
-        }        
-        
+        }
+
         public async Task<GetMovieDetailsResult> GetMovieDetails(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id;
@@ -1065,7 +1065,7 @@ namespace Ch9.Data.ApiClient
             try
             {
                 // read only if Http-Success
-                if (200 <= (int)result.HttpStatusCode && (int)result.HttpStatusCode < 300) 
+                if (200 <= (int)result.HttpStatusCode && (int)result.HttpStatusCode < 300)
                     result.Json = await response.Content.ReadAsStringAsync();
             }
             catch

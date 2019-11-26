@@ -1,5 +1,5 @@
-﻿using Ch9.Models;
-using Ch9.Services;
+﻿using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,19 +9,19 @@ namespace Ch9.Utils
     {
         void SetGalleryImageSources(MovieDetailModel movie);
         void SetGenreNamesFromGenreIds(IEnumerable<MovieDetailModel> movies);
-        void SetImageSrc(IEnumerable<MovieDetailModel> movies);        
+        void SetImageSrc(IEnumerable<MovieDetailModel> movies);
     }
 
     // TODO : This class should be composed into MovieDetailModel (static field ?)
     public class MovieDetailModelConfigurator : IMovieDetailModelConfigurator
     {
         private readonly ISettings _settings;
-        private readonly TmdbConfigurationModel _tmdbConfiguration;
-        private readonly MovieGenreSettings _movieGenreSettings;
+        private readonly Models.TmdbConfigurationModel _tmdbConfiguration;
+        private readonly Models.MovieGenreSettings _movieGenreSettings;
 
-        private string ImageBaseUrl => _settings.UseHttpsForImages? _tmdbConfiguration.Images.SecureBaseUrl : _tmdbConfiguration.Images.BaseUrl;
+        private string ImageBaseUrl => _settings.UseHttpsForImages ? _tmdbConfiguration.Images.SecureBaseUrl : _tmdbConfiguration.Images.BaseUrl;
 
-        public MovieDetailModelConfigurator(ISettings settings, TmdbConfigurationModel tmdbConfiguration, MovieGenreSettings movieGenreSettings)
+        public MovieDetailModelConfigurator(ISettings settings, Models.TmdbConfigurationModel tmdbConfiguration, Models.MovieGenreSettings movieGenreSettings)
         {
             _settings = settings;
             _tmdbConfiguration = tmdbConfiguration;
@@ -70,7 +70,7 @@ namespace Ch9.Utils
                         firstDisplayImage.FilePath = baseUrl + _tmdbConfiguration.Images.PosterSizes.Last() + movie.ImgPosterName;
                     else
                         firstDisplayImage.FilePath = @"https://invalidurl.jpg";
-                    
+
                     movie.MovieImages.Add(firstDisplayImage);
                 }
             }

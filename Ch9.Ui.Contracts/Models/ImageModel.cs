@@ -24,7 +24,7 @@ namespace Ch9.Ui.Contracts.Models
         public int VoteCount { get; set; }
 
         [JsonProperty("width")]
-        public int Width { get; set; }        
+        public int Width { get; set; }
 
         // TODO : this should probably be initialized with false
         public bool HasAttachedVideo { get; set; }

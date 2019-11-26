@@ -1,6 +1,6 @@
 ﻿using Ch9.ApiClient;
-using Ch9.Models;
 using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -39,7 +39,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             GetMovieWatchlistResult getWatchlist = await _client.GetMovieWatchlist();
             SearchResult moviesOnWatchlist = JsonConvert.DeserializeObject<SearchResult>(getWatchlist.Json);
 
-            foreach(var movie in moviesOnWatchlist.MovieDetailModels)
+            foreach (var movie in moviesOnWatchlist.MovieDetailModels)
                 await _client.UpdateWatchlist("movie", false, movie.Id);
         }
 
@@ -95,7 +95,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             var movieIdsAsc = watchlistAsc.MovieDetailModels.Select(movie => movie.Id);
 
             GetMovieWatchlistResult resultDesc = await _client.GetMovieWatchlist(accountId: null, language: null, sortBy: "created_at.desc", page: null, retryCount: 0);
-            var watchlistDesc = JsonConvert.DeserializeObject<SearchResult>(resultDesc.Json);            
+            var watchlistDesc = JsonConvert.DeserializeObject<SearchResult>(resultDesc.Json);
             var movieIdsDesc = watchlistDesc.MovieDetailModels.Select(movie => movie.Id);
 
             PrintWatchlist(watchlistAsc);

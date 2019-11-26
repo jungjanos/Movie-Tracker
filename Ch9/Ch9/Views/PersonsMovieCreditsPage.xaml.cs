@@ -18,7 +18,7 @@ namespace Ch9.Views
         public PersonsMovieCreditsPage(GetPersonsDetailsModel personDetails)
         {
             ViewModel = new PersonsMovieCreditsPageViewModel(
-                personDetails,                
+                personDetails,
                 ((App)Application.Current).Settings,
                 ((App)Application.Current).CachedSearchClient,
                 ((App)Application.Current).MovieDetailModelConfigurator,

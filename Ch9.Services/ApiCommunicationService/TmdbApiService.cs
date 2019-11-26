@@ -131,17 +131,17 @@ namespace Ch9.Services.ApiCommunicationService
         }
         public async Task<HttpStatusCode> TryGetMovieCredits(int id, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            var result = await _cachedSearchClient.GetMovieCredits(id,retryCount , delayMilliseconds , fromCache);
+            var result = await _cachedSearchClient.GetMovieCredits(id, retryCount, delayMilliseconds, fromCache);
             return result.HttpStatusCode;
         }
         public async Task<HttpStatusCode> TryGetPersonsMovieCredits(int personId, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            var result = await _cachedSearchClient.GetPersonsMovieCredits(personId, language , retryCount , delayMilliseconds , fromCache );
+            var result = await _cachedSearchClient.GetPersonsMovieCredits(personId, language, retryCount, delayMilliseconds, fromCache);
             return result.HttpStatusCode;
         }
         public async Task<HttpStatusCode> TryGetPersonsDetails(int personId, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            var result = await _cachedSearchClient.GetPersonsDetails(personId, language , retryCount , delayMilliseconds , fromCache);
+            var result = await _cachedSearchClient.GetPersonsDetails(personId, language, retryCount, delayMilliseconds, fromCache);
             return result.HttpStatusCode;
         }
         public async Task<HttpStatusCode> TryGetAccountMovieStates(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)

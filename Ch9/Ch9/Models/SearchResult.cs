@@ -1,4 +1,4 @@
-﻿using Ch9.Models;
+﻿using Ch9.Ui.Contracts.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

@@ -1,6 +1,8 @@
 ﻿using Ch9.Models;
 using Ch9.Services;
+using Ch9.Ui.Contracts.Models;
 using System.Collections.Generic;
+using GetPersonsDetailsModel = Ch9.Models.GetPersonsDetailsModel;
 
 namespace Ch9.Utils
 {

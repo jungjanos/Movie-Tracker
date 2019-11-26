@@ -28,8 +28,8 @@ namespace Ch9.Converters
 
             if ((int)value == 3)
                 return _customListsAreActive;
-            
-            return _nonActiveColor;            
+
+            return _nonActiveColor;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>

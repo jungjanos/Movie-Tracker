@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace FormsVideoLibrary
-{ 
+{
     public interface IVideoPlayerController
     {
         VideoStatus Status { set; get; }

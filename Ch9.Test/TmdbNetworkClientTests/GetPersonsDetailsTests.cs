@@ -38,7 +38,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             GetPersonsDetailsResult response = await _client.GetPersonsDetails(personId: _actor, language: null, retryCount: 0, delayMilliseconds: 1000);
             Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.OK);
 
-            GetPersonsDetailsModel personsDetails = JsonConvert.DeserializeObject<GetPersonsDetailsModel>(response.Json);
+            PersonsDetailsModel personsDetails = JsonConvert.DeserializeObject<PersonsDetailsModel>(response.Json);
             PrintPersonsDetails(personsDetails);
 
             Assert.Contains("Daniel Day-Lewis", personsDetails.Name, System.StringComparison.InvariantCultureIgnoreCase);
@@ -69,7 +69,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         //}
 
 
-        private void PrintPersonsDetails(GetPersonsDetailsModel person)
+        private void PrintPersonsDetails(PersonsDetailsModel person)
         {
             _output.WriteLine($"Id: {person.Id}");
             _output.WriteLine($"Name: {person.Name}");

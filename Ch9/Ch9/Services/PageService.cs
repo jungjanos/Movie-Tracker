@@ -22,7 +22,7 @@ namespace Ch9.Services
         Task PushAsync(MovieDetailModel movie);
         Task PushLargeImagePageAsync(MovieDetailPageViewModel viewModel);
         Task PushLoginPageAsync(string accountName = null, string password = null);
-        Task PushPersonsMovieCreditsPageAsync(GetPersonsDetailsModel personDetails);
+        Task PushPersonsMovieCreditsPageAsync(PersonsDetailsModel personDetails);
         Task PushRecommendationsPageAsync(MovieDetailModel movie);
         Task PushReviewsPage(MovieDetailPageViewModel model);
         Task PushVideoPageAsync(string streamUrl);
@@ -51,7 +51,7 @@ namespace Ch9.Services
         public async Task PushVideoPageAsync(string streamUrl) =>
             await _currentPage.Navigation.PushAsync(new VideoPage(streamUrl));
 
-        public async Task PushPersonsMovieCreditsPageAsync(GetPersonsDetailsModel personDetails) =>
+        public async Task PushPersonsMovieCreditsPageAsync(PersonsDetailsModel personDetails) =>
             await _currentPage.Navigation.PushAsync(new PersonsMovieCreditsPage(personDetails));
 
         public async Task PushLoginPageAsync(string accountName = null, string password = null) =>

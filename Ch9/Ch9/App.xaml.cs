@@ -7,6 +7,8 @@ using Ch9.Views;
 using System.Net.Http;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Ch9.Services.Contracts;
+using Ch9.Services.ApiCommunicationService;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Ch9
@@ -24,7 +26,7 @@ namespace Ch9
         public UsersMovieListsService2 UsersMovieListsService2 { get; private set; }
         public IVideoService VideoService { get; private set; }
         public WeblinkComposer WeblinkComposer { get; private set; }
-
+        public ITmdbApiService TmdbApiService { get; private set; }
 
         public App(HttpClient httpClient = null)
         {
@@ -33,6 +35,8 @@ namespace Ch9
             ResultFilter = new SearchResultFilter(Settings, MovieGenreSettings);
             TmdbNetworkClient = new TmdbNetworkClient(Settings, httpClient);
             CachedSearchClient = new TmdbCachedSearchClient(TmdbNetworkClient);
+            TmdbApiService = new TmdbApiService(new Data.ApiClient.TmdbCachedSearchClient(new Data.ApiClient.TmdbNetworkClient(httpClient, Settings.ApiKey)));
+            TmdbApiService.SessionId = Settings.SessionId;
 
 #if GOOGLEPLAY
     VideoService = new VanillaYtVideoService(Settings, CachedSearchClient);

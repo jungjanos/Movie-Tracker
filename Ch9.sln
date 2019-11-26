@@ -15,9 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ch9.Data.Contracts", "Ch9.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ch9.Data.ApiClient", "Ch9.Data.ApiClient\Ch9.Data.ApiClient.csproj", "{BB24FE4A-DD08-4E59-B82C-5F9C84980827}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ch9.Services", "Ch9.Services\Ch9.Services.csproj", "{8BB685ED-745C-464C-976E-EAD1D75A0FDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ch9.Services", "Ch9.Services\Ch9.Services.csproj", "{8BB685ED-745C-464C-976E-EAD1D75A0FDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ch9.Infrastructure", "Ch9.Infrastructure\Ch9.Infrastructure.csproj", "{B611F74E-E820-4C84-900E-C7A27F09105B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ch9.Infrastructure", "Ch9.Infrastructure\Ch9.Infrastructure.csproj", "{B611F74E-E820-4C84-900E-C7A27F09105B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ch9.Services.Contracts", "Ch9.Services.Contracts\Ch9.Services.Contracts.csproj", "{5E304E8C-03EE-4811-9B13-3B835A7DFDAC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -111,6 +113,16 @@ Global
 		{B611F74E-E820-4C84-900E-C7A27F09105B}.GooglePlayRelease|Any CPU.Build.0 = Release|Any CPU
 		{B611F74E-E820-4C84-900E-C7A27F09105B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B611F74E-E820-4C84-900E-C7A27F09105B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E304E8C-03EE-4811-9B13-3B835A7DFDAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E304E8C-03EE-4811-9B13-3B835A7DFDAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E304E8C-03EE-4811-9B13-3B835A7DFDAC}.DotfuscatedGPlayRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{5E304E8C-03EE-4811-9B13-3B835A7DFDAC}.DotfuscatedGPlayRelease|Any CPU.Build.0 = Release|Any CPU
+		{5E304E8C-03EE-4811-9B13-3B835A7DFDAC}.GooglePlayDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E304E8C-03EE-4811-9B13-3B835A7DFDAC}.GooglePlayDebug|Any CPU.Build.0 = Debug|Any CPU
+		{5E304E8C-03EE-4811-9B13-3B835A7DFDAC}.GooglePlayRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{5E304E8C-03EE-4811-9B13-3B835A7DFDAC}.GooglePlayRelease|Any CPU.Build.0 = Release|Any CPU
+		{5E304E8C-03EE-4811-9B13-3B835A7DFDAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E304E8C-03EE-4811-9B13-3B835A7DFDAC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

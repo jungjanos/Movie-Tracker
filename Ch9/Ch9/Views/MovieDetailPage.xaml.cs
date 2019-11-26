@@ -22,6 +22,7 @@ namespace Ch9.Views
                 movie,
                 ((App)Application.Current).Settings,
                 ((App)Application.Current).CachedSearchClient,
+                ((App)Application.Current).TmdbApiService,
                 ((App)Application.Current).UsersMovieListsService2,
                 ((App)Application.Current).MovieDetailModelConfigurator,
                 ((App)Application.Current).PersonDetailModelConfigurator,

@@ -1,12 +1,22 @@
 ﻿using Ch9.Data.Contracts;
+using Ch9.Infrastructure.Extensions;
+using Ch9.Services.Contracts;
+using Ch9.Ui.Contracts.Models;
+using Newtonsoft.Json;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace Ch9.Services.ApiCommunicationService
 {
-    public class TmdbApiService
+    public class TmdbApiService : ITmdbApiService
     {
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
+
+        public string SessionId
+        {
+            get => _cachedSearchClient.SessionId;
+            set => _cachedSearchClient.SessionId = value;
+        }
 
         public TmdbApiService(ITmdbCachedSearchClient cachedSearchClient)
         {
@@ -114,10 +124,15 @@ namespace Ch9.Services.ApiCommunicationService
             var result = await _cachedSearchClient.UpdateFavoriteList(mediaType, add, mediaId, accountId, retryCount, delayMilliseconds);
             return result.HttpStatusCode;
         }
-        public async Task<HttpStatusCode> TryGetMovieImages(int id, string language = null, string otherLanguage = null, bool? includeLanguageless = true, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        public async Task<TryGetMovieImagesResponse> TryGetMovieImages(int id, string language = null, string otherLanguage = null, bool? includeLanguageless = true, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            var result = await _cachedSearchClient.GetMovieImages(id, language, otherLanguage, includeLanguageless, retryCount, delayMilliseconds, fromCache);
-            return result.HttpStatusCode;
+            var response = await _cachedSearchClient.GetMovieImages(id, language, otherLanguage, includeLanguageless, retryCount, delayMilliseconds, fromCache);
+            ImageDetailCollection imageCollection = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                imageCollection = JsonConvert.DeserializeObject<ImageDetailCollection>(response.Json);
+
+            return new TryGetMovieImagesResponse(response.HttpStatusCode, imageCollection);
         }
         public async Task<HttpStatusCode> TryUpdateWatchlist(string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
@@ -129,20 +144,30 @@ namespace Ch9.Services.ApiCommunicationService
             var result = await _cachedSearchClient.GetMovieVideos(id, language, retryCount, delayMilliseconds, fromCache);
             return result.HttpStatusCode;
         }
-        public async Task<HttpStatusCode> TryGetMovieCredits(int id, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        public async Task<TryGetMovieCreditsResponse> TryGetMovieCredits(int id, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            var result = await _cachedSearchClient.GetMovieCredits(id, retryCount, delayMilliseconds, fromCache);
-            return result.HttpStatusCode;
+            var response = await _cachedSearchClient.GetMovieCredits(id, retryCount, delayMilliseconds, fromCache);
+            MovieCreditsModel movieCredits = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                movieCredits = JsonConvert.DeserializeObject<MovieCreditsModel>(response.Json);
+
+            return new TryGetMovieCreditsResponse(response.HttpStatusCode, movieCredits);
         }
         public async Task<HttpStatusCode> TryGetPersonsMovieCredits(int personId, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
             var result = await _cachedSearchClient.GetPersonsMovieCredits(personId, language, retryCount, delayMilliseconds, fromCache);
             return result.HttpStatusCode;
         }
-        public async Task<HttpStatusCode> TryGetPersonsDetails(int personId, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        public async Task<TryGetPersonsDetailsResponse> TryGetPersonsDetails(int personId, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            var result = await _cachedSearchClient.GetPersonsDetails(personId, language, retryCount, delayMilliseconds, fromCache);
-            return result.HttpStatusCode;
+            var response = await _cachedSearchClient.GetPersonsDetails(personId, language, retryCount, delayMilliseconds, fromCache);
+            PersonsDetailsModel personsDetails = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                personsDetails = JsonConvert.DeserializeObject<PersonsDetailsModel>(response.Json);
+
+            return new TryGetPersonsDetailsResponse(response.HttpStatusCode, personsDetails);
         }
         public async Task<HttpStatusCode> TryGetAccountMovieStates(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {

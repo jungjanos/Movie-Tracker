@@ -3,7 +3,7 @@ using System;
 
 namespace Ch9.Ui.Contracts.Models
 {
-    public class GetPersonsDetailsModel
+    public class PersonsDetailsModel
     {
         [JsonProperty("birthday")]
         public string Birthday { get; set; }

@@ -15,7 +15,7 @@ namespace Ch9.Views
             set => BindingContext = value;
         }
 
-        public PersonsMovieCreditsPage(GetPersonsDetailsModel personDetails)
+        public PersonsMovieCreditsPage(PersonsDetailsModel personDetails)
         {
             ViewModel = new PersonsMovieCreditsPageViewModel(
                 personDetails,

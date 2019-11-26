@@ -12,6 +12,12 @@ namespace Ch9.Data.ApiClient
         private readonly IAppCache _cache;
         private readonly ITmdbNetworkClient _networkClient;
 
+        public string SessionId
+        {
+            get => _networkClient.SessionId;
+            set => _networkClient.SessionId = value;
+        }
+
         public TmdbCachedSearchClient(ITmdbNetworkClient theMovieDatabaseClient)
         {
             _cache = new CachingService();

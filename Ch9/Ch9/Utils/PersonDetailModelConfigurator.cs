@@ -8,7 +8,7 @@ namespace Ch9.Utils
     public interface IPersonDetailModelConfigurator
     {
         void SetProfileGalleryImageSources(ImageModel[] profileImages, int profileImageSize = 1);
-        void SetProfileGalleryPictureImageSrc(ImageModel profileGalleryImage, GetPersonsDetailsModel personModel, int profileImageSize = 1);
+        void SetProfileGalleryPictureImageSrc(ImageModel profileGalleryImage, PersonsDetailsModel personModel, int profileImageSize = 1);
         void SetProfileImageSrc(IEnumerable<IStaffMemberRole> staffMembers, int profileImageSize = 0);
     }
 
@@ -44,7 +44,7 @@ namespace Ch9.Utils
         /// <param name="profileGalleryImage">image which needs its FilePath property set to the complete image file url</param>
         /// <param name="personModel">object from which the relative file url is copied</param>
         /// <param name="profileImageSize">Quality selector 0: lowest, 1: high, 2 very high, 3: original. Uses TmdbConfigurationModel</param>
-        public void SetProfileGalleryPictureImageSrc(ImageModel profileGalleryImage, GetPersonsDetailsModel personModel, int profileImageSize = 1) =>
+        public void SetProfileGalleryPictureImageSrc(ImageModel profileGalleryImage, PersonsDetailsModel personModel, int profileImageSize = 1) =>
             profileGalleryImage.FilePath = ImageBaseUrl + _tmdbConfiguration.Images.ProfileSizes[profileImageSize] + personModel.ProfilePath;
 
         public void SetProfileGalleryImageSources(ImageModel[] profileImages, int profileImageSize = 1)

@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
+using Ch9.Services.Contracts;
 
 namespace Ch9.ViewModels
 {
@@ -19,6 +20,9 @@ namespace Ch9.ViewModels
         public MovieDetailModel Movie { get; set; }
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
+
+        private readonly ITmdbApiService _tmdbApiService;
+
         private readonly UsersMovieListsService2 _movieListsService2;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
@@ -100,7 +104,8 @@ namespace Ch9.ViewModels
             MovieDetailModel movie,
             ISettings settings,
             ITmdbCachedSearchClient cachedSearchClient,
-            UsersMovieListsService2 movieListsService2,
+            ITmdbApiService tmdbApiService,
+        UsersMovieListsService2 movieListsService2,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPersonDetailModelConfigurator personDetailModelConfigurator,
             IVideoService videoService,
@@ -110,6 +115,7 @@ namespace Ch9.ViewModels
             Movie = movie;
             _settings = settings;
             _cachedSearchClient = cachedSearchClient;
+            _tmdbApiService = tmdbApiService;
             _movieListsService2 = movieListsService2;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _personDetailModelConfigurator = personDetailModelConfigurator;
@@ -224,17 +230,11 @@ namespace Ch9.ViewModels
             GalleryIsBusy = true;
             try
             {
-                GetMovieImagesResult response = await _cachedSearchClient.GetMovieImages(Movie.Id, _settings.SearchLanguage, otherLanguage: null, includeLanguageless: true, retryCount: 0, delayMilliseconds: 1000, fromCache: true);
+                var response = await _tmdbApiService.TryGetMovieImages(Movie.Id, _settings.SearchLanguage, otherLanguage: null, includeLanguageless: true, retryCount: 0, delayMilliseconds: 1000, fromCache: true);
 
                 if (response.HttpStatusCode.IsSuccessCode())
                 {
-                    ImageDetailCollection imageCollection = null;
-                    await Task.Run(() =>
-                    {
-                        imageCollection = JsonConvert.DeserializeObject<ImageDetailCollection>(response.Json);
-                    });
-                    Movie.ImageDetailCollection = imageCollection;
-                    // TODO : refactor SetGalleryImageSources() to make it background friendly
+                    Movie.ImageDetailCollection = response.ImageDetailCollection;
                     _movieDetailModelConfigurator.SetGalleryImageSources(Movie);
                 }
             }
@@ -344,10 +344,12 @@ namespace Ch9.ViewModels
             {
                 try
                 {
-                    GetMovieCreditsResult response = await _cachedSearchClient.GetMovieCredits(Movie.Id, retryCount, delayMilliseconds, fromCache: true);
+                    var response = await _tmdbApiService.TryGetMovieCredits(Movie.Id, retryCount, delayMilliseconds, fromCache: true);
+
                     if (response.HttpStatusCode.IsSuccessCode())
                     {
-                        _credits = JsonConvert.DeserializeObject<MovieCreditsModel>(response.Json);
+                        _credits = response.MovieCreditsModel;
+
                         var staffMembers = _credits.ExtractStaffToDisplay(7);
                         _personDetailModelConfigurator.SetProfileImageSrc(staffMembers);
 
@@ -364,15 +366,15 @@ namespace Ch9.ViewModels
         {
             try
             {
-                GetPersonsDetailsResult personDetailsResponse = await _cachedSearchClient.GetPersonsDetails(staffMemberRole.Id, _settings.SearchLanguage, 0, 1000, fromCache: true);
-                if (personDetailsResponse.HttpStatusCode.IsSuccessCode())
-                {
-                    GetPersonsDetailsModel personDetails = JsonConvert.DeserializeObject<GetPersonsDetailsModel>(personDetailsResponse.Json);
+                var response = await _tmdbApiService.TryGetPersonsDetails(staffMemberRole.Id, _settings.SearchLanguage, 0, 1000, fromCache: true);
 
+                if (response.HttpStatusCode.IsSuccessCode())
+                {
+                    var personDetails = response.PersonsDetailsModel;
                     await _pageService.PushPersonsMovieCreditsPageAsync(personDetails);
                 }
                 else
-                    await _pageService.DisplayAlert("Error", $"Could not fetch persons details, service responded: GetPersonDetails():{personDetailsResponse.HttpStatusCode}", "Ok");
+                    await _pageService.DisplayAlert("Error", $"Could not fetch persons details, service responded: GetPersonDetails():{response.HttpStatusCode}", "Ok");
             }
             catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not fetch persons details, service responded with: {ex.Message}", "Ok"); }
         }

@@ -1,8 +1,7 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
+﻿using Ch9.Services;
 using Ch9.Ui.Contracts.Models;
 using Ch9.Utils;
-using Newtonsoft.Json;
+using Ch9.Services.Contracts;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -13,8 +12,8 @@ namespace Ch9.ViewModels
 {
     public class RecommendationsPage3ViewModel : ViewModelBase
     {
-        private readonly ISettings _settings;
-        private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
+        private readonly ISettings _settings;        
+        private readonly ITmdbApiService _tmdbApiService;
         private readonly ISearchResultFilter _searchResultFilter;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
 
@@ -49,8 +48,8 @@ namespace Ch9.ViewModels
         public ICommand OnItemTappedCommand { get; private set; }
 
         public RecommendationsPage3ViewModel(MovieDetailModel movie,
-            ISettings settings,
-            ITmdbCachedSearchClient tmdbCachedSearchClient,
+            ISettings settings,            
+            ITmdbApiService tmdbApiService,
             ISearchResultFilter searchResultFilter,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPageService pageService) : base(pageService)
@@ -58,7 +57,7 @@ namespace Ch9.ViewModels
             Movie = movie;
 
             _settings = settings;
-            _tmdbCachedSearchClient = tmdbCachedSearchClient;
+            _tmdbApiService = tmdbApiService;
             _searchResultFilter = searchResultFilter;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _recommendationsOrSimilars = true;
@@ -135,16 +134,15 @@ namespace Ch9.ViewModels
                 IsBusy = true;
                 try
                 {
-                    var getNextPageResponse = await _tmdbCachedSearchClient.GetMovieRecommendations(Movie.Id, _settings.SearchLanguage, RecommendedMovies.Page + 1, retryCount, delayMilliseconds);
-                    if (!getNextPageResponse.HttpStatusCode.IsSuccessCode())
+                    var response = await _tmdbApiService.TryGetMovieRecommendations(Movie.Id, _settings.SearchLanguage, RecommendedMovies.Page + 1, retryCount, delayMilliseconds);
+                    if (response.HttpStatusCode.IsSuccessCode())
                     {
-                        await _pageService.DisplayAlert("Error", $"Could not update the recommended movies list, service responded with: {getNextPageResponse.HttpStatusCode}", "Ok");
-                        return;
+                        var moviesOnNextPage = response.MovieRecommendations;
+                        moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_searchResultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
+                        Utils.Utils.AppendResult(RecommendedMovies, moviesOnNextPage, _movieDetailModelConfigurator);
                     }
-                    SearchResult moviesOnNextPage = JsonConvert.DeserializeObject<SearchResult>(getNextPageResponse.Json);
-                    moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_searchResultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
-
-                    Utils.Utils.AppendResult(RecommendedMovies, moviesOnNextPage, _movieDetailModelConfigurator);
+                    else
+                        await _pageService.DisplayAlert("Error", $"Could not update the recommended movies list, service responded with: {response.HttpStatusCode}", "Ok");
                 }
                 catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not update the recommended movies list, service responded with: {ex.Message}", "Ok"); }
                 finally { IsBusy = false; }
@@ -164,16 +162,16 @@ namespace Ch9.ViewModels
                 IsBusy = true;
                 try
                 {
-                    var getNextPageResponse = await _tmdbCachedSearchClient.GetSimilarMovies(Movie.Id, _settings.SearchLanguage, SimilarMovies.Page + 1, retryCount, delayMilliseconds);
-                    if (!getNextPageResponse.HttpStatusCode.IsSuccessCode())
-                    {
-                        await _pageService.DisplayAlert("Error", $"Could not update the similar movies list, service responded with: {getNextPageResponse.HttpStatusCode}", "Ok");
-                        return;
-                    }
-                    SearchResult moviesOnNextPage = JsonConvert.DeserializeObject<SearchResult>(getNextPageResponse.Json);
-                    moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_searchResultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
+                    var response = await _tmdbApiService.TryGetSimilarMovies(Movie.Id, _settings.SearchLanguage, SimilarMovies.Page + 1, retryCount, delayMilliseconds);
 
-                    Utils.Utils.AppendResult(SimilarMovies, moviesOnNextPage, _movieDetailModelConfigurator);
+                    if (response.HttpStatusCode.IsSuccessCode())
+                    {
+                        var moviesOnNextPage = response.SimilarMovies;
+                        moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_searchResultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
+                        Utils.Utils.AppendResult(SimilarMovies, moviesOnNextPage, _movieDetailModelConfigurator);
+                    }
+                    else
+                        await _pageService.DisplayAlert("Error", $"Could not update the similar movies list, service responded with: {response.HttpStatusCode}", "Ok");
                 }
                 catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not update the similar movies list, service responded with: {ex.Message}", "Ok"); }
                 finally { IsBusy = false; }

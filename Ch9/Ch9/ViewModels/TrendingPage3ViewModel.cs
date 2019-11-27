@@ -124,7 +124,7 @@ namespace Ch9.ViewModels
                     var nextPageResponse = await _tmdbApiService.TryGetTrendingMovies(week: true, _settings.SearchLanguage, !_settings.SafeSearch, TrendingWeek.Page + 1, retryCount, delayMilliseconds);
                     if (nextPageResponse.HttpStatusCode.IsSuccessCode())
                     {
-                        var moviesOnNextPage = nextPageResponse.SearchResult;
+                        var moviesOnNextPage = nextPageResponse.TrendingMovies;
                         moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
 
                         Utils.Utils.AppendResult(TrendingWeek, moviesOnNextPage, _movieDetailConfigurator);
@@ -153,7 +153,7 @@ namespace Ch9.ViewModels
                     
                     if (nextPageResponse.HttpStatusCode.IsSuccessCode())
                     {
-                        var moviesOnNextPage = nextPageResponse.SearchResult;
+                        var moviesOnNextPage = nextPageResponse.TrendingMovies;
                         moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
 
                         Utils.Utils.AppendResult(TrendingDay, moviesOnNextPage, _movieDetailConfigurator);

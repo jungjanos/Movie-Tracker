@@ -75,10 +75,15 @@ namespace Ch9.Services.ApiCommunicationService
             var result = await _cachedSearchClient.GetLists(accountId, language, page, retryCount, delayMilliseconds, fromCache);
             return result.HttpStatusCode;
         }
-        public async Task<HttpStatusCode> TryGetMovieRecommendations(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        public async Task<TryGetMovieRecommendationsResponse> TryGetMovieRecommendations(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            var result = await _cachedSearchClient.GetMovieRecommendations(id, language, page, retryCount, delayMilliseconds, fromCache);
-            return result.HttpStatusCode;
+            var response = await _cachedSearchClient.GetMovieRecommendations(id, language, page, retryCount, delayMilliseconds, fromCache);
+            SearchResult recommendations = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                recommendations = JsonConvert.DeserializeObject<SearchResult>(response.Json);
+
+            return new TryGetMovieRecommendationsResponse(response.HttpStatusCode, recommendations);
         }
         public async Task<TryGetMovieReviewsResponse> TryGetMovieReviews(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
@@ -95,10 +100,15 @@ namespace Ch9.Services.ApiCommunicationService
             var result = await _cachedSearchClient.GetMovieWatchlist(accountId, language, sortBy, page, retryCount, delayMilliseconds);
             return result.HttpStatusCode;
         }
-        public async Task<HttpStatusCode> TryGetSimilarMovies(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        public async Task<TryGetSimilarMoviesResponse> TryGetSimilarMovies(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            var result = await _cachedSearchClient.GetSimilarMovies(id, language, page, retryCount, delayMilliseconds, fromCache);
-            return result.HttpStatusCode;
+            var response = await _cachedSearchClient.GetSimilarMovies(id, language, page, retryCount, delayMilliseconds, fromCache);
+            SearchResult similars = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                similars = JsonConvert.DeserializeObject<SearchResult>(response.Json);
+
+            return new TryGetSimilarMoviesResponse(response.HttpStatusCode, similars);
         }
         public async Task<HttpStatusCode> TryGetTmdbConfiguration(int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {

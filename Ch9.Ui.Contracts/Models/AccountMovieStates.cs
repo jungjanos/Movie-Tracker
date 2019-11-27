@@ -17,7 +17,7 @@ namespace Ch9.Ui.Contracts.Models
         public bool OnWatchlist { get; set; }
     }
 
-    public enum Rating
+    public enum Rating //TODO will be dead code soon, eliminate!
     {
         Half = 1,
         One = 2,

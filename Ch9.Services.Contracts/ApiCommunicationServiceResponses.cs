@@ -76,12 +76,12 @@ namespace Ch9.Services.Contracts
 
     public class TryGetTrendingMoviesResponse : ApiCommunicationServiceResponseBase
     {
-        public SearchResult SearchResult { get; private set; }
+        public SearchResult TrendingMovies { get; private set; }
 
-        public TryGetTrendingMoviesResponse(HttpStatusCode statusCode, SearchResult searchResult)
+        public TryGetTrendingMoviesResponse(HttpStatusCode statusCode, SearchResult trendingMovies)
         {
             HttpStatusCode = statusCode;
-            SearchResult = searchResult;
+            TrendingMovies = trendingMovies;
         }
     }
 
@@ -106,4 +106,25 @@ namespace Ch9.Services.Contracts
         public TryRateMovieResponse(HttpStatusCode statusCode) => HttpStatusCode = statusCode;
     }
 
+    public class TryGetMovieRecommendationsResponse : ApiCommunicationServiceResponseBase
+    {
+        public SearchResult MovieRecommendations { get; private set; }
+
+        public TryGetMovieRecommendationsResponse(HttpStatusCode statusCode, SearchResult movieRecommendations)
+        {
+            HttpStatusCode = statusCode;
+            MovieRecommendations = movieRecommendations;
+        }
+    }
+
+    public class TryGetSimilarMoviesResponse : ApiCommunicationServiceResponseBase
+    {
+        public SearchResult SimilarMovies { get; private set; }
+
+        public TryGetSimilarMoviesResponse(HttpStatusCode statusCode, SearchResult similarMovies)
+        {
+            HttpStatusCode = statusCode;
+            SimilarMovies = similarMovies;
+        }
+    }
 }

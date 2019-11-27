@@ -21,7 +21,7 @@ namespace Ch9.Views
             ViewModel = new RecommendationsPage3ViewModel(
                 movie,
                 ((App)Application.Current).Settings,
-                ((App)Application.Current).CachedSearchClient,
+                ((App)Application.Current).TmdbApiService,
                 ((App)Application.Current).ResultFilter,
                 ((App)Application.Current).MovieDetailModelConfigurator,
                 new PageService(this));

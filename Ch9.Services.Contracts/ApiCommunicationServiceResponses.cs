@@ -101,4 +101,9 @@ namespace Ch9.Services.Contracts
         public TryDeleteMovieRatingResponse(HttpStatusCode statusCode) => HttpStatusCode = statusCode;
     }
 
+    public class TryRateMovieResponse : ApiCommunicationServiceResponseBase
+    {
+        public TryRateMovieResponse(HttpStatusCode statusCode) => HttpStatusCode = statusCode;
+    }
+
 }

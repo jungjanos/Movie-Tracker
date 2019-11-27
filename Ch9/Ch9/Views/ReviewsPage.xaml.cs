@@ -18,8 +18,7 @@ namespace Ch9.Views
         {
             ViewModel = new ReviewsPageViewModel(
                 parentViewModel,
-                ((App)Application.Current).Settings,
-                ((App)Application.Current).CachedSearchClient,
+                ((App)Application.Current).Settings,                
                 ((App)Application.Current).TmdbApiService,
                 new PageService(this)
                 );

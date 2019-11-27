@@ -1,5 +1,4 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
+﻿using Ch9.Services;
 using Ch9.Ui.Contracts.Models;
 using Ch9.Utils;
 using Ch9.Services.Contracts;
@@ -13,8 +12,7 @@ namespace Ch9.ViewModels
 {
     public class ReviewsPageViewModel : ViewModelBase
     {
-        private readonly ISettings _settings;
-        private readonly ITmdbCachedSearchClient _cachedSearchClient;
+        private readonly ISettings _settings;        
         private readonly ITmdbApiService _tmdbApiService;
         public ICommand DeleteRatingCommand { get; private set; }
         public ICommand SetRatingCommand { get; private set; }
@@ -22,13 +20,8 @@ namespace Ch9.ViewModels
         public ICommand IncreaseRatingCommand { get; private set; }
         public MovieDetailPageViewModel ParentPageViewModel { get; set; }
 
-        public ReviewsPageViewModel(MovieDetailPageViewModel parent, 
-            ISettings settings, 
-            ITmdbCachedSearchClient tmdbCachedSearchClient,
-            ITmdbApiService tmdbApiService,
-            IPageService pageService) : base(pageService)
-        {
-            _cachedSearchClient = tmdbCachedSearchClient;
+        public ReviewsPageViewModel(MovieDetailPageViewModel parent, ISettings settings, ITmdbApiService tmdbApiService, IPageService pageService) : base(pageService)
+        {            
             _tmdbApiService = tmdbApiService;
             ParentPageViewModel = parent;
             _settings = settings;
@@ -145,11 +138,7 @@ namespace Ch9.ViewModels
 
             try
             {
-                int enumValue = (int)(targetRating * 2);
-                Rating rating = (Rating)enumValue;
-
-                var response = await _cachedSearchClient.RateMovie(rating, ParentPageViewModel.Movie.Id, null, 1, 1000);
-
+                var response = await _tmdbApiService.TryRateMovie(targetRating, ParentPageViewModel.Movie.Id, null, 1, 1000);
                 if (!response.HttpStatusCode.IsSuccessCode())
                     await _pageService.DisplayAlert("Error", $"Could not update your vote, server response: {response.HttpStatusCode}", "Ok");
 

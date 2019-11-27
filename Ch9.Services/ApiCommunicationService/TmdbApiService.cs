@@ -115,10 +115,11 @@ namespace Ch9.Services.ApiCommunicationService
 
             return new TryGetTrendingMoviesResponse(response.HttpStatusCode, movies);
         }
-        public async Task<HttpStatusCode> TryRateMovie(decimal rating, int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<TryRateMovieResponse> TryRateMovie(decimal rating, int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            var result = await _cachedSearchClient.RateMovie(rating, mediaId, guestSessionId, retryCount, delayMilliseconds);
-            return result.HttpStatusCode;
+            var response = await _cachedSearchClient.RateMovie(rating, mediaId, guestSessionId, retryCount, delayMilliseconds);
+
+            return new TryRateMovieResponse(response.HttpStatusCode);
         }
         public async Task<HttpStatusCode> TryRemoveMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
         {

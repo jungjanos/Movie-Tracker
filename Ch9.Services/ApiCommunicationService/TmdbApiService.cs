@@ -99,10 +99,15 @@ namespace Ch9.Services.ApiCommunicationService
             var result = await _cachedSearchClient.GetTmdbConfiguration(retryCount, delayMilliseconds, fromCache);
             return result.HttpStatusCode;
         }
-        public async Task<HttpStatusCode> TryGetTrendingMovies(bool week = true, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        public async Task<TryGetTrendingMoviesResponse> TryGetTrendingMovies(bool week = true, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            var result = await _cachedSearchClient.GetTrendingMovies(week, language, includeAdult, page, retryCount, delayMilliseconds, fromCache);
-            return result.HttpStatusCode;
+            var response = await _cachedSearchClient.GetTrendingMovies(week, language, includeAdult, page, retryCount, delayMilliseconds, fromCache);
+            SearchResult movies = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                movies = JsonConvert.DeserializeObject<SearchResult>(response.Json);
+
+            return new TryGetTrendingMoviesResponse(response.HttpStatusCode, movies);
         }
         public async Task<HttpStatusCode> TryRateMovie(decimal rating, int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {

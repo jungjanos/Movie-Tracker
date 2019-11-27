@@ -73,4 +73,15 @@ namespace Ch9.Services.Contracts
             PersonsMovieCreditsModel = personsMovieCreditsModel;
         }
     }
+
+    public class TryGetTrendingMoviesResponse : ApiCommunicationServiceResponseBase
+    {
+        public SearchResult SearchResult { get; private set; }
+
+        public TryGetTrendingMoviesResponse(HttpStatusCode statusCode, SearchResult searchResult)
+        {
+            HttpStatusCode = statusCode;
+            SearchResult = searchResult;
+        }
+    }
 }

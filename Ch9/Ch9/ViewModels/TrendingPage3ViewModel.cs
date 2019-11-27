@@ -1,8 +1,7 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
+﻿using Ch9.Services;
 using Ch9.Ui.Contracts.Models;
 using Ch9.Utils;
-using Newtonsoft.Json;
+using Ch9.Services.Contracts;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -14,8 +13,8 @@ namespace Ch9.ViewModels
     // Tracks the trending movies for the current week and day
     public class TrendingPage3ViewModel : ViewModelBase
     {
-        private readonly ISettings _settings;
-        private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
+        private readonly ISettings _settings;        
+        private readonly ITmdbApiService _tmdbApiService;
         private readonly ISearchResultFilter _resultFilter;
         private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
 
@@ -48,14 +47,14 @@ namespace Ch9.ViewModels
         public ICommand OnItemTappedCommand { get; private set; }
 
 
-        public TrendingPage3ViewModel(ISettings settings,
-            ITmdbCachedSearchClient tmdbCachedSearchClient,
+        public TrendingPage3ViewModel(ISettings settings,            
+            ITmdbApiService tmdbApiService,
             ISearchResultFilter resultFilter,
             IMovieDetailModelConfigurator movieDetailConfigurator,
             IPageService pageService) : base(pageService)
         {
-            _settings = settings;
-            _tmdbCachedSearchClient = tmdbCachedSearchClient;
+            _settings = settings;            
+            _tmdbApiService = tmdbApiService;
             _resultFilter = resultFilter;
             _movieDetailConfigurator = movieDetailConfigurator;
             _weekOrDaySwitch = true;
@@ -122,16 +121,16 @@ namespace Ch9.ViewModels
                 IsBusy = true;
                 try
                 {
-                    var getNextPageResponse = await _tmdbCachedSearchClient.GetTrendingMovies(week: true, _settings.SearchLanguage, !_settings.SafeSearch, TrendingWeek.Page + 1, retryCount, delayMilliseconds);
-                    if (!getNextPageResponse.HttpStatusCode.IsSuccessCode())
+                    var nextPageResponse = await _tmdbApiService.TryGetTrendingMovies(week: true, _settings.SearchLanguage, !_settings.SafeSearch, TrendingWeek.Page + 1, retryCount, delayMilliseconds);
+                    if (nextPageResponse.HttpStatusCode.IsSuccessCode())
                     {
-                        await _pageService.DisplayAlert("Error", $"Could not load the weekly trending list, service responded with: {getNextPageResponse.HttpStatusCode}", "Ok");
-                        return;
-                    }
-                    SearchResult moviesOnNextPage = JsonConvert.DeserializeObject<SearchResult>(getNextPageResponse.Json);
-                    moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
+                        var moviesOnNextPage = nextPageResponse.SearchResult;
+                        moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
 
-                    Utils.Utils.AppendResult(TrendingWeek, moviesOnNextPage, _movieDetailConfigurator);
+                        Utils.Utils.AppendResult(TrendingWeek, moviesOnNextPage, _movieDetailConfigurator);
+                    }
+                    else
+                        await _pageService.DisplayAlert("Error", $"Could not load the weekly trending list, service responded with: {nextPageResponse.HttpStatusCode}", "Ok");                     
                 }
                 catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not load the weekly trending list, service responded with: {ex.Message}", "Ok"); }
                 finally { IsBusy = false; }
@@ -150,16 +149,17 @@ namespace Ch9.ViewModels
                 IsBusy = true;
                 try
                 {
-                    var getNextPageResponse = await _tmdbCachedSearchClient.GetTrendingMovies(week: false, _settings.SearchLanguage, !_settings.SafeSearch, TrendingDay.Page + 1, retryCount, delayMilliseconds);
-                    if (!getNextPageResponse.HttpStatusCode.IsSuccessCode())
+                    var nextPageResponse = await _tmdbApiService.TryGetTrendingMovies(week: false, _settings.SearchLanguage, !_settings.SafeSearch, TrendingDay.Page + 1, retryCount, delayMilliseconds);
+                    
+                    if (nextPageResponse.HttpStatusCode.IsSuccessCode())
                     {
-                        await _pageService.DisplayAlert("Error", $"Could not load the daily trending list, service responded with: {getNextPageResponse.HttpStatusCode}", "Ok");
-                        return;
-                    }
-                    SearchResult moviesOnNextPage = JsonConvert.DeserializeObject<SearchResult>(getNextPageResponse.Json);
-                    moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
+                        var moviesOnNextPage = nextPageResponse.SearchResult;
+                        moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
 
-                    Utils.Utils.AppendResult(TrendingDay, moviesOnNextPage, _movieDetailConfigurator);
+                        Utils.Utils.AppendResult(TrendingDay, moviesOnNextPage, _movieDetailConfigurator);
+                    }
+                    else
+                        await _pageService.DisplayAlert("Error", $"Could not load the daily trending list, service responded with: {nextPageResponse.HttpStatusCode}", "Ok");
                 }
                 catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not load the daily trending list, service responded with: {ex.Message}", "Ok"); }
                 finally { IsBusy = false; }

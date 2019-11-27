@@ -1,9 +1,7 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
+﻿using Ch9.Services;
 using Ch9.Services.VideoService;
 using Ch9.Ui.Contracts.Models;
 using Ch9.Utils;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,11 +16,8 @@ namespace Ch9.ViewModels
     public class MovieDetailPageViewModel : ViewModelBase
     {
         public MovieDetailModel Movie { get; set; }
-        private readonly ISettings _settings;
-        private readonly ITmdbCachedSearchClient _cachedSearchClient;
-
+        private readonly ISettings _settings;       
         private readonly ITmdbApiService _tmdbApiService;
-
         private readonly UsersMovieListsService2 _movieListsService2;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
@@ -103,7 +98,6 @@ namespace Ch9.ViewModels
         public MovieDetailPageViewModel(
             MovieDetailModel movie,
             ISettings settings,
-            ITmdbCachedSearchClient cachedSearchClient,
             ITmdbApiService tmdbApiService,
         UsersMovieListsService2 movieListsService2,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
@@ -113,8 +107,7 @@ namespace Ch9.ViewModels
             IPageService pageService) : base(pageService)
         {
             Movie = movie;
-            _settings = settings;
-            _cachedSearchClient = cachedSearchClient;
+            _settings = settings;            
             _tmdbApiService = tmdbApiService;
             _movieListsService2 = movieListsService2;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
@@ -201,13 +194,9 @@ namespace Ch9.ViewModels
 
                 try
                 {
-                    GetMovieDetailsWithAccountStatesResult movieDetailsResult = await _cachedSearchClient.GetMovieDetailsWithAccountStates(Movie.Id, _settings.SearchLanguage, retryCount: 1, delayMilliseconds: 1000);
-
-                    if (movieDetailsResult.HttpStatusCode.IsSuccessCode())
-                    {
-                        JsonConvert.PopulateObject(movieDetailsResult.Json, Movie);
-                        MovieStates = movieDetailsResult.ExtractAccountStates();
-                    }
+                    var response = await _tmdbApiService.TryGetMovieDetailsWithAccountStates(Movie, Movie.Id, _settings.SearchLanguage, retryCount: 1, delayMilliseconds: 1000);
+                    if (response.HttpStatusCode.Is200Code())
+                        MovieStates = response.AccountMovieStates;
                 }
                 catch (Exception ex)
                 { await _pageService.DisplayAlert("Error", $"Could not fetch movie details, exception: {ex.Message}", "Ok"); }

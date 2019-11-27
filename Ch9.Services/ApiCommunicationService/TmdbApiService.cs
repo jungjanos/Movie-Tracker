@@ -3,6 +3,8 @@ using Ch9.Infrastructure.Extensions;
 using Ch9.Services.Contracts;
 using Ch9.Ui.Contracts.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -55,10 +57,33 @@ namespace Ch9.Services.ApiCommunicationService
             var result = await _cachedSearchClient.GetMovieDetails(id, language, retryCount, delayMilliseconds);
             return result.HttpStatusCode;
         }
-        public async Task<HttpStatusCode> TryGetMovieDetailsWithAccountStates(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        /// <summary>
+        /// tries to populate the existing movie object with details
+        /// </summary>
+        /// <param name="movieToPopulate">Movie object to populate</param>
+        /// <returns>ApiCommunicationServiceResponseBase class extended with AccountMovieStates property</returns>
+        public async Task<TryGetMovieDetailsWithAccountStatesResponse> TryGetMovieDetailsWithAccountStates(MovieDetailModel movieToPopulate, int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            var result = await _cachedSearchClient.GetMovieDetailsWithAccountStates(id, language, retryCount, delayMilliseconds);
-            return result.HttpStatusCode;
+            var response = await _cachedSearchClient.GetMovieDetailsWithAccountStates(id, language, retryCount, delayMilliseconds);
+            AccountMovieStates states = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+            {
+                if (movieToPopulate != null)
+                    JsonConvert.PopulateObject(response.Json, movieToPopulate);
+
+                if (response.HttpStatusCode == HttpStatusCode.OK)
+                {
+                    var jsonSettings = new JsonSerializerSettings()
+                    { Error = delegate (object sender, ErrorEventArgs args) { args.ErrorContext.Handled = true; } };
+                    var tmdbResponse = JObject.Parse(response.Json);
+                    var result = tmdbResponse["account_states"];
+
+                    if (result != null)
+                        states = result.ToObject<AccountMovieStates>(JsonSerializer.Create(jsonSettings));
+                }
+            }
+            return new TryGetMovieDetailsWithAccountStatesResponse(response.HttpStatusCode, states);
         }
         public async Task<HttpStatusCode> TryGetFavoriteMovies(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {

@@ -127,4 +127,14 @@ namespace Ch9.Services.Contracts
             SimilarMovies = similarMovies;
         }
     }
+
+    public class TryGetMovieDetailsWithAccountStatesResponse : ApiCommunicationServiceResponseBase
+    {
+        public AccountMovieStates AccountMovieStates { get; private set; }
+        public TryGetMovieDetailsWithAccountStatesResponse(HttpStatusCode statusCode, AccountMovieStates accountMovieStates)
+        {
+            HttpStatusCode = statusCode;
+            AccountMovieStates = accountMovieStates;
+        }
+    }
 }

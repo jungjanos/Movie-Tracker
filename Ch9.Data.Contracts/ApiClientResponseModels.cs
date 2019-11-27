@@ -29,12 +29,7 @@ namespace Ch9.Data.Contracts
     { }
 
     public class GetMovieDetailsWithAccountStatesResult : TmdbResponseBase
-    {
-        public GetMovieDetailsWithAccountStatesResult()
-        {
-            throw new NotImplementedException();
-        }
-    }
+    { }
 
     public class GetMovieImagesResult : TmdbResponseBase
     { }

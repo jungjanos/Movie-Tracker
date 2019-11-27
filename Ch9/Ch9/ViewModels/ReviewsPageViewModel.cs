@@ -3,7 +3,6 @@ using Ch9.Services;
 using Ch9.Ui.Contracts.Models;
 using Ch9.Utils;
 using Ch9.Services.Contracts;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -127,8 +126,9 @@ namespace Ch9.ViewModels
         {
             if (UsersRating == null)
                 return;
-            var response = await _cachedSearchClient.DeleteMovieRating(ParentPageViewModel.Movie.Id, null, retryCount: 3, delayMilliseconds: 1000);
 
+            var response = await _tmdbApiService.TryDeleteMovieRating(ParentPageViewModel.Movie.Id, null, retryCount: 3, delayMilliseconds: 1000);
+            
             if (response.HttpStatusCode.IsSuccessCode())
                 UsersRating = null;
             else

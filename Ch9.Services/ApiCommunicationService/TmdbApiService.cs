@@ -39,10 +39,11 @@ namespace Ch9.Services.ApiCommunicationService
             var result = await _cachedSearchClient.DeleteList(listId, retryCount, delayMilliseconds);
             return result.HttpStatusCode;
         }
-        public async Task<HttpStatusCode> TryDeleteMovieRating(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<TryDeleteMovieRatingResponse> TryDeleteMovieRating(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            var result = await _cachedSearchClient.DeleteMovieRating(mediaId, guestSessionId, retryCount, delayMilliseconds);
-            return result.HttpStatusCode;
+            var response = await _cachedSearchClient.DeleteMovieRating(mediaId, guestSessionId, retryCount, delayMilliseconds);
+
+            return new TryDeleteMovieRatingResponse(response.HttpStatusCode);
         }
         public async Task<HttpStatusCode> TryFetchGenreIdsWithNames(string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {

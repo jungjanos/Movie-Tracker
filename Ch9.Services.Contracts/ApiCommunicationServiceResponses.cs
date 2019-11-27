@@ -3,7 +3,7 @@ using System.Net;
 
 namespace Ch9.Services.Contracts
 {
-    public class ApiCommunicationServiceResponseBase
+    public abstract class ApiCommunicationServiceResponseBase
     {
         public HttpStatusCode HttpStatusCode { get; protected  set; }
     }
@@ -95,4 +95,10 @@ namespace Ch9.Services.Contracts
             ReviewsModel = reviewsModel;
         }
     }
+
+    public class TryDeleteMovieRatingResponse : ApiCommunicationServiceResponseBase
+    {
+        public TryDeleteMovieRatingResponse(HttpStatusCode statusCode) => HttpStatusCode = statusCode;
+    }
+
 }

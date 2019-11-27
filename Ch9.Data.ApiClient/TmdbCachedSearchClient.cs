@@ -325,6 +325,11 @@ namespace Ch9.Data.ApiClient
             return await _networkClient.DeleteSession(sessionId, retryCount, delayMilliseconds);
         }
 
+        public async Task<CreateRequestTokenResult> CreateRequestToken(int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            return await _networkClient.CreateRequestToken(retryCount, delayMilliseconds);
+        }
+
         #endregion
     }
 }

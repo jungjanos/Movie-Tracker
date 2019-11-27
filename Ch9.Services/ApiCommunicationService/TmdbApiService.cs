@@ -254,5 +254,16 @@ namespace Ch9.Services.ApiCommunicationService
 
             return new TryDeleteSessionResponse(response.HttpStatusCode);
         }
+
+        public async Task<TryCreateRequestTokenResponse> TryCreateRequestToken(int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            var response = await _cachedSearchClient.CreateRequestToken(retryCount, delayMilliseconds);
+            RequestToken requestToken = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                requestToken = JsonConvert.DeserializeObject<RequestToken>(response.Json);
+
+            return new TryCreateRequestTokenResponse(response.HttpStatusCode, requestToken);
+        }
     }
 }

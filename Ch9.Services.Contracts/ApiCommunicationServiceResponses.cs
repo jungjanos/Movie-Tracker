@@ -145,4 +145,15 @@ namespace Ch9.Services.Contracts
             HttpStatusCode = statusCode;
         }
     }
+
+    public class TryCreateRequestTokenResponse : ApiCommunicationServiceResponseBase
+    {
+        public RequestToken RequestToken { get; private set; }
+
+        public TryCreateRequestTokenResponse(HttpStatusCode statusCode, RequestToken requestToken)
+        {
+            HttpStatusCode = statusCode;
+            RequestToken = requestToken;
+        }
+    }
 }

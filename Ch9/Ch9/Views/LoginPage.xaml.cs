@@ -20,6 +20,7 @@ namespace Ch9.Views
             ViewModel = new LoginPageViewModel(
                 ((App)Application.Current).Settings,
                 ((App)Application.Current).TmdbNetworkClient,
+                ((App)Application.Current).TmdbApiService,
                 new PageService(this),
                 userName,
                 password

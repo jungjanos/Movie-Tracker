@@ -2,6 +2,7 @@
 using Ch9.Services;
 using Ch9.Ui.Contracts.Models;
 using Ch9.Utils;
+using Ch9.Services.Contracts;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace Ch9.ViewModels
     {
         private readonly ISettings _settings;
         private readonly ITmdbNetworkClient _tmdbClient;
+        private readonly ITmdbApiService _tmdbApiService;
 
         private string _userName;
         public string UserName
@@ -47,6 +49,7 @@ namespace Ch9.ViewModels
         public LoginPageViewModel(
             ISettings settings,
             ITmdbNetworkClient networkClient,
+            ITmdbApiService tmdbApiService,
             IPageService pageService,
             string username = null,
             string password = null
@@ -54,6 +57,7 @@ namespace Ch9.ViewModels
         {
             _settings = settings;
             _tmdbClient = networkClient;
+            _tmdbApiService = tmdbApiService;
             UserName = username;
             Password = password;
             HideLoginPageFlag = _settings.IsLoginPageDeactivationRequested;
@@ -125,14 +129,15 @@ namespace Ch9.ViewModels
 
             try
             {
-                var createRequestTokenResult = await _tmdbClient.CreateRequestToken(retryCount, delayMilliseconds);
-                if (!createRequestTokenResult.HttpStatusCode.IsSuccessCode())
+                var response = await _tmdbApiService.TryCreateRequestToken(retryCount, delayMilliseconds);
+                
+                if (!response.HttpStatusCode.IsSuccessCode())
                 {
-                    await _pageService.DisplayAlert("Sign in error", $"Error getting request token from TMDB server, server response: {createRequestTokenResult.HttpStatusCode}", "Ok");
+                    await _pageService.DisplayAlert("Sign in error", $"Error getting request token from TMDB server, server response: {response.HttpStatusCode}", "Ok");
                     return result;
                 }
 
-                var token = JsonConvert.DeserializeObject<RequestToken>(createRequestTokenResult.Json);
+                var token = response.RequestToken;
                 if (!token.Success)
                 {
                     await _pageService.DisplayAlert("Sign in error", "TMDB server indicated failure in request token", "Ok");

@@ -21,7 +21,7 @@ namespace Ch9.Views
             ViewModel = new MainSettingsPage2ViewModel(
                 ((App)Application.Current).Settings,
                 ((App)Application.Current).MovieGenreSettings,
-                ((App)Application.Current).TmdbNetworkClient,
+                ((App)Application.Current).TmdbApiService,
                 new PageService(this)
                 );
 

@@ -137,4 +137,12 @@ namespace Ch9.Services.Contracts
             AccountMovieStates = accountMovieStates;
         }
     }
+
+    public class TryDeleteSessionResponse : ApiCommunicationServiceResponseBase
+    {
+        public TryDeleteSessionResponse(HttpStatusCode statusCode)
+        {
+            HttpStatusCode = statusCode;
+        }
+    }
 }

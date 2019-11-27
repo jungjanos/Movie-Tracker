@@ -247,5 +247,12 @@ namespace Ch9.Services.ApiCommunicationService
 
             return new TryGetPersonImagesResponse(response.HttpStatusCode, images);
         }
+
+        public async Task<TryDeleteSessionResponse> TryDeleteSession(string sessionId, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            var response = await _cachedSearchClient.DeleteSession(sessionId, retryCount, delayMilliseconds);
+
+            return new TryDeleteSessionResponse(response.HttpStatusCode);
+        }
     }
 }

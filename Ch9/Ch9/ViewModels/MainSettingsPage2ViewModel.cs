@@ -1,6 +1,6 @@
-﻿using Ch9.ApiClient;
-using Ch9.Models;
+﻿using Ch9.Models;
 using Ch9.Services;
+using Ch9.Services.Contracts;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
@@ -10,8 +10,8 @@ namespace Ch9.ViewModels
     public class MainSettingsPage2ViewModel : ViewModelBase
     {
         private ISettings _settings;
-        private readonly MovieGenreSettings _movieGenreSettings;
-        private readonly ITmdbNetworkClient _tmdbClient;
+        private readonly MovieGenreSettings _movieGenreSettings;        
+        private readonly ITmdbApiService _tmdbApiService;
 
         public ISettings Settings
         {
@@ -25,13 +25,13 @@ namespace Ch9.ViewModels
         public MainSettingsPage2ViewModel(
                 ISettings settings,
                 MovieGenreSettings movieGenreSettings,
-                ITmdbNetworkClient tmdbClient,
+                ITmdbApiService tmdbApiService,
                 IPageService pageService
             ) : base(pageService)
         {
             _settings = settings;
             _movieGenreSettings = movieGenreSettings;
-            _tmdbClient = tmdbClient;
+            _tmdbApiService = tmdbApiService;
             SearchLanguageChangedCommand = new Command(async () => await OnSearchLanguageChanged());
 
             LoginTappedCommand = new Command(async () =>
@@ -56,7 +56,7 @@ namespace Ch9.ViewModels
             var sessionIdToDelete = _settings.SessionId;
 
             if (!string.IsNullOrEmpty(sessionIdToDelete))
-                await _tmdbClient.DeleteSession(sessionIdToDelete);
+                await _tmdbApiService.TryDeleteSession(sessionIdToDelete);
 
             _settings.SessionId = null;
             _settings.AccountName = null;

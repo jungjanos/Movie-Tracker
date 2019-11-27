@@ -1,11 +1,11 @@
 ﻿using Ch9.Ui.Contracts;
 using Ch9.Ui.Contracts.Models;
+using Ch9.Data.Contracts;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Xamarin.Forms;
 
 namespace Ch9.Services
 {
@@ -14,10 +14,12 @@ namespace Ch9.Services
     public partial class Settings : ISettings, INotifyPropertyChanged
     {
         private readonly IDictionary<string, object> _appDictionary;
+        private readonly IPersistLocalSettings _settingsPersister;
 
-        public Settings(IDictionary<string, object> settingsDictionary = null)
+        public Settings(IDictionary<string, object> settingsDictionary, IPersistLocalSettings settingsPersister)
         {
-            _appDictionary = settingsDictionary ?? Application.Current.Properties;
+            _appDictionary = settingsDictionary;
+            _settingsPersister = settingsPersister;
         }
 
         public string ApiKey
@@ -239,8 +241,7 @@ namespace Ch9.Services
             set => _appDictionary[nameof(IsLoginPageDeactivationRequested)] = value;
         }
 
-        public async Task SavePropertiesAsync() =>
-            await Application.Current.SavePropertiesAsync();
+        public async Task SavePropertiesAsync() => await _settingsPersister.SavePropertiesAsync();
 
         public event PropertyChangedEventHandler PropertyChanged;
 

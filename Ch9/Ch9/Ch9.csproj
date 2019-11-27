@@ -44,6 +44,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Ch9.Data.ApiClient\Ch9.Data.ApiClient.csproj" />
     <ProjectReference Include="..\..\Ch9.Data.Contracts\Ch9.Data.Contracts.csproj" />
+    <ProjectReference Include="..\..\Ch9.Data.LocalSettings\Ch9.Data.LocalSettings.csproj" />
     <ProjectReference Include="..\..\Ch9.Services.Contracts\Ch9.Services.Contracts.csproj" />
     <ProjectReference Include="..\..\Ch9.Services\Ch9.Services.csproj" />
     <ProjectReference Include="..\..\Ch9.Ui.Contracts\Ch9.Ui.Contracts.csproj" />

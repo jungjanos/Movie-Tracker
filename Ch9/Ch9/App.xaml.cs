@@ -4,6 +4,7 @@ using Ch9.Services;
 using Ch9.Services.VideoService;
 using Ch9.Utils;
 using Ch9.Views;
+using Ch9.Data.LocalSettings;
 using System.Net.Http;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -30,7 +31,7 @@ namespace Ch9
 
         public App(HttpClient httpClient = null)
         {
-            Settings = new Settings();
+            Settings = new Settings(Application.Current.Properties, new XamarinLocalSettingsPersister());
             MovieGenreSettings = new MovieGenreSettings();
             ResultFilter = new SearchResultFilter(Settings, MovieGenreSettings);
             TmdbNetworkClient = new TmdbNetworkClient(Settings, httpClient);

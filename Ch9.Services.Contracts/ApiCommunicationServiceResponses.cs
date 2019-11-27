@@ -84,4 +84,15 @@ namespace Ch9.Services.Contracts
             SearchResult = searchResult;
         }
     }
+
+    public class TryGetMovieReviewsResponse : ApiCommunicationServiceResponseBase
+    {
+        public ReviewsModel ReviewsModel { get; private set; }
+
+        public TryGetMovieReviewsResponse(HttpStatusCode statusCode, ReviewsModel reviewsModel)
+        {
+            HttpStatusCode = statusCode;
+            ReviewsModel = reviewsModel;
+        }
+    }
 }

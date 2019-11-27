@@ -20,6 +20,7 @@ namespace Ch9.Views
                 parentViewModel,
                 ((App)Application.Current).Settings,
                 ((App)Application.Current).CachedSearchClient,
+                ((App)Application.Current).TmdbApiService,
                 new PageService(this)
                 );
 

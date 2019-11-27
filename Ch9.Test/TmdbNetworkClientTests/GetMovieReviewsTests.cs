@@ -40,7 +40,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
             _output.WriteLine($"Server returned {result.HttpStatusCode}");
 
-            GetReviewsModel reviews = JsonConvert.DeserializeObject<GetReviewsModel>(result.Json);
+            ReviewsModel reviews = JsonConvert.DeserializeObject<ReviewsModel>(result.Json);
             PrintReviews(reviews);
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
             Assert.True(reviews.Reviews.Length > 0);
@@ -55,7 +55,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
             _output.WriteLine($"Server returned {result.HttpStatusCode}");
 
-            GetReviewsModel reviews = JsonConvert.DeserializeObject<GetReviewsModel>(result.Json);
+            ReviewsModel reviews = JsonConvert.DeserializeObject<ReviewsModel>(result.Json);
             PrintReviews(reviews);
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
             Assert.True(reviews.Reviews.Length == 0);
@@ -79,7 +79,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
             _output.WriteLine($"Server returned {result.HttpStatusCode}");
 
-            GetReviewsModel reviews = JsonConvert.DeserializeObject<GetReviewsModel>(result.Json);
+            ReviewsModel reviews = JsonConvert.DeserializeObject<ReviewsModel>(result.Json);
             PrintReviews(reviews);
 
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.OK);
@@ -90,7 +90,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         }
 
 
-        private void PrintReviews(GetReviewsModel reviewsModel)
+        private void PrintReviews(ReviewsModel reviewsModel)
         {
             _output.WriteLine($"Returned {reviewsModel.Reviews.Length} results");
             _output.WriteLine($"id: {reviewsModel.Id}");

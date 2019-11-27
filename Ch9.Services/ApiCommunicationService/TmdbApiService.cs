@@ -79,10 +79,15 @@ namespace Ch9.Services.ApiCommunicationService
             var result = await _cachedSearchClient.GetMovieRecommendations(id, language, page, retryCount, delayMilliseconds, fromCache);
             return result.HttpStatusCode;
         }
-        public async Task<HttpStatusCode> TryGetMovieReviews(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        public async Task<TryGetMovieReviewsResponse> TryGetMovieReviews(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            var result = await _cachedSearchClient.GetMovieReviews(id, language, page, retryCount, delayMilliseconds, fromCache);
-            return result.HttpStatusCode;
+            var response = await _cachedSearchClient.GetMovieReviews(id, language, page, retryCount, delayMilliseconds, fromCache);
+            ReviewsModel reviews = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                reviews = JsonConvert.DeserializeObject<ReviewsModel>(response.Json);
+
+            return new TryGetMovieReviewsResponse(response.HttpStatusCode, reviews);
         }
         public async Task<HttpStatusCode> TryGetMovieWatchlist(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {

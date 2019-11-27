@@ -2,6 +2,7 @@
 using Ch9.Services;
 using Ch9.Ui.Contracts.Models;
 using Ch9.Utils;
+using Ch9.Services.Contracts;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -15,16 +16,21 @@ namespace Ch9.ViewModels
     {
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
+        private readonly ITmdbApiService _tmdbApiService;
         public ICommand DeleteRatingCommand { get; private set; }
         public ICommand SetRatingCommand { get; private set; }
         public ICommand DecreaseRatingCommand { get; private set; }
         public ICommand IncreaseRatingCommand { get; private set; }
         public MovieDetailPageViewModel ParentPageViewModel { get; set; }
 
-        public ReviewsPageViewModel(MovieDetailPageViewModel parent, ISettings settings, ITmdbCachedSearchClient tmdbCachedSearchClient, IPageService pageService) : base(pageService)
+        public ReviewsPageViewModel(MovieDetailPageViewModel parent, 
+            ISettings settings, 
+            ITmdbCachedSearchClient tmdbCachedSearchClient,
+            ITmdbApiService tmdbApiService,
+            IPageService pageService) : base(pageService)
         {
             _cachedSearchClient = tmdbCachedSearchClient;
-
+            _tmdbApiService = tmdbApiService;
             ParentPageViewModel = parent;
             _settings = settings;
             DeleteRatingCommand = new Command(async () => await OnDeleteRatingCommand());
@@ -76,12 +82,11 @@ namespace Ch9.ViewModels
 
         private async Task RefreshReviews(int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = false)
         {
-            var getReviewResult = await _cachedSearchClient.GetMovieReviews(ParentPageViewModel.Movie.Id, language: null, page: null, retryCount: retryCount, delayMilliseconds: delayMilliseconds, fromCache: fromCache);
-            if (getReviewResult.HttpStatusCode.IsSuccessCode())
+            var response = await _tmdbApiService.TryGetMovieReviews(ParentPageViewModel.Movie.Id, language: null, page: null, retryCount: retryCount, delayMilliseconds: delayMilliseconds, fromCache: fromCache);
+            if (response.HttpStatusCode.IsSuccessCode())
             {
-                GetReviewsModel reviewsWrapper = JsonConvert.DeserializeObject<GetReviewsModel>(getReviewResult.Json);
-
-                ParentPageViewModel.Movie.Reviews = new List<Review>(reviewsWrapper.Reviews);
+                ReviewsModel reviewsModel = response.ReviewsModel;
+                ParentPageViewModel.Movie.Reviews = new List<Review>(reviewsModel.Reviews);
             }
         }
 

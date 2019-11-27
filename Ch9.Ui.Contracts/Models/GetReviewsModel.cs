@@ -2,7 +2,7 @@
 
 namespace Ch9.Ui.Contracts.Models
 {
-    public class GetReviewsModel
+    public class ReviewsModel
     {
         [JsonProperty("id")]
         public int Id { get; set; }

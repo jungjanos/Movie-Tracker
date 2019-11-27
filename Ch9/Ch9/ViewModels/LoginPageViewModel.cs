@@ -130,7 +130,7 @@ namespace Ch9.ViewModels
             try
             {
                 var response = await _tmdbApiService.TryCreateRequestToken(retryCount, delayMilliseconds);
-                
+
                 if (!response.HttpStatusCode.IsSuccessCode())
                 {
                     await _pageService.DisplayAlert("Sign in error", $"Error getting request token from TMDB server, server response: {response.HttpStatusCode}", "Ok");
@@ -144,15 +144,15 @@ namespace Ch9.ViewModels
                     return result;
                 }
 
-                var validateTokenResult = await _tmdbClient.ValidateRequestTokenWithLogin(accountName, password, token.Token, retryCount, delayMilliseconds);
+                var response2 = await _tmdbApiService.TryValidateRequestTokenWithLogin(accountName, password, token.Token, retryCount, delayMilliseconds);
 
-                if (!validateTokenResult.HttpStatusCode.IsSuccessCode())
+                if (!response2.HttpStatusCode.IsSuccessCode())
                 {
-                    await _pageService.DisplayAlert("Sign in error", $"TMDB server reported error when authenticating with supplied account credentials, server response: {validateTokenResult.HttpStatusCode}", "Ok");
+                    await _pageService.DisplayAlert("Sign in error", $"TMDB server reported error when authenticating with supplied account credentials, server response: {response2.HttpStatusCode}", "Ok");
                     return result;
                 }
 
-                string validatedToken = JsonConvert.DeserializeObject<RequestToken>(validateTokenResult.Json).Token;
+                string validatedToken = response2.RequestToken.Token;
 
                 var sessionIdResult = await _tmdbClient.CreateSessionId(validatedToken, retryCount, delayMilliseconds);
 

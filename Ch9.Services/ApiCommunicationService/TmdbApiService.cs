@@ -265,5 +265,16 @@ namespace Ch9.Services.ApiCommunicationService
 
             return new TryCreateRequestTokenResponse(response.HttpStatusCode, requestToken);
         }
+
+        public async Task<TryValidateRequestTokenWithLoginResponse> TryValidateRequestTokenWithLogin(string username, string password, string requestToken, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            var response = await _cachedSearchClient.ValidateRequestTokenWithLogin(username, password, requestToken, retryCount, delayMilliseconds);
+            RequestToken token = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                token = JsonConvert.DeserializeObject<RequestToken>(response.Json);
+
+            return new TryValidateRequestTokenWithLoginResponse(response.HttpStatusCode, token);
+        }
     }
 }

@@ -156,4 +156,15 @@ namespace Ch9.Services.Contracts
             RequestToken = requestToken;
         }
     }
+
+    public class TryValidateRequestTokenWithLoginResponse : ApiCommunicationServiceResponseBase
+    {
+        public RequestToken RequestToken { get; private set; }
+        public TryValidateRequestTokenWithLoginResponse(HttpStatusCode statusCode, RequestToken requestToken)
+        {
+            HttpStatusCode = statusCode;
+            RequestToken = requestToken;
+        }
+    }
+
 }

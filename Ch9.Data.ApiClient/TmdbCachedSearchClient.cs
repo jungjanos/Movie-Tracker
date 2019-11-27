@@ -330,6 +330,11 @@ namespace Ch9.Data.ApiClient
             return await _networkClient.CreateRequestToken(retryCount, delayMilliseconds);
         }
 
+        public async Task<CreateRequestTokenResult> ValidateRequestTokenWithLogin(string username, string password, string requestToken, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            return await _networkClient.ValidateRequestTokenWithLogin(username, password, requestToken, retryCount, delayMilliseconds);
+        }
+
         #endregion
     }
 }

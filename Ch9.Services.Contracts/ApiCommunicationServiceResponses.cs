@@ -167,4 +167,15 @@ namespace Ch9.Services.Contracts
         }
     }
 
+    public class TryCreateSessionIdResponse : ApiCommunicationServiceResponseBase
+    {
+        public SessionIdResponseModel SessionIdResponseModel { get; private set; }
+
+        public TryCreateSessionIdResponse(HttpStatusCode statusCode, SessionIdResponseModel sessionIdResponseModel)
+        {
+            HttpStatusCode = statusCode;
+            SessionIdResponseModel = sessionIdResponseModel;
+        }
+    }
+
 }

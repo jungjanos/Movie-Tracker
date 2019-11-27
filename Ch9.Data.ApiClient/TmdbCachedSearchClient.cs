@@ -335,6 +335,11 @@ namespace Ch9.Data.ApiClient
             return await _networkClient.ValidateRequestTokenWithLogin(username, password, requestToken, retryCount, delayMilliseconds);
         }
 
+        public async Task<CreateSessionIdResult> CreateSessionId(string requestToken, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            return await _networkClient.CreateSessionId(requestToken, retryCount , delayMilliseconds);
+        }
+
         #endregion
     }
 }

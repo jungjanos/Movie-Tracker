@@ -1,22 +1,18 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
+﻿using Ch9.Services;
 using Ch9.Ui.Contracts.Models;
 using Ch9.Utils;
 using Ch9.Services.Contracts;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
-
 namespace Ch9.ViewModels
 {
     public class LoginPageViewModel : ViewModelBase
     {
         private readonly ISettings _settings;
-        private readonly ITmdbNetworkClient _tmdbClient;
         private readonly ITmdbApiService _tmdbApiService;
 
         private string _userName;
@@ -48,7 +44,6 @@ namespace Ch9.ViewModels
 
         public LoginPageViewModel(
             ISettings settings,
-            ITmdbNetworkClient networkClient,
             ITmdbApiService tmdbApiService,
             IPageService pageService,
             string username = null,
@@ -56,7 +51,6 @@ namespace Ch9.ViewModels
             ) : base(pageService)
         {
             _settings = settings;
-            _tmdbClient = networkClient;
             _tmdbApiService = tmdbApiService;
             UserName = username;
             Password = password;
@@ -154,15 +148,15 @@ namespace Ch9.ViewModels
 
                 string validatedToken = response2.RequestToken.Token;
 
-                var sessionIdResult = await _tmdbClient.CreateSessionId(validatedToken, retryCount, delayMilliseconds);
+                var response3 = await _tmdbApiService.TryCreateSessionId(validatedToken, retryCount, delayMilliseconds);
 
-                if (!sessionIdResult.HttpStatusCode.IsSuccessCode())
+                if (!response3.HttpStatusCode.IsSuccessCode())
                 {
-                    await _pageService.DisplayAlert("Sign in error", $"TMDB server reported error when creating a new session id, server response: {sessionIdResult.HttpStatusCode}", "Ok");
+                    await _pageService.DisplayAlert("Sign in error", $"TMDB server reported error when creating a new session id, server response: {response3.HttpStatusCode}", "Ok");
                     return result;
                 }
 
-                newSession = JsonConvert.DeserializeObject<SessionIdResponseModel>(sessionIdResult.Json);
+                newSession = response3.SessionIdResponseModel;
             }
             catch (Exception ex)
             {

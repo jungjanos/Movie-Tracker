@@ -276,5 +276,16 @@ namespace Ch9.Services.ApiCommunicationService
 
             return new TryValidateRequestTokenWithLoginResponse(response.HttpStatusCode, token);
         }
+
+        public async Task<TryCreateSessionIdResponse> TryCreateSessionId(string requestToken, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            var response = await _cachedSearchClient.CreateSessionId(requestToken, retryCount, delayMilliseconds);
+            SessionIdResponseModel sessionIdResponse = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                sessionIdResponse = JsonConvert.DeserializeObject<SessionIdResponseModel>(response.Json);
+
+            return new TryCreateSessionIdResponse(response.HttpStatusCode, sessionIdResponse);
+        }
     }
 }

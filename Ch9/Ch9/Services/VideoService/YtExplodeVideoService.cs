@@ -1,5 +1,6 @@
 ﻿#if !GOOGLEPLAY
 using Ch9.ApiClient;
+using Ch9.Services.Contracts;
 using Ch9.Ui.Contracts;
 using Ch9.Ui.Contracts.Models;
 using System;

@@ -1,16 +1,15 @@
 ﻿using Ch9.Ui.Contracts;
 using Ch9.Ui.Contracts.Models;
 using Ch9.Data.Contracts;
+using Ch9.Services.Contracts;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace Ch9.Services
-{
-    // Settings uses Application.Properties dictionary with data binding to UI
-    // Default values are currently hard coded
+namespace Ch9.Services.LocalSettings
+{    
     public partial class Settings : ISettings, INotifyPropertyChanged
     {
         private readonly IDictionary<string, object> _appDictionary;

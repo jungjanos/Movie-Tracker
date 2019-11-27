@@ -2,7 +2,7 @@
 using Ch9.Ui.Contracts.Models;
 using System.Threading.Tasks;
 
-namespace Ch9.Services
+namespace Ch9.Services.Contracts
 {
     public interface ISettings
     {

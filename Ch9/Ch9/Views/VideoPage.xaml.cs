@@ -1,4 +1,4 @@
-﻿using Ch9.Services;
+﻿using Ch9.Ui.Contracts.Messages;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -16,13 +16,13 @@ namespace Ch9.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            MessagingCenter.Send(this, MessagingCenterMessages.SET_LANDSCAPE);
+            MessagingCenter.Send(this, UiMessageCollection.SET_LANDSCAPE);
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            MessagingCenter.Send(this, MessagingCenterMessages.SET_PORTRAIT);
+            MessagingCenter.Send(this, UiMessageCollection.SET_PORTRAIT);
         }
     }
 }

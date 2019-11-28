@@ -182,6 +182,10 @@
     <Folder Include="Resources\drawable-xxxhdpi\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Ch9.Ui.Contracts\Ch9.Ui.Contracts.csproj">
+      <Project>{beaf72f6-3adc-47b5-8eed-27c7b5255af0}</Project>
+      <Name>Ch9.Ui.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Ch9\Ch9.csproj">
       <Project>{C9D6864B-C41C-434A-A437-0D729CB32EEC}</Project>
       <Name>Ch9</Name>

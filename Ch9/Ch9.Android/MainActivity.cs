@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
-using Ch9.Services;
+using Ch9.Ui.Contracts.Messages;
 using Ch9.Views;
 using FFImageLoading.Forms.Platform;
 using PanCardView.Droid;
@@ -36,22 +36,22 @@ namespace Ch9.Droid
         private void SubscribeToMessages()
         {
             //allowing the sender (Page) to request a fixed screen orientation
-            MessagingCenter.Subscribe<VideoPage>(this, MessagingCenterMessages.SET_LANDSCAPE, sender =>
+            MessagingCenter.Subscribe<VideoPage>(this, UiMessageCollection.SET_LANDSCAPE, sender =>
             {
                 RequestedOrientation = ScreenOrientation.Landscape;
             });
 
-            MessagingCenter.Subscribe<VideoPage>(this, MessagingCenterMessages.SET_PORTRAIT, sender =>
+            MessagingCenter.Subscribe<VideoPage>(this, UiMessageCollection.SET_PORTRAIT, sender =>
             {
                 RequestedOrientation = ScreenOrientation.Portrait;
             });
 
-            MessagingCenter.Subscribe<LargeImagePage>(this, MessagingCenterMessages.SET_LANDSCAPE, sender =>
+            MessagingCenter.Subscribe<LargeImagePage>(this, UiMessageCollection.SET_LANDSCAPE, sender =>
             {
                 RequestedOrientation = ScreenOrientation.Landscape;
             });
 
-            MessagingCenter.Subscribe<LargeImagePage>(this, MessagingCenterMessages.SET_PORTRAIT, sender =>
+            MessagingCenter.Subscribe<LargeImagePage>(this, UiMessageCollection.SET_PORTRAIT, sender =>
             {
                 RequestedOrientation = ScreenOrientation.Portrait;
             });

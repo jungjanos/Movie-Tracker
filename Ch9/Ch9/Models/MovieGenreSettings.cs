@@ -16,7 +16,7 @@ namespace Ch9.Models
     {
         private ITmdbApiService _tmdbApiService;
         private IDictionary<string, object> _appDictionary;
-        public ObservableCollection<GenreItem> UserGenreSelection;
+        public ObservableCollection<GenreItem> UserGenreSelection { get; set; }
 
         public HashSet<int> PreferredCategories => new HashSet<int>(UserGenreSelection.Where(x => x.IsSelected).Select(y => y.Id));
 

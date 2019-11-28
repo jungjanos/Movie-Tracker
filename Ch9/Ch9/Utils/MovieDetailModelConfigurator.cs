@@ -85,7 +85,7 @@ namespace Ch9.Utils
                 else if (movie.GenreIds == null)
                     movie.Genre = string.Empty;
                 else
-                    movie.Genre = string.Join(", ", movie.GenreIds.Select(id => _movieGenreSettings.GenreSelectionDisplay.FirstOrDefault(y => y.Id == id)?.GenreName ?? string.Empty)).TrimEnd(new char[] { ',', ' ' });
+                    movie.Genre = string.Join(", ", movie.GenreIds.Select(id => _movieGenreSettings.UserGenreSelection.FirstOrDefault(y => y.Id == id)?.GenreName ?? string.Empty)).TrimEnd(new char[] { ',', ' ' });
             }
         }
     }

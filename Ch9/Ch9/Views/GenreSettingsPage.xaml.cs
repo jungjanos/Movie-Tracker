@@ -13,7 +13,7 @@ namespace Ch9.Views
         {
             movieGenreSettings = ((App)Application.Current).MovieGenreSettings;
             InitializeComponent();
-            genreListView.ItemsSource = movieGenreSettings.GenreSelectionDisplay;
+            genreListView.ItemsSource = movieGenreSettings.UserGenreSelection;
         }
 
         protected override async void OnDisappearing()

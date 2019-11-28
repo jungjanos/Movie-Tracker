@@ -16,9 +16,9 @@ namespace Ch9.Models
     {
         private ITmdbApiService _tmdbApiService;
         private IDictionary<string, object> _appDictionary;
-        public ObservableCollection<GenreItem> GenreSelectionDisplay;
+        public ObservableCollection<GenreItem> UserGenreSelection;
 
-        public HashSet<int> PreferredCategories => new HashSet<int>(GenreSelectionDisplay.Where(x => x.IsSelected).Select(y => y.Id));
+        public HashSet<int> PreferredCategories => new HashSet<int>(UserGenreSelection.Where(x => x.IsSelected).Select(y => y.Id));
 
         public MovieGenreSettings(ITmdbApiService tmdbApiService, IDictionary<string, object> appDictionary)
         {
@@ -32,33 +32,33 @@ namespace Ch9.Models
         // or creates a new default one
         private void InitializeGenreSelectionDisplay()
         {
-            if (_appDictionary.ContainsKey(nameof(GenreSelectionDisplay)))
-                GenreSelectionDisplay = JsonConvert.DeserializeObject<ObservableCollection<GenreItem>>(_appDictionary[nameof(GenreSelectionDisplay)].ToString());
+            if (_appDictionary.ContainsKey(nameof(UserGenreSelection)))
+                UserGenreSelection = JsonConvert.DeserializeObject<ObservableCollection<GenreItem>>(_appDictionary[nameof(UserGenreSelection)].ToString());
             else
             {
-                GenreSelectionDisplay = new ObservableCollection<GenreItem>();
-                GenreSelectionDisplay.Add(new GenreItem { Id = 28, GenreName = "Action", IsSelected = true });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 12, GenreName = "Adventure", IsSelected = true });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 16, GenreName = "Animation", IsSelected = true });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 35, GenreName = "Comedy", IsSelected = true });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 80, GenreName = "Crime", IsSelected = true });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 99, GenreName = "Documentary", IsSelected = false });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 18, GenreName = "Drama", IsSelected = true });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 10751, GenreName = "Family", IsSelected = true });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 14, GenreName = "Fantasy", IsSelected = true });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 36, GenreName = "History", IsSelected = true });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 27, GenreName = "Horror", IsSelected = true });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 10402, GenreName = "Music", IsSelected = false });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 9648, GenreName = "Mystery", IsSelected = true });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 10749, GenreName = "Romance", IsSelected = true });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 878, GenreName = "Science Fiction", IsSelected = true });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 10770, GenreName = "TV Movie", IsSelected = false });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 53, GenreName = "Thriller", IsSelected = true });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 10752, GenreName = "War", IsSelected = true });
-                GenreSelectionDisplay.Add(new GenreItem { Id = 37, GenreName = "Western", IsSelected = true });
+                UserGenreSelection = new ObservableCollection<GenreItem>();
+                UserGenreSelection.Add(new GenreItem { Id = 28, GenreName = "Action", IsSelected = true });
+                UserGenreSelection.Add(new GenreItem { Id = 12, GenreName = "Adventure", IsSelected = true });
+                UserGenreSelection.Add(new GenreItem { Id = 16, GenreName = "Animation", IsSelected = true });
+                UserGenreSelection.Add(new GenreItem { Id = 35, GenreName = "Comedy", IsSelected = true });
+                UserGenreSelection.Add(new GenreItem { Id = 80, GenreName = "Crime", IsSelected = true });
+                UserGenreSelection.Add(new GenreItem { Id = 99, GenreName = "Documentary", IsSelected = false });
+                UserGenreSelection.Add(new GenreItem { Id = 18, GenreName = "Drama", IsSelected = true });
+                UserGenreSelection.Add(new GenreItem { Id = 10751, GenreName = "Family", IsSelected = true });
+                UserGenreSelection.Add(new GenreItem { Id = 14, GenreName = "Fantasy", IsSelected = true });
+                UserGenreSelection.Add(new GenreItem { Id = 36, GenreName = "History", IsSelected = true });
+                UserGenreSelection.Add(new GenreItem { Id = 27, GenreName = "Horror", IsSelected = true });
+                UserGenreSelection.Add(new GenreItem { Id = 10402, GenreName = "Music", IsSelected = false });
+                UserGenreSelection.Add(new GenreItem { Id = 9648, GenreName = "Mystery", IsSelected = true });
+                UserGenreSelection.Add(new GenreItem { Id = 10749, GenreName = "Romance", IsSelected = true });
+                UserGenreSelection.Add(new GenreItem { Id = 878, GenreName = "Science Fiction", IsSelected = true });
+                UserGenreSelection.Add(new GenreItem { Id = 10770, GenreName = "TV Movie", IsSelected = false });
+                UserGenreSelection.Add(new GenreItem { Id = 53, GenreName = "Thriller", IsSelected = true });
+                UserGenreSelection.Add(new GenreItem { Id = 10752, GenreName = "War", IsSelected = true });
+                UserGenreSelection.Add(new GenreItem { Id = 37, GenreName = "Western", IsSelected = true });
             }
 
-            foreach (GenreItem item in GenreSelectionDisplay)
+            foreach (GenreItem item in UserGenreSelection)
                 item.PropertyChanged += GenreItem_PropertyChanged;
         }
 
@@ -68,20 +68,20 @@ namespace Ch9.Models
             if (genreIdNamePairs?.Length < 1) return;
 
             // Delete GenreItem-s which are not included in the new update
-            IEnumerable<GenreItem> toRemove = GenreSelectionDisplay.Where(x => genreIdNamePairs.Count(y => y.Id == x.Id) == 0);
+            IEnumerable<GenreItem> toRemove = UserGenreSelection.Where(x => genreIdNamePairs.Count(y => y.Id == x.Id) == 0);
             foreach (GenreItem item in toRemove)
-                GenreSelectionDisplay.Remove(item);
+                UserGenreSelection.Remove(item);
 
 
             // Update the old elements with the new name
-            foreach (var item in GenreSelectionDisplay)
+            foreach (var item in UserGenreSelection)
             {
                 item.GenreName = genreIdNamePairs.First(x => x.Id == item.Id).Name;
             }
 
             // Prepare and add new elements to the display collection
             var newElements = genreIdNamePairs
-                .Where(x => GenreSelectionDisplay
+                .Where(x => UserGenreSelection
                 .Count(y => y.Id == x.Id) == 0)
                 .Select(z =>
                 {
@@ -91,7 +91,7 @@ namespace Ch9.Models
                 });
 
             foreach (GenreItem item in newElements)
-                GenreSelectionDisplay.Add(item);
+                UserGenreSelection.Add(item);
         }
 
         private void GenreItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -101,7 +101,7 @@ namespace Ch9.Models
 
         public void SaveGenreSelectionDisplay()
         {
-            _appDictionary[nameof(GenreSelectionDisplay)] = JsonConvert.SerializeObject(GenreSelectionDisplay);
+            _appDictionary[nameof(UserGenreSelection)] = JsonConvert.SerializeObject(UserGenreSelection);
         }
 
         public async Task OnSearchLanguageChanged(string newLanguage)

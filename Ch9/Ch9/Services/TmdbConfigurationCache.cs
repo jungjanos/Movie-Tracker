@@ -1,11 +1,10 @@
-﻿using Ch9.ApiClient;
-using Ch9.Ui.Contracts.Models;
+﻿using Ch9.Ui.Contracts.Models;
 using Ch9.Utils;
 using Ch9.Services.Contracts;
+using Ch9.Data.Contracts;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Xamarin.Forms;
 
 namespace Ch9.Services
 {
@@ -18,11 +17,10 @@ namespace Ch9.Services
     }
 
     public class TmdbConfigurationCache : ITmdbConfigurationCache
-    {
-        private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
+    {        
         private readonly ITmdbApiService _tmdbApiService;
-        private readonly IDictionary<string, object> _appDictionary;
-        private readonly Application _xamarinApplication;
+        private readonly IPersistLocalSettings _localSettingsPersister;
+        private readonly IDictionary<string, object> _appDictionary;        
 
         private TmdbConfigurationModel TmdbConfigurationModel
         {
@@ -38,17 +36,15 @@ namespace Ch9.Services
             set => _appDictionary[nameof(TmdbConfigurationModel)] = JsonConvert.SerializeObject(value);
         }
 
-        public TmdbConfigurationCache(
-            ITmdbCachedSearchClient tmdbCachedSearchClient,
+        public TmdbConfigurationCache(            
             ITmdbApiService tmdbApiService,
-            IDictionary<string, object> appDictionary = null,
-            Application xamarinApplication = null
+            IPersistLocalSettings localSettingsPersister = null,
+            IDictionary<string, object> appDictionary = null
             )
-        {
-            _tmdbCachedSearchClient = tmdbCachedSearchClient;
+        {            
             _tmdbApiService = tmdbApiService;
-            _appDictionary = appDictionary ?? Application.Current.Properties;
-            _xamarinApplication = xamarinApplication;
+            _localSettingsPersister = localSettingsPersister;
+            _appDictionary = appDictionary;
         }
 
         public async Task<TmdbConfigurationModel> FetchTmdbConfiguration(int retries = 0, int retryDelay = 1000)
@@ -57,23 +53,12 @@ namespace Ch9.Services
 
             try
             {
-                //var response = await _tmdbCachedSearchClient.GetTmdbConfiguration(retries, retryDelay, fromCache: true);
-
-                //if (response.HttpStatusCode.IsSuccessCode())
-                //{
-                //    result = JsonConvert.DeserializeObject<TmdbConfigurationModel>(response.Json);
-                //    TmdbConfigurationModel = result;
-                //    await _xamarinApplication?.SavePropertiesAsync();
-                //}
-                //else
-                //    result = TmdbConfigurationModel ?? TmdbConfigurationModel.StaticDefaults;
-
                 var response = await _tmdbApiService.TryGetTmdbConfiguration(retries, retryDelay, fromCache: true);
 
                 if (response.HttpStatusCode.IsSuccessCode())
                 {
                     result = TmdbConfigurationModel = response.ConfigurationModel;
-                    await _xamarinApplication?.SavePropertiesAsync();
+                    await _localSettingsPersister?.SavePropertiesAsync();
                 }
                 else
                     result = TmdbConfigurationModel ?? TmdbConfigurationModel.StaticDefaults;

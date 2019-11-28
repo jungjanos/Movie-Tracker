@@ -16,12 +16,12 @@ namespace Ch9.Utils
     public class MovieDetailModelConfigurator : IMovieDetailModelConfigurator
     {
         private readonly ISettings _settings;
-        private readonly Models.TmdbConfigurationModel _tmdbConfiguration;
+        private readonly TmdbConfigurationModel _tmdbConfiguration;
         private readonly Models.MovieGenreSettings _movieGenreSettings;
 
         private string ImageBaseUrl => _settings.UseHttpsForImages ? _tmdbConfiguration.Images.SecureBaseUrl : _tmdbConfiguration.Images.BaseUrl;
 
-        public MovieDetailModelConfigurator(ISettings settings, Models.TmdbConfigurationModel tmdbConfiguration, Models.MovieGenreSettings movieGenreSettings)
+        public MovieDetailModelConfigurator(ISettings settings, TmdbConfigurationModel tmdbConfiguration, Models.MovieGenreSettings movieGenreSettings)
         {
             _settings = settings;
             _tmdbConfiguration = tmdbConfiguration;

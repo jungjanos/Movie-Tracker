@@ -11,6 +11,7 @@ using Xamarin.Forms.Xaml;
 using Ch9.Services.Contracts;
 using Ch9.Services.ApiCommunicationService;
 using Ch9.Services.LocalSettings;
+using Ch9.Ui.Contracts.Models;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Ch9

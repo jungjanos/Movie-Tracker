@@ -23,6 +23,7 @@ namespace Ch9.Services.Contracts
         InformationLinkTargetHomePage InfoLinkTargetHomePage { get; }
         bool IsLoginPageDeactivationRequested { get; set; }
         VideoType PreferredVideoTypes { get; }
+        TmdbConfigurationModel TmdbConfigurationModel { get; set; }
 
         Task SavePropertiesAsync();
     }

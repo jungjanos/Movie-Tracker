@@ -2,8 +2,6 @@
 using Ch9.Infrastructure.Extensions;
 using Ch9.Services.Contracts;
 using Ch9.Data.Contracts;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Ch9.Services
@@ -12,31 +10,22 @@ namespace Ch9.Services
     {        
         private readonly ITmdbApiService _tmdbApiService;
         private readonly IPersistLocalSettings _localSettingsPersister;
-        private readonly IDictionary<string, object> _appDictionary;        
+        private readonly ISettings _settings;
 
         public TmdbConfigurationModel TmdbConfigurationModel
         {
-            get
-            {
-                if (_appDictionary.ContainsKey(nameof(TmdbConfigurationModel)))
-                {
-                    var json = (string)_appDictionary[nameof(TmdbConfigurationModel)];
-                    return JsonConvert.DeserializeObject<TmdbConfigurationModel>(json);
-                }
-                else return TmdbConfigurationModel.Defaults;
-            }
-            private set => _appDictionary[nameof(TmdbConfigurationModel)] = JsonConvert.SerializeObject(value);
+            get => _settings.TmdbConfigurationModel;            
         }
 
-        public TmdbConfigurationCache(            
+        public TmdbConfigurationCache(
             ITmdbApiService tmdbApiService,
-            IPersistLocalSettings localSettingsPersister = null,
-            IDictionary<string, object> appDictionary = null
+            ISettings settings,
+            IPersistLocalSettings localSettingsPersister = null            
             )
         {            
             _tmdbApiService = tmdbApiService;
-            _localSettingsPersister = localSettingsPersister;
-            _appDictionary = appDictionary;
+            _settings = settings;
+            _localSettingsPersister = localSettingsPersister;            
         }
         /// <summary>
         /// tries to get the TMDB configuration from the server, caches the result in the property dictionary
@@ -50,8 +39,8 @@ namespace Ch9.Services
 
                 if (response.HttpStatusCode.IsSuccessCode())
                 {
-                    TmdbConfigurationModel = response.ConfigurationModel;
-                    await _localSettingsPersister?.SavePropertiesAsync();
+                    _settings.TmdbConfigurationModel = response.ConfigurationModel;
+                    await _settings.SavePropertiesAsync();
                 }
             }
             catch { };

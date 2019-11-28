@@ -19,6 +19,7 @@ namespace Ch9
     public partial class App : Application
     {
         private readonly XamarinLocalSettingsPersister _localSettingsPersister;
+        private readonly TmdbConfigurationCache _tmdbConfigurationCache;
         public ISettings Settings { get; private set; }
         public MovieGenreSettings MovieGenreSettings { get; private set; }
         public TmdbConfigurationModel TmdbConfiguration { get; private set; }
@@ -36,12 +37,15 @@ namespace Ch9
         {
             _localSettingsPersister = new XamarinLocalSettingsPersister();
             Settings = new Settings(Application.Current.Properties, _localSettingsPersister);
+            _tmdbConfigurationCache = new TmdbConfigurationCache(TmdbApiService, Settings, _localSettingsPersister);
+
             MovieGenreSettings = new MovieGenreSettings();
             ResultFilter = new SearchResultFilter(Settings, MovieGenreSettings);
             TmdbNetworkClient = new TmdbNetworkClient(Settings, httpClient);
             CachedSearchClient = new TmdbCachedSearchClient(TmdbNetworkClient);
             TmdbApiService = new TmdbApiService(new Data.ApiClient.TmdbCachedSearchClient(new Data.ApiClient.TmdbNetworkClient(httpClient, Settings.ApiKey)));
             TmdbApiService.SessionId = Settings.SessionId;
+
 
 #if GOOGLEPLAY
     VideoService = new VanillaYtVideoService(Settings, CachedSearchClient);
@@ -57,9 +61,8 @@ namespace Ch9
 
         protected override async void OnStart()
         {
-            var tmdbConfigurationCache = new TmdbConfigurationCache(TmdbApiService, _localSettingsPersister, Properties);
-            await tmdbConfigurationCache.FetchAndPersistTmdbConfiguration();
-            TmdbConfiguration = tmdbConfigurationCache.TmdbConfigurationModel;
+            await _tmdbConfigurationCache.FetchAndPersistTmdbConfiguration();
+            TmdbConfiguration = _tmdbConfigurationCache.TmdbConfigurationModel;
 
             MovieDetailModelConfigurator = new MovieDetailModelConfigurator(Settings, TmdbConfiguration, MovieGenreSettings);
             PersonDetailModelConfigurator = new PersonDetailModelConfigurator(Settings, TmdbConfiguration);

@@ -21,6 +21,20 @@ namespace Ch9.Services.LocalSettings
             _settingsPersister = settingsPersister;
         }
 
+        public TmdbConfigurationModel TmdbConfigurationModel
+        {
+            get
+            {
+                if (_appDictionary.ContainsKey(nameof(TmdbConfigurationModel)))
+                {
+                    var json = (string)_appDictionary[nameof(TmdbConfigurationModel)];
+                    return JsonConvert.DeserializeObject<TmdbConfigurationModel>(json);
+                }
+                else return TmdbConfigurationModel.Defaults;
+            }
+            set => _appDictionary[nameof(TmdbConfigurationModel)] = JsonConvert.SerializeObject(value);
+        }
+
         public string ApiKey
         {
             get
@@ -240,7 +254,7 @@ namespace Ch9.Services.LocalSettings
             set => _appDictionary[nameof(IsLoginPageDeactivationRequested)] = value;
         }
 
-        public async Task SavePropertiesAsync() => await _settingsPersister.SavePropertiesAsync();
+        public async Task SavePropertiesAsync() => await _settingsPersister?.SavePropertiesAsync();
 
         public event PropertyChangedEventHandler PropertyChanged;
 

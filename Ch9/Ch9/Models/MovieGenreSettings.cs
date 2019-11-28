@@ -4,47 +4,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace Ch9.Models
 {
-    public class GenreItem : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(storage, value))
-            {
-                return false;
-            }
-            storage = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-
-        public int Id { get; set; }
-
-        private string genreName;
-        public string GenreName
-        {
-            get => genreName;
-            set => SetProperty(ref genreName, value);
-        }
-
-        private bool isSelected;
-        public bool IsSelected
-        {
-            get => isSelected;
-            set => SetProperty(ref isSelected, value);
-        }
-    }
-
     //TODO : extract interface
     // contains the movie genre preferences of the user to filter the results of WebAPI queries
     public class MovieGenreSettings

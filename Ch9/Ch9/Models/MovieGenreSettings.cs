@@ -1,4 +1,5 @@
 ﻿using Ch9.Ui.Contracts.Models;
+using Ch9.Services.Contracts;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,14 +14,16 @@ namespace Ch9.Models
     // contains the movie genre preferences of the user to filter the results of WebAPI queries
     public class MovieGenreSettings
     {
+        private ITmdbApiService _tmdbApiService;
         private IDictionary<string, object> _appDictionary;
         public ObservableCollection<GenreItem> GenreSelectionDisplay;
 
         public HashSet<int> PreferredCategories => new HashSet<int>(GenreSelectionDisplay.Where(x => x.IsSelected).Select(y => y.Id));
 
-        public MovieGenreSettings()
+        public MovieGenreSettings(ITmdbApiService tmdbApiService, IDictionary<string, object> appDictionary)
         {
-            _appDictionary = Application.Current.Properties;
+            _tmdbApiService = tmdbApiService;
+            _appDictionary = appDictionary;
             InitializeGenreSelectionDisplay();
         }
 

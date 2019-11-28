@@ -39,12 +39,15 @@ namespace Ch9
             Settings = new Settings(Application.Current.Properties, _localSettingsPersister);
             _tmdbConfigurationCache = new TmdbConfigurationCache(TmdbApiService, Settings, _localSettingsPersister);
 
-            MovieGenreSettings = new MovieGenreSettings();
-            ResultFilter = new SearchResultFilter(Settings, MovieGenreSettings);
-            TmdbNetworkClient = new TmdbNetworkClient(Settings, httpClient);
-            CachedSearchClient = new TmdbCachedSearchClient(TmdbNetworkClient);
+
+            TmdbNetworkClient = new TmdbNetworkClient(Settings, httpClient); //legacy
+            CachedSearchClient = new TmdbCachedSearchClient(TmdbNetworkClient); //legacy
+
             TmdbApiService = new TmdbApiService(new Data.ApiClient.TmdbCachedSearchClient(new Data.ApiClient.TmdbNetworkClient(httpClient, Settings.ApiKey)));
             TmdbApiService.SessionId = Settings.SessionId;
+            
+            MovieGenreSettings = new MovieGenreSettings(TmdbApiService, Application.Current.Properties);
+            ResultFilter = new SearchResultFilter(Settings, MovieGenreSettings);
 
 
 #if GOOGLEPLAY

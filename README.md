@@ -1,3 +1,8 @@
+# Branches
+
+* master : stable, all features and tests work, releases come from this branch. All build configurations work. 
+* Architecture-refactorings : repaying technical debt and the current push for a clean layering with loosely coupled assemblies. Only debug configuration is activelly tested and only on emulator, some of the tests might be temporarily broken. Some code/active methods are in limbo between assemblies.  
+
 # Distribution
 
 There are two ways to get Movie Tracker installed on your phone:

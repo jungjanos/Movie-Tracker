@@ -12,11 +12,11 @@ namespace Ch9.Ui.Contracts.Models
 
         // Includes the defaults as of 2019 in case network problems
         // prevent fetching actual state from the server
-        public static TmdbConfigurationModel StaticDefaults;
+        public static TmdbConfigurationModel Defaults;
 
         static TmdbConfigurationModel()
         {
-            StaticDefaults = new TmdbConfigurationModel
+            Defaults = new TmdbConfigurationModel
             {
                 Images = new ImageSettingsModel
                 {

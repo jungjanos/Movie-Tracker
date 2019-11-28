@@ -178,4 +178,15 @@ namespace Ch9.Services.Contracts
         }
     }
 
+
+    public class TryGetTmdbConfigurationResponse : ApiCommunicationServiceResponseBase
+    {
+        public TmdbConfigurationModel ConfigurationModel { get; private set; }
+
+        public TryGetTmdbConfigurationResponse(HttpStatusCode statusCode, TmdbConfigurationModel configurationModel)
+        {
+            HttpStatusCode = statusCode;
+            ConfigurationModel = configurationModel;
+        }
+    }
 }

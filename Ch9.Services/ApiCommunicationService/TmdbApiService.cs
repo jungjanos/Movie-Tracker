@@ -135,14 +135,16 @@ namespace Ch9.Services.ApiCommunicationService
 
             return new TryGetSimilarMoviesResponse(response.HttpStatusCode, similars);
         }
-        //public async Task<HttpStatusCode> TryGetTmdbConfiguration(int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
-        //{
-        //    throw new System.Exception();
-        //    var response = await _cachedSearchClient.GetTmdbConfiguration(retryCount, delayMilliseconds, fromCache);
-        //    TmdbConfigurationModel 
+        public async Task<TryGetTmdbConfigurationResponse> TryGetTmdbConfiguration(int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        {
+            var response = await _cachedSearchClient.GetTmdbConfiguration(retryCount, delayMilliseconds, fromCache);
+            TmdbConfigurationModel configurationModel = null;
 
-        //    return result.HttpStatusCode;
-        //}
+            if (response.HttpStatusCode.IsSuccessCode())
+                configurationModel= JsonConvert.DeserializeObject<TmdbConfigurationModel>(response.Json);
+
+            return new TryGetTmdbConfigurationResponse(response.HttpStatusCode, configurationModel);
+        }
         public async Task<TryGetTrendingMoviesResponse> TryGetTrendingMovies(bool week = true, string language = null, bool? includeAdult = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
             var response = await _cachedSearchClient.GetTrendingMovies(week, language, includeAdult, page, retryCount, delayMilliseconds, fromCache);

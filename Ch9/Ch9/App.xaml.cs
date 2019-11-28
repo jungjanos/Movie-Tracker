@@ -55,7 +55,7 @@ namespace Ch9
 
         protected override async void OnStart()
         {
-            var tmdbConfigurationCache = new TmdbConfigurationCache(CachedSearchClient, Properties, this);
+            var tmdbConfigurationCache = new TmdbConfigurationCache(CachedSearchClient, TmdbApiService, Properties, this);
             TmdbConfiguration = await tmdbConfigurationCache.FetchTmdbConfiguration();
 
             MovieDetailModelConfigurator = new MovieDetailModelConfigurator(Settings, TmdbConfiguration, MovieGenreSettings);

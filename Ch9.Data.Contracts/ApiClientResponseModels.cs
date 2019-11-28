@@ -109,10 +109,6 @@ namespace Ch9.Data.Contracts
     public class GetItemStatusOnTargetListResult : TmdbResponseBase
     { }
 
-    /// <summary>
-    /// Because of the custom deserialization requirement (the WebAPI sends back flexible object type as response)
-    /// The deserialization is built into the response object itself. This behavior diverges from normal case
-    /// </summary>
     public class GetAccountMovieStatesResult : TmdbResponseBase
     {
         /// <summary>

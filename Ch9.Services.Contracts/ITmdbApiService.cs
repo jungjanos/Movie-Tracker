@@ -11,6 +11,7 @@ namespace Ch9.Services.Contracts
         Task<TryCreateSessionIdResponse> TryCreateSessionId(string requestToken, int retryCount = 0, int delayMilliseconds = 1000);
         Task<TryDeleteMovieRatingResponse> TryDeleteMovieRating(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000);
         Task<TryDeleteSessionResponse> TryDeleteSession(string sessionId, int retryCount = 0, int delayMilliseconds = 1000);
+        Task<TryGetGenreIdsWithNamesResponse> TryGetGenreIdsWithNames(string language = null, int retryCount = 0, int delayMilliseconds = 1000);
         Task<TryGetMovieCreditsResponse> TryGetMovieCredits(int id, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true);
         Task<HttpStatusCode> TryGetMovieDetails(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000);
         Task<TryGetMovieDetailsWithAccountStatesResponse> TryGetMovieDetailsWithAccountStates(Ui.Contracts.Models.MovieDetailModel movieToPopulate, int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000);

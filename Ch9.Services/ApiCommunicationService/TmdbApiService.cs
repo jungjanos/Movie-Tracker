@@ -47,10 +47,15 @@ namespace Ch9.Services.ApiCommunicationService
 
             return new TryDeleteMovieRatingResponse(response.HttpStatusCode);
         }
-        public async Task<HttpStatusCode> TryFetchGenreIdsWithNames(string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<TryGetGenreIdsWithNamesResponse> TryGetGenreIdsWithNames(string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            var result = await _cachedSearchClient.FetchGenreIdsWithNames(language, retryCount, delayMilliseconds);
-            return result.HttpStatusCode;
+            var response = await _cachedSearchClient.GetGenreIdsWithNames(language, retryCount, delayMilliseconds);
+            GenreIdNamePairs genreIdNamePairs = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                genreIdNamePairs = JsonConvert.DeserializeObject<GenreIdNamePairs>(response.Json);
+
+            return new TryGetGenreIdsWithNamesResponse(response.HttpStatusCode, genreIdNamePairs);
         }
         public async Task<HttpStatusCode> TryGetMovieDetails(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {

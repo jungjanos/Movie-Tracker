@@ -189,4 +189,15 @@ namespace Ch9.Services.Contracts
             ConfigurationModel = configurationModel;
         }
     }
+
+    public class TryGetGenreIdsWithNamesResponse : ApiCommunicationServiceResponseBase
+    {
+        public GenreIdNamePairs GenreIdNamePairs { get; private set; }
+
+        public TryGetGenreIdsWithNamesResponse(HttpStatusCode statusCode, GenreIdNamePairs genreIdNamePairs)
+        {
+            HttpStatusCode = statusCode;
+            GenreIdNamePairs = genreIdNamePairs;
+        }
+    }
 }

@@ -2,9 +2,9 @@
 
 namespace Ch9.Ui.Contracts.Models
 {
-    public class GenreIdNamePairWrapper
+    public class GenreIdNamePairs
     {
-        public GenreIdNamePairWrapper() { }
+        public GenreIdNamePairs() { }
 
         [JsonProperty("genres")]
         public GenreIdNamePair[] Genres { get; set; }

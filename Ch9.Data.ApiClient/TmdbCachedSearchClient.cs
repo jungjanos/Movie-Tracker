@@ -250,7 +250,7 @@ namespace Ch9.Data.ApiClient
         #endregion
 
         #region UncachedQueries
-        public async Task<GenreNameFetchResult> FetchGenreIdsWithNames(string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<GenreNameFetchResult> GetGenreIdsWithNames(string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             return await _networkClient.FetchGenreIdsWithNames(language, retryCount, delayMilliseconds);
         }

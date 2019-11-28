@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Xamarin.Forms;
+using Ch9.Infrastructure.Extensions;
 
 namespace Ch9.Models
 {
@@ -58,7 +58,6 @@ namespace Ch9.Models
                 GenreSelectionDisplay.Add(new GenreItem { Id = 37, GenreName = "Western", IsSelected = true });
             }
 
-            //ToDo: check whether serialization also gets the public event property serialized!!!
             foreach (GenreItem item in GenreSelectionDisplay)
                 item.PropertyChanged += GenreItem_PropertyChanged;
         }
@@ -107,14 +106,12 @@ namespace Ch9.Models
 
         public async Task OnSearchLanguageChanged(string newLanguage)
         {
-            var result = await ((App)Application.Current).CachedSearchClient.FetchGenreIdsWithNames(newLanguage, 2, 1000);
-            if (199 < (int)result.HttpStatusCode && (int)result.HttpStatusCode < 300)
+            var response = await _tmdbApiService.TryGetGenreIdsWithNames(newLanguage, 2, 1000);
+            if (response.HttpStatusCode.IsSuccessCode())
             {
-                //UpdateExistingGenreCategories(result.IdNamePairs);
-                var fetchedCategories = JsonConvert.DeserializeObject<GenreIdNamePairWrapper>(result.Json);
+                var fetchedCategories = response.GenreIdNamePairs;
                 UpdateExistingGenreCategories(fetchedCategories.Genres);
             }
         }
-
     }
 }

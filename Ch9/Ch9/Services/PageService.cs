@@ -15,6 +15,7 @@ namespace Ch9.Services
         Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons);
         Task DisplayAlert(string title, string message, string cancel);
         Task<bool> DisplayAlert(string title, string message, string accept, string cancel);
+        Task OpenMovieGenreSelection();
         Task OpenWeblink(string url);
         Task<object> PopCurrent();
         Task PopToRootAsync();
@@ -56,6 +57,9 @@ namespace Ch9.Services
 
         public async Task PushLoginPageAsync(string accountName = null, string password = null) =>
             await _currentPage.Navigation.PushAsync(new LoginPage(accountName, password));
+
+        public async Task OpenMovieGenreSelection() =>
+            await _currentPage.Navigation.PushAsync(new GenreSettingsPage2());
 
         public async Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons) =>
              await _currentPage.DisplayActionSheet(title, cancel, destruction, buttons);

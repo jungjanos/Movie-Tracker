@@ -1,5 +1,4 @@
-﻿using Ch9.Models;
-using Ch9.Services.Contracts;
+﻿using Ch9.Services.Contracts;
 using Ch9.Ui.Contracts.Models;
 using System.Collections.Generic;
 

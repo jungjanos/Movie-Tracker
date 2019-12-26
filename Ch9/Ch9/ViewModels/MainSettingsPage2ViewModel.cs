@@ -1,6 +1,6 @@
-﻿using Ch9.Models;
-using Ch9.Services;
+﻿using Ch9.Services;
 using Ch9.Services.Contracts;
+using Ch9.Ui.Contracts.Models;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
@@ -10,7 +10,8 @@ namespace Ch9.ViewModels
     public class MainSettingsPage2ViewModel : ViewModelBase
     {
         private ISettings _settings;
-        private readonly MovieGenreSettings _movieGenreSettings;        
+        private readonly MovieGenreSettingsModel _movieGenreSettings;
+        private readonly IMovieGenreSettingsService _movieGenreSettingsService;
         private readonly ITmdbApiService _tmdbApiService;
 
         public ISettings Settings
@@ -21,16 +22,19 @@ namespace Ch9.ViewModels
 
         public ICommand SearchLanguageChangedCommand { get; private set; }
         public ICommand LoginTappedCommand { get; private set; }
+        public ICommand OpenMovieGenreSelectionCommand { get; private set; }
 
         public MainSettingsPage2ViewModel(
                 ISettings settings,
-                MovieGenreSettings movieGenreSettings,
+                MovieGenreSettingsModel movieGenreSettings,
+                IMovieGenreSettingsService movieGenreSettingsService,
                 ITmdbApiService tmdbApiService,
                 IPageService pageService
             ) : base(pageService)
         {
             _settings = settings;
             _movieGenreSettings = movieGenreSettings;
+            _movieGenreSettingsService = movieGenreSettingsService;
             _tmdbApiService = tmdbApiService;
             SearchLanguageChangedCommand = new Command(async () => await OnSearchLanguageChanged());
 
@@ -39,6 +43,8 @@ namespace Ch9.ViewModels
                 var hasAccount = _settings.IsLoggedin;
                 await OnLoginTapped(hasAccount);
             });
+
+            OpenMovieGenreSelectionCommand = new Command(async () => await _pageService.OpenMovieGenreSelection());
         }
 
         public async Task SaveChanges() => await Settings.SavePropertiesAsync();
@@ -66,6 +72,6 @@ namespace Ch9.ViewModels
         }
 
         private async Task OnSearchLanguageChanged() =>
-            await _movieGenreSettings.OnSearchLanguageChanged(Settings.SearchLanguage);
+            await _movieGenreSettingsService.UpdateGenreListLanguage(Settings.SearchLanguage, _movieGenreSettings); 
     }
 }

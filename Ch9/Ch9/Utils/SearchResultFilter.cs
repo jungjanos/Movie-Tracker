@@ -19,16 +19,16 @@ namespace Ch9.Utils
     public class SearchResultFilter : ISearchResultFilter
     {
         private readonly ISettings settings;
-        private readonly Models.MovieGenreSettings genreSettings;
+        private readonly MovieGenreSettingsModel _genreSettings;
 
 
         private Func<IEnumerable<MovieDetailModel>, IEnumerable<MovieDetailModel>> filterByTimeframe;
         private Func<IEnumerable<MovieDetailModel>, IEnumerable<MovieDetailModel>> filterByGenres;
 
-        public SearchResultFilter(ISettings settings, Models.MovieGenreSettings genreSettings)
+        public SearchResultFilter(ISettings settings, MovieGenreSettingsModel genreSettings)
         {
             this.settings = settings;
-            this.genreSettings = genreSettings;
+            _genreSettings = genreSettings;
 
             filterByTimeframe = _filterByTimeframe;
             filterByGenres = _filterByGenres;
@@ -52,7 +52,7 @@ namespace Ch9.Utils
         public IEnumerable<MovieDetailModel> FilterBySearchSettingsIncludeAdult(IEnumerable<MovieDetailModel> movies)
         {
             var first = filterByTimeframe(movies);
-            var second = first.Where(movie => movie.Adult || genreSettings.PreferredCategories.Overlaps(movie.GenreIds));
+            var second = first.Where(movie => movie.Adult || _genreSettings.PreferredCategories.Overlaps(movie.GenreIds));
 
             return second;
         }
@@ -73,7 +73,7 @@ namespace Ch9.Utils
         // common with user's genre preferences. 
         private IEnumerable<MovieDetailModel> _filterByGenres(IEnumerable<MovieDetailModel> movies)
         {
-            return movies.Where(x => genreSettings.PreferredCategories.Overlaps(x.GenreIds));
+            return movies.Where(x => _genreSettings.PreferredCategories.Overlaps(x.GenreIds));
         }
     }
 }

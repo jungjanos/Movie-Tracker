@@ -9,7 +9,7 @@
         <StackLayout Orientation="Vertical" Padding="5,0,5,5">
 
             <ListView 
-                ItemsSource="{Binding Path=UserGenreSelection}"
+                ItemsSource="{Binding Path=MovieGenreSettings.UserGenreSelection}"
                 HasUnevenRows="True" 
                 SelectionMode="None" >
 

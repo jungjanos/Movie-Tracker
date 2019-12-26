@@ -1,16 +1,24 @@
-﻿using Ch9.Models;
-using Ch9.Services;
+﻿using Ch9.Services;
+using Ch9.Services.Contracts;
+using Ch9.Ui.Contracts.Models;
+
+using System.Threading.Tasks;
 
 namespace Ch9.ViewModels
 {
     public class MovieGenreSettings2PageViewModel : ViewModelBase
     {
-        public MovieGenreSettings MovieGenreSettings { get; private set; }
+        private readonly IMovieGenreSettingsService _movieGenreSettingsService;
 
-        public MovieGenreSettings2PageViewModel(MovieGenreSettings movieGenreSettings, IPageService pageService) : base(pageService)
+        public MovieGenreSettingsModel MovieGenreSettings { get; private set; }
+
+        public MovieGenreSettings2PageViewModel(MovieGenreSettingsModel movieGenreSettings, IMovieGenreSettingsService movieGenreSettingsService, IPageService pageService) : base(pageService)
         {
             MovieGenreSettings = movieGenreSettings;
+            _movieGenreSettingsService = movieGenreSettingsService;
         }
+
+        public async Task PersistMovieGenreSettings() => await _movieGenreSettingsService.SaveGenreSelection(MovieGenreSettings);        
 
     }
 }

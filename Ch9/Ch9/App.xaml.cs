@@ -1,5 +1,4 @@
 ﻿using Ch9.ApiClient;
-using Ch9.Models;
 using Ch9.Services;
 using Ch9.Services.VideoService;
 using Ch9.Utils;
@@ -21,7 +20,7 @@ namespace Ch9
         private readonly XamarinLocalSettingsPersister _localSettingsPersister;
         private readonly TmdbConfigurationCache _tmdbConfigurationCache;
         public ISettings Settings { get; private set; }
-        public MovieGenreSettings MovieGenreSettings { get; private set; }
+        public MovieGenreSettingsModel MovieGenreSettings { get; private set; }
         public TmdbConfigurationModel TmdbConfiguration { get; private set; }
         public IMovieDetailModelConfigurator MovieDetailModelConfigurator { get; private set; }
         public IPersonDetailModelConfigurator PersonDetailModelConfigurator { get; private set; }
@@ -32,6 +31,7 @@ namespace Ch9
         public IVideoService VideoService { get; private set; }
         public WeblinkComposer WeblinkComposer { get; private set; }
         public ITmdbApiService TmdbApiService { get; private set; }
+        public IMovieGenreSettingsService MovieGenreSettingsService { get; private set; }
 
         public App(HttpClient httpClient = null)
         {
@@ -44,9 +44,10 @@ namespace Ch9
             CachedSearchClient = new TmdbCachedSearchClient(TmdbNetworkClient); //legacy
 
             TmdbApiService = new TmdbApiService(new Data.ApiClient.TmdbCachedSearchClient(new Data.ApiClient.TmdbNetworkClient(httpClient, Settings.ApiKey)));
-            TmdbApiService.SessionId = Settings.SessionId;
+            TmdbApiService.SessionId = Settings.SessionId;            
             
-            MovieGenreSettings = new MovieGenreSettings(TmdbApiService, Application.Current.Properties);
+            MovieGenreSettingsService = new MovieGenreSettingsService(TmdbApiService, Application.Current.Properties, _localSettingsPersister);
+            MovieGenreSettings = MovieGenreSettingsService.GetGenreSetting();
             ResultFilter = new SearchResultFilter(Settings, MovieGenreSettings);
 
 

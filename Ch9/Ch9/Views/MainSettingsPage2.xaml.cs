@@ -21,6 +21,7 @@ namespace Ch9.Views
             ViewModel = new MainSettingsPage2ViewModel(
                 ((App)Application.Current).Settings,
                 ((App)Application.Current).MovieGenreSettings,
+                ((App)Application.Current).MovieGenreSettingsService,
                 ((App)Application.Current).TmdbApiService,
                 new PageService(this)
                 );
@@ -40,9 +41,13 @@ namespace Ch9.Views
             ViewModel.SearchLanguageChangedCommand.Execute(null);
         }
 
-        private async void OnSelectGenres_Tapped(object sender, EventArgs e)
+        private void OnSelectGenres_Tapped(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new GenreSettingsPage());
+            //await Navigation.PushAsync(new GenreSettingsPage());
+            ViewModel.OpenMovieGenreSelectionCommand.Execute(null);
+
         }
+
+
     }
 }

@@ -75,7 +75,7 @@ namespace Ch9.Utils
         /// Not allowed to throw. 
         /// Depending on the state of the MovieDetailModels property of the argument, if it was null, it will be initialized to an empty
         /// ObservableCollection, or if it was already initialized, it will be cleared to an empty state. 
-        /// The pagination properties will al be set to zero. 
+        /// The pagination properties will all be set to zero. 
         /// </summary>        
         public static void InitializeOrClearMovieCollection(this SearchResult collection)
         {

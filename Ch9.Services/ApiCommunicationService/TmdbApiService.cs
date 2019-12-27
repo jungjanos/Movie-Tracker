@@ -90,10 +90,14 @@ namespace Ch9.Services.ApiCommunicationService
             }
             return new TryGetMovieDetailsWithAccountStatesResponse(response.HttpStatusCode, states);
         }
-        public async Task<HttpStatusCode> TryGetFavoriteMovies(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<TryGetFavoriteMoviesResponse> TryGetFavoriteMovies(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            throw new System.NotImplementedException();
-            var result = await _cachedSearchClient.GetFavoriteMovies(accountId, language, sortBy, page, retryCount, delayMilliseconds);
+            var response = await _cachedSearchClient.GetFavoriteMovies(accountId, language, sortBy, page, retryCount, delayMilliseconds);
+            SearchResult favorites = null;
+            if (response.HttpStatusCode.IsSuccessCode())
+                favorites = JsonConvert.DeserializeObject<SearchResult>(response.Json);
+
+            return new TryGetFavoriteMoviesResponse(response.HttpStatusCode, favorites);            
         }
         public async Task<HttpStatusCode> TryGetListDetails(int listId, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
@@ -181,10 +185,11 @@ namespace Ch9.Services.ApiCommunicationService
 
             return new TrySearchByMovieResponse(response.HttpStatusCode, searchResult);
         }
-        public async Task<HttpStatusCode> TryUpdateFavoriteList(string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<TryUpdateFavoriteListResponse> TryUpdateFavoriteList(string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            throw new System.NotImplementedException();
-            var result = await _cachedSearchClient.UpdateFavoriteList(mediaType, add, mediaId, accountId, retryCount, delayMilliseconds);
+            var response = await _cachedSearchClient.UpdateFavoriteList(mediaType, add, mediaId, accountId, retryCount, delayMilliseconds);
+
+            return new TryUpdateFavoriteListResponse(response.HttpStatusCode);
         }
         public async Task<TryGetMovieImagesResponse> TryGetMovieImages(int id, string language = null, string otherLanguage = null, bool? includeLanguageless = true, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {

@@ -5,11 +5,11 @@ namespace Ch9.Services.Contracts
 {
     public abstract class ApiCommunicationServiceResponseBase
     {
-        public HttpStatusCode HttpStatusCode { get; protected  set; }
+        public HttpStatusCode HttpStatusCode { get; protected set; }
     }
 
     public class TryGetMovieImagesResponse : ApiCommunicationServiceResponseBase
-    {        
+    {
         public ImageDetailCollection ImageDetailCollection { get; private set; }
 
         public TryGetMovieImagesResponse(HttpStatusCode statusCode, ImageDetailCollection imageDetailCollection)
@@ -43,9 +43,9 @@ namespace Ch9.Services.Contracts
 
     public class TrySearchByMovieResponse : ApiCommunicationServiceResponseBase
     {
-        public SearchResult SearchResult{ get; private set; }
+        public SearchResult SearchResult { get; private set; }
 
-        public TrySearchByMovieResponse (HttpStatusCode statusCode, SearchResult searchResult)
+        public TrySearchByMovieResponse(HttpStatusCode statusCode, SearchResult searchResult)
         {
             HttpStatusCode = statusCode;
             SearchResult = searchResult;
@@ -54,7 +54,7 @@ namespace Ch9.Services.Contracts
 
     public class TryGetPersonImagesResponse : ApiCommunicationServiceResponseBase
     {
-        public ImageModel[] Images{ get; private set; }
+        public ImageModel[] Images { get; private set; }
 
         public TryGetPersonImagesResponse(HttpStatusCode statusCode, ImageModel[] images)
         {
@@ -65,7 +65,7 @@ namespace Ch9.Services.Contracts
 
     public class TryGetPersonsMovieCreditsResponse : ApiCommunicationServiceResponseBase
     {
-        public PersonsMovieCreditsModel PersonsMovieCreditsModel{ get; private set; }
+        public PersonsMovieCreditsModel PersonsMovieCreditsModel { get; private set; }
 
         public TryGetPersonsMovieCreditsResponse(HttpStatusCode statusCode, PersonsMovieCreditsModel personsMovieCreditsModel)
         {
@@ -198,6 +198,25 @@ namespace Ch9.Services.Contracts
         {
             HttpStatusCode = statusCode;
             GenreIdNamePairs = genreIdNamePairs;
+        }
+    }
+
+    public class TryGetFavoriteMoviesResponse : ApiCommunicationServiceResponseBase
+    {
+        public SearchResult FavoriteMovies { get; private set; }
+
+        public TryGetFavoriteMoviesResponse(HttpStatusCode statusCode, SearchResult favoriteMovies)
+        {
+            HttpStatusCode = statusCode;
+            FavoriteMovies = favoriteMovies;
+        }
+    }
+
+    public class TryUpdateFavoriteListResponse : ApiCommunicationServiceResponseBase
+    {
+        public TryUpdateFavoriteListResponse(HttpStatusCode statusCode)
+        {
+            HttpStatusCode = statusCode;
         }
     }
 }

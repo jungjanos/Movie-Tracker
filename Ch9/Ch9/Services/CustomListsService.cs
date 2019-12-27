@@ -1,7 +1,8 @@
 ﻿using Ch9.ApiClient;
+using Ch9.Infrastructure.Extensions;
 using Ch9.Services.Contracts;
 using Ch9.Ui.Contracts.Models;
-using Ch9.Utils;
+
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace Ch9.Services
     {
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
-        private readonly Utils.IMovieDetailModelConfigurator _movieDetailConfigurator;
+        private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
         private readonly Command _refreshActiveCustomListCommand;
         private bool _isInitialized = false;
 
@@ -46,7 +47,7 @@ namespace Ch9.Services
         public CustomListsService(
             ISettings settings,
             ITmdbCachedSearchClient tmdbCachedSearchClient,
-            Utils.IMovieDetailModelConfigurator movieDetailConfigurator
+            IMovieDetailModelConfigurator movieDetailConfigurator
             )
         {
             _settings = settings;
@@ -133,7 +134,7 @@ namespace Ch9.Services
 
                 var selectedListBackup = SelectedCustomList;
                 SelectedCustomList = null;
-                Utils.Utils.UpdateListviewCollection(UsersCustomLists, movieLists, new MovieListModelComparer());
+                UsersCustomLists.UpdateObservableCollection(movieLists, new MovieListModelComparer());
 
                 if (selectedListBackup != null)
                     SelectedCustomList = UsersCustomLists.Contains(selectedListBackup) ? selectedListBackup : UsersCustomLists.FirstOrDefault();
@@ -327,8 +328,8 @@ namespace Ch9.Services
 
             if (target.Movies == null)
                 target.Movies = source.Movies;
-            else
-                Utils.Utils.UpdateListviewCollection(target.Movies, source.Movies, new MovieModelComparer());
+            else                
+                target.Movies.UpdateObservableCollection(source.Movies, new MovieModelComparer());
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

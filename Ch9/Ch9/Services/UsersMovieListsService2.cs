@@ -1,6 +1,5 @@
 ﻿using Ch9.ApiClient;
 using Ch9.Services.Contracts;
-using Ch9.Utils;
 
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,9 +10,8 @@ namespace Ch9.Services
     public class UsersMovieListsService2 : INotifyPropertyChanged
     {
         private readonly ISettings _settings;
-        private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
-        private readonly Utils.IMovieDetailModelConfigurator _movieDetailConfigurator;
-        private readonly Ch9.Services.Contracts.IMovieDetailModelConfigurator _movieDetailConfigurator2;
+        private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;        
+        private readonly IMovieDetailModelConfigurator _movieDetailConfigurator2;
 
         public CustomListsService CustomListsService { get; set; }
         public FavoriteMoviesListService FavoriteMoviesListService { get; set; }
@@ -22,16 +20,14 @@ namespace Ch9.Services
 
         public UsersMovieListsService2(
             ISettings settings,
-            ITmdbCachedSearchClient tmdbCachedSearchClient,
-            Utils.IMovieDetailModelConfigurator movieDetailConfigurator,
-            Ch9.Services.Contracts.IMovieDetailModelConfigurator movieDetailConfigurator2)
+            ITmdbCachedSearchClient tmdbCachedSearchClient,            
+            IMovieDetailModelConfigurator movieDetailConfigurator2)
         {
             _settings = settings;
-            _tmdbCachedSearchClient = tmdbCachedSearchClient;
-            _movieDetailConfigurator = movieDetailConfigurator;
+            _tmdbCachedSearchClient = tmdbCachedSearchClient;            
             _movieDetailConfigurator2 = movieDetailConfigurator2;
 
-            CustomListsService = new CustomListsService(_settings, _tmdbCachedSearchClient, _movieDetailConfigurator);
+            CustomListsService = new CustomListsService(_settings, _tmdbCachedSearchClient, _movieDetailConfigurator2);
             FavoriteMoviesListService = new FavoriteMoviesListService(_settings, _tmdbCachedSearchClient, _movieDetailConfigurator2);
             WatchlistService = new WatchlistService(_settings, _tmdbCachedSearchClient, _movieDetailConfigurator2);
         }

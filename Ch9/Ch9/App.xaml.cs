@@ -22,7 +22,9 @@ namespace Ch9
         public ISettings Settings { get; private set; }
         public MovieGenreSettingsModel MovieGenreSettings { get; private set; }
         public TmdbConfigurationModel TmdbConfiguration { get; private set; }
-        public IMovieDetailModelConfigurator MovieDetailModelConfigurator { get; private set; }
+        public Utils.IMovieDetailModelConfigurator MovieDetailModelConfigurator { get; private set; }
+
+        public Services.Contracts.IMovieDetailModelConfigurator MovieDetailModelConfigurator2 { get; private set; }
         public IPersonDetailModelConfigurator PersonDetailModelConfigurator { get; private set; }
         public SearchResultFilter ResultFilter { get; private set; }
         public ITmdbNetworkClient TmdbNetworkClient { get; private set; }
@@ -32,6 +34,8 @@ namespace Ch9
         public WeblinkComposer WeblinkComposer { get; private set; }
         public ITmdbApiService TmdbApiService { get; private set; }
         public IMovieGenreSettingsService MovieGenreSettingsService { get; private set; }
+
+        public Ch9.Services.MovieListServices.FavoriteMoviesListService FavoriteMoviesListService  { get; private set; }
 
         public App(HttpClient httpClient = null)
         {
@@ -69,8 +73,9 @@ namespace Ch9
             TmdbConfiguration = _tmdbConfigurationCache.TmdbConfigurationModel;
 
             MovieDetailModelConfigurator = new MovieDetailModelConfigurator(Settings, TmdbConfiguration, MovieGenreSettings);
+            MovieDetailModelConfigurator2 = new Ch9.Services.UiModelConfigurationServices.MovieDetailModelConfigurator(Settings, TmdbConfiguration, MovieGenreSettings);
             PersonDetailModelConfigurator = new PersonDetailModelConfigurator(Settings, TmdbConfiguration);
-            UsersMovieListsService2 = new UsersMovieListsService2(Settings, CachedSearchClient, MovieDetailModelConfigurator);
+            UsersMovieListsService2 = new UsersMovieListsService2(Settings, CachedSearchClient, MovieDetailModelConfigurator, MovieDetailModelConfigurator2);
 
             if (!Settings.IsLoginPageDeactivationRequested)
             {

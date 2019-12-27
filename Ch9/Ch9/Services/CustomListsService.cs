@@ -18,7 +18,7 @@ namespace Ch9.Services
     {
         private readonly ISettings _settings;
         private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
-        private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
+        private readonly Utils.IMovieDetailModelConfigurator _movieDetailConfigurator;
         private readonly Command _refreshActiveCustomListCommand;
         private bool _isInitialized = false;
 
@@ -46,7 +46,7 @@ namespace Ch9.Services
         public CustomListsService(
             ISettings settings,
             ITmdbCachedSearchClient tmdbCachedSearchClient,
-            IMovieDetailModelConfigurator movieDetailConfigurator
+            Utils.IMovieDetailModelConfigurator movieDetailConfigurator
             )
         {
             _settings = settings;

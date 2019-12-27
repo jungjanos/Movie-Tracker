@@ -1,7 +1,9 @@
 ﻿using Ch9.ApiClient;
+using Ch9.Infrastructure.Extensions;
 using Ch9.Services.Contracts;
+using Ch9.Services.MovieListServices;
 using Ch9.Ui.Contracts.Models;
-using Ch9.Utils;
+
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,7 +19,7 @@ namespace Ch9.Services
     public class FavoriteMoviesListService : INotifyPropertyChanged
     {
         private readonly ISettings _settings;
-        private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
+        private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;        
         private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
         private readonly ICommand _sortOptionChangedCommand;
 
@@ -45,7 +47,7 @@ namespace Ch9.Services
             IMovieDetailModelConfigurator movieDetailConfigurator)
         {
             _settings = settings;
-            _tmdbCachedSearchClient = tmdbCachedSearchClient;
+            _tmdbCachedSearchClient = tmdbCachedSearchClient;            
             _movieDetailConfigurator = movieDetailConfigurator;
 
             _sortBy = "created_at.desc";
@@ -82,7 +84,8 @@ namespace Ch9.Services
 
             SearchResult moviesOnFavoriteList = JsonConvert.DeserializeObject<SearchResult>(getFavoriteList.Json);
 
-            Utils.Utils.AppendResult(FavoriteMovies, moviesOnFavoriteList, _movieDetailConfigurator);
+            FavoriteMovies.AppendResult(moviesOnFavoriteList, _movieDetailConfigurator);
+
         }
 
         public async Task TryLoadNextPage(int retryCount = 0, int delayMilliseconds = 1000)
@@ -100,7 +103,7 @@ namespace Ch9.Services
 
             SearchResult moviesOnFavoriteListPage = JsonConvert.DeserializeObject<SearchResult>(getFavoriteList.Json);
 
-            Utils.Utils.AppendResult(FavoriteMovies, moviesOnFavoriteListPage, _movieDetailConfigurator);
+            FavoriteMovies.AppendResult(moviesOnFavoriteListPage, _movieDetailConfigurator);
             OnPropertyChanged(nameof(CanLoad));
         }
 

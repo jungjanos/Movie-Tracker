@@ -1,7 +1,9 @@
 ﻿using Ch9.ApiClient;
+using Ch9.Infrastructure.Extensions;
 using Ch9.Services.Contracts;
+using Ch9.Services.MovieListServices;
 using Ch9.Ui.Contracts.Models;
-using Ch9.Utils;
+
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -82,7 +84,7 @@ namespace Ch9.Services
 
             SearchResult moviesOnWatchlist = JsonConvert.DeserializeObject<SearchResult>(getWatchlist.Json);
 
-            Utils.Utils.AppendResult(Watchlist, moviesOnWatchlist, _movieDetailConfigurator);
+            Watchlist.AppendResult(moviesOnWatchlist, _movieDetailConfigurator);
         }
 
         public async Task TryLoadNextPage(int retryCount = 0, int delayMilliseconds = 1000)
@@ -100,7 +102,7 @@ namespace Ch9.Services
 
             SearchResult moviesOnWatchlistPage = JsonConvert.DeserializeObject<SearchResult>(getWatchlist.Json);
 
-            Utils.Utils.AppendResult(Watchlist, moviesOnWatchlistPage, _movieDetailConfigurator);
+            Watchlist.AppendResult(moviesOnWatchlistPage, _movieDetailConfigurator);
             OnPropertyChanged(nameof(CanLoad));
         }
 

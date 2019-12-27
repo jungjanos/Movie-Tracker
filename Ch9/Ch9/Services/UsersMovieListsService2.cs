@@ -33,7 +33,7 @@ namespace Ch9.Services
 
             CustomListsService = new CustomListsService(_settings, _tmdbCachedSearchClient, _movieDetailConfigurator);
             FavoriteMoviesListService = new FavoriteMoviesListService(_settings, _tmdbCachedSearchClient, _movieDetailConfigurator2);
-            WatchlistService = new WatchlistService(_settings, _tmdbCachedSearchClient, _movieDetailConfigurator);
+            WatchlistService = new WatchlistService(_settings, _tmdbCachedSearchClient, _movieDetailConfigurator2);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

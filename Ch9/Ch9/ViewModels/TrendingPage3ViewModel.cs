@@ -1,12 +1,15 @@
 ﻿using Ch9.Services;
 using Ch9.Ui.Contracts.Models;
-using Ch9.Utils;
+//using Ch9.Utils;
 using Ch9.Services.Contracts;
+
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
+using Ch9.Infrastructure.Extensions;
+using Ch9.Services.MovieListServices;
 
 namespace Ch9.ViewModels
 {
@@ -15,7 +18,7 @@ namespace Ch9.ViewModels
     {
         private readonly ISettings _settings;        
         private readonly ITmdbApiService _tmdbApiService;
-        private readonly ISearchResultFilter _resultFilter;
+        private readonly Utils.ISearchResultFilter _resultFilter;
         private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
 
         private SearchResult _trendingWeek;
@@ -49,7 +52,7 @@ namespace Ch9.ViewModels
 
         public TrendingPage3ViewModel(ISettings settings,            
             ITmdbApiService tmdbApiService,
-            ISearchResultFilter resultFilter,
+            Utils.ISearchResultFilter resultFilter,
             IMovieDetailModelConfigurator movieDetailConfigurator,
             IPageService pageService) : base(pageService)
         {
@@ -127,7 +130,7 @@ namespace Ch9.ViewModels
                         var moviesOnNextPage = nextPageResponse.TrendingMovies;
                         moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
 
-                        Utils.Utils.AppendResult(TrendingWeek, moviesOnNextPage, _movieDetailConfigurator);
+                        TrendingWeek.AppendResult(moviesOnNextPage, _movieDetailConfigurator);
                     }
                     else
                         await _pageService.DisplayAlert("Error", $"Could not load the weekly trending list, service responded with: {nextPageResponse.HttpStatusCode}", "Ok");                     
@@ -155,8 +158,8 @@ namespace Ch9.ViewModels
                     {
                         var moviesOnNextPage = nextPageResponse.TrendingMovies;
                         moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
-
-                        Utils.Utils.AppendResult(TrendingDay, moviesOnNextPage, _movieDetailConfigurator);
+                        
+                        TrendingDay.AppendResult(moviesOnNextPage, _movieDetailConfigurator); 
                     }
                     else
                         await _pageService.DisplayAlert("Error", $"Could not load the daily trending list, service responded with: {nextPageResponse.HttpStatusCode}", "Ok");

@@ -21,7 +21,7 @@ namespace Ch9.Views
             ((App)Application.Current).Settings,            
             ((App)Application.Current).TmdbApiService,
             ((App)Application.Current).ResultFilter,
-            ((App)Application.Current).MovieDetailModelConfigurator,
+            ((App)Application.Current).MovieDetailModelConfigurator2,
             new PageService(this));
         }
 

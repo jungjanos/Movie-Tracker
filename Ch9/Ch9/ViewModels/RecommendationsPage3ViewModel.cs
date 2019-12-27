@@ -1,12 +1,15 @@
 ﻿using Ch9.Services;
 using Ch9.Ui.Contracts.Models;
-using Ch9.Utils;
+//using Ch9.Utils;
 using Ch9.Services.Contracts;
+
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
+using Ch9.Infrastructure.Extensions;
+using Ch9.Services.MovieListServices;
 
 namespace Ch9.ViewModels
 {
@@ -14,7 +17,7 @@ namespace Ch9.ViewModels
     {
         private readonly ISettings _settings;        
         private readonly ITmdbApiService _tmdbApiService;
-        private readonly ISearchResultFilter _searchResultFilter;
+        private readonly Utils.ISearchResultFilter _searchResultFilter;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
 
         public MovieDetailModel Movie { get; private set; }
@@ -50,7 +53,7 @@ namespace Ch9.ViewModels
         public RecommendationsPage3ViewModel(MovieDetailModel movie,
             ISettings settings,            
             ITmdbApiService tmdbApiService,
-            ISearchResultFilter searchResultFilter,
+            Utils.ISearchResultFilter searchResultFilter,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPageService pageService) : base(pageService)
         {
@@ -139,7 +142,7 @@ namespace Ch9.ViewModels
                     {
                         var moviesOnNextPage = response.MovieRecommendations;
                         moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_searchResultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
-                        Utils.Utils.AppendResult(RecommendedMovies, moviesOnNextPage, _movieDetailModelConfigurator);
+                        RecommendedMovies.AppendResult(moviesOnNextPage, _movieDetailModelConfigurator);
                     }
                     else
                         await _pageService.DisplayAlert("Error", $"Could not update the recommended movies list, service responded with: {response.HttpStatusCode}", "Ok");
@@ -168,7 +171,7 @@ namespace Ch9.ViewModels
                     {
                         var moviesOnNextPage = response.SimilarMovies;
                         moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_searchResultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
-                        Utils.Utils.AppendResult(SimilarMovies, moviesOnNextPage, _movieDetailModelConfigurator);
+                        SimilarMovies.AppendResult(moviesOnNextPage, _movieDetailModelConfigurator);
                     }
                     else
                         await _pageService.DisplayAlert("Error", $"Could not update the similar movies list, service responded with: {response.HttpStatusCode}", "Ok");

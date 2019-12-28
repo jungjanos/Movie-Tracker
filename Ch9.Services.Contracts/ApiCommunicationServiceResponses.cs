@@ -221,6 +221,25 @@ namespace Ch9.Services.Contracts
         }
     }
 
+    public class TryGetMovieWatchlistResponse : ApiCommunicationServiceResponseBase
+    {
+        public SearchResult MoviesOnWatchlist { get; private set; }
+
+        public TryGetMovieWatchlistResponse(HttpStatusCode statusCode, SearchResult moviesOnWatchlist)
+        {
+            HttpStatusCode = statusCode;
+            MoviesOnWatchlist = moviesOnWatchlist;
+        }
+    }
+
+    public class TryUpdateWatchlistResponse : ApiCommunicationServiceResponseBase
+    {
+        public TryUpdateWatchlistResponse(HttpStatusCode statusCode)
+        {
+            HttpStatusCode = statusCode;
+        }
+    }
+
     public class TryGetMovieVideosResponse : ApiCommunicationServiceResponseBase
     {
         public GetMovieVideosModel MovieVideosModel { get; private set; }

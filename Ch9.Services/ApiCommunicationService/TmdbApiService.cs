@@ -130,11 +130,17 @@ namespace Ch9.Services.ApiCommunicationService
 
             return new TryGetMovieReviewsResponse(response.HttpStatusCode, reviews);
         }
-        public async Task<HttpStatusCode> TryGetMovieWatchlist(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<TryGetMovieWatchlistResponse> TryGetMovieWatchlist(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            throw new System.NotImplementedException();
-            var result = await _cachedSearchClient.GetMovieWatchlist(accountId, language, sortBy, page, retryCount, delayMilliseconds);
+            var response = await _cachedSearchClient.GetMovieWatchlist(accountId, language, sortBy, page, retryCount, delayMilliseconds);
+            SearchResult watchlist = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                watchlist= JsonConvert.DeserializeObject<SearchResult>(response.Json);
+
+            return new TryGetMovieWatchlistResponse(response.HttpStatusCode, watchlist);
         }
+
         public async Task<TryGetSimilarMoviesResponse> TryGetSimilarMovies(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
             var response = await _cachedSearchClient.GetSimilarMovies(id, language, page, retryCount, delayMilliseconds, fromCache);
@@ -202,10 +208,11 @@ namespace Ch9.Services.ApiCommunicationService
 
             return new TryGetMovieImagesResponse(response.HttpStatusCode, imageCollection);
         }
-        public async Task<HttpStatusCode> TryUpdateWatchlist(string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<TryUpdateWatchlistResponse> TryUpdateWatchlist(string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            throw new System.NotImplementedException();
-            var result = await _cachedSearchClient.UpdateWatchlist(mediaType, add, mediaId, accountId, retryCount, delayMilliseconds);
+            var response = await _cachedSearchClient.UpdateWatchlist(mediaType, add, mediaId, accountId, retryCount, delayMilliseconds);
+
+            return new TryUpdateWatchlistResponse(response.HttpStatusCode);
         }
         public async Task<TryGetMovieVideosResponse> TryGetMovieVideos(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {

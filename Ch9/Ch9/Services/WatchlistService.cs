@@ -1,10 +1,8 @@
-﻿using Ch9.ApiClient;
-using Ch9.Infrastructure.Extensions;
+﻿using Ch9.Infrastructure.Extensions;
 using Ch9.Services.Contracts;
 using Ch9.Services.MovieListServices;
 using Ch9.Ui.Contracts.Models;
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,8 +16,8 @@ namespace Ch9.Services
 {
     public class WatchlistService : INotifyPropertyChanged
     {
-        private readonly ISettings _settings;
-        private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
+        private readonly ISettings _settings;        
+        private readonly ITmdbApiService _tmdbApiService;
         private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
         private readonly ICommand _sortOptionChangedCommand;
 
@@ -43,11 +41,11 @@ namespace Ch9.Services
         }
 
         public WatchlistService(ISettings settings,
-            ITmdbCachedSearchClient tmdbCachedSearchClient,
+            ITmdbApiService tmdbApiService,
             IMovieDetailModelConfigurator movieDetailConfigurator)
         {
-            _settings = settings;
-            _tmdbCachedSearchClient = tmdbCachedSearchClient;
+            _settings = settings;            
+            _tmdbApiService = tmdbApiService;
             _movieDetailConfigurator = movieDetailConfigurator;
 
             _sortBy = "created_at.desc";
@@ -78,13 +76,12 @@ namespace Ch9.Services
             if (!_settings.IsLoggedin)
                 throw new Exception("Account error: user is not signed in");
 
-            GetMovieWatchlistResult getWatchlist = await _tmdbCachedSearchClient.GetMovieWatchlist(language: _settings.SearchLanguage, sortBy: SortBy, page: 1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
-            if (!getWatchlist.HttpStatusCode.IsSuccessCode())
-                throw new Exception($"Could not refresh watchlist, TMDB server responded with {getWatchlist.HttpStatusCode}");
+            var response = await _tmdbApiService.TryGetMovieWatchlist(language: _settings.SearchLanguage, sortBy: SortBy, page: 1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
 
-            SearchResult moviesOnWatchlist = JsonConvert.DeserializeObject<SearchResult>(getWatchlist.Json);
+            if (!response.HttpStatusCode.IsSuccessCode())
+                throw new Exception($"Could not refresh watchlist, TMDB server responded with {response.HttpStatusCode}");            
 
-            Watchlist.AppendResult(moviesOnWatchlist, _movieDetailConfigurator);
+            Watchlist.AppendResult(response.MoviesOnWatchlist, _movieDetailConfigurator);
         }
 
         public async Task TryLoadNextPage(int retryCount = 0, int delayMilliseconds = 1000)
@@ -95,14 +92,12 @@ namespace Ch9.Services
             if (!CanLoad)
                 return;
 
-            GetMovieWatchlistResult getWatchlist = await _tmdbCachedSearchClient.GetMovieWatchlist(language: _settings.SearchLanguage, sortBy: SortBy, page: Watchlist.Page + 1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
+            var response = await _tmdbApiService.TryGetMovieWatchlist(language: _settings.SearchLanguage, sortBy: SortBy, page: Watchlist.Page + 1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
 
-            if (!getWatchlist.HttpStatusCode.IsSuccessCode())
-                throw new Exception($"Could not load watchlist items, TMDB server responded with {getWatchlist.HttpStatusCode}");
+            if (!response.HttpStatusCode.IsSuccessCode())
+                throw new Exception($"Could not load watchlist items, TMDB server responded with {response.HttpStatusCode}");            
 
-            SearchResult moviesOnWatchlistPage = JsonConvert.DeserializeObject<SearchResult>(getWatchlist.Json);
-
-            Watchlist.AppendResult(moviesOnWatchlistPage, _movieDetailConfigurator);
+            Watchlist.AppendResult(response.MoviesOnWatchlist, _movieDetailConfigurator);
             OnPropertyChanged(nameof(CanLoad));
         }
 
@@ -123,7 +118,8 @@ namespace Ch9.Services
             if (movie == null)
                 throw new Exception("Movie is invalid");
 
-            UpdateWatchlistResult response = await _tmdbCachedSearchClient.UpdateWatchlist("movie", desiredState, movie.Id, retryCount, delayMilliseconds);
+            var response = await _tmdbApiService.TryUpdateWatchlist("movie", desiredState, movie.Id, retryCount, delayMilliseconds);
+            //
 
             if (response.HttpStatusCode.IsSuccessCode())
             {

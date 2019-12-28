@@ -1,9 +1,9 @@
 ﻿using Ch9.Services.Contracts;
 using Ch9.Ui.Contracts.Models;
 
-namespace Ch9.Utils
+namespace Ch9.Services
 {
-    public class WeblinkComposer
+    public class WeblinkComposer : IWeblinkComposer
     {
         private const string IMDb_Base = "https://www.imdb.com";
         private const string IMDb_Person_Base = "https://www.imdb.com/name/";

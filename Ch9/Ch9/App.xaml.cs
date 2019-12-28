@@ -4,13 +4,15 @@ using Ch9.Services.VideoService;
 using Ch9.Utils;
 using Ch9.Views;
 using Ch9.Data.LocalSettings;
-using System.Net.Http;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 using Ch9.Services.Contracts;
 using Ch9.Services.ApiCommunicationService;
 using Ch9.Services.LocalSettings;
 using Ch9.Ui.Contracts.Models;
+
+using System.Net.Http;
+using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
+using Ch9.Services.UiModelConfigurationServices;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Ch9
@@ -23,14 +25,14 @@ namespace Ch9
         public MovieGenreSettingsModel MovieGenreSettings { get; private set; }
         public TmdbConfigurationModel TmdbConfiguration { get; private set; }
 
-        public Services.Contracts.IMovieDetailModelConfigurator MovieDetailModelConfigurator { get; private set; }
+        public IMovieDetailModelConfigurator MovieDetailModelConfigurator { get; private set; }
         public IPersonDetailModelConfigurator PersonDetailModelConfigurator { get; private set; }
         public SearchResultFilter ResultFilter { get; private set; }
         public ITmdbNetworkClient TmdbNetworkClient { get; private set; }
         public ITmdbCachedSearchClient CachedSearchClient { get; private set; }
         public UsersMovieListsService2 UsersMovieListsService2 { get; private set; }
         public IVideoService VideoService { get; private set; }
-        public WeblinkComposer WeblinkComposer { get; private set; }
+        public IWeblinkComposer WeblinkComposer { get; private set; }
         public ITmdbApiService TmdbApiService { get; private set; }
         public IMovieGenreSettingsService MovieGenreSettingsService { get; private set; }
 

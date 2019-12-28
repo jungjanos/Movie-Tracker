@@ -23,7 +23,7 @@ namespace Ch9.ViewModels
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
         private readonly IVideoService _videoService;
-        private readonly Utils.WeblinkComposer _weblinkComposer;
+        private readonly IWeblinkComposer _weblinkComposer;
         private readonly Task _fetchGallery;
         private MovieCreditsModel _credits;
 
@@ -104,7 +104,7 @@ namespace Ch9.ViewModels
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPersonDetailModelConfigurator personDetailModelConfigurator,
             IVideoService videoService,
-            Utils.WeblinkComposer weblinkComposer,
+            IWeblinkComposer weblinkComposer,
             IPageService pageService) : base(pageService)
         {
             Movie = movie;

@@ -21,7 +21,7 @@ namespace Ch9.ViewModels
         private readonly ITmdbApiService _tmdbApiService;
         private readonly UsersMovieListsService2 _movieListsService2;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
-        private readonly Utils.IPersonDetailModelConfigurator _personDetailModelConfigurator;
+        private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
         private readonly IVideoService _videoService;
         private readonly Utils.WeblinkComposer _weblinkComposer;
         private readonly Task _fetchGallery;
@@ -102,7 +102,7 @@ namespace Ch9.ViewModels
             ITmdbApiService tmdbApiService,
         UsersMovieListsService2 movieListsService2,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
-            Utils.IPersonDetailModelConfigurator personDetailModelConfigurator,
+            IPersonDetailModelConfigurator personDetailModelConfigurator,
             IVideoService videoService,
             Utils.WeblinkComposer weblinkComposer,
             IPageService pageService) : base(pageService)

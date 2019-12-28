@@ -1,8 +1,7 @@
-﻿using Ch9.ApiClient;
+﻿using Ch9.Infrastructure.Extensions;
 using Ch9.Services.Contracts;
 using Ch9.Ui.Contracts.Models;
-using Ch9.Utils;
-using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -16,15 +15,15 @@ namespace Ch9.Services.VideoService
     public abstract class VideoServiceBase : IVideoService
     {
         protected readonly ISettings _settings;
-        protected readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
+        protected readonly ITmdbApiService _tmdbApiService;
         private readonly StringToVideoTypeConverter _converter = new StringToVideoTypeConverter();
 
         public VideoServiceBase(
             ISettings settings,
-            ITmdbCachedSearchClient tmdbCachedSearchClient)
+            ITmdbApiService tmdbApiService)
         {
             _settings = settings;
-            _tmdbCachedSearchClient = tmdbCachedSearchClient;
+            _tmdbApiService = tmdbApiService;
         }
         /// <summary>
         /// Gets list of associated video entries from TMDb for the given Movie
@@ -37,13 +36,13 @@ namespace Ch9.Services.VideoService
 
             List<ImageModel> resultingThumbnailsWithoutVideos = new List<ImageModel>();
 
-            GetMovieVideosResult movieVideosResponse = await _tmdbCachedSearchClient.GetMovieVideos(movieId, _settings.SearchLanguage, retryCount, delayMilliseconds, fromCache).ConfigureAwait(false);
+            var response = await _tmdbApiService.TryGetMovieVideos(movieId, _settings.SearchLanguage, retryCount, delayMilliseconds, fromCache).ConfigureAwait(false);
 
-            if (movieVideosResponse.HttpStatusCode.IsSuccessCode())
+            if (response.HttpStatusCode.IsSuccessCode())
             {
-                var tmdbVideosModel = JsonConvert.DeserializeObject<GetMovieVideosModel>(movieVideosResponse.Json);
+                var movieVideos = response.MovieVideosModel;
 
-                foreach (TmdbVideoModel videoModel in tmdbVideosModel.VideoModels)
+                foreach (TmdbVideoModel videoModel in movieVideos.VideoModels)
                 {
                     var videoType = _converter.Convert(videoModel.TypeStr);
 
@@ -64,7 +63,7 @@ namespace Ch9.Services.VideoService
                 }
             }
             else
-                throw new Exception($"TMDB server responded with {movieVideosResponse.HttpStatusCode}");
+                throw new Exception($"TMDB server responded with {response.HttpStatusCode}");
 
             return resultingThumbnailsWithoutVideos;
         }

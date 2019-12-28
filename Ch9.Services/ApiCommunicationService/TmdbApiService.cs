@@ -2,6 +2,7 @@
 using Ch9.Infrastructure.Extensions;
 using Ch9.Services.Contracts;
 using Ch9.Ui.Contracts.Models;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -206,10 +207,15 @@ namespace Ch9.Services.ApiCommunicationService
             throw new System.NotImplementedException();
             var result = await _cachedSearchClient.UpdateWatchlist(mediaType, add, mediaId, accountId, retryCount, delayMilliseconds);
         }
-        public async Task<HttpStatusCode> TryGetMovieVideos(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        public async Task<TryGetMovieVideosResponse> TryGetMovieVideos(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            throw new System.NotImplementedException();
-            var result = await _cachedSearchClient.GetMovieVideos(id, language, retryCount, delayMilliseconds, fromCache);
+            var response = await _cachedSearchClient.GetMovieVideos(id, language, retryCount, delayMilliseconds, fromCache);
+            GetMovieVideosModel movieVideosModel = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                movieVideosModel = JsonConvert.DeserializeObject<GetMovieVideosModel>(response.Json);
+
+            return new TryGetMovieVideosResponse(response.HttpStatusCode, movieVideosModel);
         }
         public async Task<TryGetMovieCreditsResponse> TryGetMovieCredits(int id, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {

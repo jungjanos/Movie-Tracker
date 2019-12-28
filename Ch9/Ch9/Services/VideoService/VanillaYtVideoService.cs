@@ -1,6 +1,6 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services.Contracts;
+﻿using Ch9.Services.Contracts;
 using Ch9.Ui.Contracts.Models;
+
 using System.Threading.Tasks;
 
 namespace Ch9.Services.VideoService
@@ -17,8 +17,8 @@ namespace Ch9.Services.VideoService
 
         public VanillaYtVideoService(
             ISettings settings,
-            ITmdbCachedSearchClient tmdbCachedSearchClient) :
-            base(settings, tmdbCachedSearchClient)
+            ITmdbApiService tmdbApiService) :
+            base(settings, tmdbApiService)
         { }
 
         public override async Task PlayVideo(TmdbVideoModel attachedVideo, IPageService pageService) =>

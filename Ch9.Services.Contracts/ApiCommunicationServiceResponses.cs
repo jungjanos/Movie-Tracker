@@ -220,4 +220,15 @@ namespace Ch9.Services.Contracts
             HttpStatusCode = statusCode;
         }
     }
+
+    public class TryGetMovieVideosResponse : ApiCommunicationServiceResponseBase
+    {
+        public GetMovieVideosModel MovieVideosModel { get; private set; }
+
+        public TryGetMovieVideosResponse(HttpStatusCode statusCode, GetMovieVideosModel movieVideosModel)
+        {
+            HttpStatusCode = statusCode;
+            MovieVideosModel = movieVideosModel;
+        }
+    }
 }

@@ -1,15 +1,16 @@
 ﻿#if !GOOGLEPLAY
-using Ch9.ApiClient;
+using YoutubeExplode;
+using YoutubeExplode.Models.MediaStreams;
+
 using Ch9.Services.Contracts;
 using Ch9.Ui.Contracts;
 using Ch9.Ui.Contracts.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using YoutubeExplode;
-using YoutubeExplode.Models.MediaStreams;
 
 namespace Ch9.Services.VideoService
 {
@@ -31,10 +32,10 @@ namespace Ch9.Services.VideoService
         public YtExplodeVideoService(
             HttpClient httpClient,
             ISettings settings,
-            ITmdbCachedSearchClient tmdbCachedSearchClient
-            ) : base(settings, tmdbCachedSearchClient)
+            ITmdbApiService tmdbApiService
+            ) : base(settings, tmdbApiService)
         {
-            _fallback = new VanillaYtVideoService(settings, tmdbCachedSearchClient);
+            _fallback = new VanillaYtVideoService(settings, tmdbApiService);
 
             _youtubeClient = httpClient == null ? new YoutubeClient() : new YoutubeClient(httpClient);
             _streamSelector = new YtVideoStreamSelector(settings);

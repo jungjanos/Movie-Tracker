@@ -1,13 +1,14 @@
 ﻿using Ch9.Data.Contracts;
-using Microsoft.AspNetCore.WebUtilities;
+using static Ch9.Data.ApiClient.WebApiPathConstants;
+
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Net;
 using System.Net.Http;
-using System.Text;
+using Microsoft.AspNetCore.WebUtilities;
 using System.Threading.Tasks;
-using static Ch9.Data.ApiClient.WebApiPathConstants;
 
 namespace Ch9.Data.ApiClient
 {

@@ -8,11 +8,11 @@ using Ch9.Services.Contracts;
 using Ch9.Services.ApiCommunicationService;
 using Ch9.Services.LocalSettings;
 using Ch9.Ui.Contracts.Models;
+using Ch9.Services.UiModelConfigurationServices;
 
 using System.Net.Http;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using Ch9.Services.UiModelConfigurationServices;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Ch9
@@ -55,9 +55,9 @@ namespace Ch9
 
 
 #if GOOGLEPLAY
-    VideoService = new VanillaYtVideoService(Settings, CachedSearchClient);
+    VideoService = new VanillaYtVideoService(Settings, TmdbApiService);
 #else
-            VideoService = new YtExplodeVideoService(httpClient, Settings, CachedSearchClient);
+            VideoService = new YtExplodeVideoService(httpClient, Settings, TmdbApiService);
 #endif
 
             WeblinkComposer = new WeblinkComposer(Settings);

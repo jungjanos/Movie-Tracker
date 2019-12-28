@@ -1,15 +1,14 @@
 ﻿using Ch9.Services;
 using Ch9.Ui.Contracts.Models;
-//using Ch9.Utils;
 using Ch9.Services.Contracts;
+using Ch9.Infrastructure.Extensions;
+using Ch9.Services.MovieListServices;
 
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
-using Ch9.Infrastructure.Extensions;
-using Ch9.Services.MovieListServices;
 
 namespace Ch9.ViewModels
 {
@@ -18,7 +17,7 @@ namespace Ch9.ViewModels
     {
         private readonly ISettings _settings;        
         private readonly ITmdbApiService _tmdbApiService;
-        private readonly Utils.ISearchResultFilter _resultFilter;
+        private readonly ISearchResultFilter _resultFilter;
         private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
 
         private SearchResult _trendingWeek;
@@ -52,7 +51,7 @@ namespace Ch9.ViewModels
 
         public TrendingPage3ViewModel(ISettings settings,            
             ITmdbApiService tmdbApiService,
-            Utils.ISearchResultFilter resultFilter,
+            ISearchResultFilter resultFilter,
             IMovieDetailModelConfigurator movieDetailConfigurator,
             IPageService pageService) : base(pageService)
         {

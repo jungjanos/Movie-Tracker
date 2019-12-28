@@ -18,7 +18,7 @@ namespace Ch9.ViewModels
 
         private readonly ISettings _settings;        
         private readonly ITmdbApiService _tmdbApiService;
-        private readonly Utils.ISearchResultFilter _resultFilter;
+        private readonly ISearchResultFilter _resultFilter;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
 
         private string _searchString;
@@ -48,7 +48,7 @@ namespace Ch9.ViewModels
 
         public MainPage3ViewModel(ISettings settings,            
             ITmdbApiService tmdbApiService,
-            Utils.ISearchResultFilter resultFilter,
+            ISearchResultFilter resultFilter,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPageService pageService) : base(pageService)
         {

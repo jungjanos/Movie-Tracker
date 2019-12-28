@@ -27,7 +27,7 @@ namespace Ch9
 
         public IMovieDetailModelConfigurator MovieDetailModelConfigurator { get; private set; }
         public IPersonDetailModelConfigurator PersonDetailModelConfigurator { get; private set; }
-        public SearchResultFilter ResultFilter { get; private set; }
+        public ISearchResultFilter ResultFilter { get; private set; }
         public ITmdbNetworkClient TmdbNetworkClient { get; private set; }
         public ITmdbCachedSearchClient CachedSearchClient { get; private set; }
         public UsersMovieListsService2 UsersMovieListsService2 { get; private set; }

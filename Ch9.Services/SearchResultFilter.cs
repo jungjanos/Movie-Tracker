@@ -6,13 +6,6 @@ using System.Linq;
 
 namespace Ch9.Utils
 {
-    public interface ISearchResultFilter
-    {
-        IEnumerable<MovieDetailModel> FilterBySearchSettings(IEnumerable<MovieDetailModel> movies);
-        IEnumerable<MovieDetailModel> FilterBySearchSettingsIncludeAdult(IEnumerable<MovieDetailModel> movies);
-        IEnumerable<MovieDetailModel> FilterForAdultOnly(IEnumerable<MovieDetailModel> movies);
-    }
-
     // Aims to provide filtering of the TMDB WebAPI response based on user 
     // movie preferences (genre setting, timeframe) 
     // Adult filter is implemented on server side

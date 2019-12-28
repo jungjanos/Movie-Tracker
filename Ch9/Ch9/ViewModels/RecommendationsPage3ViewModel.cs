@@ -1,15 +1,14 @@
 ﻿using Ch9.Services;
 using Ch9.Ui.Contracts.Models;
-//using Ch9.Utils;
 using Ch9.Services.Contracts;
+using Ch9.Infrastructure.Extensions;
+using Ch9.Services.MovieListServices;
 
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
-using Ch9.Infrastructure.Extensions;
-using Ch9.Services.MovieListServices;
 
 namespace Ch9.ViewModels
 {
@@ -17,7 +16,7 @@ namespace Ch9.ViewModels
     {
         private readonly ISettings _settings;        
         private readonly ITmdbApiService _tmdbApiService;
-        private readonly Utils.ISearchResultFilter _searchResultFilter;
+        private readonly ISearchResultFilter _searchResultFilter;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
 
         public MovieDetailModel Movie { get; private set; }
@@ -53,7 +52,7 @@ namespace Ch9.ViewModels
         public RecommendationsPage3ViewModel(MovieDetailModel movie,
             ISettings settings,            
             ITmdbApiService tmdbApiService,
-            Utils.ISearchResultFilter searchResultFilter,
+            ISearchResultFilter searchResultFilter,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPageService pageService) : base(pageService)
         {

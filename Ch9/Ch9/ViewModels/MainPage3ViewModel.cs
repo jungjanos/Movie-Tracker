@@ -1,7 +1,9 @@
 ﻿using Ch9.Services;
 using Ch9.Ui.Contracts.Models;
 using Ch9.Services.Contracts;
-using Ch9.Utils;
+using Ch9.Services.MovieListServices;
+using Ch9.Infrastructure.Extensions;
+
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -16,7 +18,7 @@ namespace Ch9.ViewModels
 
         private readonly ISettings _settings;        
         private readonly ITmdbApiService _tmdbApiService;
-        private readonly ISearchResultFilter _resultFilter;
+        private readonly Utils.ISearchResultFilter _resultFilter;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
 
         private string _searchString;
@@ -46,7 +48,7 @@ namespace Ch9.ViewModels
 
         public MainPage3ViewModel(ISettings settings,            
             ITmdbApiService tmdbApiService,
-            ISearchResultFilter resultFilter,
+            Utils.ISearchResultFilter resultFilter,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPageService pageService) : base(pageService)
         {
@@ -93,7 +95,7 @@ namespace Ch9.ViewModels
                         var filteredResults = _settings.SafeSearch ? _resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels) : _resultFilter.FilterBySearchSettingsIncludeAdult(moviesOnNextPage.MovieDetailModels);
                         moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(filteredResults);
 
-                        Utils.Utils.AppendResult(SearchResults, moviesOnNextPage, _movieDetailModelConfigurator);
+                        SearchResults.AppendResult(moviesOnNextPage, _movieDetailModelConfigurator);
                     }
                     else
                         await _pageService.DisplayAlert("Error", $"Could not load search results, service responded with: {getNextPageResponse.HttpStatusCode}", "Ok");

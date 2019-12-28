@@ -1,7 +1,9 @@
 ﻿using Ch9.Services;
 using Ch9.Services.VideoService;
 using Ch9.Ui.Contracts.Models;
-using Ch9.Utils;
+using Ch9.Services.Contracts;
+using Ch9.Infrastructure.Extensions;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,7 +11,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
-using Ch9.Services.Contracts;
 
 namespace Ch9.ViewModels
 {
@@ -20,9 +21,9 @@ namespace Ch9.ViewModels
         private readonly ITmdbApiService _tmdbApiService;
         private readonly UsersMovieListsService2 _movieListsService2;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
-        private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
+        private readonly Utils.IPersonDetailModelConfigurator _personDetailModelConfigurator;
         private readonly IVideoService _videoService;
-        private readonly WeblinkComposer _weblinkComposer;
+        private readonly Utils.WeblinkComposer _weblinkComposer;
         private readonly Task _fetchGallery;
         private MovieCreditsModel _credits;
 
@@ -101,9 +102,9 @@ namespace Ch9.ViewModels
             ITmdbApiService tmdbApiService,
         UsersMovieListsService2 movieListsService2,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
-            IPersonDetailModelConfigurator personDetailModelConfigurator,
+            Utils.IPersonDetailModelConfigurator personDetailModelConfigurator,
             IVideoService videoService,
-            WeblinkComposer weblinkComposer,
+            Utils.WeblinkComposer weblinkComposer,
             IPageService pageService) : base(pageService)
         {
             Movie = movie;

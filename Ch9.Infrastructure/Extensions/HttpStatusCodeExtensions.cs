@@ -13,5 +13,10 @@ namespace Ch9.Infrastructure.Extensions
         {
             return 500 == (int)httpStatusCode;
         }
+
+        public static bool Is200Code(this HttpStatusCode httpStatusCode)
+        {
+            return 200 == (int)httpStatusCode;
+        }
     }
 }

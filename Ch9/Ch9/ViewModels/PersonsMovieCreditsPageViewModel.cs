@@ -1,7 +1,8 @@
 ﻿using Ch9.Services;
 using Ch9.Ui.Contracts.Models;
 using Ch9.Services.Contracts;
-using Ch9.Utils;
+using Ch9.Infrastructure.Extensions;
+
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -16,8 +17,8 @@ namespace Ch9.ViewModels
         private readonly ISettings _settings;        
         private readonly ITmdbApiService _tmdbApiService;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
-        private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
-        private readonly WeblinkComposer _weblinkComposer;
+        private readonly Utils.IPersonDetailModelConfigurator _personDetailModelConfigurator;
+        private readonly Utils.WeblinkComposer _weblinkComposer;
         private readonly Task _fetchGalleryImages;
         private readonly Task _fetchPersonsMovieCredits;
 
@@ -61,8 +62,8 @@ namespace Ch9.ViewModels
             ISettings settings,            
             ITmdbApiService tmdbApiService,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
-            IPersonDetailModelConfigurator personDetailModelConfigurator,
-            WeblinkComposer weblinkComposer,
+            Utils.IPersonDetailModelConfigurator personDetailModelConfigurator,
+            Utils.WeblinkComposer weblinkComposer,
             IPageService pageService) : base(pageService)
         {
             _settings = settings;            

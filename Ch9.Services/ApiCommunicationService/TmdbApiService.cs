@@ -277,16 +277,6 @@ namespace Ch9.Services.ApiCommunicationService
 
             return new TryGetPersonsDetailsResponse(response.HttpStatusCode, personsDetails);
         }
-        public async Task<HttpStatusCode> TryGetAccountMovieStates(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
-        {
-            throw new System.NotImplementedException();
-            var result = await _cachedSearchClient.GetAccountMovieStates(mediaId, guestSessionId, retryCount, delayMilliseconds);
-        }
-        public async Task<HttpStatusCode> TryGetItemStatusOnTargetList(int listId, int movieId, int retryCount = 0, int delayMilliseconds = 1000)
-        {
-            throw new System.NotImplementedException();
-            var result = await _cachedSearchClient.GetItemStatusOnTargetList(listId, movieId, retryCount, delayMilliseconds);
-        }
         public async Task<TryGetPersonImagesResponse> TryGetPersonImages(int id, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
             var response = await _cachedSearchClient.GetPersonImages(id, retryCount, delayMilliseconds, fromCache);
@@ -336,6 +326,17 @@ namespace Ch9.Services.ApiCommunicationService
                 sessionIdResponse = JsonConvert.DeserializeObject<SessionIdResponseModel>(response.Json);
 
             return new TryCreateSessionIdResponse(response.HttpStatusCode, sessionIdResponse);
+        }
+        
+        public async Task<HttpStatusCode> TryGetAccountMovieStates(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            throw new System.NotImplementedException();
+            var result = await _cachedSearchClient.GetAccountMovieStates(mediaId, guestSessionId, retryCount, delayMilliseconds);
+        }
+        public async Task<HttpStatusCode> TryGetItemStatusOnTargetList(int listId, int movieId, int retryCount = 0, int delayMilliseconds = 1000)
+        {
+            throw new System.NotImplementedException();
+            var result = await _cachedSearchClient.GetItemStatusOnTargetList(listId, movieId, retryCount, delayMilliseconds);
         }
     }
 }

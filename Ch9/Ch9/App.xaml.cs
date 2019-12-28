@@ -36,8 +36,6 @@ namespace Ch9
         public ITmdbApiService TmdbApiService { get; private set; }
         public IMovieGenreSettingsService MovieGenreSettingsService { get; private set; }
 
-        public Ch9.Services.MovieListServices.FavoriteMoviesListService FavoriteMoviesListService  { get; private set; }
-
         public App(HttpClient httpClient = null)
         {
             _localSettingsPersister = new XamarinLocalSettingsPersister();

@@ -26,21 +26,29 @@ namespace Ch9.Services.ApiCommunicationService
             _cachedSearchClient = cachedSearchClient;
         }
 
-        public async Task<HttpStatusCode> TryAddMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<TryAddMovieResponse> TryAddMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            throw new System.NotImplementedException();
-            var result = await _cachedSearchClient.AddMovie(listId, mediaId, retryCount, delayMilliseconds);
+            var response = await _cachedSearchClient.AddMovie(listId, mediaId, retryCount, delayMilliseconds);
+
+            return new TryAddMovieResponse(response.HttpStatusCode);
         }
 
-        public async Task<HttpStatusCode> TryCreateList(string name, string description, string language = "en", int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<TryCreateListResponse> TryCreateList(string name, string description, string language = "en", int retryCount = 0, int delayMilliseconds = 1000)
         {
-            throw new System.NotImplementedException();
-            var result = await _cachedSearchClient.CreateList(name, description, language, retryCount, delayMilliseconds);
+            var response = await _cachedSearchClient.CreateList(name, description, language, retryCount, delayMilliseconds);
+            ListCrudResponseModel listCrudResponse = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                listCrudResponse = JsonConvert.DeserializeObject<ListCrudResponseModel>(response.Json);
+
+            return new TryCreateListResponse(response.HttpStatusCode, listCrudResponse);
         }
-        public async Task<HttpStatusCode> TryDeleteList(int listId, int retryCount = 0, int delayMilliseconds = 1000)
+
+        public async Task<TryDeleteListResponse> TryDeleteList(int listId, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            throw new System.NotImplementedException();
-            var result = await _cachedSearchClient.DeleteList(listId, retryCount, delayMilliseconds);
+            var response = await _cachedSearchClient.DeleteList(listId, retryCount, delayMilliseconds);
+
+            return new TryDeleteListResponse(response.HttpStatusCode);
         }
         public async Task<TryDeleteMovieRatingResponse> TryDeleteMovieRating(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
@@ -98,18 +106,30 @@ namespace Ch9.Services.ApiCommunicationService
             if (response.HttpStatusCode.IsSuccessCode())
                 favorites = JsonConvert.DeserializeObject<SearchResult>(response.Json);
 
-            return new TryGetFavoriteMoviesResponse(response.HttpStatusCode, favorites);            
+            return new TryGetFavoriteMoviesResponse(response.HttpStatusCode, favorites);
         }
-        public async Task<HttpStatusCode> TryGetListDetails(int listId, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+        public async Task<TryGetListDetailsResponse> TryGetListDetails(int listId, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            throw new System.NotImplementedException();
-            var result = await _cachedSearchClient.GetListDetails(listId, language, retryCount, delayMilliseconds, fromCache);
+            var response = await _cachedSearchClient.GetListDetails(listId, language, retryCount, delayMilliseconds, fromCache);
+            MovieListModel listDetails = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                listDetails = JsonConvert.DeserializeObject<MovieListModel>(response.Json);
+
+            return new TryGetListDetailsResponse(response.HttpStatusCode, listDetails);
         }
-        public async Task<HttpStatusCode> TryGetLists(int? accountId = null, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
+
+        public async Task<TryGetListsResponse> TryGetLists(int? accountId = null, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            throw new System.NotImplementedException();
-            var result = await _cachedSearchClient.GetLists(accountId, language, page, retryCount, delayMilliseconds, fromCache);
+            var response = await _cachedSearchClient.GetLists(accountId, language, page, retryCount, delayMilliseconds, fromCache);
+            GetListsModel lists = null;
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                lists = JsonConvert.DeserializeObject<GetListsModel>(response.Json);
+
+            return new TryGetListsResponse(response.HttpStatusCode, lists);
         }
+
         public async Task<TryGetMovieRecommendationsResponse> TryGetMovieRecommendations(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
             var response = await _cachedSearchClient.GetMovieRecommendations(id, language, page, retryCount, delayMilliseconds, fromCache);
@@ -120,6 +140,7 @@ namespace Ch9.Services.ApiCommunicationService
 
             return new TryGetMovieRecommendationsResponse(response.HttpStatusCode, recommendations);
         }
+
         public async Task<TryGetMovieReviewsResponse> TryGetMovieReviews(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
             var response = await _cachedSearchClient.GetMovieReviews(id, language, page, retryCount, delayMilliseconds, fromCache);
@@ -136,7 +157,7 @@ namespace Ch9.Services.ApiCommunicationService
             SearchResult watchlist = null;
 
             if (response.HttpStatusCode.IsSuccessCode())
-                watchlist= JsonConvert.DeserializeObject<SearchResult>(response.Json);
+                watchlist = JsonConvert.DeserializeObject<SearchResult>(response.Json);
 
             return new TryGetMovieWatchlistResponse(response.HttpStatusCode, watchlist);
         }
@@ -157,7 +178,7 @@ namespace Ch9.Services.ApiCommunicationService
             TmdbConfigurationModel configurationModel = null;
 
             if (response.HttpStatusCode.IsSuccessCode())
-                configurationModel= JsonConvert.DeserializeObject<TmdbConfigurationModel>(response.Json);
+                configurationModel = JsonConvert.DeserializeObject<TmdbConfigurationModel>(response.Json);
 
             return new TryGetTmdbConfigurationResponse(response.HttpStatusCode, configurationModel);
         }
@@ -177,10 +198,11 @@ namespace Ch9.Services.ApiCommunicationService
 
             return new TryRateMovieResponse(response.HttpStatusCode);
         }
-        public async Task<HttpStatusCode> TryRemoveMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<TryRemoveMovieResponse> TryRemoveMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            throw new System.NotImplementedException();
             var result = await _cachedSearchClient.RemoveMovie(listId, mediaId, retryCount, delayMilliseconds);
+
+            return new TryRemoveMovieResponse(result.HttpStatusCode);
         }
         public async Task<TrySearchByMovieResponse> TrySearchByMovie(string searchString, string language = null, bool? includeAdult = null, int? page = null, int? year = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {

@@ -240,6 +240,62 @@ namespace Ch9.Services.Contracts
         }
     }
 
+    public class TryGetListsResponse : ApiCommunicationServiceResponseBase
+    {
+        public GetListsModel ListsModel { get; private set; }
+
+        public TryGetListsResponse(HttpStatusCode statusCode, GetListsModel listsModel)
+        {
+            HttpStatusCode = statusCode;
+            ListsModel = listsModel;
+        }
+    }
+
+    public class TryGetListDetailsResponse : ApiCommunicationServiceResponseBase
+    {
+        public MovieListModel ListDetails { get; private set; }
+
+        public TryGetListDetailsResponse(HttpStatusCode statusCode, MovieListModel listDetails)
+        {
+            HttpStatusCode = statusCode;
+            ListDetails = listDetails;
+        }
+    }
+
+    public class TryCreateListResponse : ApiCommunicationServiceResponseBase
+    {
+        public ListCrudResponseModel ListCrudResponse { get; private set; }
+        public TryCreateListResponse(HttpStatusCode statusCode, ListCrudResponseModel listCrudResponse)
+        {
+            HttpStatusCode = statusCode;
+            ListCrudResponse = listCrudResponse;
+        }
+    }
+
+    public class TryDeleteListResponse : ApiCommunicationServiceResponseBase
+    {
+        public TryDeleteListResponse(HttpStatusCode statusCode)
+        {
+            HttpStatusCode = statusCode;
+        }
+    }
+
+    public class TryAddMovieResponse : ApiCommunicationServiceResponseBase
+    {
+        public TryAddMovieResponse(HttpStatusCode statusCode)
+        {
+            HttpStatusCode = statusCode;
+        }
+    }
+
+    public class TryRemoveMovieResponse : ApiCommunicationServiceResponseBase
+    {
+        public TryRemoveMovieResponse(HttpStatusCode statusCode)
+        {
+            HttpStatusCode = statusCode;
+        }
+    }
+
     public class TryGetMovieVideosResponse : ApiCommunicationServiceResponseBase
     {
         public GetMovieVideosModel MovieVideosModel { get; private set; }

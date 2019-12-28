@@ -1,9 +1,7 @@
-﻿using Ch9.ApiClient;
-using Ch9.Infrastructure.Extensions;
+﻿using Ch9.Infrastructure.Extensions;
 using Ch9.Services.Contracts;
 using Ch9.Ui.Contracts.Models;
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,8 +15,8 @@ namespace Ch9.Services
 {
     public class CustomListsService : INotifyPropertyChanged
     {
-        private readonly ISettings _settings;
-        private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
+        private readonly ISettings _settings;        
+        private readonly ITmdbApiService _tmdbApiService;
         private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
         private readonly Command _refreshActiveCustomListCommand;
         private bool _isInitialized = false;
@@ -45,13 +43,13 @@ namespace Ch9.Services
         }
 
         public CustomListsService(
-            ISettings settings,
-            ITmdbCachedSearchClient tmdbCachedSearchClient,
+            ISettings settings,            
+            ITmdbApiService tmdbApiService,
             IMovieDetailModelConfigurator movieDetailConfigurator
             )
         {
-            _settings = settings;
-            _tmdbCachedSearchClient = tmdbCachedSearchClient;
+            _settings = settings;            
+            _tmdbApiService = tmdbApiService;
             _movieDetailConfigurator = movieDetailConfigurator;
 
             _refreshActiveCustomListCommand = new Command(async () =>
@@ -122,15 +120,15 @@ namespace Ch9.Services
 
             try
             {
-                GetListsResult getLists = await _tmdbCachedSearchClient.GetLists(retryCount: retryCount, delayMilliseconds: delayMilliseconds, fromCache: fromCache);
+                var response = await _tmdbApiService.TryGetLists(retryCount: retryCount, delayMilliseconds: delayMilliseconds, fromCache: fromCache);
 
-                if (!getLists.HttpStatusCode.IsSuccessCode())
+                if (!response.HttpStatusCode.IsSuccessCode())
                 {
                     ClearLists();
-                    throw new Exception($"When trying to fetch user's custom lists, server responded with error code: {getLists.HttpStatusCode}");
+                    throw new Exception($"When trying to fetch user's custom lists, server responded with error code: {response.HttpStatusCode}");
                 }
 
-                MovieListModel[] movieLists = JsonConvert.DeserializeObject<GetListsModel>(getLists.Json).MovieLists;
+                MovieListModel[] movieLists = response.ListsModel.MovieLists;
 
                 var selectedListBackup = SelectedCustomList;
                 SelectedCustomList = null;
@@ -164,10 +162,11 @@ namespace Ch9.Services
             if (!_settings.IsLoggedin)
                 throw new Exception("Account error: user is not signed in");
 
-            CreateListResult result = await _tmdbCachedSearchClient.CreateList(name, description, _settings.SearchLanguage ?? "en", retryCount, delayMilliseconds);
-            if (result.HttpStatusCode.IsSuccessCode())
+            var response = await _tmdbApiService.TryCreateList(name, description, _settings.SearchLanguage ?? "en", retryCount, delayMilliseconds);
+
+            if (response.HttpStatusCode.IsSuccessCode())
             {
-                ListCrudResponseModel newListResponse = JsonConvert.DeserializeObject<ListCrudResponseModel>(result.Json);
+                var newListResponse = response.ListCrudResponse;
 
                 MovieListModel newList = new MovieListModel
                 {
@@ -180,7 +179,7 @@ namespace Ch9.Services
                 SelectedCustomList = newList;
             }
             else
-                throw new Exception($"Server responded with {result.HttpStatusCode}");
+                throw new Exception($"Server responded with {response.HttpStatusCode}");
         }
 
         /// <summary>
@@ -199,10 +198,10 @@ namespace Ch9.Services
                 throw new Exception($"Error when trying to remove active custom list: there is no list selected");
 
             var listToDelete = SelectedCustomList;
-            DeleteListResult result = await _tmdbCachedSearchClient.DeleteList(SelectedCustomList.Id, retryCount, delayMilliseconds);
+            var response = await _tmdbApiService.TryDeleteList(SelectedCustomList.Id, retryCount, delayMilliseconds);
 
             // Tmdb Web API has a glitch here: Http.500 denotes "success" here...
-            bool success = result.HttpStatusCode.Is500Code();
+            bool success = response.HttpStatusCode.Is500Code();
             if (success)
             {
                 SelectedCustomList = null;
@@ -210,7 +209,7 @@ namespace Ch9.Services
                 SelectedCustomList = UsersCustomLists.FirstOrDefault();
             }
             else
-                throw new Exception($"Server responded with error code: {result.HttpStatusCode}");
+                throw new Exception($"Server responded with error code: {response.HttpStatusCode}");
         }
 
         /// <summary>
@@ -232,12 +231,12 @@ namespace Ch9.Services
             if (movieToRemove == null)
                 throw new Exception("Error when trying to remove movie from active list: to be removed movie is invalid or not on the list");
 
-            RemoveMovieResult result = await _tmdbCachedSearchClient.RemoveMovie(SelectedCustomList.Id, movieId, retryCount, delayMilliseconds);
+            var response = await _tmdbApiService.TryRemoveMovie(SelectedCustomList.Id, movieId, retryCount, delayMilliseconds);
 
-            if (result.HttpStatusCode.IsSuccessCode())
+            if (response.HttpStatusCode.IsSuccessCode())
                 SelectedCustomList.Movies.Remove(movieToRemove);
             else
-                throw new Exception($"Error when trying to remove movie from active list, server responded with error code: {result.HttpStatusCode}");
+                throw new Exception($"Error when trying to remove movie from active list, server responded with error code: {response.HttpStatusCode}");
         }
 
         /// <summary>
@@ -258,12 +257,12 @@ namespace Ch9.Services
             if (CheckIfMovieIsOnActiveList(movie.Id) == true)
                 throw new Exception("Error when trying to add movie to active list: to be added movie is already on the list");
 
-            AddMovieResult result = await _tmdbCachedSearchClient.AddMovie(SelectedCustomList.Id, movie.Id, retryCount, delayMilliseconds);
+            var response = await _tmdbApiService.TryAddMovie(SelectedCustomList.Id, movie.Id, retryCount, delayMilliseconds);
 
-            if (result.HttpStatusCode.IsSuccessCode())
+            if (response.HttpStatusCode.IsSuccessCode())
                 SelectedCustomList.Movies.Add(movie);
             else
-                throw new Exception($"Error when trying to add movie to active list, server responded with error code: {result.HttpStatusCode}");
+                throw new Exception($"Error when trying to add movie to active list, server responded with error code: {response.HttpStatusCode}");
         }
 
         /// <summary>
@@ -282,12 +281,12 @@ namespace Ch9.Services
             if (updateTarget == null)
                 throw new Exception($"Error when trying to update active movie list: couldn't find the to target list with id={listId} in your custom lists");
 
-            GetListDetailsResult listDetailResponse = await _tmdbCachedSearchClient.GetListDetails(listId, _settings.SearchLanguage, retryCount, delayMilliseconds, fromCache);
-            if (!listDetailResponse.HttpStatusCode.IsSuccessCode())
-                throw new Exception($"Error when trying to update active movie list with id={listId}. Server responded with {listDetailResponse.HttpStatusCode} code");
-
-            MovieListModel movieListDetails = JsonConvert.DeserializeObject<MovieListModel>(listDetailResponse.Json);
-            HydrateMovieList(updateTarget, movieListDetails);
+            var response = await _tmdbApiService.TryGetListDetails(listId, _settings.SearchLanguage, retryCount, delayMilliseconds, fromCache);
+            
+            if (!response.HttpStatusCode.IsSuccessCode())
+                throw new Exception($"Error when trying to update active movie list with id={listId}. Server responded with {response.HttpStatusCode} code");                       
+            
+            HydrateMovieList(updateTarget, response.ListDetails);
         }
 
         /// <summary>

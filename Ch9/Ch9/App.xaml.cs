@@ -1,5 +1,4 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
+﻿using Ch9.Services;
 using Ch9.Services.VideoService;
 using Ch9.Utils;
 using Ch9.Views;
@@ -28,8 +27,6 @@ namespace Ch9
         public IMovieDetailModelConfigurator MovieDetailModelConfigurator { get; private set; }
         public IPersonDetailModelConfigurator PersonDetailModelConfigurator { get; private set; }
         public ISearchResultFilter ResultFilter { get; private set; }
-        public ITmdbNetworkClient TmdbNetworkClient { get; private set; }
-        public ITmdbCachedSearchClient CachedSearchClient { get; private set; }
         public UsersMovieListsService2 UsersMovieListsService2 { get; private set; }
         public IVideoService VideoService { get; private set; }
         public IWeblinkComposer WeblinkComposer { get; private set; }
@@ -41,10 +38,6 @@ namespace Ch9
             _localSettingsPersister = new XamarinLocalSettingsPersister();
             Settings = new Settings(Application.Current.Properties, _localSettingsPersister);
             _tmdbConfigurationCache = new TmdbConfigurationCache(TmdbApiService, Settings, _localSettingsPersister);
-
-
-            TmdbNetworkClient = new TmdbNetworkClient(Settings, httpClient); //legacy
-            CachedSearchClient = new TmdbCachedSearchClient(TmdbNetworkClient); //legacy
 
             TmdbApiService = new TmdbApiService(new Data.ApiClient.TmdbCachedSearchClient(new Data.ApiClient.TmdbNetworkClient(httpClient, Settings.ApiKey)));
             TmdbApiService.SessionId = Settings.SessionId;            
@@ -71,9 +64,9 @@ namespace Ch9
             await _tmdbConfigurationCache.FetchAndPersistTmdbConfiguration();
             TmdbConfiguration = _tmdbConfigurationCache.TmdbConfigurationModel;
 
-            MovieDetailModelConfigurator = new Ch9.Services.UiModelConfigurationServices.MovieDetailModelConfigurator(Settings, TmdbConfiguration, MovieGenreSettings);
+            MovieDetailModelConfigurator = new MovieDetailModelConfigurator(Settings, TmdbConfiguration, MovieGenreSettings);
             PersonDetailModelConfigurator = new PersonDetailModelConfigurator(Settings, TmdbConfiguration);
-            UsersMovieListsService2 = new UsersMovieListsService2(Settings, CachedSearchClient, TmdbApiService, MovieDetailModelConfigurator);
+            UsersMovieListsService2 = new UsersMovieListsService2(Settings, TmdbApiService, MovieDetailModelConfigurator);
 
             if (!Settings.IsLoginPageDeactivationRequested)
             {

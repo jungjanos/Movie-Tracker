@@ -9,8 +9,7 @@ namespace Ch9.Services
 {
     public class UsersMovieListsService2 : INotifyPropertyChanged
     {
-        private readonly ISettings _settings;
-        private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;
+        private readonly ISettings _settings;        
         private readonly ITmdbApiService _tmdbApiService;
         private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
 
@@ -20,17 +19,15 @@ namespace Ch9.Services
 
 
         public UsersMovieListsService2(
-            ISettings settings,
-            ITmdbCachedSearchClient tmdbCachedSearchClient,
+            ISettings settings,            
             ITmdbApiService tmdbApiService,
             IMovieDetailModelConfigurator movieDetailConfigurator2)
         {
-            _settings = settings;
-            _tmdbCachedSearchClient = tmdbCachedSearchClient;
+            _settings = settings;            
             _tmdbApiService = tmdbApiService;
             _movieDetailConfigurator = movieDetailConfigurator2;
 
-            CustomListsService = new CustomListsService(_settings, _tmdbCachedSearchClient, _movieDetailConfigurator);
+            CustomListsService = new CustomListsService(_settings, _tmdbApiService, _movieDetailConfigurator);
             FavoriteMoviesListService = new FavoriteMoviesListService(_settings, _tmdbApiService, _movieDetailConfigurator);
             WatchlistService = new WatchlistService(_settings, _tmdbApiService, _movieDetailConfigurator);
         }

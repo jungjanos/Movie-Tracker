@@ -9,7 +9,7 @@ using Xamarin.Forms;
 namespace Ch9.Services
 {
     // IPageService is injected into the ViewModel objects in order to access 
-    // UI-page functions (navigation, page instantiation)
+    // functions to control the UI (navigation, error messages) without a direct dependency on the UI (Xamarin page)
     public interface IPageService
     {
         Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons);
@@ -19,14 +19,14 @@ namespace Ch9.Services
         Task OpenWeblink(string url);
         Task<object> PopCurrent();
         Task PopToRootAsync();
-        Task PushAddListPageAsync(ListsPageViewModel3 listsPageViewModel);
         Task PushAsync(MovieDetailModel movie);
-        Task PushLargeImagePageAsync(MovieDetailPageViewModel viewModel);
         Task PushLoginPageAsync(string accountName = null, string password = null);
         Task PushPersonsMovieCreditsPageAsync(PersonsDetailsModel personDetails);
         Task PushRecommendationsPageAsync(MovieDetailModel movie);
-        Task PushReviewsPage(MovieDetailPageViewModel model);
         Task PushVideoPageAsync(string streamUrl);
+        Task PushLargeImagePageAsync(MovieDetailPageViewModel viewModel);
+        Task PushAddListPageAsync(ListsPageViewModel3 listsPageViewModel);
+        Task PushReviewsPage(MovieDetailPageViewModel model);
     }
 
     public class PageService : IPageService

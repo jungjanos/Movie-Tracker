@@ -100,7 +100,7 @@ namespace Ch9.ViewModels
             MovieDetailModel movie,
             ISettings settings,
             ITmdbApiService tmdbApiService,
-        UsersMovieListsService2 movieListsService2,
+            UsersMovieListsService2 movieListsService2,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPersonDetailModelConfigurator personDetailModelConfigurator,
             IVideoService videoService,

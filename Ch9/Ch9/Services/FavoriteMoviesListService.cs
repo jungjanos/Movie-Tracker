@@ -1,10 +1,8 @@
-﻿using Ch9.ApiClient;
-using Ch9.Infrastructure.Extensions;
+﻿using Ch9.Infrastructure.Extensions;
 using Ch9.Services.Contracts;
 using Ch9.Services.MovieListServices;
 using Ch9.Ui.Contracts.Models;
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,7 +17,7 @@ namespace Ch9.Services
     public class FavoriteMoviesListService : INotifyPropertyChanged
     {
         private readonly ISettings _settings;
-        private readonly ITmdbCachedSearchClient _tmdbCachedSearchClient;        
+        private readonly ITmdbApiService _tmdbApiService;
         private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
         private readonly ICommand _sortOptionChangedCommand;
 
@@ -43,11 +41,11 @@ namespace Ch9.Services
 
         public FavoriteMoviesListService(
             ISettings settings,
-            ITmdbCachedSearchClient tmdbCachedSearchClient,
+            ITmdbApiService tmdbApiService,
             IMovieDetailModelConfigurator movieDetailConfigurator)
         {
             _settings = settings;
-            _tmdbCachedSearchClient = tmdbCachedSearchClient;            
+            _tmdbApiService = tmdbApiService;
             _movieDetailConfigurator = movieDetailConfigurator;
 
             _sortBy = "created_at.desc";
@@ -78,14 +76,13 @@ namespace Ch9.Services
             if (!_settings.IsLoggedin)
                 throw new Exception("Account error: user is not signed in");
 
-            GetFavoriteMoviesResult getFavoriteList = await _tmdbCachedSearchClient.GetFavoriteMovies(language: _settings.SearchLanguage, sortBy: SortBy, page: 1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
-            if (!getFavoriteList.HttpStatusCode.IsSuccessCode())
-                throw new Exception($"Could not refresh favorite list, TMDB server responded with {getFavoriteList.HttpStatusCode}");
+            var response = await _tmdbApiService.TryGetFavoriteMovies(language: _settings.SearchLanguage, sortBy: SortBy, page: 1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
 
-            SearchResult moviesOnFavoriteList = JsonConvert.DeserializeObject<SearchResult>(getFavoriteList.Json);
 
-            FavoriteMovies.AppendResult(moviesOnFavoriteList, _movieDetailConfigurator);
+            if (!response.HttpStatusCode.IsSuccessCode())
+                throw new Exception($"Could not refresh favorite list, TMDB server responded with {response.HttpStatusCode}");            
 
+            FavoriteMovies.AppendResult(response.FavoriteMovies, _movieDetailConfigurator);
         }
 
         public async Task TryLoadNextPage(int retryCount = 0, int delayMilliseconds = 1000)
@@ -96,14 +93,12 @@ namespace Ch9.Services
             if (!CanLoad)
                 return;
 
-            GetFavoriteMoviesResult getFavoriteList = await _tmdbCachedSearchClient.GetFavoriteMovies(language: _settings.SearchLanguage, sortBy: SortBy, page: FavoriteMovies.Page + 1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
+            var response = await _tmdbApiService.TryGetFavoriteMovies(language: _settings.SearchLanguage, sortBy: SortBy, page: FavoriteMovies.Page + 1, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
 
-            if (!getFavoriteList.HttpStatusCode.IsSuccessCode())
-                throw new Exception($"Could not load favorite list, TMDB server responded with {getFavoriteList.HttpStatusCode}");
+            if (!response.HttpStatusCode.IsSuccessCode())
+                throw new Exception($"Could not load favorite list, TMDB server responded with {response.HttpStatusCode}");            
 
-            SearchResult moviesOnFavoriteListPage = JsonConvert.DeserializeObject<SearchResult>(getFavoriteList.Json);
-
-            FavoriteMovies.AppendResult(moviesOnFavoriteListPage, _movieDetailConfigurator);
+            FavoriteMovies.AppendResult(response.FavoriteMovies, _movieDetailConfigurator);
             OnPropertyChanged(nameof(CanLoad));
         }
 
@@ -124,7 +119,7 @@ namespace Ch9.Services
             if (movie == null)
                 throw new Exception("Movie is invalid");
 
-            UpdateFavoriteListResult response = await _tmdbCachedSearchClient.UpdateFavoriteList("movie", desiredState, movie.Id, retryCount, delayMilliseconds);
+            var response = await _tmdbApiService.TryUpdateFavoriteList("movie", desiredState, movie.Id, retryCount, delayMilliseconds);
 
             if (response.HttpStatusCode.IsSuccessCode())
             {

@@ -73,7 +73,7 @@ namespace Ch9
 
             MovieDetailModelConfigurator = new Ch9.Services.UiModelConfigurationServices.MovieDetailModelConfigurator(Settings, TmdbConfiguration, MovieGenreSettings);
             PersonDetailModelConfigurator = new PersonDetailModelConfigurator(Settings, TmdbConfiguration);
-            UsersMovieListsService2 = new UsersMovieListsService2(Settings, CachedSearchClient, MovieDetailModelConfigurator);
+            UsersMovieListsService2 = new UsersMovieListsService2(Settings, CachedSearchClient, TmdbApiService, MovieDetailModelConfigurator);
 
             if (!Settings.IsLoginPageDeactivationRequested)
             {

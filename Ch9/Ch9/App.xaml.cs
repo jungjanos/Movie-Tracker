@@ -6,7 +6,7 @@ using Ch9.Data.LocalSettings;
 using Ch9.Services.Contracts;
 using Ch9.Services.ApiCommunicationService;
 using Ch9.Services.LocalSettings;
-using Ch9.Ui.Contracts.Models;
+using Ch9.Models;
 using Ch9.Services.UiModelConfigurationServices;
 
 using System.Net.Http;

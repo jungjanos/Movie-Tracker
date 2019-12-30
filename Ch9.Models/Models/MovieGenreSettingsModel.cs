@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Ch9.Ui.Contracts.Models
+namespace Ch9.Models
 {
     /// <summary>
     /// Model class serving to hold the current movie genre preferences for the user

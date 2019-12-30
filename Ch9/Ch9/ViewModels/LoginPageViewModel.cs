@@ -1,6 +1,6 @@
 ﻿using Ch9.Services;
 using Ch9.Infrastructure.Extensions;
-using Ch9.Ui.Contracts.Models;
+using Ch9.Models;
 using Ch9.Services.Contracts;
 
 using System;

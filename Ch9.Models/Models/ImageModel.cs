@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Ch9.Ui.Contracts.Models
+namespace Ch9.Models
 {
     // Represents different kinds of movie images (posters, backdrops, stills..)
     public class ImageModel

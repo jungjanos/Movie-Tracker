@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Ch9.Ui.Contracts.Models
+namespace Ch9.Models
 {
     /// <summary>
     /// Contains all url video stream sources for a single video. 

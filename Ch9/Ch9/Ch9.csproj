@@ -33,7 +33,7 @@
     <PackageReference Include="CardsView" Version="2.3.5" />
     <PackageReference Include="LazyCache" Version="2.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Xamarin.Essentials" Version="1.3.1" />
     <PackageReference Include="Xamarin.FFImageLoading" Version="2.4.11.982" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.11.982" />
@@ -44,10 +44,10 @@
     <ProjectReference Include="..\..\Ch9.Data.ApiClient\Ch9.Data.ApiClient.csproj" />
     <ProjectReference Include="..\..\Ch9.Data.Contracts\Ch9.Data.Contracts.csproj" />
     <ProjectReference Include="..\..\Ch9.Data.LocalSettings\Ch9.Data.LocalSettings.csproj" />
+    <ProjectReference Include="..\..\Ch9.Models\Ch9.Models.csproj" />
     <ProjectReference Include="..\..\Ch9.Services.Contracts\Ch9.Services.Contracts.csproj" />
     <ProjectReference Include="..\..\Ch9.Services.YtExplodeVideoService\Ch9.Services.YtExplodeVideoService.csproj" />
     <ProjectReference Include="..\..\Ch9.Services\Ch9.Services.csproj" />
-    <ProjectReference Include="..\..\Ch9.Ui.Contracts\Ch9.Ui.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

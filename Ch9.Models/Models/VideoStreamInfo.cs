@@ -1,4 +1,4 @@
-﻿namespace Ch9.Ui.Contracts.Models
+﻿namespace Ch9.Models
 {
     /// <summary>
     /// Contains properties of a single url video stream source

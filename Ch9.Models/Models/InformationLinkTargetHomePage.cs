@@ -1,4 +1,4 @@
-﻿namespace Ch9.Ui.Contracts.Models
+﻿namespace Ch9.Models
 {
     /// <summary>
     /// encodes the setting of the target homepage to which information links will refer.

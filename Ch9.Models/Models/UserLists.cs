@@ -1,4 +1,4 @@
-﻿namespace Ch9.Ui.Contracts.Models
+﻿namespace Ch9.Models
 {
     // Class is used to store the retreived publicly accessible movie lists of the user
     public class UserLists

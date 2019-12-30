@@ -2,7 +2,7 @@
 using Ch9.Services;
 using Ch9.Services.VideoService;
 using Ch9.Ui.Contracts;
-using Ch9.Ui.Contracts.Models;
+using Ch9.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

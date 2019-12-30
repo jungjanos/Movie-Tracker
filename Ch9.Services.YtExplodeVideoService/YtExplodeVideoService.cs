@@ -2,8 +2,8 @@
 using YoutubeExplode;
 using YoutubeExplode.Models.MediaStreams;
 
+using Ch9.Models;
 using Ch9.Services.Contracts;
-using Ch9.Ui.Contracts.Models;
 
 using System;
 using System.Linq;
@@ -52,9 +52,9 @@ namespace Ch9.Services.VideoService
             catch { }
         }
 
-        private static Ui.Contracts.Models.VideoStreamInfo GetStreamInfo(MuxedStreamInfo muxedStreamInfo) => new Ui.Contracts.Models.VideoStreamInfo(
+        private static Models.VideoStreamInfo GetStreamInfo(MuxedStreamInfo muxedStreamInfo) => new Models.VideoStreamInfo(
             streamUrl: muxedStreamInfo.Url,
-            quality: (Ui.Contracts.VideoQuality)muxedStreamInfo.VideoQuality,
+            quality: (Models.VideoQuality)muxedStreamInfo.VideoQuality,
             qualityLabel: muxedStreamInfo.VideoQualityLabel,
             height: muxedStreamInfo.Resolution.Height,
             width: muxedStreamInfo.Resolution.Width

@@ -1,5 +1,4 @@
-﻿using Ch9.Ui.Contracts;
-using Ch9.Ui.Contracts.Models;
+﻿using Ch9.Models;
 
 using System.Threading.Tasks;
 

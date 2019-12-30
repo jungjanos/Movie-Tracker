@@ -1,5 +1,5 @@
 ﻿using Ch9.Services;
-using Ch9.Ui.Contracts.Models;
+using Ch9.Models;
 using Ch9.Services.Contracts;
 using Ch9.Infrastructure.Extensions;
 
@@ -79,7 +79,7 @@ namespace Ch9.ViewModels
 
             DisplayImages = new ObservableCollection<ImageModel>(new ImageModel[] { firstImage });
 
-            OnItemTappedCommand = new Command<Ui.Contracts.Models.MovieDetailModel>(async mov => await _pageService.PushAsync(mov));
+            OnItemTappedCommand = new Command<MovieDetailModel>(async mov => await _pageService.PushAsync(mov));
 
             OpenWeblinkCommand = new Command<string>(async url => await _pageService.OpenWeblink(url));
             OpenInfolinkCommand = new Command(async () =>

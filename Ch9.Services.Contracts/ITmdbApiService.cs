@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using Ch9.Models;
+
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Ch9.Services.Contracts
@@ -20,7 +22,7 @@ namespace Ch9.Services.Contracts
         Task<TryGetListsResponse> TryGetLists(int? accountId = null, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true);
         Task<TryGetMovieCreditsResponse> TryGetMovieCredits(int id, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true);
         Task<HttpStatusCode> TryGetMovieDetails(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000);
-        Task<TryGetMovieDetailsWithAccountStatesResponse> TryGetMovieDetailsWithAccountStates(Ui.Contracts.Models.MovieDetailModel movieToPopulate, int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000);
+        Task<TryGetMovieDetailsWithAccountStatesResponse> TryGetMovieDetailsWithAccountStates(MovieDetailModel movieToPopulate, int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000);
         Task<TryGetMovieImagesResponse> TryGetMovieImages(int id, string language = null, string otherLanguage = null, bool? includeLanguageless = true, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true);
         Task<TryGetMovieRecommendationsResponse> TryGetMovieRecommendations(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true);
         Task<TryGetMovieReviewsResponse> TryGetMovieReviews(int id, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true);

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Ch9.Ui.Contracts.Models
+namespace Ch9.Models
 {
     public class ReviewsModel
     {

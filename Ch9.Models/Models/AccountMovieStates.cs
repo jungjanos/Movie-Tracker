@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Ch9.Ui.Contracts.Models
+namespace Ch9.Models
 {
     public class AccountMovieStates
     {

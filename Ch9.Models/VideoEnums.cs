@@ -1,4 +1,4 @@
-﻿namespace Ch9.Ui.Contracts
+﻿namespace Ch9.Models
 {
     /// <summary>
     /// Quality tag for a video stream

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace Ch9.Ui.Contracts.Models
+namespace Ch9.Models
 {
     // Describes different kinds of movie videos on the TMDB ApiServer
     public class TmdbVideoModel

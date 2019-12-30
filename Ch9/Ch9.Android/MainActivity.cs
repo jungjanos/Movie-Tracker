@@ -1,10 +1,12 @@
-﻿using Android.App;
+﻿using FFImageLoading.Forms.Platform;
+using PanCardView.Droid;
+
+using Ch9.Models;
+using Ch9.Views;
+
+using Android.App;
 using Android.Content.PM;
 using Android.OS;
-using Ch9.Ui.Contracts.Messages;
-using Ch9.Views;
-using FFImageLoading.Forms.Platform;
-using PanCardView.Droid;
 using System.Net.Http;
 using Xamarin.Forms;
 

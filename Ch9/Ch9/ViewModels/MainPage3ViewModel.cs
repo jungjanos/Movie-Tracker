@@ -1,5 +1,5 @@
 ﻿using Ch9.Services;
-using Ch9.Ui.Contracts.Models;
+using Ch9.Models;
 using Ch9.Services.Contracts;
 using Ch9.Services.MovieListServices;
 using Ch9.Infrastructure.Extensions;

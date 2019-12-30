@@ -1,4 +1,4 @@
-﻿namespace Ch9.Ui.Contracts.Messages
+﻿namespace Ch9.Models
 {
     public static class UiMessageCollection
     {

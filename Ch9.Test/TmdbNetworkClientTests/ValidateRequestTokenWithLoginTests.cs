@@ -1,6 +1,6 @@
 ﻿using Ch9.ApiClient;
 using Ch9.Services;
-using Ch9.Ui.Contracts.Models;
+using Ch9.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

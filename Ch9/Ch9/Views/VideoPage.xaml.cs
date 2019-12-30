@@ -1,4 +1,5 @@
-﻿using Ch9.Ui.Contracts.Messages;
+﻿using Ch9.Models;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 

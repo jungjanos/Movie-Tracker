@@ -1,7 +1,7 @@
 ﻿using Ch9.Infrastructure.Extensions;
 using Ch9.Services.Contracts;
 using Ch9.Services.MovieListServices;
-using Ch9.Ui.Contracts.Models;
+using Ch9.Models;
 
 using System;
 using System.Collections.Generic;

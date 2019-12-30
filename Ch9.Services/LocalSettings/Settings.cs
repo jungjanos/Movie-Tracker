@@ -1,7 +1,7 @@
-﻿using Ch9.Ui.Contracts;
-using Ch9.Ui.Contracts.Models;
+﻿using Ch9.Models;
 using Ch9.Data.Contracts;
 using Ch9.Services.Contracts;
+
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.ComponentModel;

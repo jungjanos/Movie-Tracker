@@ -17,11 +17,12 @@ namespace Ch9.Services.VideoService
 
         public VanillaYtVideoService(
             ISettings settings,
-            ITmdbApiService tmdbApiService) :
-            base(settings, tmdbApiService)
+            ITmdbApiService tmdbApiService,
+            IPlayVideo videoPlayer) :
+            base(settings, tmdbApiService, videoPlayer)
         { }
 
-        public override async Task PlayVideo(TmdbVideoModel attachedVideo, IPageService pageService) =>
-            await pageService.OpenWeblink(GetVideoUrlFromId(attachedVideo.Key));
+        public override async Task PlayVideo(TmdbVideoModel attachedVideo) =>
+        await _videoPlayer.OpenYoutubeVideoInDeviceDefaultPlayer(GetVideoUrlFromId(attachedVideo.Key));
     }
 }

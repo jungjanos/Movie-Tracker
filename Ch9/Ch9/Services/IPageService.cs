@@ -19,8 +19,7 @@ namespace Ch9.Services
         Task PushAsync(MovieDetailModel movie);
         Task PushLoginPageAsync(string accountName = null, string password = null);
         Task PushPersonsMovieCreditsPageAsync(PersonsDetailsModel personDetails);
-        Task PushRecommendationsPageAsync(MovieDetailModel movie);
-        Task PushVideoPageAsync(string streamUrl);
+        Task PushRecommendationsPageAsync(MovieDetailModel movie);        
         Task PushLargeImagePageAsync(MovieDetailPageViewModel viewModel);
         Task PushAddListPageAsync(ListsPageViewModel3 listsPageViewModel);
         Task PushReviewsPage(MovieDetailPageViewModel model);

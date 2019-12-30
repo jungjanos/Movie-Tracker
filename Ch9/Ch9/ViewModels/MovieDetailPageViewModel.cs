@@ -139,7 +139,7 @@ namespace Ch9.ViewModels
                     else
                         WaitingOnVideo = true;
 
-                    await _videoService.PlayVideo(capture.AttachedVideo, _pageService);
+                    await _videoService.PlayVideo(capture.AttachedVideo);
 
                     WaitingOnVideo = false;
                 }

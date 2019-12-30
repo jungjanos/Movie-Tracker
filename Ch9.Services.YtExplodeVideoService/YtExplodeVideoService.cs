@@ -3,11 +3,9 @@ using YoutubeExplode;
 using YoutubeExplode.Models.MediaStreams;
 
 using Ch9.Services.Contracts;
-using Ch9.Ui.Contracts;
 using Ch9.Ui.Contracts.Models;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -32,10 +30,11 @@ namespace Ch9.Services.VideoService
         public YtExplodeVideoService(
             HttpClient httpClient,
             ISettings settings,
-            ITmdbApiService tmdbApiService
-            ) : base(settings, tmdbApiService)
+            ITmdbApiService tmdbApiService,
+            IPlayVideo videoPlayer
+            ) : base(settings, tmdbApiService, videoPlayer)
         {
-            _fallback = new VanillaYtVideoService(settings, tmdbApiService);
+            _fallback = new VanillaYtVideoService(settings, tmdbApiService, _videoPlayer);
 
             _youtubeClient = httpClient == null ? new YoutubeClient() : new YoutubeClient(httpClient);
             _streamSelector = new YtVideoStreamSelector(settings);
@@ -61,7 +60,7 @@ namespace Ch9.Services.VideoService
             width: muxedStreamInfo.Resolution.Width
             );
 
-        public override async Task PlayVideo(TmdbVideoModel attachedVideo, IPageService pageService)
+        public override async Task PlayVideo(TmdbVideoModel attachedVideo)
         {
             if (attachedVideo.Streams == null || attachedVideo.Streams.ValidUntil < DateTimeOffset.UtcNow)
                 await PopulateWithStreams(attachedVideo);
@@ -69,36 +68,9 @@ namespace Ch9.Services.VideoService
             var selectedStream = attachedVideo.Streams == null ? null : _streamSelector.SelectVideoStream(attachedVideo.Streams.VideoStreams);
 
             if (selectedStream != null)
-                await pageService.PushVideoPageAsync(selectedStream.StreamUrl);
+                await _videoPlayer.OpenVideoStreamDirectly(selectedStream.StreamUrl);
             else
-                await _fallback.PlayVideo(attachedVideo, pageService);
-        }
-    }
-
-    public class YtVideoStreamSelector : IVideoStreamSelector
-    {
-        private readonly ISettings _settings;
-
-        public YtVideoStreamSelector(ISettings settings) => _settings = settings;
-
-        public Ui.Contracts.Models.VideoStreamInfo SelectVideoStream(IEnumerable<Ui.Contracts.Models.VideoStreamInfo> streams)
-        {
-            Ui.Contracts.Models.VideoStreamInfo result = null;
-
-            var orderedByQuality = streams.OrderByDescending(s => s.Quality);
-
-            if (_settings.PlaybackQuality == VideoPlaybackQuality.High)
-            {
-                result = orderedByQuality.Where(s => s.Quality > Ui.Contracts.VideoQuality.Medium480).LastOrDefault();
-                result = result ?? orderedByQuality.FirstOrDefault();
-            }
-            else if (_settings.PlaybackQuality == VideoPlaybackQuality.Low)
-            {
-                result = orderedByQuality.Where(s => s.Quality < Ui.Contracts.VideoQuality.High720).FirstOrDefault();
-                result = result ?? orderedByQuality.LastOrDefault();
-            }
-
-            return result;
+                await _fallback.PlayVideo(attachedVideo);
         }
     }
 }

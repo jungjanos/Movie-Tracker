@@ -29,9 +29,6 @@ namespace Ch9.Services
         public async Task PushLargeImagePageAsync(MovieDetailPageViewModel viewModel) =>
             await _currentPage.Navigation.PushAsync(new LargeImagePage(viewModel));
 
-        public async Task PushVideoPageAsync(string streamUrl) =>
-            await _currentPage.Navigation.PushAsync(new VideoPage(streamUrl));
-
         public async Task PushPersonsMovieCreditsPageAsync(PersonsDetailsModel personDetails) =>
             await _currentPage.Navigation.PushAsync(new PersonsMovieCreditsPage(personDetails));
 

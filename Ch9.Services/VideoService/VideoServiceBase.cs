@@ -16,14 +16,18 @@ namespace Ch9.Services.VideoService
     {
         protected readonly ISettings _settings;
         protected readonly ITmdbApiService _tmdbApiService;
+        protected readonly IPlayVideo _videoPlayer;
         private readonly StringToVideoTypeConverter _converter = new StringToVideoTypeConverter();
+
 
         public VideoServiceBase(
             ISettings settings,
-            ITmdbApiService tmdbApiService)
+            ITmdbApiService tmdbApiService,
+            IPlayVideo videoPlayer)
         {
             _settings = settings;
             _tmdbApiService = tmdbApiService;
+            _videoPlayer = videoPlayer;
         }
         /// <summary>
         /// Gets list of associated video entries from TMDb for the given Movie
@@ -77,6 +81,6 @@ namespace Ch9.Services.VideoService
         }
 
         protected virtual string GetThumbnailFilePath(string id) => $"https://img.youtube.com/vi/{id}/hqdefault.jpg";
-        public abstract Task PlayVideo(TmdbVideoModel attachedVideo, IPageService pageService);
+        public abstract Task PlayVideo(TmdbVideoModel attachedVideo);        
     }
 }

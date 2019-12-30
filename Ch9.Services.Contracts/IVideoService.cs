@@ -8,6 +8,6 @@ namespace Ch9.Services.VideoService
     public interface IVideoService
     {
         Task<List<ImageModel>> GetVideoThumbnails(int movieId, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true);
-        Task PlayVideo(TmdbVideoModel attachedVideo, IPageService pageService);
+        Task PlayVideo(TmdbVideoModel attachedVideo);
     }
 }

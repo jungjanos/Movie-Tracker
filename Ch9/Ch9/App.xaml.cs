@@ -48,9 +48,9 @@ namespace Ch9
 
 
 #if GOOGLEPLAY
-    VideoService = new VanillaYtVideoService(Settings, TmdbApiService);
+    VideoService = new VanillaYtVideoService(Settings, TmdbApiService, new VideoPlayerService());
 #else
-            VideoService = new YtExplodeVideoService(httpClient, Settings, TmdbApiService);
+            VideoService = new YtExplodeVideoService(httpClient, Settings, TmdbApiService, new VideoPlayerService());
 #endif
 
             WeblinkComposer = new WeblinkComposer(Settings);

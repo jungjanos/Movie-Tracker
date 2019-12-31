@@ -4,7 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"             
              xmlns:converters="clr-namespace:Ch9.Converters"
-             xmlns:controls="clr-namespace:Ch9.Controls;assembly=Ch9"
+             xmlns:controls="clr-namespace:Ch9.Controls;assembly=Ch9.Ui"
              mc:Ignorable="d"
              x:Class="Ch9.Views.ReviewsPage">
 

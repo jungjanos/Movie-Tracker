@@ -1,1 +1,0 @@
-﻿Sorce was coped from: https://docs.microsoft.com/en-us/xamarin/xamarin-forms/app-fundamentals/custom-renderer/video-player/web-videos

@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ch9.Android", "Ch9\Ch9.Android\Ch9.Android.csproj", "{E22E642C-A739-4812-AE53-7CFC45F418B1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ch9", "Ch9\Ch9\Ch9.csproj", "{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ch9.Ui", "Ch9\Ch9\Ch9.Ui.csproj", "{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ch9.Test", "Ch9.Test\Ch9.Test.csproj", "{EC2254D3-EA22-43F0-923C-6FBABEAAB3A4}"
 EndProject
@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ch9.Data.LocalSettings", "C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ch9.Services.YtExplodeVideoService", "Ch9.Services.YtExplodeVideoService\Ch9.Services.YtExplodeVideoService.csproj", "{F76D513F-F89A-4B63-A510-BE379442CF3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ch9.Models", "Ch9.Models\Ch9.Models.csproj", "{262312B0-386B-40E4-B9FA-13A2B28549D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ch9.Models", "Ch9.Models\Ch9.Models.csproj", "{262312B0-386B-40E4-B9FA-13A2B28549D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

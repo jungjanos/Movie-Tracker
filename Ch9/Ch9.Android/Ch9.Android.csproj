@@ -186,6 +186,10 @@
       <Project>{262312b0-386b-40e4-b9fa-13a2b28549d9}</Project>
       <Name>Ch9.Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Ch9.Ui\Ch9.Ui.csproj">
+      <Project>{7c119548-4a91-4857-912f-d6e5e70fe5de}</Project>
+      <Name>Ch9.Ui</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\settings.png" />

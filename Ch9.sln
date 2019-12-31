@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ch9.Android", "Ch9\Ch9.Android\Ch9.Android.csproj", "{E22E642C-A739-4812-AE53-7CFC45F418B1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ch9.Ui", "Ch9\Ch9\Ch9.Ui.csproj", "{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ch9.Test", "Ch9.Test\Ch9.Test.csproj", "{EC2254D3-EA22-43F0-923C-6FBABEAAB3A4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ch9.Data.Contracts", "Ch9.Data.Contracts\Ch9.Data.Contracts.csproj", "{1818700D-CE11-464B-8AB8-837AC3C00151}"
@@ -24,6 +22,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ch9.Services.YtExplodeVideoService", "Ch9.Services.YtExplodeVideoService\Ch9.Services.YtExplodeVideoService.csproj", "{F76D513F-F89A-4B63-A510-BE379442CF3F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ch9.Models", "Ch9.Models\Ch9.Models.csproj", "{262312B0-386B-40E4-B9FA-13A2B28549D9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ch9.Ui", "Ch9\Ch9.Ui\Ch9.Ui.csproj", "{7C119548-4A91-4857-912F-D6E5E70FE5DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,18 +49,6 @@ Global
 		{E22E642C-A739-4812-AE53-7CFC45F418B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E22E642C-A739-4812-AE53-7CFC45F418B1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E22E642C-A739-4812-AE53-7CFC45F418B1}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}.DotfuscatedGPlayRelease|Any CPU.ActiveCfg = DotfuscatedGPlayRelease|Any CPU
-		{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}.DotfuscatedGPlayRelease|Any CPU.Build.0 = DotfuscatedGPlayRelease|Any CPU
-		{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}.GooglePlayDebug|Any CPU.ActiveCfg = GooglePlayDebug|Any CPU
-		{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}.GooglePlayDebug|Any CPU.Build.0 = GooglePlayDebug|Any CPU
-		{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}.GooglePlayRelease|Any CPU.ActiveCfg = GooglePlayRelease|Any CPU
-		{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}.GooglePlayRelease|Any CPU.Build.0 = GooglePlayRelease|Any CPU
-		{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{73829E53-CEAC-4CD5-A2F5-E35AAD3CBCDC}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{EC2254D3-EA22-43F0-923C-6FBABEAAB3A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EC2254D3-EA22-43F0-923C-6FBABEAAB3A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC2254D3-EA22-43F0-923C-6FBABEAAB3A4}.DotfuscatedGPlayRelease|Any CPU.ActiveCfg = DotfuscatedGPlayRelease|Any CPU
@@ -147,6 +135,16 @@ Global
 		{262312B0-386B-40E4-B9FA-13A2B28549D9}.GooglePlayRelease|Any CPU.Build.0 = Release|Any CPU
 		{262312B0-386B-40E4-B9FA-13A2B28549D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{262312B0-386B-40E4-B9FA-13A2B28549D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C119548-4A91-4857-912F-D6E5E70FE5DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C119548-4A91-4857-912F-D6E5E70FE5DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C119548-4A91-4857-912F-D6E5E70FE5DE}.DotfuscatedGPlayRelease|Any CPU.ActiveCfg = DotfuscatedGPlayRelease|Any CPU
+		{7C119548-4A91-4857-912F-D6E5E70FE5DE}.DotfuscatedGPlayRelease|Any CPU.Build.0 = DotfuscatedGPlayRelease|Any CPU
+		{7C119548-4A91-4857-912F-D6E5E70FE5DE}.GooglePlayDebug|Any CPU.ActiveCfg = GooglePlayDebug|Any CPU
+		{7C119548-4A91-4857-912F-D6E5E70FE5DE}.GooglePlayDebug|Any CPU.Build.0 = GooglePlayDebug|Any CPU
+		{7C119548-4A91-4857-912F-D6E5E70FE5DE}.GooglePlayRelease|Any CPU.ActiveCfg = GooglePlayRelease|Any CPU
+		{7C119548-4A91-4857-912F-D6E5E70FE5DE}.GooglePlayRelease|Any CPU.Build.0 = GooglePlayRelease|Any CPU
+		{7C119548-4A91-4857-912F-D6E5E70FE5DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C119548-4A91-4857-912F-D6E5E70FE5DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,5 +4,4 @@ Model object (de)serialization and model object configuration (to be able to use
 
 No dependencies allowed in this assembly. 
 
-
-(Please note that the Data access layer does not use any models, only primitives and JSON strings)
+Please note that the Data access layer does not use any models, only primitives and JSON strings

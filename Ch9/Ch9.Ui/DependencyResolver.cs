@@ -70,20 +70,4 @@ namespace Ch9.Ui
             Container = builder.Build();
         }
     }
-
-    //var a = DependencyResolver.Container.Resolve<IPersistLocalSettings>();
-    //var b = DependencyResolver.Container.Resolve<IDictionary<string, object>>();
-    //var c = DependencyResolver.Container.Resolve<ISettings>();
-    //var d = DependencyResolver.Container.Resolve<ITmdbNetworkClient>();
-    //var e = DependencyResolver.Container.Resolve<ITmdbCachedSearchClient>();
-    //var f = DependencyResolver.Container.Resolve<ITmdbApiService>();
-    //var g = DependencyResolver.Container.Resolve<IMovieGenreSettingsService>();
-    //var h = DependencyResolver.Container.Resolve<MovieGenreSettingsModel>();
-    //var i = DependencyResolver.Container.Resolve<ISearchResultFilter>();
-    //var j = DependencyResolver.Container.Resolve<IPlayVideo>();
-    //var k = DependencyResolver.Container.Resolve<IWeblinkComposer>();
-    //var l = DependencyResolver.Container.Resolve<IVideoService>();
-    //var m = DependencyResolver.Container.Resolve<IMovieDetailModelConfigurator>();
-    //var n = DependencyResolver.Container.Resolve<IPersonDetailModelConfigurator>();
-    //var o = DependencyResolver.Container.Resolve<UsersMovieListsService2>();
 }

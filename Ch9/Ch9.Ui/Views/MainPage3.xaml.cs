@@ -1,7 +1,17 @@
 ﻿using Ch9.Services;
+using Ch9.Ui;
 using Ch9.ViewModels;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Autofac;
+using Autofac.Util;
+using Autofac.Core.Resolving;
+using Ch9.Services.Contracts;
+using Ch9.Models;
+using Ch9.Data.Contracts;
+using System.Collections.Generic;
+using Ch9.Services.VideoService;
 
 namespace Ch9.Views
 {
@@ -17,12 +27,9 @@ namespace Ch9.Views
         {
             InitializeComponent();
 
-            ViewModel = new MainPage3ViewModel(
-                ((App)Application.Current).Settings,                
-                ((App)Application.Current).TmdbApiService,
-                ((App)Application.Current).ResultFilter,
-                ((App)Application.Current).MovieDetailModelConfigurator,
-                new PageService(this));
+            var x = DependencyResolver.Container.Resolve<MainPage3ViewModel>(new TypedParameter[] { new TypedParameter(typeof(IPageService), new PageService(this))});
+
+            ViewModel = x;
         }
     }
 }

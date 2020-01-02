@@ -19,7 +19,7 @@ namespace Ch9
     public partial class App : Application
     {
         private readonly XamarinLocalSettingsPersister _localSettingsPersister;
-        private readonly TmdbConfigurationCache _tmdbConfigurationCache;
+        private readonly ITmdbConfigurationCache _tmdbConfigurationCache;
         public ISettings Settings { get; private set; }
         public MovieGenreSettingsModel MovieGenreSettings { get; private set; }
         public TmdbConfigurationModel TmdbConfiguration { get; private set; }
@@ -40,9 +40,10 @@ namespace Ch9
             _localSettingsPersister = new XamarinLocalSettingsPersister();
             Settings = new Settings(Application.Current.Properties, _localSettingsPersister);
             TmdbApiService = new TmdbApiService(new Data.ApiClient.TmdbCachedSearchClient(new Data.ApiClient.TmdbNetworkClient(httpClient, Settings.ApiKey)));
+            TmdbApiService.SessionId = Settings.SessionId;            
+            
             _tmdbConfigurationCache = new TmdbConfigurationCache(TmdbApiService, Settings, _localSettingsPersister);
 
-            TmdbApiService.SessionId = Settings.SessionId;            
             
             MovieGenreSettingsService = new MovieGenreSettingsService(TmdbApiService, Application.Current.Properties, _localSettingsPersister);
             MovieGenreSettings = MovieGenreSettingsService.GetGenreSetting();

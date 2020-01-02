@@ -38,9 +38,7 @@ namespace Ch9.Data.ApiClient
             if (result.HttpStatusCode.IsSuccessCode())
                 _cache.Add(key, result, System.TimeSpan.FromDays(1));
 
-            return result;
-
-            //return await _networkClient.GetTmdbConfiguration(retryCount, delayMilliseconds);
+            return result;            
         }
         public async Task<SearchByMovieResult> SearchByMovie(string searchString, string language = null, bool? includeAdult = null, int? page = null, int? year = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {

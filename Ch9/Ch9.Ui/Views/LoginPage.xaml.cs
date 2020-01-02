@@ -1,6 +1,9 @@
 ﻿using Ch9.Services;
+using Ch9.Ui;
 using Ch9.ViewModels;
+
 using Xamarin.Forms;
+using Autofac;
 
 namespace Ch9.Views
 {
@@ -17,13 +20,23 @@ namespace Ch9.Views
         {
             InitializeComponent();
 
-            ViewModel = new LoginPageViewModel(
-                ((App)Application.Current).Settings,
-                ((App)Application.Current).TmdbApiService,
-                new PageService(this),
-                userName,
-                password
-            );
+            using (var scope = DependencyResolver.Container.BeginLifetimeScope())
+            {
+                ViewModel = scope.Resolve<LoginPageViewModel>(
+                    
+                        new TypedParameter(typeof(IPageService), new PageService(this)),
+                        new NamedParameter("username", userName),
+                        new NamedParameter("password", password)
+                    );
+            }
+
+            //ViewModel = new LoginPageViewModel(
+            //    ((App)Application.Current).Settings,
+            //    ((App)Application.Current).TmdbApiService,
+            //    new PageService(this),
+            //    userName,
+            //    password
+            //);
 
         }
     }

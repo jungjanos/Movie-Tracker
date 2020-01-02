@@ -1,7 +1,10 @@
 ﻿using Ch9.Services;
+using Ch9.Ui;
 using Ch9.ViewModels;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Autofac;
 
 namespace Ch9.Views
 {
@@ -17,12 +20,10 @@ namespace Ch9.Views
         {
             InitializeComponent();
 
-            ViewModel = new TrendingPage3ViewModel(
-            ((App)Application.Current).Settings,            
-            ((App)Application.Current).TmdbApiService,
-            ((App)Application.Current).ResultFilter,
-            ((App)Application.Current).MovieDetailModelConfigurator,
-            new PageService(this));
+            using(var scope = DependencyResolver.Container.BeginLifetimeScope())
+            {
+                ViewModel = scope.Resolve<TrendingPage3ViewModel>(new TypedParameter[] { new TypedParameter(typeof(IPageService), new PageService(this)) });
+            }
         }
 
         protected override async void OnAppearing()

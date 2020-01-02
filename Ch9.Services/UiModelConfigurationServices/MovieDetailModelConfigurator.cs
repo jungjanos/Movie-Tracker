@@ -9,24 +9,15 @@ namespace Ch9.Services.UiModelConfigurationServices
     public class MovieDetailModelConfigurator : IMovieDetailModelConfigurator
     {
         private readonly ISettings _settings;
-        //private readonly TmdbConfigurationModel _tmdbConfiguration;
         private TmdbConfigurationModel _tmdbConfiguration => _tmdbConfigurationCache.TmdbConfigurationModel;
         private ITmdbConfigurationCache _tmdbConfigurationCache;
         private readonly MovieGenreSettingsModel _movieGenreSettings;
 
         private string ImageBaseUrl => _settings.UseHttpsForImages ? _tmdbConfiguration.Images.SecureBaseUrl : _tmdbConfiguration.Images.BaseUrl;
 
-        //public MovieDetailModelConfigurator(ISettings settings, TmdbConfigurationModel tmdbConfiguration, MovieGenreSettingsModel movieGenreSettings)
-        //{
-        //    _settings = settings;
-        //    _tmdbConfiguration = tmdbConfiguration;
-        //    _movieGenreSettings = movieGenreSettings;
-        //}
-
         public MovieDetailModelConfigurator(ISettings settings, ITmdbConfigurationCache tmdbConfigurationCache, MovieGenreSettingsModel movieGenreSettings)
         {
             _settings = settings;
-            //_tmdbConfiguration = tmdbConfiguration;
             _tmdbConfigurationCache = tmdbConfigurationCache;
             _movieGenreSettings = movieGenreSettings;
         }

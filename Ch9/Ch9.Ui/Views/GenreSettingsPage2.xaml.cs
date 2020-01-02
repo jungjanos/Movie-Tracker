@@ -1,5 +1,8 @@
 ﻿using Ch9.Services;
+using Ch9.Ui;
 using Ch9.ViewModels;
+
+using Autofac;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -16,11 +19,13 @@ namespace Ch9.Views
 
         public GenreSettingsPage2()
         {
-            ViewModel = new MovieGenreSettings2PageViewModel(
-                ((App)Application.Current).MovieGenreSettings,
-                ((App)Application.Current).MovieGenreSettingsService,
-                new PageService(this));
-
+            using (var scope = DependencyResolver.Container.BeginLifetimeScope())
+            {
+                ViewModel = scope.Resolve<MovieGenreSettings2PageViewModel>(
+                    new TypedParameter[] {                        
+                        new TypedParameter(typeof(IPageService), new PageService(this))
+                    });
+            }
             InitializeComponent();
         }
 

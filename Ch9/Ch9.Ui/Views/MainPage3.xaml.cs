@@ -5,13 +5,6 @@ using Ch9.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Autofac;
-using Autofac.Util;
-using Autofac.Core.Resolving;
-using Ch9.Services.Contracts;
-using Ch9.Models;
-using Ch9.Data.Contracts;
-using System.Collections.Generic;
-using Ch9.Services.VideoService;
 
 namespace Ch9.Views
 {
@@ -27,9 +20,10 @@ namespace Ch9.Views
         {
             InitializeComponent();
 
-            var x = DependencyResolver.Container.Resolve<MainPage3ViewModel>(new TypedParameter[] { new TypedParameter(typeof(IPageService), new PageService(this))});
-
-            ViewModel = x;
+            using (var scope = DependencyResolver.Container.BeginLifetimeScope())
+            {
+                ViewModel = scope.Resolve<MainPage3ViewModel>(new TypedParameter[] { new TypedParameter(typeof(IPageService), new PageService(this)) });
+            }
         }
     }
 }

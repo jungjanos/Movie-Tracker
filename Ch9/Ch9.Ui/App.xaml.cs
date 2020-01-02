@@ -6,12 +6,12 @@ using Ch9.Services.ApiCommunicationService;
 using Ch9.Services.LocalSettings;
 using Ch9.Services.UiModelConfigurationServices;
 using Ch9.Services.VideoService;
+using Ch9.Ui;
 using Ch9.Views;
 
 using System.Net.Http;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using Ch9.Ui;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace Ch9
@@ -71,14 +71,7 @@ namespace Ch9
 
         protected override async void OnStart()
         {
-            await _tmdbConfigurationCache.FetchAndPersistTmdbConfiguration();
-            //TmdbConfiguration = _tmdbConfigurationCache.TmdbConfigurationModel;
-
-            //MovieDetailModelConfigurator = new MovieDetailModelConfigurator(Settings, TmdbConfiguration, MovieGenreSettings);
-
-            //PersonDetailModelConfigurator = new PersonDetailModelConfigurator(Settings, TmdbConfiguration);
-
-            //UsersMovieListsService2 = new UsersMovieListsService2(Settings, TmdbApiService, MovieDetailModelConfigurator);
+            await _tmdbConfigurationCache.FetchAndPersistTmdbConfiguration();            
 
             if (!Settings.IsLoginPageDeactivationRequested)
             {

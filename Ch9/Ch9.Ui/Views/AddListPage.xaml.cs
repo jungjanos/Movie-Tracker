@@ -1,7 +1,10 @@
 ﻿using Ch9.Services;
+using Ch9.Ui;
 using Ch9.ViewModels;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Autofac;
 
 namespace Ch9.Views
 {
@@ -16,7 +19,15 @@ namespace Ch9.Views
 
         public AddListPage(ListsPageViewModel3 previousPageViewModel)
         {
-            ViewModel = new AddListPageViewModel(previousPageViewModel, new PageService(this));
+            using (var scope = DependencyResolver.Container.BeginLifetimeScope())
+            {
+                ViewModel = scope.Resolve<AddListPageViewModel>(
+                    new TypedParameter[] {
+                        new TypedParameter(typeof(ListsPageViewModel3), previousPageViewModel),
+                        new TypedParameter(typeof(IPageService), new PageService(this))
+                    });
+            }
+
             InitializeComponent();
         }
     }

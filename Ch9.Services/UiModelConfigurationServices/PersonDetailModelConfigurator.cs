@@ -1,5 +1,6 @@
 ﻿using Ch9.Services.Contracts;
 using Ch9.Models;
+
 using System.Collections.Generic;
 
 namespace Ch9.Services.UiModelConfigurationServices
@@ -8,25 +9,16 @@ namespace Ch9.Services.UiModelConfigurationServices
     public class PersonDetailModelConfigurator : IPersonDetailModelConfigurator
     {
         private readonly ISettings _settings;
-        //private readonly TmdbConfigurationModel _tmdbConfiguration;
         private TmdbConfigurationModel _tmdbConfiguration => _tmdbConfigurationCache.TmdbConfigurationModel;
         ITmdbConfigurationCache _tmdbConfigurationCache;
 
-
         private string ImageBaseUrl => _settings.UseHttpsForImages ? _tmdbConfiguration.Images.SecureBaseUrl : _tmdbConfiguration.Images.BaseUrl;
 
-        //public PersonDetailModelConfigurator(ISettings settings, TmdbConfigurationModel tmdbConfiguration)
-        //{
-        //    _settings = settings;
-        //    _tmdbConfiguration = tmdbConfiguration;
-        //}
         public PersonDetailModelConfigurator(ISettings settings, ITmdbConfigurationCache tmdbConfigurationCache)
         {
             _settings = settings;
-            //_tmdbConfiguration = tmdbConfiguration;
             _tmdbConfigurationCache = tmdbConfigurationCache;
         }
-
 
         /// <summary>
         /// Sets the ProfileUrl property to the full url of the profile image hosted on the content server for the entire collection.

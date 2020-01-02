@@ -1,18 +1,18 @@
-﻿using Autofac;
-using Ch9.Models;
-using Ch9.Data.ApiClient;
+﻿using Ch9.Models;
 using Ch9.Data.Contracts;
+using Ch9.Data.ApiClient;
 using Ch9.Data.LocalSettings;
+using Ch9.Services.Contracts;
 using Ch9.Services.ApiCommunicationService;
 using Ch9.Services;
-using Ch9.Services.Contracts;
 using Ch9.Services.LocalSettings;
+using Ch9.Services.VideoService;
+using Ch9.Services.UiModelConfigurationServices;
+using Ch9.ViewModels;
 
 using System.Collections.Generic;
 using System.Net.Http;
-using Ch9.Services.VideoService;
-using Ch9.ViewModels;
-using Ch9.Services.UiModelConfigurationServices;
+using Autofac;
 
 namespace Ch9.Ui
 {
@@ -56,8 +56,17 @@ namespace Ch9.Ui
 
 
             builder.RegisterType<MainPage3ViewModel>().AsSelf();
-            
-            
+            builder.RegisterType<TrendingPage3ViewModel>().AsSelf();
+            builder.RegisterType<MainSettingsPage2ViewModel>().AsSelf();
+            builder.RegisterType <MovieDetailPageViewModel>().AsSelf();
+            builder.RegisterType<RecommendationsPage3ViewModel>().AsSelf();
+            builder.RegisterType<ReviewsPageViewModel>().AsSelf();
+            builder.RegisterType<PersonsMovieCreditsPageViewModel>().AsSelf();
+            builder.RegisterType<MovieGenreSettings2PageViewModel>().AsSelf();
+            builder.RegisterType<ListsPageViewModel3>().AsSelf();
+            builder.RegisterType<AddListPageViewModel>().AsSelf();
+            builder.RegisterType<LoginPageViewModel>().AsSelf();
+
             Container = builder.Build();
         }
     }

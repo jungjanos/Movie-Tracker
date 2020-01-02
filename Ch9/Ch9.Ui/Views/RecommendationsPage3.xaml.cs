@@ -1,8 +1,11 @@
-﻿using Ch9.Services;
-using Ch9.Models;
+﻿using Ch9.Models;
+using Ch9.Services;
+using Ch9.Ui;
 using Ch9.ViewModels;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Autofac;
 
 namespace Ch9.Views
 {
@@ -18,13 +21,14 @@ namespace Ch9.Views
         {
             InitializeComponent();
 
-            ViewModel = new RecommendationsPage3ViewModel(
-                movie,
-                ((App)Application.Current).Settings,
-                ((App)Application.Current).TmdbApiService,
-                ((App)Application.Current).ResultFilter,
-                ((App)Application.Current).MovieDetailModelConfigurator,
-                new PageService(this));
+            using (var scope = DependencyResolver.Container.BeginLifetimeScope())
+            {
+                ViewModel = scope.Resolve<RecommendationsPage3ViewModel>(
+                    new TypedParameter[] {
+                        new TypedParameter(typeof(MovieDetailModel), movie),
+                        new TypedParameter(typeof(IPageService), new PageService(this))
+                    });
+            }
         }
         protected override async void OnAppearing()
         {

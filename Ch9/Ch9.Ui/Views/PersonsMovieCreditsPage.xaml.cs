@@ -1,8 +1,11 @@
 ﻿using Ch9.Models;
 using Ch9.Services;
+using Ch9.Ui;
 using Ch9.ViewModels;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Autofac;
 
 namespace Ch9.Views
 {
@@ -17,15 +20,14 @@ namespace Ch9.Views
 
         public PersonsMovieCreditsPage(PersonsDetailsModel personDetails)
         {
-            ViewModel = new PersonsMovieCreditsPageViewModel(
-                personDetails,
-                ((App)Application.Current).Settings,                
-                ((App)Application.Current).TmdbApiService,
-                ((App)Application.Current).MovieDetailModelConfigurator,
-                ((App)Application.Current).PersonDetailModelConfigurator,
-                ((App)Application.Current).WeblinkComposer,
-                new PageService(this)
-                );
+            using (var scope = DependencyResolver.Container.BeginLifetimeScope())
+            {
+                ViewModel = scope.Resolve<PersonsMovieCreditsPageViewModel>(
+                    new TypedParameter[] {
+                        new TypedParameter(typeof(PersonsDetailsModel), personDetails),
+                        new TypedParameter(typeof(IPageService), new PageService(this))
+                    });
+            }           
 
             InitializeComponent();
         }

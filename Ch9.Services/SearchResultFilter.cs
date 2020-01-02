@@ -1,10 +1,11 @@
-﻿using Ch9.Services.Contracts;
-using Ch9.Models;
+﻿using Ch9.Models;
+using Ch9.Services.Contracts;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Ch9.Utils
+namespace Ch9.Services
 {
     // Aims to provide filtering of the TMDB WebAPI response based on user 
     // movie preferences (genre setting, timeframe) 

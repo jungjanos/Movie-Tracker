@@ -31,7 +31,7 @@ namespace Ch9.Droid
 
             HttpClient httpClient = new HttpClient(new Xamarin.Android.Net.AndroidClientHandler());
             httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows) Gecko Firefox");
-
+            //var x = Xamarin.Forms.Application.Current.Properties;
             LoadApplication(new App(httpClient));
         }
 

@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ch9.Models\Ch9.Models.csproj" />
-    <ProjectReference Include="..\Ch9\Ch9\Ch9.Ui.csproj" />
   </ItemGroup>
 
 </Project>

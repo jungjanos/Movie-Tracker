@@ -1,7 +1,6 @@
 ﻿using Ch9.Data.Contracts;
 using static Ch9.Data.ApiClient.WebApiPathConstants;
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +8,7 @@ using System.Net;
 using System.Net.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Ch9.Data.ApiClient
 {

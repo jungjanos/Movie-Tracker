@@ -22,7 +22,7 @@ namespace Ch9.Views
 
             using(var scope = DependencyResolver.Container.BeginLifetimeScope())
             {
-                ViewModel = scope.Resolve<TrendingPage3ViewModel>(new TypedParameter[] { new TypedParameter(typeof(IPageService), new PageService(this)) });
+                ViewModel = scope.Resolve<TrendingPage3ViewModel>(new TypedParameter(typeof(IPageService), new PageService(this)));
             }
         }
 

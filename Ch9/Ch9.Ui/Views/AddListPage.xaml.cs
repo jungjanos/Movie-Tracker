@@ -22,10 +22,9 @@ namespace Ch9.Views
             using (var scope = DependencyResolver.Container.BeginLifetimeScope())
             {
                 ViewModel = scope.Resolve<AddListPageViewModel>(
-                    new TypedParameter[] {
                         new TypedParameter(typeof(ListsPageViewModel3), previousPageViewModel),
                         new TypedParameter(typeof(IPageService), new PageService(this))
-                    });
+                    );
             }
 
             InitializeComponent();

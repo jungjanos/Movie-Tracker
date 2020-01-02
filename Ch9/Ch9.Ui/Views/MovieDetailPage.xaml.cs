@@ -23,11 +23,10 @@ namespace Ch9.Views
         {
             using (var scope = DependencyResolver.Container.BeginLifetimeScope())
             {
-                ViewModel = scope.Resolve<MovieDetailPageViewModel>(
-                    new TypedParameter[] { 
+                ViewModel = scope.Resolve<MovieDetailPageViewModel>( 
                         new TypedParameter(typeof(MovieDetailModel), movie),
                         new TypedParameter(typeof(IPageService), new PageService(this))
-                    });
+                    );
             }
 
             InitializeComponent();

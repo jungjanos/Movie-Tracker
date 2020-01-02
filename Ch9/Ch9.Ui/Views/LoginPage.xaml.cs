@@ -22,22 +22,12 @@ namespace Ch9.Views
 
             using (var scope = DependencyResolver.Container.BeginLifetimeScope())
             {
-                ViewModel = scope.Resolve<LoginPageViewModel>(
-                    
+                ViewModel = scope.Resolve<LoginPageViewModel>(                    
                         new TypedParameter(typeof(IPageService), new PageService(this)),
                         new NamedParameter("username", userName),
                         new NamedParameter("password", password)
                     );
             }
-
-            //ViewModel = new LoginPageViewModel(
-            //    ((App)Application.Current).Settings,
-            //    ((App)Application.Current).TmdbApiService,
-            //    new PageService(this),
-            //    userName,
-            //    password
-            //);
-
         }
     }
 }

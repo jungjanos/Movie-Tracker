@@ -1,7 +1,7 @@
 # Branches
 
 * **Architecture-refactorings** (default) : repaying technical debt and the current push for a clean layering with loosely coupled assemblies. Some of the tests might be temporarily broken.
-* **master** : stable, throughly tested, all features and tests work, releases come from this branch. All build configurations work. All releases come from this branch 
+* **master** : stable, throughly tested, all features and tests work for all build configurations. Releases come from this branch. 
 
 
 # Distribution

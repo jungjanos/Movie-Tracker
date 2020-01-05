@@ -1,7 +1,8 @@
 # Branches
 
-* master : stable, all features and tests work, releases come from this branch. All build configurations work. 
-* Architecture-refactorings : repaying technical debt and the current push for a clean layering with loosely coupled assemblies. Only debug configuration is activelly tested and only on emulator, some of the tests might be temporarily broken. Some code/active methods are in limbo between assemblies.  
+* **Architecture-refactorings** (default) : repaying technical debt and the current push for a clean layering with loosely coupled assemblies. Some of the tests might be temporarily broken.
+* **master** : stable, throughly tested, all features and tests work, releases come from this branch. All build configurations work. All releases come from this branch 
+
 
 # Distribution
 
@@ -32,14 +33,15 @@ Platform specific code is kept to a minimum to provide a base for future code sh
 # Technology
 
 * Xamarin.Forms as UI framework with MVVM pattern
+* Autofac as DI framework with the view models objects as DI-resolution root
 * Fielding my own HTTPS based REST client implementation 
-* XUnit for integration testing with API server and YouTube scraper
+* xUnit for integration testing with API server and YouTube scraper
 * Newtonsoft.Json
 * FFImageLoading for image caching
 * LazyCache for object caching
 * YoutubeExplode for YouTube video scraping (only when not targeting Google Play)
 * CardsView for swipe based gallery with cards animation
-* Dotfuscator for assembly obfuscation (currently not thoroughly tested, **don't build with it, has known problems**)
+* Dotfuscator for assembly obfuscation 
 * Extensive care has been taken to provide a smooth, non-blocking UI experience based on the Task-async pattern
 
 # Features

@@ -329,16 +329,15 @@ namespace Ch9.Services.ApiCommunicationService
 
             return new TryCreateSessionIdResponse(response.HttpStatusCode, sessionIdResponse);
         }
-        
-        public async Task<HttpStatusCode> TryGetAccountMovieStates(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
-        {
-            throw new System.NotImplementedException();
-            var result = await _cachedSearchClient.GetAccountMovieStates(_settings.SessionId, mediaId, guestSessionId, retryCount, delayMilliseconds);
-        }
-        public async Task<HttpStatusCode> TryGetItemStatusOnTargetList(int listId, int movieId, int retryCount = 0, int delayMilliseconds = 1000)
-        {
-            throw new System.NotImplementedException();
-            var result = await _cachedSearchClient.GetItemStatusOnTargetList(listId, movieId, retryCount, delayMilliseconds);
-        }
+
+
+        //public async Task<T> TryGetAccountMovieStates(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        //{        
+        //    var response = await _cachedSearchClient.GetAccountMovieStates(_settings.SessionId, mediaId, guestSessionId, retryCount, delayMilliseconds);
+        //}
+        //public async Task<T> TryGetItemStatusOnTargetList(int listId, int movieId, int retryCount = 0, int delayMilliseconds = 1000)
+        //{
+        //    var response = await _cachedSearchClient.GetItemStatusOnTargetList(listId, movieId, retryCount, delayMilliseconds);
+        //}
     }
 }

@@ -47,7 +47,6 @@
     <ProjectReference Include="..\..\Ch9.Data.LocalSettings\Ch9.Data.LocalSettings.csproj" />
     <ProjectReference Include="..\..\Ch9.Models\Ch9.Models.csproj" />
     <ProjectReference Include="..\..\Ch9.Services.Contracts\Ch9.Services.Contracts.csproj" />
-    <!--<ProjectReference Include="..\..\Ch9.Services.YtExplodeVideoService\Ch9.Services.YtExplodeVideoService.csproj" />-->
     <ProjectReference Include="..\..\Ch9.Services.YtExplodeVideoService\Ch9.Services.YtExplodeVideoService.csproj" Condition=" '$(Configuration)' != 'GooglePlayRelease' and '$(Configuration)' != 'GooglePlayDebug' and '$(Configuration)' != 'DotfuscatedGPlayRelease' " />
     <ProjectReference Include="..\..\Ch9.Services\Ch9.Services.csproj" />
   </ItemGroup>

@@ -1,9 +1,4 @@
-# Branches
-
-* **Architecture-refactorings** (default) : repaying technical debt and the current push for a clean layering with loosely coupled assemblies. Some of the tests might be temporarily broken.
-* **master** : stable, throughly tested, all features and tests work for all build configurations. Releases come from this branch. 
-
-### Navigating the code
+# Navigating the code
 
 * Code is organized into separate Visual Studio Projects which are compiled into separate assemblies
 * Each project contains a **\_README.txt** file. Consult it to get an idea of the contents and some of the design decissions 
@@ -37,7 +32,7 @@ Please not that it might be necessary to enable App installation from external s
 
 The aim of this project is to produce a searcher/tracker/detailer mobile application for movies. The app is based on [TMDb](https://www.themoviedb.org/)'s open [WebAPI](https://developers.themoviedb.org/3/getting-started/introduction) and implements the most important features the API exposes.
 
-Platform specific code is kept to a minimum to provide a base for future code sharing with a possible iOS client: currently 98% of the app's code resides in the shared project. 
+Platform specific code (Ch9.Android) is kept to a minimum to provide a base for future code sharing with a possible iOS client: currently 98% of the app's code resides in the shared projects. 
 
 # Technology
 

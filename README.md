@@ -3,6 +3,15 @@
 * **Architecture-refactorings** (default) : repaying technical debt and the current push for a clean layering with loosely coupled assemblies. Some of the tests might be temporarily broken.
 * **master** : stable, throughly tested, all features and tests work for all build configurations. Releases come from this branch. 
 
+### Navigating the code
+
+* Code is organized into separate Visual Studio Projects which are compiled into separate assemblies
+* Each project contains a **\_README.txt** file. Consult it to get an idea of the contents and some of the design decissions 
+* Layered architecture with components organized into Data, Service and Ui layers with the component holding the Model definitions accessible to the Service and Ui layers 
+* Component interfaces (named Ch9.\[Component Name].Contracts) and implementations (naming consistent with the interface project) are splitted into separate assemblies. Dependencies between assemblies are managed according to the Stairway pattern:
+  * Clients only depend on the interface 
+  * Interface implementations are placed in separate assembly thus easily replacable
+  * Dependencies between layers always point down (Ui -> Services.Contracts, Services -> Data.Contracts) 
 
 # Distribution
 
@@ -34,6 +43,7 @@ Platform specific code is kept to a minimum to provide a base for future code sh
 
 * Xamarin.Forms as UI framework with MVVM pattern
 * Autofac as DI framework with the view models objects as DI-resolution root
+* Managing dependencies via Stairway-pattern, layered architecture 
 * Fielding my own HTTPS based REST client implementation 
 * xUnit for integration testing with API server and YouTube scraper
 * Newtonsoft.Json

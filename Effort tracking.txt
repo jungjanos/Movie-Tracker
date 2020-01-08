@@ -78,12 +78,12 @@ prio 1
 
 
 other: 
-15, Technical debt (hard dependency chain): Starway pattern for dependencies
-effort: 1-2 days
+DONE 15, Technical debt (hard dependency chain): Starway pattern for dependencies
+effort: 1-2 days (hindsight: many-many-many days)
 
-16, Technical debt: Eliminating empty class structure for TmdbResponseBase
+N/A 16, Technical debt: Eliminating empty class structure for TmdbResponseBase
 
-17, Evaluate: Possibly introduce a mapper between API client model objects used by the ViewModel
+DONE, other solution 17, Evaluate: Possibly introduce a mapper between API client model objects used by the ViewModel
 
-18, Technical debt (leaking abstractions between layers): Refactor deserialization of JSON strings from ViewModel layer to the API client
+DONE 18, Technical debt (leaking abstractions between layers): Refactor deserialization of JSON strings from ViewModel layer to the API client
 effort: days

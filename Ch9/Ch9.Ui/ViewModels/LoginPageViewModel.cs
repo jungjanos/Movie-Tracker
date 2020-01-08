@@ -96,11 +96,15 @@ namespace Ch9.ViewModels
                 _settings.Password = password;
                 _settings.IsLoginPageDeactivationRequested = true;
                 await _settings.SavePropertiesAsync();
+
+                _tmdbApiService.SessionId = _settings.SessionId;
             }
             else
             {
                 _settings.SessionId = null;
                 await _settings.SavePropertiesAsync();
+                _tmdbApiService.SessionId = _settings.SessionId;
+
                 ErrorMessage = "Login failure";
             }
             IsBusy = false;

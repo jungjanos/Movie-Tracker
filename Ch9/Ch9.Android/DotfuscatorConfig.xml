@@ -13,19 +13,19 @@
   <input>
     <loadpaths />
     <asmlist>
-      <inputassembly refid="6bb508f5-7aca-4e11-aa3d-057be0d8d6de">
+      <inputassembly refid="bd288f1a-8d82-45c8-89d0-84e607bb6f04">
         <option>honoroas</option>
         <option>stripoa</option>
         <option>library</option>
         <option>transformxaml</option>
-        <file dir="${configdir}\${InDir}" name="Ch9.Android.dll" />
+        <file dir="${configdir}\${InDir}" name="Ch9.Services.dll" />
       </inputassembly>
-      <inputassembly refid="450205ff-f6ef-4207-b5a2-84e1776eeaa7">
+      <inputassembly refid="b143e945-1a60-4e35-961f-e41167601f49">
         <option>honoroas</option>
         <option>stripoa</option>
         <option>library</option>
         <option>transformxaml</option>
-        <file dir="${configdir}\${InDir}" name="Ch9.dll" />
+        <file dir="${configdir}\${InDir}" name="Ch9.Ui.dll" />
       </inputassembly>
     </asmlist>
   </input>

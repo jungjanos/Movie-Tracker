@@ -2,8 +2,8 @@
 
 * Code is organized into separate Visual Studio Projects which are compiled into separate assemblies
 * Each project contains a **\_README.txt** file. Consult it to get an idea of the contents and some of the design decissions 
-* Layered architecture with components organized into Data, Service and Ui layers with the component holding the Model definitions accessible to the Service and Ui layers 
-* Component interfaces (named Ch9.\[Component Name].Contracts) and implementations (naming consistent with the interface project) are splitted into separate assemblies. Dependencies between assemblies are managed according to the Stairway pattern:
+* Layered architecture with components organized into **Data, Service and Ui layers** with the component holding the Model definitions accessible to the Service and Ui layers 
+* Component interfaces (named Ch9.\[Component Name].Contracts) and implementations (naming consistent with the interface project) are splitted into separate assemblies. Dependencies between **assemblies are managed according to the Stairway pattern**:
   * Clients only depend on the interface 
   * Interface implementations are placed in separate assembly thus easily replacable
   * Dependencies between layers always point down (Ui -> Services.Contracts, Services -> Data.Contracts) 

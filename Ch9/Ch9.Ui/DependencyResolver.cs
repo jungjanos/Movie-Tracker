@@ -29,7 +29,7 @@ namespace Ch9.Ui
 
             builder.RegisterType<Settings>().As<ISettings>().SingleInstance();
 
-            builder.Register<ITmdbNetworkClient>(c => new TmdbNetworkClient(httpClient, c.Resolve<ISettings>().ApiKey) { SessionId = c.Resolve<ISettings>().SessionId} ).SingleInstance();
+            builder.Register<ITmdbNetworkClient>(c => new TmdbNetworkClient(httpClient, c.Resolve<ISettings>().ApiKey)).SingleInstance();
             builder.RegisterType<TmdbCachedSearchClient>().As<ITmdbCachedSearchClient>().SingleInstance();
             
             builder.RegisterType<TmdbApiService>().As<ITmdbApiService>().SingleInstance();

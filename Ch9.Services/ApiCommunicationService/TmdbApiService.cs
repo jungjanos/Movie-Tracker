@@ -14,28 +14,30 @@ namespace Ch9.Services.ApiCommunicationService
     public class TmdbApiService : ITmdbApiService
     {
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
+        private readonly ISettings _settings;
 
-        public string SessionId
-        {
-            get => _cachedSearchClient.SessionId;
-            set => _cachedSearchClient.SessionId = value;
-        }
+        //public string SessionId
+        //{
+        //    get => _cachedSearchClient.sessionId;
+        //    set => _cachedSearchClient.sessionId = value;
+        //}
 
-        public TmdbApiService(ITmdbCachedSearchClient cachedSearchClient)
+        public TmdbApiService(ITmdbCachedSearchClient cachedSearchClient, ISettings settings)
         {
             _cachedSearchClient = cachedSearchClient;
+            _settings = settings;
         }
 
         public async Task<TryAddMovieResponse> TryAddMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            var response = await _cachedSearchClient.AddMovie(listId, mediaId, retryCount, delayMilliseconds);
+            var response = await _cachedSearchClient.AddMovie(_settings.SessionId, listId, mediaId, retryCount, delayMilliseconds);
 
             return new TryAddMovieResponse(response.HttpStatusCode);
         }
 
         public async Task<TryCreateListResponse> TryCreateList(string name, string description, string language = "en", int retryCount = 0, int delayMilliseconds = 1000)
         {
-            var response = await _cachedSearchClient.CreateList(name, description, language, retryCount, delayMilliseconds);
+            var response = await _cachedSearchClient.CreateList(_settings.SessionId, name, description, language, retryCount, delayMilliseconds);
             ListCrudResponseModel listCrudResponse = null;
 
             if (response.HttpStatusCode.IsSuccessCode())
@@ -46,13 +48,13 @@ namespace Ch9.Services.ApiCommunicationService
 
         public async Task<TryDeleteListResponse> TryDeleteList(int listId, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            var response = await _cachedSearchClient.DeleteList(listId, retryCount, delayMilliseconds);
+            var response = await _cachedSearchClient.DeleteList(_settings.SessionId, listId, retryCount, delayMilliseconds);
 
             return new TryDeleteListResponse(response.HttpStatusCode);
         }
         public async Task<TryDeleteMovieRatingResponse> TryDeleteMovieRating(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            var response = await _cachedSearchClient.DeleteMovieRating(mediaId, guestSessionId, retryCount, delayMilliseconds);
+            var response = await _cachedSearchClient.DeleteMovieRating(_settings.SessionId, mediaId, guestSessionId, retryCount, delayMilliseconds);
 
             return new TryDeleteMovieRatingResponse(response.HttpStatusCode);
         }
@@ -78,7 +80,7 @@ namespace Ch9.Services.ApiCommunicationService
         /// <returns>ApiCommunicationServiceResponseBase class extended with AccountMovieStates property</returns>
         public async Task<TryGetMovieDetailsWithAccountStatesResponse> TryGetMovieDetailsWithAccountStates(MovieDetailModel movieToPopulate, int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            var response = await _cachedSearchClient.GetMovieDetailsWithAccountStates(id, language, retryCount, delayMilliseconds);
+            var response = await _cachedSearchClient.GetMovieDetailsWithAccountStates(_settings.SessionId, id, language, retryCount, delayMilliseconds);
             AccountMovieStates states = null;
 
             if (response.HttpStatusCode.IsSuccessCode())
@@ -101,7 +103,7 @@ namespace Ch9.Services.ApiCommunicationService
         }
         public async Task<TryGetFavoriteMoviesResponse> TryGetFavoriteMovies(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            var response = await _cachedSearchClient.GetFavoriteMovies(accountId, language, sortBy, page, retryCount, delayMilliseconds);
+            var response = await _cachedSearchClient.GetFavoriteMovies(_settings.SessionId, accountId, language, sortBy, page, retryCount, delayMilliseconds);
             SearchResult favorites = null;
             if (response.HttpStatusCode.IsSuccessCode())
                 favorites = JsonConvert.DeserializeObject<SearchResult>(response.Json);
@@ -110,7 +112,7 @@ namespace Ch9.Services.ApiCommunicationService
         }
         public async Task<TryGetListDetailsResponse> TryGetListDetails(int listId, string language = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            var response = await _cachedSearchClient.GetListDetails(listId, language, retryCount, delayMilliseconds, fromCache);
+            var response = await _cachedSearchClient.GetListDetails(_settings.SessionId, listId, language, retryCount, delayMilliseconds, fromCache);
             MovieListModel listDetails = null;
 
             if (response.HttpStatusCode.IsSuccessCode())
@@ -121,7 +123,7 @@ namespace Ch9.Services.ApiCommunicationService
 
         public async Task<TryGetListsResponse> TryGetLists(int? accountId = null, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = true)
         {
-            var response = await _cachedSearchClient.GetLists(accountId, language, page, retryCount, delayMilliseconds, fromCache);
+            var response = await _cachedSearchClient.GetLists(_settings.SessionId, accountId, language, page, retryCount, delayMilliseconds, fromCache);
             GetListsModel lists = null;
 
             if (response.HttpStatusCode.IsSuccessCode())
@@ -153,7 +155,7 @@ namespace Ch9.Services.ApiCommunicationService
         }
         public async Task<TryGetMovieWatchlistResponse> TryGetMovieWatchlist(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            var response = await _cachedSearchClient.GetMovieWatchlist(accountId, language, sortBy, page, retryCount, delayMilliseconds);
+            var response = await _cachedSearchClient.GetMovieWatchlist(_settings.SessionId, accountId, language, sortBy, page, retryCount, delayMilliseconds);
             SearchResult watchlist = null;
 
             if (response.HttpStatusCode.IsSuccessCode())
@@ -194,13 +196,13 @@ namespace Ch9.Services.ApiCommunicationService
         }
         public async Task<TryRateMovieResponse> TryRateMovie(decimal rating, int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            var response = await _cachedSearchClient.RateMovie(rating, mediaId, guestSessionId, retryCount, delayMilliseconds);
+            var response = await _cachedSearchClient.RateMovie(_settings.SessionId, rating, mediaId, guestSessionId, retryCount, delayMilliseconds);
 
             return new TryRateMovieResponse(response.HttpStatusCode);
         }
         public async Task<TryRemoveMovieResponse> TryRemoveMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            var result = await _cachedSearchClient.RemoveMovie(listId, mediaId, retryCount, delayMilliseconds);
+            var result = await _cachedSearchClient.RemoveMovie(_settings.SessionId, listId, mediaId, retryCount, delayMilliseconds);
 
             return new TryRemoveMovieResponse(result.HttpStatusCode);
         }
@@ -216,7 +218,7 @@ namespace Ch9.Services.ApiCommunicationService
         }
         public async Task<TryUpdateFavoriteListResponse> TryUpdateFavoriteList(string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            var response = await _cachedSearchClient.UpdateFavoriteList(mediaType, add, mediaId, accountId, retryCount, delayMilliseconds);
+            var response = await _cachedSearchClient.UpdateFavoriteList(_settings.SessionId, mediaType, add, mediaId, accountId, retryCount, delayMilliseconds);
 
             return new TryUpdateFavoriteListResponse(response.HttpStatusCode);
         }
@@ -232,7 +234,7 @@ namespace Ch9.Services.ApiCommunicationService
         }
         public async Task<TryUpdateWatchlistResponse> TryUpdateWatchlist(string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            var response = await _cachedSearchClient.UpdateWatchlist(mediaType, add, mediaId, accountId, retryCount, delayMilliseconds);
+            var response = await _cachedSearchClient.UpdateWatchlist(_settings.SessionId, mediaType, add, mediaId, accountId, retryCount, delayMilliseconds);
 
             return new TryUpdateWatchlistResponse(response.HttpStatusCode);
         }
@@ -331,7 +333,7 @@ namespace Ch9.Services.ApiCommunicationService
         public async Task<HttpStatusCode> TryGetAccountMovieStates(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             throw new System.NotImplementedException();
-            var result = await _cachedSearchClient.GetAccountMovieStates(mediaId, guestSessionId, retryCount, delayMilliseconds);
+            var result = await _cachedSearchClient.GetAccountMovieStates(_settings.SessionId, mediaId, guestSessionId, retryCount, delayMilliseconds);
         }
         public async Task<HttpStatusCode> TryGetItemStatusOnTargetList(int listId, int movieId, int retryCount = 0, int delayMilliseconds = 1000)
         {

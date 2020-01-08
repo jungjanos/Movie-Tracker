@@ -96,14 +96,11 @@ namespace Ch9.ViewModels
                 _settings.Password = password;
                 _settings.IsLoginPageDeactivationRequested = true;
                 await _settings.SavePropertiesAsync();
-
-                _tmdbApiService.SessionId = _settings.SessionId;
             }
             else
             {
                 _settings.SessionId = null;
                 await _settings.SavePropertiesAsync();
-                _tmdbApiService.SessionId = _settings.SessionId;
 
                 ErrorMessage = "Login failure";
             }
@@ -113,12 +110,14 @@ namespace Ch9.ViewModels
                 await _pageService.PopCurrent();
         }
 
-        // Tries to generate a new SessionId for the account
-        // Tries to dispose any previous SessionId if available (best effort)
-        // Returns bool: success status and the new string: Sessionid
-        //
-        // CALLER IS RESPONSIBLE TO SET Settings.SessionId according to the result.
-        // Results CAN NOT be ignored (side effect on server)
+
+        /// <summary>
+        /// Tries to generate a new SessionId for the account
+        /// Tries to dispose any previous SessionId if available (best effort)
+        /// Returns bool: success status and the new string: Sessionid
+        /// CALLER IS RESPONSIBLE TO SET Settings.SessionId according to the result.
+        /// Results CAN NOT be ignored (side effect on server) 
+        /// </summary>            
         private async Task<(bool Success, string NewSessionId)> TryTmdbSignin(string accountName, string password, int retryCount, int delayMilliseconds)
         {
             string nullStr = null;

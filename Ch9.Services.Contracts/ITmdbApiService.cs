@@ -7,8 +7,6 @@ namespace Ch9.Services.Contracts
 {
     public interface ITmdbApiService
     {
-        string SessionId { get; set; }
-
         Task<TryAddMovieResponse> TryAddMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000);
         Task<TryCreateListResponse> TryCreateList(string name, string description, string language = "en", int retryCount = 0, int delayMilliseconds = 1000);
         Task<TryCreateRequestTokenResponse> TryCreateRequestToken(int retryCount = 0, int delayMilliseconds = 1000);

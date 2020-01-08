@@ -17,8 +17,6 @@ namespace Ch9.Data.ApiClient
         private HttpClient HttpClient { get; }
 
         public string ApiKey { get; }
-        public string SessionId { get; set; }
-
 
         public TmdbNetworkClient(HttpClient httpClient, string apiKey)
         {
@@ -95,7 +93,7 @@ namespace Ch9.Data.ApiClient
             return result;
         }
         //TODO : Make sort option to enum 
-        public async Task<GetMovieWatchlistResult> GetMovieWatchlist(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<GetMovieWatchlistResult> GetMovieWatchlist(string sessionId, int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             //TODO : Recheck this!
             // no mistake here: missing "account_id" parameter add the string literal "{account_id}" as paths segment                        
@@ -113,7 +111,7 @@ namespace Ch9.Data.ApiClient
             if (!string.IsNullOrEmpty(sortBy))
                 query.Add(SORTBY_Key, sortBy);
 
-            query.Add(SESSION_ID_Key, SessionId);
+            query.Add(SESSION_ID_Key, sessionId);
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
@@ -123,7 +121,7 @@ namespace Ch9.Data.ApiClient
         }
 
         //TODO : Make sort option to enum 
-        public async Task<GetFavoriteMoviesResult> GetFavoriteMovies(int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<GetFavoriteMoviesResult> GetFavoriteMovies(string sessionId, int? accountId = null, string language = null, string sortBy = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             // no mistake here: missing "account_id" parameter add the string literal "{account_id}" as paths segment                        
             string baseUrl = BASE_Address + BASE_Path + ACCOUNT_DETAILS_Path + "/" + (accountId.HasValue ? accountId.Value.ToString() : "{account_id}") + FAVORITE_Path + MOVIES_Path;
@@ -140,7 +138,7 @@ namespace Ch9.Data.ApiClient
             if (!string.IsNullOrEmpty(sortBy))
                 query.Add(SORTBY_Key, sortBy);
 
-            query.Add(SESSION_ID_Key, SessionId);
+            query.Add(SESSION_ID_Key, sessionId);
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
@@ -166,7 +164,7 @@ namespace Ch9.Data.ApiClient
             return result;
         }
 
-        public async Task<GetMovieDetailsWithAccountStatesResult> GetMovieDetailsWithAccountStates(int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<GetMovieDetailsWithAccountStatesResult> GetMovieDetailsWithAccountStates(string sessionId, int id, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + MOVIE_DETAILS_Path + "/" + id;
 
@@ -175,9 +173,9 @@ namespace Ch9.Data.ApiClient
             if (!string.IsNullOrEmpty(language))
                 query.Add(LANGUAGE_Key, language);
 
-            if (!string.IsNullOrEmpty(SessionId))
+            if (!string.IsNullOrEmpty(sessionId))
             {
-                query.Add(SESSION_ID_Key, SessionId);
+                query.Add(SESSION_ID_Key, sessionId);
                 query.Add(APPEND_RESPONSE_Key, ACCOUNT_STATES_Key);
             }
 
@@ -536,7 +534,7 @@ namespace Ch9.Data.ApiClient
             return result;
         }
 
-        public async Task<GetListsResult> GetLists(int? accountId = null, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<GetListsResult> GetLists(string sessionId, int? accountId = null, string language = null, int? page = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             // no mistake here: missing "account_id" parameter add the string literal "{account_id}" as paths segment            
             string baseUrl = BASE_Address + BASE_Path + ACCOUNT_DETAILS_Path + "/" + (accountId.HasValue ? accountId.Value.ToString() : "{account_id}") + LISTS_path;
@@ -547,7 +545,7 @@ namespace Ch9.Data.ApiClient
                 query.Add(LANGUAGE_Key, language);
             if (page > 0)
                 query.Add(PAGE_Key, page.Value.ToString());
-            query.Add(SESSION_ID_Key, SessionId);
+            query.Add(SESSION_ID_Key, sessionId);
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
@@ -555,7 +553,7 @@ namespace Ch9.Data.ApiClient
             return result;
         }
 
-        public async Task<GetAccountMovieStatesResult> GetAccountMovieStates(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<GetAccountMovieStatesResult> GetAccountMovieStates(string sessionId, int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             if (!string.IsNullOrEmpty(guestSessionId))
                 throw new NotImplementedException($"Guest session is not supported by the method: {nameof(GetAccountMovieStates)}, parameter: {nameof(guestSessionId)}={guestSessionId}");
@@ -564,7 +562,7 @@ namespace Ch9.Data.ApiClient
 
             var query = new Dictionary<string, string>();
             query.Add(API_KEY_Key, ApiKey);
-            query.Add(SESSION_ID_Key, SessionId);
+            query.Add(SESSION_ID_Key, sessionId);
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
@@ -573,13 +571,13 @@ namespace Ch9.Data.ApiClient
             return result;
         }
 
-        public async Task<CreateListResult> CreateList(string name, string description, string language = "en", int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<CreateListResult> CreateList(string sessionId, string name, string description, string language = "en", int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + LIST_path;
 
             var query = new Dictionary<string, string>();
             query.Add(API_KEY_Key, ApiKey);
-            query.Add(SESSION_ID_Key, SessionId);
+            query.Add(SESSION_ID_Key, sessionId);
 
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
@@ -631,13 +629,13 @@ namespace Ch9.Data.ApiClient
 
         // The TMDB WebAPI Has a glitch here:
         // when removing an existing list, Http.500 denotes 'success'
-        public async Task<DeleteListResult> DeleteList(int listId, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<DeleteListResult> DeleteList(string sessionId, int listId, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + LIST_path + "/" + listId;
 
             var query = new Dictionary<string, string>();
             query.Add(API_KEY_Key, ApiKey);
-            query.Add(SESSION_ID_Key, SessionId);
+            query.Add(SESSION_ID_Key, sessionId);
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
@@ -670,13 +668,13 @@ namespace Ch9.Data.ApiClient
             return result;
         }
 
-        public async Task<GetListDetailsResult> GetListDetails(int listId, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<GetListDetailsResult> GetListDetails(string sessionId, int listId, string language = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + LIST_path + "/" + listId;
 
             var query = new Dictionary<string, string>();
             query.Add(API_KEY_Key, ApiKey);
-            query.Add(SESSION_ID_Key, SessionId);
+            query.Add(SESSION_ID_Key, sessionId);
             if (!string.IsNullOrWhiteSpace(language))
                 query.Add(LANGUAGE_Key, language);
 
@@ -703,13 +701,13 @@ namespace Ch9.Data.ApiClient
             return result;
         }
 
-        public async Task<AddMovieResult> AddMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<AddMovieResult> AddMovie(string sessionId, int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + LIST_path + "/" + listId + ADD_MEDIA_Path;
 
             var query = new Dictionary<string, string>();
             query.Add(API_KEY_Key, ApiKey);
-            query.Add(SESSION_ID_Key, SessionId);
+            query.Add(SESSION_ID_Key, sessionId);
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
@@ -760,14 +758,14 @@ namespace Ch9.Data.ApiClient
         // adds or removes media from watchlist
         // media type: "movie" OR "tv"
         //TODO refactor media type to enum
-        public async Task<UpdateWatchlistResult> UpdateWatchlist(string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<UpdateWatchlistResult> UpdateWatchlist(string sessionId, string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             // no mistake here: missing "account_id" parameter add the string literal "{account_id}" as paths segment                        
             string baseUrl = BASE_Address + BASE_Path + ACCOUNT_DETAILS_Path + "/" + (accountId.HasValue ? accountId.Value.ToString() : "{account_id}") + WATCHLIST_Path;
 
             var query = new Dictionary<string, string>();
             query.Add(API_KEY_Key, ApiKey);
-            query.Add(SESSION_ID_Key, SessionId);
+            query.Add(SESSION_ID_Key, sessionId);
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
@@ -819,14 +817,14 @@ namespace Ch9.Data.ApiClient
         // adds or removes media from favorite list
         // media type: "movie" OR "tv"
         //TODO refactor media type to enum
-        public async Task<UpdateFavoriteListResult> UpdateFavoriteList(string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<UpdateFavoriteListResult> UpdateFavoriteList(string sessionId, string mediaType, bool add, int mediaId, int? accountId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             // no mistake here: missing "account_id" parameter add the string literal "{account_id}" as paths segment                        
             string baseUrl = BASE_Address + BASE_Path + ACCOUNT_DETAILS_Path + "/" + (accountId.HasValue ? accountId.Value.ToString() : "{account_id}") + FAVORITE_Path;
 
             var query = new Dictionary<string, string>();
             query.Add(API_KEY_Key, ApiKey);
-            query.Add(SESSION_ID_Key, SessionId);
+            query.Add(SESSION_ID_Key, sessionId);
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
@@ -875,7 +873,7 @@ namespace Ch9.Data.ApiClient
             return result;
         }
 
-        public async Task<RateMovieResult> RateMovie(decimal rating, int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<RateMovieResult> RateMovie(string sessionId, decimal rating, int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             if (!string.IsNullOrEmpty(guestSessionId))
                 throw new NotImplementedException($"Rating with guest session is not supported by the method: {nameof(RateMovie)}, parameter: {nameof(guestSessionId)}={guestSessionId}");
@@ -884,7 +882,7 @@ namespace Ch9.Data.ApiClient
 
             var query = new Dictionary<string, string>();
             query.Add(API_KEY_Key, ApiKey);
-            query.Add(SESSION_ID_Key, SessionId);
+            query.Add(SESSION_ID_Key, sessionId);
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
@@ -931,7 +929,7 @@ namespace Ch9.Data.ApiClient
             return result;
         }
 
-        public async Task<DeleteMovieRatingResult> DeleteMovieRating(int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<DeleteMovieRatingResult> DeleteMovieRating(string sessionId, int mediaId, string guestSessionId = null, int retryCount = 0, int delayMilliseconds = 1000)
         {
             if (!string.IsNullOrEmpty(guestSessionId))
                 throw new NotImplementedException($"Deleting rating with guest session is not supported by the method: {nameof(DeleteMovieRating)}, parameter: {nameof(guestSessionId)}={guestSessionId}");
@@ -940,7 +938,7 @@ namespace Ch9.Data.ApiClient
 
             var query = new Dictionary<string, string>();
             query.Add(API_KEY_Key, ApiKey);
-            query.Add(SESSION_ID_Key, SessionId);
+            query.Add(SESSION_ID_Key, sessionId);
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 
@@ -979,13 +977,13 @@ namespace Ch9.Data.ApiClient
         }
 
 
-        public async Task<RemoveMovieResult> RemoveMovie(int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
+        public async Task<RemoveMovieResult> RemoveMovie(string sessionId, int listId, int mediaId, int retryCount = 0, int delayMilliseconds = 1000)
         {
             string baseUrl = BASE_Address + BASE_Path + LIST_path + "/" + listId + REMOVE_MEDIA_Path;
 
             var query = new Dictionary<string, string>();
             query.Add(API_KEY_Key, ApiKey);
-            query.Add(SESSION_ID_Key, SessionId);
+            query.Add(SESSION_ID_Key, sessionId);
 
             string requestUri = QueryHelpers.AddQueryString(baseUrl, query);
 

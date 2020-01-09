@@ -6,7 +6,15 @@
 * Component interfaces (named Ch9.\[Component Name].Contracts) and implementations (naming consistent with the interface project) are splitted into separate assemblies. Dependencies between **assemblies are managed according to the Stairway pattern**:
   * Clients only depend on the interface 
   * Interface implementations are placed in separate assembly thus easily replacable
-  * Dependencies between layers always point down (Ui -> Services.Contracts, Services -> Data.Contracts) 
+  * Dependencies between layers always point down (Ui -> Services.Contracts, Services -> Data.Contracts)
+  
+### Ui assembly, Entry point, DI-configuration root, resolution root
+
+* The Ui project is located under Ch9/Ch9.Ui. It holds the dependencies to Xamarin.Forms. 
+* Entry point into the (platform independent part of the) application is at:
+`protected override async void Ch9/Ch9.Ui/App.xaml.cs.OnStart()`
+* Configuration root of DI is located at the App class constructor: `Ch9/Ch9.Ui/App.xaml.cs.App()` where `DependencyResolver.ConfigureServices(httpClient, Application.Current.Properties)` is called
+* Xamarin.Forms does not have inbuilt support for DI. Thus resolution needs to be started manually. Resolution root for DI are the ViewModel classes (resolved from their owner, the View object). They are the only types which get resolved manually, other dependencies are resolved recursively. 
 
 # Distribution
 

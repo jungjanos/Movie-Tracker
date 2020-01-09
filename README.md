@@ -14,7 +14,7 @@
 * Entry point into the (platform independent part of the) application is at:
 `protected override async void Ch9/Ch9.Ui/App.xaml.cs.OnStart()`
 * Configuration root of DI is located at the App class constructor: `Ch9/Ch9.Ui/App.xaml.cs.App()` where `DependencyResolver.ConfigureServices(httpClient, Application.Current.Properties)` is called
-* Xamarin.Forms does not have inbuilt support for DI. Thus resolution needs to be started manually. Resolution root for DI are the ViewModel classes (resolved from their owner, the View object). They are the only types which get resolved manually, other dependencies are resolved recursively. 
+* Xamarin.Forms does not have inbuilt support for DI. Thus resolution needs to be started manually. Resolution root for DI are the ViewModel classes (resolved from the DI container by their owner, the View object). They are the only types which get resolved manually, other dependencies are resolved recursively. 
 
 # Distribution
 

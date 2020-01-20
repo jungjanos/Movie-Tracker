@@ -13,7 +13,6 @@ using Ch9.ViewModels;
 using System.Collections.Generic;
 using System.Net.Http;
 using Autofac;
-using Ch9.Services.ViewModelServices;
 
 namespace Ch9.Ui
 {

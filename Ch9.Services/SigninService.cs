@@ -4,7 +4,7 @@ using Ch9.Services.Contracts;
 using System;
 using System.Threading.Tasks;
 
-namespace Ch9.Services.ViewModelServices
+namespace Ch9.Services
 {
     public class SigninService : ISigninService
     {

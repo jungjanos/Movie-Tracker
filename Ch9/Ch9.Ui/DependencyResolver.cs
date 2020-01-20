@@ -35,6 +35,8 @@ namespace Ch9.Ui
             
             builder.RegisterType<TmdbApiService>().As<ITmdbApiService>().SingleInstance();
 
+            builder.RegisterType<SigninService>().As<ISigninService>();
+
             builder.RegisterType<TmdbConfigurationCache>().As<ITmdbConfigurationCache>().SingleInstance();
 
             builder.RegisterType<MovieGenreSettingsService>().As<IMovieGenreSettingsService>().SingleInstance();
@@ -54,7 +56,6 @@ namespace Ch9.Ui
             builder.RegisterType<MovieDetailModelConfigurator>().As<IMovieDetailModelConfigurator>().SingleInstance();
             builder.RegisterType<PersonDetailModelConfigurator>().As<IPersonDetailModelConfigurator>().SingleInstance();
             builder.RegisterType<UsersMovieListsService2>().AsSelf().SingleInstance();
-            builder.RegisterType<SigninService>().As<ISigninService>();
 
             builder.RegisterType<MainPage3ViewModel>().AsSelf();
             builder.RegisterType<TrendingPage3ViewModel>().AsSelf();

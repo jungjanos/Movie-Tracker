@@ -1,6 +1,7 @@
 ﻿using Ch9.Services;
 using Ch9.Services.Contracts;
 using Ch9.Models;
+
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
@@ -11,8 +12,8 @@ namespace Ch9.ViewModels
     {
         private ISettings _settings;
         private readonly MovieGenreSettingsModel _movieGenreSettings;
-        private readonly IMovieGenreSettingsService _movieGenreSettingsService;
-        private readonly ITmdbApiService _tmdbApiService;
+        private readonly IMovieGenreSettingsService _movieGenreSettingsService;        
+        private readonly ISigninService _signinService;
 
         public ISettings Settings
         {
@@ -27,15 +28,15 @@ namespace Ch9.ViewModels
         public MainSettingsPage2ViewModel(
                 ISettings settings,
                 MovieGenreSettingsModel movieGenreSettings,
-                IMovieGenreSettingsService movieGenreSettingsService,
-                ITmdbApiService tmdbApiService,
+                IMovieGenreSettingsService movieGenreSettingsService,                
+                ISigninService signinService,
                 IPageService pageService
             ) : base(pageService)
         {
             _settings = settings;
             _movieGenreSettings = movieGenreSettings;
-            _movieGenreSettingsService = movieGenreSettingsService;
-            _tmdbApiService = tmdbApiService;
+            _movieGenreSettingsService = movieGenreSettingsService;            
+            _signinService = signinService;
             SearchLanguageChangedCommand = new Command(async () => await OnSearchLanguageChanged());
 
             LoginTappedCommand = new Command(async () =>
@@ -51,24 +52,10 @@ namespace Ch9.ViewModels
 
         private async Task OnLoginTapped(bool hasAccount)
         {
-            if (hasAccount)
-                await LogoutAndDeleteSession();
+            if (hasAccount)                
+                await _signinService.LogoutAndDeleteSession();
             else
                 await _pageService.PushLoginPageAsync();
-        }
-
-        private async Task LogoutAndDeleteSession()
-        {
-            var sessionIdToDelete = _settings.SessionId;
-
-            if (!string.IsNullOrEmpty(sessionIdToDelete))
-                await _tmdbApiService.TryDeleteSession(sessionIdToDelete);
-
-            _settings.SessionId = null;
-            _settings.AccountName = null;
-            _settings.Password = null;
-            _settings.IsLoginPageDeactivationRequested = false;
-            await _settings.SavePropertiesAsync();
         }
 
         private async Task OnSearchLanguageChanged() =>

@@ -63,5 +63,19 @@ namespace Ch9.Services.ViewModelServices
                 throw new Exception("Login failure");
             }
         }
+
+        public async Task LogoutAndDeleteSession()
+        {
+            var sessionIdToDelete = _settings.SessionId;
+
+            if (!string.IsNullOrEmpty(sessionIdToDelete))
+                await _tmdbApiService.TryDeleteSession(sessionIdToDelete);
+
+            _settings.SessionId = null;
+            _settings.AccountName = null;
+            _settings.Password = null;
+            _settings.IsLoginPageDeactivationRequested = false;
+            await _settings.SavePropertiesAsync();
+        }
     }
 }

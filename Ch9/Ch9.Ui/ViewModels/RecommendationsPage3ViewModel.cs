@@ -44,10 +44,8 @@ namespace Ch9.ViewModels
         public ICommand RefreshSimilarMoviesCommand { get; private set; }
         public ICommand OnItemTappedCommand { get; private set; }
 
-        public RecommendationsPage3ViewModel(
-            MovieDetailModel movie,
-            IMovieRecommendationService movieRecommendationService,
-            IPageService pageService) : base(pageService)
+        public RecommendationsPage3ViewModel(MovieDetailModel movie, IMovieRecommendationService movieRecommendationService, IPageService pageService)
+            : base(pageService)
         {
             Movie = movie;
 

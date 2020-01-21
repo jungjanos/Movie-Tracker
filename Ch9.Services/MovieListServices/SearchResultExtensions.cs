@@ -30,6 +30,20 @@ namespace Ch9.Services.MovieListServices
             }
         }
 
+        public static void AppendResult(this SearchResult targetList, SearchResult serverResponse)
+        {
+            if (serverResponse.MovieDetailModels.Count > 0)
+            {
+                foreach (MovieDetailModel movie in serverResponse.MovieDetailModels)
+                    targetList.MovieDetailModels.Add(movie);
+
+                targetList.Page = serverResponse.Page;
+                targetList.TotalPages = serverResponse.TotalPages;
+                targetList.TotalResults = serverResponse.TotalResults;
+            }
+        }
+
+
         /// <summary>
         /// Not allowed to throw. 
         /// Depending on the state of the MovieDetailModels property of the argument, if it was null, it will be initialized to an empty

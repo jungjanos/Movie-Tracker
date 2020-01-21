@@ -16,6 +16,9 @@ using Autofac;
 
 namespace Ch9.Ui
 {
+    // Most of the dependencies are registered as .SingleInstance()
+    // This is by design as this is a performance oriented single user application
+    // no user sessions need to be kept apart
     internal static class DependencyResolver
     {
         public static IContainer Container { get; private set; }
@@ -53,6 +56,7 @@ namespace Ch9.Ui
             builder.Register<IVideoService>(c => new YtExplodeVideoService(httpClient, c.Resolve<ISettings>(), c.Resolve<ITmdbApiService>(), c.Resolve<IPlayVideo>())).SingleInstance();
 #endif
             builder.RegisterType<MovieDetailModelConfigurator>().As<IMovieDetailModelConfigurator>().SingleInstance();
+            builder.RegisterType<MovieSearchService>().As<IMovieSearchService>().SingleInstance();
             builder.RegisterType<PersonDetailModelConfigurator>().As<IPersonDetailModelConfigurator>().SingleInstance();
             builder.RegisterType<UsersMovieListsService2>().AsSelf().SingleInstance();
 

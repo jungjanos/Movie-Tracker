@@ -27,12 +27,15 @@ namespace Ch9.Services
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
         }
 
+        /// <summary>
+        /// Tries to fetch the requested page of the search results from the server. 
+        /// </summary>
         public async Task<SearchResult> LoadResultPage(string searchString, int pageToLoad, int retryCount, int delayMilliseconds, bool fromCache)
         {
-            var getNextPageResponse = await _tmdbApiService.TrySearchByMovie(searchString: searchString, _settings.SearchLanguage, !_settings.SafeSearch, pageToLoad, year: null, retryCount, delayMilliseconds, fromCache: fromCache);
-            if (getNextPageResponse.HttpStatusCode.IsSuccessCode())
+            var pageResponse = await _tmdbApiService.TrySearchByMovie(searchString: searchString, _settings.SearchLanguage, !_settings.SafeSearch, pageToLoad, year: null, retryCount, delayMilliseconds, fromCache: fromCache);
+            if (pageResponse.HttpStatusCode.IsSuccessCode())
             {
-                var searchResult = getNextPageResponse.SearchResult;
+                var searchResult = pageResponse.SearchResult;
 
                 var filteredResults = _settings.SafeSearch ? _resultFilter.FilterBySearchSettings(searchResult.MovieDetailModels) : _resultFilter.FilterBySearchSettingsIncludeAdult(searchResult.MovieDetailModels);
                 searchResult.MovieDetailModels = new ObservableCollection<MovieDetailModel>(filteredResults);
@@ -42,7 +45,7 @@ namespace Ch9.Services
                 return searchResult;
             }
             else
-                throw new Exception($"Could not load search results, service responded with: {getNextPageResponse.HttpStatusCode}");
+                throw new Exception($"Could not load search results, service responded with: {pageResponse.HttpStatusCode}");
         }
     }
 }

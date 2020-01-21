@@ -1,11 +1,9 @@
 ﻿using Ch9.Services;
 using Ch9.Models;
 using Ch9.Services.Contracts;
-using Ch9.Infrastructure.Extensions;
 using Ch9.Services.MovieListServices;
 
 using System;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
@@ -15,11 +13,7 @@ namespace Ch9.ViewModels
     // Tracks the trending movies for the current week and day
     public class TrendingPage3ViewModel : ViewModelBase
     {
-        private readonly ISettings _settings;        
-        private readonly ITmdbApiService _tmdbApiService;
-        private readonly ISearchResultFilter _resultFilter;
-        private readonly IMovieDetailModelConfigurator _movieDetailConfigurator;
-
+        private readonly ITrendingMoviesService _trendingMoviesService;
         private SearchResult _trendingWeek;
         public SearchResult TrendingWeek
         {
@@ -48,17 +42,9 @@ namespace Ch9.ViewModels
         public ICommand RefreshTrendingDayListCommand { get; private set; }
         public ICommand OnItemTappedCommand { get; private set; }
 
-
-        public TrendingPage3ViewModel(ISettings settings,            
-            ITmdbApiService tmdbApiService,
-            ISearchResultFilter resultFilter,
-            IMovieDetailModelConfigurator movieDetailConfigurator,
-            IPageService pageService) : base(pageService)
+        public TrendingPage3ViewModel(ITrendingMoviesService trendingMoviesService, IPageService pageService) : base(pageService)
         {
-            _settings = settings;            
-            _tmdbApiService = tmdbApiService;
-            _resultFilter = resultFilter;
-            _movieDetailConfigurator = movieDetailConfigurator;
+            _trendingMoviesService = trendingMoviesService;
             _weekOrDaySwitch = true;
 
             _trendingWeek = new SearchResult();
@@ -67,34 +53,34 @@ namespace Ch9.ViewModels
             _trendingDay = new SearchResult();
             _trendingDay.InitializeOrClearMovieCollection();
 
-            LoadNextTrendingWeekPageCommand = new Command(async () => await TryLoadingNextWeekPage());
-            LoadNextTrendingDayPageCommand = new Command(async () => await TryLoadingNextDayPage());
+            LoadNextTrendingWeekPageCommand = new Command(async () => await TryLoadingNextPage(week: true));
+            LoadNextTrendingDayPageCommand = new Command(async () => await TryLoadingNextPage(week: false));
 
             RefreshTrendingWeekListCommand = new Command(async () =>
             {
-                ClearList(TrendingWeek);
-                await TryLoadingNextWeekPage(1, 1000);
+                TrendingWeek.InitializeOrClearMovieCollection();
+                await TryLoadingNextPage(week: true, 1, 1000);
             });
 
             RefreshTrendingDayListCommand = new Command(async () =>
             {
-                ClearList(TrendingDay);
-                await TryLoadingNextDayPage(1, 1000);
+                TrendingDay.InitializeOrClearMovieCollection();
+                await TryLoadingNextPage(week: false, 1, 1000);
             });
 
             OnItemTappedCommand = new Command<MovieDetailModel>(async movie => await _pageService.PushAsync(movie));
 
-            /// Ensures initial population of trending lists
+            /// Ensures initial population of trending lists by using concurrency
             Func<Task> initializationAction = async () =>
             {
                 Task tw = Task.CompletedTask;
                 Task td = Task.CompletedTask;
 
                 if (TrendingWeek.Page == 0)
-                    tw = TryLoadingNextWeekPage(1, 1000);
+                    tw = TryLoadingNextPage(week: true, 1, 1000);
 
                 if (TrendingDay.Page == 0)
-                    td = TryLoadingNextDayPage(1, 1000);
+                    td = TryLoadingNextPage(week: false, 1, 1000);
 
                 await Task.WhenAll(tw, td);
             };
@@ -102,68 +88,22 @@ namespace Ch9.ViewModels
             ConfigureInitialization(initializationAction, false);
         }
 
-        private void ClearList(SearchResult list)
-        {
-            list.MovieDetailModels.Clear();
-            list.Page = 0;
-            list.TotalPages = 0;
-            list.TotalResults = 0;
-        }
 
-        public async Task RefreshTrendingWeekList(int retryCount = 0, int delayMilliseconds = 1000)
+        // Tries to load the next page of the currently selected trending list
+        private async Task TryLoadingNextPage(bool week, int retryCount = 0, int delayMilliseconds = 1000)
         {
-            ClearList(TrendingWeek);
-            await TryLoadingNextWeekPage(retryCount, delayMilliseconds);
-        }
+            var targetList = week ? TrendingWeek : TrendingDay;
 
-        public async Task TryLoadingNextWeekPage(int retryCount = 0, int delayMilliseconds = 1000)
-        {
-            if (TrendingWeek.Page == 0 || TrendingWeek.Page < TrendingWeek.TotalPages)
+            if (targetList.Page == 0 || targetList.Page < targetList.TotalPages)
             {
                 IsBusy = true;
+
                 try
                 {
-                    var nextPageResponse = await _tmdbApiService.TryGetTrendingMovies(week: true, _settings.SearchLanguage, !_settings.SafeSearch, TrendingWeek.Page + 1, retryCount, delayMilliseconds);
-                    if (nextPageResponse.HttpStatusCode.IsSuccessCode())
-                    {
-                        var moviesOnNextPage = nextPageResponse.TrendingMovies;
-                        moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
-
-                        TrendingWeek.AppendResult(moviesOnNextPage, _movieDetailConfigurator);
-                    }
-                    else
-                        await _pageService.DisplayAlert("Error", $"Could not load the weekly trending list, service responded with: {nextPageResponse.HttpStatusCode}", "Ok");                     
+                    var page = await _trendingMoviesService.LoadTrendingPage(week: week, page: targetList.Page + 1, retryCount, delayMilliseconds);
+                    targetList.AppendResult(page);
                 }
-                catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not load the weekly trending list, service responded with: {ex.Message}", "Ok"); }
-                finally { IsBusy = false; }
-            }
-        }
-        public async Task RefreshTrendingDayList(int retryCount = 0, int delayMilliseconds = 1000)
-        {
-            ClearList(TrendingDay);
-            await TryLoadingNextDayPage(retryCount, delayMilliseconds);
-        }
-
-        public async Task TryLoadingNextDayPage(int retryCount = 0, int delayMilliseconds = 1000)
-        {
-            if (TrendingDay.Page == 0 || TrendingDay.Page < TrendingDay.TotalPages)
-            {
-                IsBusy = true;
-                try
-                {
-                    var nextPageResponse = await _tmdbApiService.TryGetTrendingMovies(week: false, _settings.SearchLanguage, !_settings.SafeSearch, TrendingDay.Page + 1, retryCount, delayMilliseconds);
-                    
-                    if (nextPageResponse.HttpStatusCode.IsSuccessCode())
-                    {
-                        var moviesOnNextPage = nextPageResponse.TrendingMovies;
-                        moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_resultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
-                        
-                        TrendingDay.AppendResult(moviesOnNextPage, _movieDetailConfigurator); 
-                    }
-                    else
-                        await _pageService.DisplayAlert("Error", $"Could not load the daily trending list, service responded with: {nextPageResponse.HttpStatusCode}", "Ok");
-                }
-                catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not load the daily trending list, service responded with: {ex.Message}", "Ok"); }
+                catch (Exception ex) { await _pageService.DisplayAlert("Error", ex.Message, "Ok"); }
                 finally { IsBusy = false; }
             }
         }

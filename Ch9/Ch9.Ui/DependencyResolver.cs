@@ -57,6 +57,7 @@ namespace Ch9.Ui
 #endif
             builder.RegisterType<MovieDetailModelConfigurator>().As<IMovieDetailModelConfigurator>().SingleInstance();
             builder.RegisterType<MovieSearchService>().As<IMovieSearchService>().SingleInstance();
+            builder.RegisterType<TrendingMoviesService>().As<ITrendingMoviesService>().SingleInstance();
             builder.RegisterType<PersonDetailModelConfigurator>().As<IPersonDetailModelConfigurator>().SingleInstance();
             builder.RegisterType<UsersMovieListsService2>().AsSelf().SingleInstance();
 

@@ -40,9 +40,7 @@ namespace Ch9.ViewModels
         public ICommand LoadNextResultPageCommand { get; private set; }
         public ICommand OnItemTappedCommand { get; private set; }
 
-        public MainPage3ViewModel(            
-            IMovieSearchService movieSearchService,
-            IPageService pageService) : base(pageService)
+        public MainPage3ViewModel(IMovieSearchService movieSearchService, IPageService pageService) : base(pageService)
         {            
             _movieSearchService = movieSearchService;
             _searchResults = new SearchResult();
@@ -68,6 +66,8 @@ namespace Ch9.ViewModels
             OnItemTappedCommand = new Command<MovieDetailModel>(async movie => await _pageService.PushAsync(movie));
         }
 
+
+        // Tries to load the next page of the result set
         private async Task TryLoadingNextResultPage(int retryCount = 0, int delayMilliseconds = 1000)
         {
             if (SearchResults.Page == 0 || SearchResults.Page < SearchResults.TotalPages)

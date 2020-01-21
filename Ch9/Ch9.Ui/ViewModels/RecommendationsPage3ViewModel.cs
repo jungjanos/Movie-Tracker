@@ -1,11 +1,9 @@
-﻿using Ch9.Services;
-using Ch9.Models;
+﻿using Ch9.Models;
+using Ch9.Services;
 using Ch9.Services.Contracts;
-using Ch9.Infrastructure.Extensions;
 using Ch9.Services.MovieListServices;
 
 using System;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
@@ -14,10 +12,7 @@ namespace Ch9.ViewModels
 {
     public class RecommendationsPage3ViewModel : ViewModelBase
     {
-        private readonly ISettings _settings;        
-        private readonly ITmdbApiService _tmdbApiService;
-        private readonly ISearchResultFilter _searchResultFilter;
-        private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
+        private readonly IMovieRecommendationService _movieRecommendationService;
 
         public MovieDetailModel Movie { get; private set; }
 
@@ -49,49 +44,34 @@ namespace Ch9.ViewModels
         public ICommand RefreshSimilarMoviesCommand { get; private set; }
         public ICommand OnItemTappedCommand { get; private set; }
 
-        public RecommendationsPage3ViewModel(MovieDetailModel movie,
-            ISettings settings,            
-            ITmdbApiService tmdbApiService,
-            ISearchResultFilter searchResultFilter,
-            IMovieDetailModelConfigurator movieDetailModelConfigurator,
+        public RecommendationsPage3ViewModel(
+            MovieDetailModel movie,
+            IMovieRecommendationService movieRecommendationService,
             IPageService pageService) : base(pageService)
         {
             Movie = movie;
 
-            _settings = settings;
-            _tmdbApiService = tmdbApiService;
-            _searchResultFilter = searchResultFilter;
-            _movieDetailModelConfigurator = movieDetailModelConfigurator;
+            _movieRecommendationService = movieRecommendationService;
             _recommendationsOrSimilars = true;
 
-            _recommendedMovies = new SearchResult
-            {
-                MovieDetailModels = new ObservableCollection<MovieDetailModel>(),
-                Page = 0,
-                TotalPages = 0,
-                TotalResults = 0
-            };
+            _recommendedMovies = new SearchResult();
+            _recommendedMovies.InitializeOrClearMovieCollection();
 
-            _similarMovies = new SearchResult
-            {
-                MovieDetailModels = new ObservableCollection<MovieDetailModel>(),
-                Page = 0,
-                TotalPages = 0,
-                TotalResults = 0
-            };
+            _similarMovies = new SearchResult();
+            _similarMovies.InitializeOrClearMovieCollection();
 
             LoadNextRecommendedMoviesPageCommand = new Command(async () => await TryLoadingNextRecommendedMoviesPage());
             LoadNextSimilarMoviesPageCommand = new Command(async () => await TryLoadingNextSimilarMoviesPage());
 
             RefreshRecommendedMoviesCommand = new Command(async () =>
             {
-                ClearList(RecommendedMovies);
+                RecommendedMovies.InitializeOrClearMovieCollection();
                 await TryLoadingNextRecommendedMoviesPage(1, 1000);
             });
 
             RefreshSimilarMoviesCommand = new Command(async () =>
             {
-                ClearList(SimilarMovies);
+                SimilarMovies.InitializeOrClearMovieCollection();
                 await TryLoadingNextSimilarMoviesPage(1, 1000);
             });
 
@@ -115,67 +95,32 @@ namespace Ch9.ViewModels
             ConfigureInitialization(initializationAction, false);
         }
 
-        private void ClearList(SearchResult list)
-        {
-            list.MovieDetailModels.Clear();
-            list.Page = 0;
-            list.TotalPages = 0;
-            list.TotalResults = 0;
-        }
-
-        public async Task RefreshRecommendedMovies(int retryCount = 0, int delayMilliseconds = 1000)
-        {
-            ClearList(RecommendedMovies);
-            await TryLoadingNextRecommendedMoviesPage(retryCount, delayMilliseconds);
-        }
-
-        public async Task TryLoadingNextRecommendedMoviesPage(int retryCount = 0, int delayMilliseconds = 1000)
+        private async Task TryLoadingNextRecommendedMoviesPage(int retryCount = 0, int delayMilliseconds = 1000)
         {
             if (RecommendedMovies.Page == 0 || RecommendedMovies.Page < RecommendedMovies.TotalPages)
             {
                 IsBusy = true;
                 try
                 {
-                    var response = await _tmdbApiService.TryGetMovieRecommendations(Movie.Id, _settings.SearchLanguage, RecommendedMovies.Page + 1, retryCount, delayMilliseconds);
-                    if (response.HttpStatusCode.IsSuccessCode())
-                    {
-                        var moviesOnNextPage = response.MovieRecommendations;
-                        moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_searchResultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
-                        RecommendedMovies.AppendResult(moviesOnNextPage, _movieDetailModelConfigurator);
-                    }
-                    else
-                        await _pageService.DisplayAlert("Error", $"Could not update the recommended movies list, service responded with: {response.HttpStatusCode}", "Ok");
+                    var page = await _movieRecommendationService.LoadMovieRecommendationsPage(Movie.Id, RecommendedMovies.Page + 1, retryCount, delayMilliseconds);
+                    RecommendedMovies.AppendResult(page);
                 }
-                catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not update the recommended movies list, service responded with: {ex.Message}", "Ok"); }
+                catch (Exception ex) { await _pageService.DisplayAlert("Error", ex.Message, "Ok"); }
                 finally { IsBusy = false; }
             }
         }
 
-        public async Task RefreshSimilarMovies(int retryCount = 0, int delayMilliseconds = 1000)
-        {
-            ClearList(SimilarMovies);
-            await TryLoadingNextSimilarMoviesPage(retryCount, delayMilliseconds);
-        }
-
-        public async Task TryLoadingNextSimilarMoviesPage(int retryCount = 0, int delayMilliseconds = 1000)
+        private async Task TryLoadingNextSimilarMoviesPage(int retryCount = 0, int delayMilliseconds = 1000)
         {
             if (SimilarMovies.Page == 0 || SimilarMovies.Page < SimilarMovies.TotalPages)
             {
                 IsBusy = true;
                 try
                 {
-                    var response = await _tmdbApiService.TryGetSimilarMovies(Movie.Id, _settings.SearchLanguage, SimilarMovies.Page + 1, retryCount, delayMilliseconds);
-
-                    if (response.HttpStatusCode.IsSuccessCode())
-                    {
-                        var moviesOnNextPage = response.SimilarMovies;
-                        moviesOnNextPage.MovieDetailModels = new ObservableCollection<MovieDetailModel>(_searchResultFilter.FilterBySearchSettings(moviesOnNextPage.MovieDetailModels));
-                        SimilarMovies.AppendResult(moviesOnNextPage, _movieDetailModelConfigurator);
-                    }
-                    else
-                        await _pageService.DisplayAlert("Error", $"Could not update the similar movies list, service responded with: {response.HttpStatusCode}", "Ok");
+                    var page = await _movieRecommendationService.LoadSimilarMoviesPage(Movie.Id, SimilarMovies.Page + 1, retryCount, delayMilliseconds);
+                    SimilarMovies.AppendResult(page);
                 }
-                catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not update the similar movies list, service responded with: {ex.Message}", "Ok"); }
+                catch (Exception ex) { await _pageService.DisplayAlert("Error", ex.Message, "Ok"); }
                 finally { IsBusy = false; }
             }
         }

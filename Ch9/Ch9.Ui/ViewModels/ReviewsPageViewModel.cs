@@ -46,33 +46,6 @@ namespace Ch9.ViewModels
             ConfigureInitialization(initializationAction, false);
         }
 
-        // This stupidity is required bc the way the Server 
-        // side wraps the rating into a variably typed Json object.
-        public decimal? UsersRating
-        {
-            get => ParentPageViewModel.MovieStates?.Rating?.Value;
-            set
-            {
-                if (value == UsersRating)
-                    return;
-
-                // parents 'MovieStates' object CAN BE NULL
-                if (ParentPageViewModel.MovieStates == null)
-                    return;
-
-                if (value == null)
-                    ParentPageViewModel.MovieStates.Rating = null;
-                else
-                {
-                    if (ParentPageViewModel.MovieStates.Rating == null)
-                        ParentPageViewModel.MovieStates.Rating = new RatingWrapper();
-
-                    ParentPageViewModel.MovieStates.Rating.Value = value.Value;
-                }
-                OnPropertyChanged(nameof(UsersRating));
-            }
-        }
-
         private async Task RefreshReviews(int retryCount = 0, int delayMilliseconds = 1000, bool fromCache = false)
         {
             var response = await _tmdbApiService.TryGetMovieReviews(ParentPageViewModel.Movie.Id, language: null, page: null, retryCount: retryCount, delayMilliseconds: delayMilliseconds, fromCache: fromCache);
@@ -87,44 +60,44 @@ namespace Ch9.ViewModels
         {
             bool success = await UpdateRating(targetRating);
             if (success)
-                UsersRating = targetRating;
+                ParentPageViewModel.UsersRating = targetRating;
         }
 
         private async Task OnDecreaseRatingCommand()
         {
-            decimal newRating = UsersRating == null ? 4.5M : Math.Max(UsersRating.Value - 0.5M, 0.5M);
+            decimal newRating = ParentPageViewModel.UsersRating == null ? 4.5M : Math.Max(ParentPageViewModel.UsersRating.Value - 0.5M, 0.5M);
 
-            if (UsersRating == newRating)
+            if (ParentPageViewModel.UsersRating == newRating)
                 return;
 
             bool success = await UpdateRating(newRating);
 
             if (success)
-                UsersRating = newRating;
+                ParentPageViewModel.UsersRating = newRating;
         }
 
         private async Task OnIncreaseRatingCommand()
         {
-            decimal newRating = UsersRating == null ? 5.5M : Math.Min(UsersRating.Value + 0.5M, 10M);
+            decimal newRating = ParentPageViewModel.UsersRating == null ? 5.5M : Math.Min(ParentPageViewModel.UsersRating.Value + 0.5M, 10M);
 
-            if (UsersRating == newRating)
+            if (ParentPageViewModel.UsersRating == newRating)
                 return;
 
             bool success = await UpdateRating(newRating);
 
             if (success)
-                UsersRating = newRating;
+                ParentPageViewModel.UsersRating = newRating;
         }
 
         public async Task OnDeleteRatingCommand()
         {
-            if (UsersRating == null)
+            if (ParentPageViewModel.UsersRating == null)
                 return;
 
             var response = await _tmdbApiService.TryDeleteMovieRating(ParentPageViewModel.Movie.Id, null, retryCount: 3, delayMilliseconds: 1000);
             
             if (response.HttpStatusCode.IsSuccessCode())
-                UsersRating = null;
+                ParentPageViewModel.UsersRating = null;
             else
                 await _pageService.DisplayAlert("Error", $"Could not delete your rating, server reponse: {response.HttpStatusCode}", "Ok");
         }

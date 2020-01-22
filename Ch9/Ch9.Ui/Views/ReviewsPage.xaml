@@ -18,7 +18,7 @@
 
     <ContentPage.Content>
         <StackLayout Orientation="Vertical" Padding="5,0,5,5">
-            
+
             <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10">
                 <Label Text="{Binding Path=ParentPageViewModel.Movie.Title}" FontSize="Large" LineBreakMode="WordWrap" HorizontalOptions="Start"/>
                 <Label 
@@ -59,13 +59,13 @@
                 </Grid.ColumnDefinitions>
 
                 <Label  Grid.Row="0" Grid.Column="0"
-                        Text="{Binding UsersRating,Converter={StaticResource Key=nullableDecimalRatingToRatingNotice}}" 
+                        Text="{Binding Path=ParentPageViewModel.UsersRating, Converter={StaticResource Key=nullableDecimalRatingToRatingNotice}}" 
                         FontSize="Small" TextColor="Black"
                         VerticalTextAlignment="Center"/>
 
                 <Button Grid.Row="0" Grid.Column="1"
                         Command="{Binding DeleteRatingCommand}"
-                        IsVisible="{Binding UsersRating, Converter={StaticResource Key=nullableDecimalRatingToHasRating}}"
+                        IsVisible="{Binding Path=ParentPageViewModel.UsersRating, Converter={StaticResource Key=nullableDecimalRatingToHasRating}}"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
                         <!--trash can-->
@@ -75,14 +75,14 @@
                          Color="DarkGray"/>
                     </Button.ImageSource>
                 </Button>
-                
+
                 <Button Grid.Row="0" Grid.Column="2"
                         Command="{Binding SetRatingCommand}"
                         CommandParameter="2"
                         BackgroundColor="Transparent"
                         HorizontalOptions="Center">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=0}"
+                        <FontImageSource Glyph="{Binding Path=ParentPageViewModel.UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=0}"
                          FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
                          Size="20" 
                          Color="Gold"/>
@@ -93,7 +93,7 @@
                         CommandParameter="4"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=1}"
+                        <FontImageSource Glyph="{Binding Path=ParentPageViewModel.UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=1}"
                          FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
                          Size="20" 
                          Color="Gold"/>
@@ -104,7 +104,7 @@
                         CommandParameter="6"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=2}"
+                        <FontImageSource Glyph="{Binding Path=ParentPageViewModel.UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=2}"
                          FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
                          Size="20" 
                          Color="Gold"/>
@@ -115,7 +115,7 @@
                         CommandParameter="8"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=3}"
+                        <FontImageSource Glyph="{Binding Path=ParentPageViewModel.UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=3}"
                          FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
                          Size="20" 
                          Color="Gold"/>
@@ -126,7 +126,7 @@
                         CommandParameter="10"
                         BackgroundColor="Transparent">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="{Binding UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=4}"
+                        <FontImageSource Glyph="{Binding Path=ParentPageViewModel.UsersRating, Converter={StaticResource Key=ratingToGlyph}, ConverterParameter=4}"
                          FontFamily="{OnPlatform iOS=SegMDL2, Android=SegMDL2.ttf#}"
                          Size="20"
                          Color="Gold"/>
@@ -134,7 +134,7 @@
                 </Button>
                 <Button Grid.Row="0" Grid.Column="7"
                         Command="{Binding DecreaseRatingCommand}"
-                        IsVisible="{Binding UsersRating, Converter={StaticResource Key=nullableDecimalRatingToHasRating}}"
+                        IsVisible="{Binding Path=ParentPageViewModel.UsersRating, Converter={StaticResource Key=nullableDecimalRatingToHasRating}}"
                         BackgroundColor="Transparent"
                         HorizontalOptions="Center">
                     <Button.ImageSource>
@@ -147,7 +147,7 @@
                 </Button>
 
                 <Label Grid.Row="0" Grid.Column="8"
-                    Text="{Binding UsersRating}"
+                    Text="{Binding Path=ParentPageViewModel.UsersRating}"
                        
                        FontAttributes="Bold"
                        HorizontalTextAlignment="Center"
@@ -156,7 +156,7 @@
 
                 <Button Grid.Row="0" Grid.Column="9"
                         Command="{Binding IncreaseRatingCommand}"
-                        IsVisible="{Binding UsersRating, Converter={StaticResource Key=nullableDecimalRatingToHasRating}}"
+                        IsVisible="{Binding Path=ParentPageViewModel.UsersRating, Converter={StaticResource Key=nullableDecimalRatingToHasRating}}"
                         BackgroundColor="Transparent"
                         HorizontalOptions="Center">
                     <Button.ImageSource>
@@ -169,10 +169,7 @@
                 </Button>
 
             </Grid>
-
-
-
-            <!--<Label Text="Reviews" FontSize="Large" TextColor="DarkGray"/>-->
+            
             <Label Text="{Binding Path=ParentPageViewModel.Movie.Reviews.Count , StringFormat='Reviews ({0})'}" FontSize="Large" TextColor="DarkGray"/>
 
             <ListView HasUnevenRows="True"

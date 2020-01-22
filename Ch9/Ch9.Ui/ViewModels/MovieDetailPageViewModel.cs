@@ -74,7 +74,7 @@ namespace Ch9.ViewModels
         }
 
         private decimal? _rating = null;
-        public decimal? Rating
+        public decimal? UsersRating
         {
             get => _rating;
             set => SetProperty(ref _rating, value);
@@ -222,7 +222,7 @@ namespace Ch9.ViewModels
                     var response = await _movieDetailsService.PopulateMovieWithDetailsAndFetchStates(Movie, retryCount: 1, delayMilliseconds: 1000);
                     OnWatchlist = response.OnWatchlist;
                     IsFavorite = response.IsFavorite;
-                    Rating = response.Rating;                        
+                    UsersRating = response.Rating;                        
                 }
                 catch (Exception ex)
                 { await _pageService.DisplayAlert("Error", ex.Message, "Ok"); }

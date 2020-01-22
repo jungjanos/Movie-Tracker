@@ -16,16 +16,16 @@ namespace Ch9.ViewModels
 {
     public class MovieDetailPageViewModel : ViewModelBase
     {
-        public MovieDetailModel Movie { get; set; }
-        private readonly ISettings _settings;       
+        public MovieDetailModel Movie { get; private set; }
+        private readonly ISettings _settings;
         private readonly ITmdbApiService _tmdbApiService;
         private readonly UsersMovieListsService2 _movieListsService2;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
+        private readonly IMovieDetailsService _movieDetailsService;
         private readonly IVideoService _videoService;
         private readonly IWeblinkComposer _weblinkComposer;
-        private readonly Task _fetchGallery;
-        private MovieCreditsModel _credits;
+        private readonly Task _fetchGallery;        
 
         private ObservableCollection<ImageModel> _displayImages;
         public ObservableCollection<ImageModel> DisplayImages
@@ -58,6 +58,28 @@ namespace Ch9.ViewModels
             get => _movieStates;
             set => SetProperty(ref _movieStates, value);
         }
+
+        private bool? _isFavorite = null;
+        public bool? IsFavorite
+        {
+            get => _isFavorite;
+            set => SetProperty(ref _isFavorite, value);
+        }
+
+        private bool? _onWatchlist = null;
+        public bool? OnWatchlist
+        {
+            get => _onWatchlist;
+            set => SetProperty(ref _onWatchlist, value);
+        }
+
+        private decimal? _rating = null;
+        public decimal? Rating
+        {
+            get => _rating;
+            set => SetProperty(ref _rating, value);
+        }
+
 
         private bool _displayImageTypeSelector;
         /// <summary>
@@ -103,16 +125,18 @@ namespace Ch9.ViewModels
             UsersMovieListsService2 movieListsService2,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPersonDetailModelConfigurator personDetailModelConfigurator,
+            IMovieDetailsService movieDetailsService,
             IVideoService videoService,
             IWeblinkComposer weblinkComposer,
             IPageService pageService) : base(pageService)
         {
             Movie = movie;
-            _settings = settings;            
+            _settings = settings;
             _tmdbApiService = tmdbApiService;
             _movieListsService2 = movieListsService2;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _personDetailModelConfigurator = personDetailModelConfigurator;
+            _movieDetailsService = movieDetailsService;
             _videoService = videoService;
             _weblinkComposer = weblinkComposer;
             _fetchGallery = UpdateImageCollection();
@@ -170,7 +194,7 @@ namespace Ch9.ViewModels
             ToggleCreditsCommand = new Command(async () =>
             {
                 if (!ShowCredits)
-                    await FetchCredits();
+                    await LoadCredits();
                 ShowCredits = !_showCredits;
             });
             MovieCastPersonTappedCommand = new Command<IStaffMemberRole>(async staffMemberRole =>
@@ -214,39 +238,27 @@ namespace Ch9.ViewModels
             ConfigureInitialization(initializationAction, runOnlyOnce: true);
         }
 
-        // starts a hot task to fetch and adjust gallery image paths as early as possible        
         private async Task UpdateImageCollection()
         {
             GalleryIsBusy = true;
             try
             {
-                var response = await _tmdbApiService.TryGetMovieImages(Movie.Id, _settings.SearchLanguage, otherLanguage: null, includeLanguageless: true, retryCount: 0, delayMilliseconds: 1000, fromCache: true);
-
-                if (response.HttpStatusCode.IsSuccessCode())
-                {
-                    Movie.ImageDetailCollection = response.ImageDetailCollection;
-                    _movieDetailModelConfigurator.SetGalleryImageSources(Movie);
-                }
+                await _movieDetailsService.LoadMovieGallery(Movie, retryCount: 0, delayMilliseconds: 1000, fromCache: true);
             }
             catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not load gallery, service responded with: {ex.Message}", "Ok"); }
             finally { GalleryIsBusy = false; }
         }
+
         public async Task UpdateThumbnailCollection()
         {
-            if (Movie.VideoThumbnails != null)
-                return;
-
-            Movie.VideoThumbnails = new ObservableCollection<ImageModel>();
-
             try
             {
-                List<ImageModel> videoThumbnails = await _videoService.GetVideoThumbnails(Movie.Id, 1, 1000, true);
-                foreach (var thumbnail in videoThumbnails)
-                    Movie.VideoThumbnails.Add(thumbnail);
+                await _movieDetailsService.LoadVideoThumbnailCollection(Movie, retryCount: 1, delayMilliseconds: 1000, fromCache: true);
             }
             catch (Exception ex)
             { await _pageService.DisplayAlert("Error", $"Could not load video thumbnails, service responded with: {ex.Message}", "Ok"); }
         }
+
 
         public async Task OnToggleWatchlistCommand()
         {
@@ -328,29 +340,19 @@ namespace Ch9.ViewModels
             { await _pageService.DisplayAlert("Error", $"Could not change favorite state, service responded with: {ex.Message}", "Ok"); }
         }
 
-        private async Task FetchCredits(int retryCount = 0, int delayMilliseconds = 1000)
+        private async Task LoadCredits(int retryCount = 0, int delayMilliseconds = 1000)
         {
-            if (_credits == null)
+            if (Staffs == null)
             {
                 try
                 {
-                    var response = await _tmdbApiService.TryGetMovieCredits(Movie.Id, retryCount, delayMilliseconds, fromCache: true);
-
-                    if (response.HttpStatusCode.IsSuccessCode())
-                    {
-                        _credits = response.MovieCreditsModel;
-
-                        var staffMembers = _credits.ExtractStaffToDisplay(7);
-                        _personDetailModelConfigurator.SetProfileImageSrc(staffMembers);
-
-                        Staffs = staffMembers;
-                    }
-                    else
-                        await _pageService.DisplayAlert("Error", $"Could not fetch credits information, service responded with: {response.HttpStatusCode}", "Ok");
+                    var staffMembers = await _movieDetailsService.FetchMovieCredits(Movie.Id, retryCount: retryCount, delayMilliseconds: delayMilliseconds, fromCache: true);
+                    Staffs = staffMembers;
                 }
-                catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not fetch credits information, the following exception was thrown: {ex.Message}", "Ok"); }
+                catch (Exception ex) { await _pageService.DisplayAlert("Error", ex.Message, "Ok"); }
             }
         }
+
 
         private async Task OpenPersonPage(IStaffMemberRole staffMemberRole)
         {

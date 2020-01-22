@@ -22,4 +22,21 @@ namespace Ch9.Models
         [JsonProperty("value")]
         public decimal Value { get; set; }
     }
+
+    // the dynamic JSON sent by the server is so stupid, that 
+    // special care needs to be taken when handled, thus this DTO class 
+    public class AccountMovieStatesDto
+    {
+        public bool? IsFavorite { get; private set; }
+        public bool? OnWatchlist { get; private set; }
+        public decimal? Rating { get; private set; } 
+
+        public AccountMovieStatesDto(AccountMovieStates accountMovieStates)
+        {
+            IsFavorite = accountMovieStates?.IsFavorite;
+            OnWatchlist = accountMovieStates?.OnWatchlist;
+            Rating = accountMovieStates?.Rating?.Value;
+        }
+    }
+
 }

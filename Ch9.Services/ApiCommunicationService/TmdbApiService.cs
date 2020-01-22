@@ -74,7 +74,7 @@ namespace Ch9.Services.ApiCommunicationService
             return result.HttpStatusCode;
         }
         /// <summary>
-        /// tries to populate the existing movie object with details
+        /// tries to POPULATE the existing movie object with details
         /// </summary>
         /// <param name="movieToPopulate">Movie object to populate</param>
         /// <returns>ApiCommunicationServiceResponseBase class extended with AccountMovieStates property</returns>

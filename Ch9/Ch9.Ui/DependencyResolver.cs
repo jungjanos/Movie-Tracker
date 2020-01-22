@@ -61,6 +61,7 @@ namespace Ch9.Ui
             builder.RegisterType<MovieRecommendationService>().As<IMovieRecommendationService>().SingleInstance();
             builder.RegisterType<PersonDetailModelConfigurator>().As<IPersonDetailModelConfigurator>().SingleInstance();
             builder.RegisterType<ActorDetailService>().As<IActorDetailService>().SingleInstance();
+            builder.RegisterType<MovieDetailsService>().As<IMovieDetailsService>().SingleInstance();
             builder.RegisterType<UsersMovieListsService2>().AsSelf().SingleInstance();
 
             builder.RegisterType<MainPage3ViewModel>().AsSelf();

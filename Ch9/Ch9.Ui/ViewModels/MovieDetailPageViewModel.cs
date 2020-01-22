@@ -215,16 +215,17 @@ namespace Ch9.ViewModels
             // Ensures that account movie states have been fetched
             Func<Task> initializationAction = async () =>
             {
-                var t = _movieListsService2.CustomListsService.TryEnsureInitialization();
-
+                var t = _movieListsService2.CustomListsService.TryEnsureInitialization();               
+                
                 try
                 {
-                    var response = await _tmdbApiService.TryGetMovieDetailsWithAccountStates(Movie, Movie.Id, _settings.SearchLanguage, retryCount: 1, delayMilliseconds: 1000);
-                    if (response.HttpStatusCode.Is200Code())
-                        MovieStates = response.AccountMovieStates;
+                    var response = await _movieDetailsService.PopulateMovieWithDetailsAndFetchStates(Movie, retryCount: 1, delayMilliseconds: 1000);
+                    OnWatchlist = response.OnWatchlist;
+                    IsFavorite = response.IsFavorite;
+                    Rating = response.Rating;                        
                 }
                 catch (Exception ex)
-                { await _pageService.DisplayAlert("Error", $"Could not fetch movie details, exception: {ex.Message}", "Ok"); }
+                { await _pageService.DisplayAlert("Error", ex.Message, "Ok"); }
 
                 try
                 {
@@ -259,28 +260,20 @@ namespace Ch9.ViewModels
             { await _pageService.DisplayAlert("Error", $"Could not load video thumbnails, service responded with: {ex.Message}", "Ok"); }
         }
 
-
         public async Task OnToggleWatchlistCommand()
         {
-            if (!_settings.IsLoggedin)
-            {
-                await _pageService.DisplayAlert("Info", "You have to log in with a user account to use this function", "Ok");
-                return;
-            }
-
-            if (MovieStates == null)
+            if (OnWatchlist == null)
                 return;
 
-            bool desiredState = !MovieStates.OnWatchlist;
+            bool desiredState = !OnWatchlist.Value;
 
             try
             {
                 await _movieListsService2.WatchlistService.ToggleWatchlistState(Movie, desiredState);
-                MovieStates.OnWatchlist = desiredState;
-                OnPropertyChanged(nameof(MovieStates));
+                OnWatchlist = desiredState;
             }
             catch (Exception ex)
-            { await _pageService.DisplayAlert("Error", $"Could not change watchlist state, service responded with: {ex.Message}", "Ok"); }
+            { await _pageService.DisplayAlert("Error", ex.Message, "Ok"); }
         }
 
         public async Task OnAddToListCommand()
@@ -319,25 +312,18 @@ namespace Ch9.ViewModels
 
         public async Task OnToggleFavoriteCommand()
         {
-            if (!_settings.IsLoggedin)
-            {
-                await _pageService.DisplayAlert("Info", "You have to log in with a user account to use this function", "Ok");
-                return;
-            }
-
-            if (MovieStates == null)
+            if (IsFavorite == null)
                 return;
 
-            bool desiredState = !MovieStates.IsFavorite;
+            bool desiredState = !IsFavorite.Value;
 
             try
             {
                 await _movieListsService2.FavoriteMoviesListService.ToggleFavoriteState(Movie, desiredState);
-                MovieStates.IsFavorite = desiredState;
-                OnPropertyChanged(nameof(MovieStates));
+                IsFavorite = desiredState;
             }
             catch (Exception ex)
-            { await _pageService.DisplayAlert("Error", $"Could not change favorite state, service responded with: {ex.Message}", "Ok"); }
+            { await _pageService.DisplayAlert("Error", ex.Message, "Ok"); }
         }
 
         private async Task LoadCredits(int retryCount = 0, int delayMilliseconds = 1000)

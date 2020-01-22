@@ -12,13 +12,13 @@
              x:Name="movieDetailPage"
              Title="{Binding Path=Movie.Title}" Padding="5"
              BackgroundColor="WhiteSmoke" NavigationPage.HasNavigationBar="False">
-    
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:MovieOnListBoolToColorConverter x:Key="movieOnListBoolToColor"/>
-            <converters:MovieOnFavoriteListAccountMovieStatesToColorConverter  x:Key="movieOnFavoriteListAccountMovieStatesToColor"/>
-            <converters:MovieOnFavoriteListAccountMovieStatesToGlyphConverter  x:Key="movieOnFavoriteListAccountMovieStatesToGlyph"/>
-            <converters:MovieOnWathlistAccountMovieStatesToColorConverter x:Key="movieOnWathlistAccountMovieStatesToColor"/>
+            <converters:MovieOnFavoriteListNullableBoolToColorConverter x:Key="movieOnFavoriteListNullableBoolToColor"/>
+            <converters:MovieOnFavoriteListNullableBoolToGlyphConverter x:Key="movieOnFavoriteListNullableBoolToGlyph"/>
+            <converters:MovieOnWathlistNullableBoolToColorConverter x:Key="movieOnWathlistNullableBoolToColor"/>
             <converters:IntPlusOneToStringConverter x:Key="intPlusOneToString" />
             <converters:GalleryImageTypeToGlyphConverter x:Key="galleryImageTypeToGlyph" />
             <converters:GalleryImageCountToColorConverter x:Key="galleryImageCountToColor"/>
@@ -71,7 +71,7 @@
                                         IsClippedToBounds="true"
                                         CornerRadius="10"
                                         BackgroundColor="Black">
-                                        
+
                                         <ffimageloading:CachedImage 
                                             Aspect="AspectFill"                                            
                                             ErrorPlaceholder="movie_backdrop_placeholder_lg"
@@ -84,21 +84,21 @@
                                             <ffimageloading:CachedImage.Source>
                                                 <UriImageSource
                                                     Uri="{Binding Path=FilePath}"/>
-                                                
-                                            </ffimageloading:CachedImage.Source>                                            
-                                        </ffimageloading:CachedImage>                                        
-                                    </Frame>                                    
+
+                                            </ffimageloading:CachedImage.Source>
+                                        </ffimageloading:CachedImage>
+                                    </Frame>
                                 </ContentView>
                             </DataTemplate>
                         </pancardview:CardsView.ItemTemplate>
-                    </pancardview:CardsView>                    
+                    </pancardview:CardsView>
 
                     <ActivityIndicator 
                         IsRunning="{Binding Path=BindingContext.GalleryIsBusy, Source={x:Reference movieDetailPage}}" 
                         IsVisible="{Binding Path=BindingContext.GalleryIsBusy, Source={x:Reference movieDetailPage}}"
                         HorizontalOptions="CenterAndExpand" 
                         VerticalOptions="Start" 
-                        HeightRequest="20"/>                    
+                        HeightRequest="20"/>
 
                     <ActivityIndicator 
                         IsRunning="{Binding Path=BindingContext.WaitingOnVideo, Source={x:Reference movieDetailPage}}" 
@@ -112,7 +112,7 @@
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding Path=BindingContext.ChangeDisplayedImageTypeCommand, Source={x:Reference movieDetailPage}}"/>
                         </Grid.GestureRecognizers>
-                        
+
                         <Grid.RowDefinitions>
                             <RowDefinition Height="15"/>
                             <RowDefinition Height="auto"/>
@@ -129,13 +129,13 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>                            
-                            
+                            <ColumnDefinition Width="*"/>
+
                         </Grid.ColumnDefinitions>
 
                         <Image Grid.Row="0" Grid.Column="0" 
                                BackgroundColor="Transparent">
-                            
+
                             <Image.Source>
                                 <FontImageSource 
                                      Glyph="{Binding Path=DisplayImageTypeSelector, Converter={StaticResource Key=galleryImageTypeToGlyph}}"
@@ -148,7 +148,7 @@
                                      Orientation="Horizontal" 
                                      VerticalOptions="End"
                                      Spacing="0">
-                            
+
                             <Label BindingContext="{x:Reference cardView}"
                                Text="{Binding SelectedIndex, Converter={StaticResource Key=intPlusOneToString}}" 
                                FontSize="Micro" 
@@ -189,11 +189,11 @@
                         Text="{Binding Path=Movie.Genre}"
                         IsVisible="{Binding Path=Movie.Genre, Converter={StaticResource Key=stringToNotNullOremptyStringToBool}}"
                         FontSize="Small"/>
-                    
+
                     <Label 
                         Text="{Binding Path=Movie.Tagline}"
-                        IsVisible="{Binding Path=Movie.Tagline, Converter={StaticResource Key=stringToNotNullOremptyStringToBool}}"/>                    
-                    
+                        IsVisible="{Binding Path=Movie.Tagline, Converter={StaticResource Key=stringToNotNullOremptyStringToBool}}"/>
+
                     <controls:ExtendedLabel 
                         Text="{Binding Path=Movie.Overview}" 
                         TextColor="DarkGray" 
@@ -204,7 +204,7 @@
                     <StackLayout 
                         Orientation="Horizontal"
                         HorizontalOptions="FillAndExpand">
-                        
+
                         <Label Text="{Binding Path= Movie.Duration, StringFormat='{0} mins'}" IsVisible="{Binding Path=Movie.Duration.HasValue}"/>
                         <Label Text="{Binding Path= Movie.VoteAverage, StringFormat='Score: {0:F1}'}"/>
                         <Label Text="{Binding Path= Movie.VoteCount, StringFormat='Votes: {0}'}"/>
@@ -222,7 +222,7 @@
                                      FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                                      Color="{Binding ShowCredits, Converter={StaticResource Key=showCreditsToColor}}"
                                      Size="25"/>
-                                
+
                             </Image.Source>
                         </Image>
 
@@ -252,10 +252,10 @@
                         SelectionChanged="CollectionView_SelectionChanged"
                         SelectionMode="Single"
                         HeightRequest="{Binding Staffs.Count,Converter={StaticResource Key=intIntMultiplier},ConverterParameter=88}">
-                        
+
                         <CollectionView.ItemTemplate>
-                        
-                        <DataTemplate>
+
+                            <DataTemplate>
                                 <Grid Padding="5" ColumnSpacing="20">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -265,7 +265,7 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    
+
                                     <ffimageloading:CachedImage 
                                         Grid.RowSpan="2"
                                         
@@ -275,12 +275,12 @@
                                         WidthRequest="50" 
                                         ErrorPlaceholder="person_placeholder2_sm"
                                         RetryCount="1"/>
-                                    
+
                                     <Label Grid.Column="1" 
                                         Text="{Binding Name}" 
                                            
                                         FontAttributes="Bold" />
-                                    
+
                                     <Label Grid.Row="1"
                                         Grid.Column="1" 
                                         Text="{Binding Role}"
@@ -288,89 +288,89 @@
                                         FontAttributes="Italic" 
                                         VerticalOptions="Center" />
 
-                                </Grid>                                
-                            </DataTemplate>                            
+                                </Grid>
+                            </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
 
                 </StackLayout>
             </ScrollView>
 
-                <Button Grid.Row="1" Grid.Column="0"
+            <Button Grid.Row="1" Grid.Column="0"
                         Command="{Binding HomeCommand}"
                         BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-home"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf30c;"
+                <Button.ImageSource>
+                    <!--<ion-icon name="ion-md-home"></ion-icon>-->
+                    <FontImageSource Glyph="&#xf30c;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="44" 
                          Color="Black"/>
-                    </Button.ImageSource>
-                </Button>
+                </Button.ImageSource>
+            </Button>
 
-                <Button Grid.Row="1" Grid.Column="1"
+            <Button Grid.Row="1" Grid.Column="1"
                         Command="{Binding RecommendationsCommand}"
                         BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-compass"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf2d4;"
+                <Button.ImageSource>
+                    <!--<ion-icon name="ion-md-compass"></ion-icon>-->
+                    <FontImageSource Glyph="&#xf2d4;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="44" 
                          Color="Black"/>
-                    </Button.ImageSource>
-                </Button>
+                </Button.ImageSource>
+            </Button>
 
-                <Button Grid.Row="1" Grid.Column="2"
+            <Button Grid.Row="1" Grid.Column="2"
                         Command="{Binding ReviewsCommand}"
                         IsVisible="true"
                         BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-paper"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf33f;"
+                <Button.ImageSource>
+                    <!--<ion-icon name="ion-md-paper"></ion-icon>-->
+                    <FontImageSource Glyph="&#xf33f;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="44" 
                          Color="Black"/>
-                    </Button.ImageSource>
-                </Button>
+                </Button.ImageSource>
+            </Button>
 
-                <Button Grid.Row="1" Grid.Column="3"
+            <Button Grid.Row="1" Grid.Column="3"
                         Command="{Binding ToggleWatchlistCommand}"
                         IsVisible="true"
                         BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-bookmark"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf29f;"
+                <Button.ImageSource>
+                    <!--<ion-icon name="ion-md-bookmark"></ion-icon>-->
+                    <FontImageSource Glyph="&#xf29f;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="44" 
-                         Color="{Binding MovieStates, Converter={StaticResource Key=movieOnWathlistAccountMovieStatesToColor}, Mode=OneWay}"/>
-                    </Button.ImageSource>
-                </Button>
+                         Color="{Binding OnWatchlist, Converter={StaticResource Key=movieOnWathlistNullableBoolToColor}, Mode=OneWay}"/>
+                </Button.ImageSource>
+            </Button>
 
-                <Button Grid.Row="1" Grid.Column="4"
+            <Button Grid.Row="1" Grid.Column="4"
                         Command="{Binding AddToListCommand}"                        
                         BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <!--<ion-icon name="ion-md-add-circle-outline"></ion-icon>-->
-                        <FontImageSource Glyph="&#xf158;"
+                <Button.ImageSource>
+                    <!--<ion-icon name="ion-md-add-circle-outline"></ion-icon>-->
+                    <FontImageSource Glyph="&#xf158;"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="44" 
                          Color="{Binding MovieIsAlreadyOnActiveList, Converter={StaticResource Key=movieOnListBoolToColor}, Mode=OneWay}"/>
-                    </Button.ImageSource>
-                </Button>
+                </Button.ImageSource>
+            </Button>
 
-                <Button Grid.Row="1" Grid.Column="5"
+            <Button Grid.Row="1" Grid.Column="5"
                         Command="{Binding ToggleFavoriteCommand}"
                         IsVisible="True"
                         BackgroundColor="Transparent">
-                    <Button.ImageSource>
-                        <FontImageSource Glyph="{Binding MovieStates, Converter={StaticResource Key=movieOnFavoriteListAccountMovieStatesToGlyph}, Mode=OneWay}"
+                <Button.ImageSource>
+                    <FontImageSource Glyph="{Binding IsFavorite, Converter={StaticResource Key=movieOnFavoriteListNullableBoolToGlyph}, Mode=OneWay}"
                          FontFamily="{OnPlatform iOS=Ionicons, Android=ionicons.ttf#}"
                          Size="44" 
-                         Color="{Binding MovieStates, Converter={StaticResource Key=movieOnFavoriteListAccountMovieStatesToColor}, Mode=OneWay}"/>
-                    </Button.ImageSource>
-                </Button>
-            
+                         Color="{Binding IsFavorite, Converter={StaticResource Key=movieOnFavoriteListNullableBoolToColor}, Mode=OneWay}"/>
+                </Button.ImageSource>
+            </Button>
+
         </Grid>
     </ContentPage.Content>
-    
+
 </ContentPage>

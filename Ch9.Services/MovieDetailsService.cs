@@ -75,5 +75,21 @@ namespace Ch9.Services
             else 
                 throw new Exception($"Could not load the credits list, service responded with: {response.HttpStatusCode}");
         }
+
+        /// <summary>
+        /// Unclean function.Returns value and modifies state
+        /// reason API server aggergates two unrelated functions into a single fast call
+        /// </summary>        
+        public async Task<AccountMovieStatesDto> PopulateMovieWithDetailsAndFetchStates(MovieDetailModel movieToPopulate, int retryCount, int delayMilliseconds)
+        {
+            var response = await _tmdbApiService.TryGetMovieDetailsWithAccountStates(movieToPopulate, movieToPopulate.Id, _settings.SearchLanguage, retryCount: retryCount, delayMilliseconds: delayMilliseconds);
+            if (response.HttpStatusCode.Is200Code())
+            {
+                var result = response.AccountMovieStates;
+                return new AccountMovieStatesDto(result);
+            }
+            else 
+                throw new Exception($"Could not populate movie details and movie states object, service responded {response.HttpStatusCode}");                
+        }
     }
 }

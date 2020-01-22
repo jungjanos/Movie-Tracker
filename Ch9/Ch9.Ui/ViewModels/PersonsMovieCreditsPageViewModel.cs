@@ -1,7 +1,6 @@
 ﻿using Ch9.Services;
 using Ch9.Models;
 using Ch9.Services.Contracts;
-using Ch9.Infrastructure.Extensions;
 
 using System;
 using System.Collections.ObjectModel;
@@ -14,13 +13,9 @@ namespace Ch9.ViewModels
 {
     public class PersonsMovieCreditsPageViewModel : ViewModelBase
     {
-        private readonly ISettings _settings;        
-        private readonly ITmdbApiService _tmdbApiService;
-        private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
+        private readonly IActorDetailService _actorDetailService;
         private readonly IWeblinkComposer _weblinkComposer;
-        private readonly Task _fetchGalleryImages;
-        private readonly Task _fetchPersonsMovieCredits;
 
         public PersonsDetailsModel PersonsDetails { get; private set; }
         private PersonsMovieCreditsModel _personsMovieCreditsModel;
@@ -59,17 +54,13 @@ namespace Ch9.ViewModels
 
         public PersonsMovieCreditsPageViewModel(
             PersonsDetailsModel personDetails,
-            ISettings settings,            
-            ITmdbApiService tmdbApiService,
-            IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPersonDetailModelConfigurator personDetailModelConfigurator,
+            IActorDetailService actorDetailService,
             IWeblinkComposer weblinkComposer,
             IPageService pageService) : base(pageService)
         {
-            _settings = settings;            
-            _tmdbApiService = tmdbApiService;
-            _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _personDetailModelConfigurator = personDetailModelConfigurator;
+            _actorDetailService = actorDetailService;
             _weblinkComposer = weblinkComposer;
 
             PersonsDetails = personDetails;
@@ -88,59 +79,35 @@ namespace Ch9.ViewModels
 
                 if (!string.IsNullOrEmpty(weblink))
                     await _pageService.OpenWeblink(weblink);
-            });
+            });            
 
-            _fetchGalleryImages = UpdateImageCollection();
-            _fetchPersonsMovieCredits = _fetchGalleryImages.ContinueWith(async t => await FetchPersonsMovieCredits(), cancellationToken: System.Threading.CancellationToken.None, TaskContinuationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+            ConfigureInitialization(async () =>  { await LoadImageCollection().ContinueWith(async t => await LoadPersonsMovieCredits()); }, runOnlyOnce: true);
         }
 
-        private async Task UpdateImageCollection()
+        private async Task LoadImageCollection()
         {
             IsBusy = true;
             try
             {
-                var response = await _tmdbApiService.TryGetPersonImages(PersonsDetails.Id, retryCount: 1, delayMilliseconds: 1000, fromCache: true);
+                var gallery = await _actorDetailService.LoadPersonsImageCollection(PersonsDetails.Id, retryCount: 1, delayMilliseconds: 1000, fromCahe: true);
 
-                if (response.HttpStatusCode.IsSuccessCode())
-                {
-                    ImageModel[] imagesFetched = response.Images;
-                    _personDetailModelConfigurator.SetProfileGalleryImageSources(imagesFetched);
-
-                    var first = DisplayImages.FirstOrDefault();
-
-                    foreach (var image in imagesFetched)
-                        if (image.FilePath != first?.FilePath)
-                            DisplayImages.Add(image);
-                }
+                // first image might have a duplacate in the gallery, we should not include it a second time
+                foreach (var image in gallery.Where(img => img.FilePath != DisplayImages.FirstOrDefault()?.FilePath))
+                    DisplayImages.Add(image);
             }
             catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not load gallery, service responded with: {ex.Message}", "Ok"); }
             finally { IsBusy = false; }
         }
 
-        private async Task FetchPersonsMovieCredits()
+        private async Task LoadPersonsMovieCredits()
         {
             IsBusy = true;
             try
             {
-                var response = await _tmdbApiService.TryGetPersonsMovieCredits(PersonsDetails.Id, _settings.SearchLanguage, 1, 1000, fromCache: true);
-                if (response.HttpStatusCode.IsSuccessCode())
-                {
-                    var personsMovieCredits = response.PersonsMovieCreditsModel;
-
-                    await Task.Run(() =>
-                    {
-                        _movieDetailModelConfigurator.SetImageSrc(personsMovieCredits.MoviesAsActor);
-                        _movieDetailModelConfigurator.SetImageSrc(personsMovieCredits.MoviesAsCrewMember);
-                        _movieDetailModelConfigurator.SetGenreNamesFromGenreIds(personsMovieCredits.MoviesAsActor);
-                        _movieDetailModelConfigurator.SetGenreNamesFromGenreIds(personsMovieCredits.MoviesAsCrewMember);
-                        personsMovieCredits.SortMoviesByYearDesc();
-                    });
-                    PersonsMovieCreditsModel = personsMovieCredits;
-                }
-                else
-                    await _pageService.DisplayAlert("Error", $"Could not fetch persons movie participations, service responded: FetchPersonsMovieCreditsDetails():{response.HttpStatusCode}", "Ok");
+                var response = await _actorDetailService.LoadPersonsMovieCredits(PersonsDetails.Id, retryCount: 1, delayMilliseconds: 1000, fromCahe: true);
+                PersonsMovieCreditsModel = response;
             }
-            catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not fetch persons movie participations, exception at: FetchPersonsMovieCreditsDetails():{ex.Message}", "Ok"); }
+            catch (Exception ex) { await _pageService.DisplayAlert("Error", ex.Message, "Ok"); }
             finally { IsBusy = false; }
         }
     }

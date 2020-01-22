@@ -26,9 +26,15 @@ namespace Ch9.Views
                         new TypedParameter(typeof(PersonsDetailsModel), personDetails),
                         new TypedParameter(typeof(IPageService), new PageService(this))
                     );
-            }           
+            }
 
             InitializeComponent();
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await ViewModel.Initialize();
         }
 
     }

@@ -91,5 +91,15 @@ namespace Ch9.Services
             else 
                 throw new Exception($"Could not populate movie details and movie states object, service responded {response.HttpStatusCode}");                
         }
+
+        public async Task<PersonsDetailsModel> FetchPersonsDetails(int personId, int retryCount, int delayMilliseconds)
+        {
+            var response = await _tmdbApiService.TryGetPersonsDetails(personId, _settings.SearchLanguage, retryCount: retryCount, delayMilliseconds: delayMilliseconds, fromCache: true);
+
+            if (response.HttpStatusCode.IsSuccessCode())
+                return response.PersonsDetailsModel;
+
+                else throw new Exception($"Could not fetch persons details, service responded: {response.HttpStatusCode}");
+        }
     }
 }

@@ -2,7 +2,6 @@
 using Ch9.Services;
 using Ch9.Services.Contracts;
 using Ch9.Services.VideoService;
-using Ch9.Infrastructure.Extensions;
 
 using System;
 using System.Collections.Generic;
@@ -17,8 +16,7 @@ namespace Ch9.ViewModels
     public class MovieDetailPageViewModel : ViewModelBase
     {
         public MovieDetailModel Movie { get; private set; }
-        private readonly ISettings _settings;
-        private readonly ITmdbApiService _tmdbApiService;
+        private readonly ISettings _settings;        
         private readonly UsersMovieListsService2 _movieListsService2;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
@@ -51,13 +49,6 @@ namespace Ch9.ViewModels
         }
 
         public bool? MovieIsAlreadyOnActiveList => _movieListsService2.CustomListsService.CheckIfMovieIsOnActiveList(Movie.Id);
-
-        private AccountMovieStates _movieStates;
-        public AccountMovieStates MovieStates
-        {
-            get => _movieStates;
-            set => SetProperty(ref _movieStates, value);
-        }
 
         private bool? _isFavorite = null;
         public bool? IsFavorite
@@ -120,8 +111,7 @@ namespace Ch9.ViewModels
 
         public MovieDetailPageViewModel(
             MovieDetailModel movie,
-            ISettings settings,
-            ITmdbApiService tmdbApiService,
+            ISettings settings,            
             UsersMovieListsService2 movieListsService2,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPersonDetailModelConfigurator personDetailModelConfigurator,
@@ -131,8 +121,7 @@ namespace Ch9.ViewModels
             IPageService pageService) : base(pageService)
         {
             Movie = movie;
-            _settings = settings;
-            _tmdbApiService = tmdbApiService;
+            _settings = settings;            
             _movieListsService2 = movieListsService2;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _personDetailModelConfigurator = personDetailModelConfigurator;
@@ -339,22 +328,14 @@ namespace Ch9.ViewModels
             }
         }
 
-
         private async Task OpenPersonPage(IStaffMemberRole staffMemberRole)
         {
             try
             {
-                var response = await _tmdbApiService.TryGetPersonsDetails(staffMemberRole.Id, _settings.SearchLanguage, 0, 1000, fromCache: true);
-
-                if (response.HttpStatusCode.IsSuccessCode())
-                {
-                    var personDetails = response.PersonsDetailsModel;
-                    await _pageService.PushPersonsMovieCreditsPageAsync(personDetails);
-                }
-                else
-                    await _pageService.DisplayAlert("Error", $"Could not fetch persons details, service responded: GetPersonDetails():{response.HttpStatusCode}", "Ok");
+                var response = await _movieDetailsService.FetchPersonsDetails(staffMemberRole.Id, retryCount: 1, delayMilliseconds: 1000);
+                await _pageService.PushPersonsMovieCreditsPageAsync(response);
             }
-            catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Could not fetch persons details, service responded with: {ex.Message}", "Ok"); }
+            catch (Exception ex) { await _pageService.DisplayAlert("Error", ex.Message, "Ok"); }
         }
     }
 }

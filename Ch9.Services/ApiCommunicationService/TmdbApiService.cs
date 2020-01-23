@@ -16,12 +16,6 @@ namespace Ch9.Services.ApiCommunicationService
         private readonly ITmdbCachedSearchClient _cachedSearchClient;
         private readonly ISettings _settings;
 
-        //public string SessionId
-        //{
-        //    get => _cachedSearchClient.sessionId;
-        //    set => _cachedSearchClient.sessionId = value;
-        //}
-
         public TmdbApiService(ITmdbCachedSearchClient cachedSearchClient, ISettings settings)
         {
             _cachedSearchClient = cachedSearchClient;

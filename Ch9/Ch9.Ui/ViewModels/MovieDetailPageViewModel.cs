@@ -1,7 +1,7 @@
-﻿using Ch9.Services;
-using Ch9.Services.VideoService;
-using Ch9.Models;
+﻿using Ch9.Models;
+using Ch9.Services;
 using Ch9.Services.Contracts;
+using Ch9.Services.VideoService;
 using Ch9.Infrastructure.Extensions;
 
 using System;

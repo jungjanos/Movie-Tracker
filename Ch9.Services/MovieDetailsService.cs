@@ -1,11 +1,11 @@
-﻿using Ch9.Infrastructure.Extensions;
-using Ch9.Models;
+﻿using Ch9.Models;
 using Ch9.Services.Contracts;
 using Ch9.Services.VideoService;
+using Ch9.Infrastructure.Extensions;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Ch9.Services

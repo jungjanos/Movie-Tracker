@@ -92,7 +92,7 @@ namespace Ch9.Services
                     await UpdateSingleCustomList(SelectedCustomList.Id, retryCount, delayMilliseconds, fromCache);
             }
             catch (Exception ex)
-            { throw new Exception($"{nameof(TryEnsureInitialization)} failed with exception {ex.Message}", ex); }
+            { throw new Exception($"CustomListService: {nameof(TryEnsureInitialization)} failed with exception {ex.Message}", ex); }
         }
 
         private void ClearLists()

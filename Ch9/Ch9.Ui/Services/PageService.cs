@@ -55,8 +55,14 @@ namespace Ch9.Services
 
         public async Task PopToRootAsync() => await _currentPage.Navigation.PopToRootAsync();
 
+        /// <summary>
+        /// Tries to open a non-null or empty Url
+        /// </summary>        
         public async Task OpenWeblink(string url)
         {
+            if (string.IsNullOrEmpty(url))
+                return;
+
             try
             {
                 await Browser.OpenAsync(url, BrowserLaunchMode.SystemPreferred);

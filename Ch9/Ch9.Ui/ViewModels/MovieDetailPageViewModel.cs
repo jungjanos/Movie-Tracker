@@ -15,8 +15,7 @@ namespace Ch9.ViewModels
 {
     public class MovieDetailPageViewModel : ViewModelBase
     {
-        public MovieDetailModel Movie { get; private set; }
-        private readonly ISettings _settings;        
+        public MovieDetailModel Movie { get; private set; }        
         private readonly UsersMovieListsService2 _movieListsService2;
         private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
         private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
@@ -70,8 +69,7 @@ namespace Ch9.ViewModels
             get => _rating;
             set => SetProperty(ref _rating, value);
         }
-
-
+        
         private bool _displayImageTypeSelector;
         /// <summary>
         /// tracks the type of images displayed on the View. 
@@ -110,8 +108,7 @@ namespace Ch9.ViewModels
         public ICommand OpenInfolinkCommand { get; private set; }
 
         public MovieDetailPageViewModel(
-            MovieDetailModel movie,
-            ISettings settings,            
+            MovieDetailModel movie,            
             UsersMovieListsService2 movieListsService2,
             IMovieDetailModelConfigurator movieDetailModelConfigurator,
             IPersonDetailModelConfigurator personDetailModelConfigurator,
@@ -120,8 +117,7 @@ namespace Ch9.ViewModels
             IWeblinkComposer weblinkComposer,
             IPageService pageService) : base(pageService)
         {
-            Movie = movie;
-            _settings = settings;            
+            Movie = movie;            
             _movieListsService2 = movieListsService2;
             _movieDetailModelConfigurator = movieDetailModelConfigurator;
             _personDetailModelConfigurator = personDetailModelConfigurator;
@@ -136,93 +132,30 @@ namespace Ch9.ViewModels
             ToggleWatchlistCommand = new Command(async () => await OnToggleWatchlistCommand());
             AddToListCommand = new Command(async () => await OnAddToListCommand());
             ToggleFavoriteCommand = new Command(async () => await OnToggleFavoriteCommand());
-            TapImageCommand = new Command(async () =>
-            {
-                var capture = SelectedGalleryImage;
-
-                if (capture == null)
-                    return;
-
-                if (!capture.HasAttachedVideo)
-                    await _pageService.PushLargeImagePageAsync(this);
-                else
-                {
-                    if (WaitingOnVideo)
-                        return;
-                    else
-                        WaitingOnVideo = true;
-
-                    await _videoService.PlayVideo(capture.AttachedVideo);
-
-                    WaitingOnVideo = false;
-                }
-            });
-            ChangeDisplayedImageTypeCommand = new Command(async () =>
-            {
-                GalleryIsBusy = true;
-                ((Command)ChangeDisplayedImageTypeCommand).ChangeCanExecute();
-                if (DisplayImageTypeSelector == false)
-                {
-                    await _fetchGallery;
-                    await UpdateThumbnailCollection();
-
-                    DisplayImages = null;
-                    DisplayImages = Movie.VideoThumbnails;
-                }
-                else
-                {
-                    DisplayImages = null;
-                    DisplayImages = Movie.MovieImages;
-                }
-                DisplayImageTypeSelector = !DisplayImageTypeSelector;
-                SelectedGalleryImage = DisplayImages.FirstOrDefault();
-                GalleryIsBusy = false;
-                ((Command)ChangeDisplayedImageTypeCommand).ChangeCanExecute();
-
-            }, () => !GalleryIsBusy);
-            ToggleCreditsCommand = new Command(async () =>
-            {
-                if (!ShowCredits)
-                    await LoadCredits();
-                ShowCredits = !_showCredits;
-            });
-            MovieCastPersonTappedCommand = new Command<IStaffMemberRole>(async staffMemberRole =>
-            {
-                await OpenPersonPage(staffMemberRole);
-            });
-            OpenInfolinkCommand = new Command(async () =>
-            {
-                string weblink = _weblinkComposer.Compose(Movie);
-
-                if (!string.IsNullOrEmpty(weblink))
-                    await _pageService.OpenWeblink(weblink);
-            });
+            TapImageCommand = new Command(async () => await OnTapImageCommand());
+            ChangeDisplayedImageTypeCommand = new Command(async () => await OnChangeDisplayedImageTypeCommand(), () => !GalleryIsBusy);
+            ToggleCreditsCommand = new Command(async () => {await LoadCredits(); ShowCredits = !_showCredits;});
+            MovieCastPersonTappedCommand = new Command<IStaffMemberRole>(async staffMemberRole => {await OpenPersonPage(staffMemberRole);});
+            OpenInfolinkCommand = new Command(async () => {string weblink = _weblinkComposer.Compose(Movie); await _pageService.OpenWeblink(weblink);});
 
             DisplayImages = Movie.MovieImages;
 
             // Ensures that the custom list service is initialized (to show the Movie's status on the active custom list)
-            // Ensures that account movie states have been fetched
+            // Ensures that accounts movie states info has been fetched
             Func<Task> initializationAction = async () =>
-            {
-                var t = _movieListsService2.CustomListsService.TryEnsureInitialization();               
-                
+            {   
                 try
                 {
                     var response = await _movieDetailsService.PopulateMovieWithDetailsAndFetchStates(Movie, retryCount: 1, delayMilliseconds: 1000);
                     OnWatchlist = response.OnWatchlist;
                     IsFavorite = response.IsFavorite;
-                    UsersRating = response.Rating;                        
-                }
-                catch (Exception ex)
-                { await _pageService.DisplayAlert("Error", ex.Message, "Ok"); }
-
-                try
-                {
-                    await t;
+                    UsersRating = response.Rating;
+                    
+                    await _movieListsService2.CustomListsService.TryEnsureInitialization();
                     OnPropertyChanged(nameof(MovieIsAlreadyOnActiveList));
                 }
                 catch (Exception ex)
-                { await _pageService.DisplayAlert("Error", $" Exception thrown from {nameof(_movieListsService2.CustomListsService)}.{nameof(_movieListsService2.CustomListsService.TryEnsureInitialization)}, message: {ex.Message}", "Ok"); }
+                { await _pageService.DisplayAlert("Error", ex.Message, "Ok"); }
             };
 
             ConfigureInitialization(initializationAction, runOnlyOnce: true);
@@ -267,16 +200,8 @@ namespace Ch9.ViewModels
 
         public async Task OnAddToListCommand()
         {
-            if (!_settings.IsLoggedin)
-            {
-                await _pageService.DisplayAlert("Info", "You have to log in with a user account to use this function", "Ok");
-                return;
-            }
-
             try
             {
-                await _movieListsService2.CustomListsService.TryEnsureInitialization();
-
                 if (MovieIsAlreadyOnActiveList == null)
                 {
                     await _pageService.DisplayAlert("Info", "You have to select a valid public list to be able to add movies to it", "Cancel");
@@ -299,7 +224,7 @@ namespace Ch9.ViewModels
             catch (Exception ex) { await _pageService.DisplayAlert("Error", $"Service responded with: {ex.Message}", "Ok"); }
         }
 
-        public async Task OnToggleFavoriteCommand()
+        private async Task OnToggleFavoriteCommand()
         {
             if (IsFavorite == null)
                 return;
@@ -313,6 +238,59 @@ namespace Ch9.ViewModels
             }
             catch (Exception ex)
             { await _pageService.DisplayAlert("Error", ex.Message, "Ok"); }
+        }
+
+        /// <summary>
+        /// Called when user taps on an a gallery image. If it is a video thumbnail, the associated stream is opened in the mediaplayer.
+        /// If its a non-video thumbnail image, it gets opened in large
+        /// </summary>        
+        private async Task OnTapImageCommand()
+        {
+            var capture = SelectedGalleryImage;
+
+            if (capture == null)
+                return;
+
+            if (!capture.HasAttachedVideo)
+                await _pageService.PushLargeImagePageAsync(this);
+            else
+            {
+                if (WaitingOnVideo)
+                    return;
+                else
+                    WaitingOnVideo = true;
+
+                await _videoService.PlayVideo(capture.AttachedVideo);
+
+                WaitingOnVideo = false;
+            }
+        }
+
+        /// <summary>
+        /// Lets the user toggle between non-video thumbnail (those can be displayed in large) 
+        /// and video thumbnail imagese (thos contain playable video streams) displayed in the gallery.
+        /// </summary>
+        private async Task OnChangeDisplayedImageTypeCommand()
+        {
+            GalleryIsBusy = true;
+            ((Command)ChangeDisplayedImageTypeCommand).ChangeCanExecute();
+            if (DisplayImageTypeSelector == false)
+            {
+                await _fetchGallery;
+                await UpdateThumbnailCollection();
+
+                DisplayImages = null;
+                DisplayImages = Movie.VideoThumbnails;
+            }
+            else
+            {
+                DisplayImages = null;
+                DisplayImages = Movie.MovieImages;
+            }
+            DisplayImageTypeSelector = !DisplayImageTypeSelector;
+            SelectedGalleryImage = DisplayImages.FirstOrDefault();
+            GalleryIsBusy = false;
+            ((Command)ChangeDisplayedImageTypeCommand).ChangeCanExecute();
         }
 
         private async Task LoadCredits(int retryCount = 0, int delayMilliseconds = 1000)

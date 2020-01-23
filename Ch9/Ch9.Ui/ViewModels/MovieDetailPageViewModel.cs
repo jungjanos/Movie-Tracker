@@ -172,7 +172,7 @@ namespace Ch9.ViewModels
             finally { GalleryIsBusy = false; }
         }
 
-        public async Task UpdateThumbnailCollection()
+        private async Task UpdateThumbnailCollection()
         {
             try
             {
@@ -182,7 +182,7 @@ namespace Ch9.ViewModels
             { await _pageService.DisplayAlert("Error", $"Could not load video thumbnails, service responded with: {ex.Message}", "Ok"); }
         }
 
-        public async Task OnToggleWatchlistCommand()
+        private async Task OnToggleWatchlistCommand()
         {
             if (OnWatchlist == null)
                 return;
@@ -198,7 +198,7 @@ namespace Ch9.ViewModels
             { await _pageService.DisplayAlert("Error", ex.Message, "Ok"); }
         }
 
-        public async Task OnAddToListCommand()
+        private async Task OnAddToListCommand()
         {
             try
             {

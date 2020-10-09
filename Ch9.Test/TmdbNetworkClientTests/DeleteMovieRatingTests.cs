@@ -1,10 +1,10 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
-using Ch9.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
+using Ch9.Services.LocalSettings;
+using Ch9.Data.ApiClient;
+using Ch9.Data.Contracts;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -26,13 +26,13 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settingsKeyValues = new Dictionary<string, object>();
             _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";
             _settingsKeyValues[nameof(Settings.SessionId)] = "563636d0e4a0b41b775ba7703cc5c985f36cffaf"; // !!!! correct it !!!!!
-            _settings = new Settings(_settingsKeyValues);
-            _client = new TmdbNetworkClient(_settings, null);
+            _settings = new Settings(_settingsKeyValues, null);
+            _client = new TmdbNetworkClient(null, _settings.ApiKey);
         }
 
         public async Task InitializeAsync()
         {
-            await _client.RateMovie(Rating.Ten, _movie);
+            await _client.RateMovie(_settings.SessionId, 10m, _movie);
             await Task.Delay(500);
         }
 
@@ -42,7 +42,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // happy path
         public async Task WhenCalledOnRatedMovie_DeletesRating()
         {
-            DeleteMovieRatingResult response = await _client.DeleteMovieRating(mediaId: _movie, guestSessionId: null, retryCount: 0);
+            DeleteMovieRatingResult response = await _client.DeleteMovieRating(_settings.SessionId, mediaId: _movie, guestSessionId: null, retryCount: 0);
 
             _output.WriteLine($"TMDB server's response code {response.HttpStatusCode}");
             _output.WriteLine($"TMDB server's response {response.Json}");
@@ -53,8 +53,8 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // happy path
         public async Task WhenCalledOnUnratedMovie_Returns200()
         {
-            await _client.DeleteMovieRating(mediaId: _movie, guestSessionId: null, retryCount: 0);
-            DeleteMovieRatingResult response = await _client.DeleteMovieRating(mediaId: _movie, guestSessionId: null, retryCount: 0);
+            await _client.DeleteMovieRating(_settings.SessionId, mediaId: _movie, guestSessionId: null, retryCount: 0);
+            DeleteMovieRatingResult response = await _client.DeleteMovieRating(_settings.SessionId, mediaId: _movie, guestSessionId: null, retryCount: 0);
 
             _output.WriteLine($"TMDB server's response code {response.HttpStatusCode}");
             _output.WriteLine($"TMDB server's response {response.Json}");
@@ -65,7 +65,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // failure path
         public async Task WhenCalledWithInvalidMovieId_Returns404()
         {
-            DeleteMovieRatingResult response = await _client.DeleteMovieRating(mediaId: _invalidMovie, guestSessionId: null, retryCount: 0);
+            DeleteMovieRatingResult response = await _client.DeleteMovieRating(_settings.SessionId, mediaId: _invalidMovie, guestSessionId: null, retryCount: 0);
 
             _output.WriteLine($"TMDB server's response code {response.HttpStatusCode}");
             Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.NotFound);
@@ -76,7 +76,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenCalledWithInvalidSessionId_Returns401()
         {
             _settings.SessionId = "invalidSessionId";
-            DeleteMovieRatingResult response = await _client.DeleteMovieRating(mediaId: _movie, guestSessionId: null, retryCount: 0);
+            DeleteMovieRatingResult response = await _client.DeleteMovieRating(_settings.SessionId, mediaId: _movie, guestSessionId: null, retryCount: 0);
 
             _output.WriteLine($"TMDB server's response code {response.HttpStatusCode}");
             Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.Unauthorized);

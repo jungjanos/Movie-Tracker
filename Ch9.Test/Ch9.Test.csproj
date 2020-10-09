@@ -21,7 +21,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Ch9.Data.ApiClient\Ch9.Data.ApiClient.csproj" />
     <ProjectReference Include="..\Ch9.Models\Ch9.Models.csproj" />
+    <ProjectReference Include="..\Ch9.Services.YtExplodeVideoService\Ch9.Services.YtExplodeVideoService.csproj" />
+    <ProjectReference Include="..\Ch9.Services\Ch9.Services.csproj" />
+    <ProjectReference Include="..\Ch9\Ch9.Ui\Ch9.Ui.csproj" />
   </ItemGroup>
 
 </Project>

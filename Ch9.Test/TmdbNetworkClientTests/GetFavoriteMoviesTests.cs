@@ -1,13 +1,14 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
-using Ch9.Models;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
+using Ch9.Models;
+using Ch9.Services.LocalSettings;
+using Ch9.Data.ApiClient;
+using Ch9.Data.Contracts;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -29,18 +30,18 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settingsKeyValues = new Dictionary<string, object>();
             _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";
             _settingsKeyValues[nameof(Settings.SessionId)] = "563636d0e4a0b41b775ba7703cc5c985f36cffaf"; // !!!! correct it !!!!!
-            _settings = new Settings(_settingsKeyValues);
-            _client = new TmdbNetworkClient(_settings, null);
+            _settings = new Settings(_settingsKeyValues, null);
+            _client = new TmdbNetworkClient(null, _settings.ApiKey); 
         }
 
         // empty the favorite list if not yet empty
         public async Task InitializeAsync()
         {
-            GetFavoriteMoviesResult getFavoriteList = await _client.GetFavoriteMovies();
+            GetFavoriteMoviesResult getFavoriteList = await _client.GetFavoriteMovies(_settings.SessionId);
             SearchResult moviesOnFavoriteList = JsonConvert.DeserializeObject<SearchResult>(getFavoriteList.Json);
 
             foreach (var movie in moviesOnFavoriteList.MovieDetailModels)
-                await _client.UpdateFavoriteList("movie", false, movie.Id);
+                await _client.UpdateFavoriteList(_settings.SessionId, "movie", false, movie.Id);
         }
         public Task DisposeAsync() => Task.CompletedTask;
 
@@ -48,7 +49,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // happy path
         public async Task WhenCalledOnEmptyList_ReturnsEmptyCollection()
         {
-            GetFavoriteMoviesResult result = await _client.GetFavoriteMovies(accountId: null, language: null, sortBy: null, page: null, retryCount: 0);
+            GetFavoriteMoviesResult result = await _client.GetFavoriteMovies(_settings.SessionId, accountId: null, language: null, sortBy: null, page: null, retryCount: 0);
             _output.WriteLine($"Server returned {result.HttpStatusCode}");
             _output.WriteLine($"Json: {result.Json}");
 
@@ -62,10 +63,10 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // happy path
         public async Task WhenCalledOnNonemptyList_GivesBackList()
         {
-            await _client.UpdateFavoriteList("movie", true, _movie1);
-            await _client.UpdateFavoriteList("movie", true, _movie2);
+            await _client.UpdateFavoriteList(_settings.SessionId, "movie", true, _movie1);
+            await _client.UpdateFavoriteList(_settings.SessionId, "movie", true, _movie2);
 
-            GetFavoriteMoviesResult result = await _client.GetFavoriteMovies(accountId: null, language: null, sortBy: null, page: null, retryCount: 0);
+            GetFavoriteMoviesResult result = await _client.GetFavoriteMovies(_settings.SessionId, accountId: null, language: null, sortBy: null, page: null, retryCount: 0);
             _output.WriteLine($"Server returned {result.HttpStatusCode}");
             _output.WriteLine($"Json: {result.Json}");
 
@@ -81,15 +82,15 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // happy path
         public async Task WhenCalledWithSortOption_RespectsSortRequest()
         {
-            await _client.UpdateFavoriteList("movie", true, _movie1);
-            await _client.UpdateFavoriteList("movie", true, _movie2);
+            await _client.UpdateFavoriteList(_settings.SessionId, "movie", true, _movie1);
+            await _client.UpdateFavoriteList(_settings.SessionId, "movie", true, _movie2);
 
 
-            GetFavoriteMoviesResult resultAsc = await _client.GetFavoriteMovies(accountId: null, language: null, sortBy: "created_at.asc", page: null, retryCount: 0);
+            GetFavoriteMoviesResult resultAsc = await _client.GetFavoriteMovies(_settings.SessionId, accountId: null, language: null, sortBy: "created_at.asc", page: null, retryCount: 0);
             var favoriteListAsc = JsonConvert.DeserializeObject<SearchResult>(resultAsc.Json);
             var movieIdsAsc = favoriteListAsc.MovieDetailModels.Select(movie => movie.Id);
 
-            GetFavoriteMoviesResult resultDesc = await _client.GetFavoriteMovies(accountId: null, language: null, sortBy: "created_at.desc", page: null, retryCount: 0);
+            GetFavoriteMoviesResult resultDesc = await _client.GetFavoriteMovies(_settings.SessionId, accountId: null, language: null, sortBy: "created_at.desc", page: null, retryCount: 0);
             var favoriteListDesc = JsonConvert.DeserializeObject<SearchResult>(resultDesc.Json);
             var movieIdsDesc = favoriteListDesc.MovieDetailModels.Select(movie => movie.Id);
 
@@ -105,7 +106,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         {
             _settings.SessionId = "invalidSessionId";
 
-            GetFavoriteMoviesResult result = await _client.GetFavoriteMovies(accountId: null, language: null, sortBy: null, page: null, retryCount: 0);
+            GetFavoriteMoviesResult result = await _client.GetFavoriteMovies(_settings.SessionId, accountId: null, language: null, sortBy: null, page: null, retryCount: 0);
             _output.WriteLine($"Server returned {result.HttpStatusCode}");
 
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.Unauthorized);

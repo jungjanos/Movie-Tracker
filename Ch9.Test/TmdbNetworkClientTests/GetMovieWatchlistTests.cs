@@ -1,13 +1,14 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
-using Ch9.Models;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
+using Ch9.Models;
+using Ch9.Services.LocalSettings;
+using Ch9.Data.ApiClient;
+using Ch9.Data.Contracts;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -29,18 +30,18 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settingsKeyValues = new Dictionary<string, object>();
             _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";
             _settingsKeyValues[nameof(Settings.SessionId)] = "563636d0e4a0b41b775ba7703cc5c985f36cffaf"; // !!!! correct it !!!!!
-            _settings = new Settings(_settingsKeyValues);
-            _client = new TmdbNetworkClient(_settings, null);
+            _settings = new Settings(_settingsKeyValues, null);
+            _client = new TmdbNetworkClient(null, _settings.ApiKey);
         }
 
         // empty the watchlist if not yet empty
         public async Task InitializeAsync()
         {
-            GetMovieWatchlistResult getWatchlist = await _client.GetMovieWatchlist();
+            GetMovieWatchlistResult getWatchlist = await _client.GetMovieWatchlist(_settings.SessionId);
             SearchResult moviesOnWatchlist = JsonConvert.DeserializeObject<SearchResult>(getWatchlist.Json);
 
             foreach (var movie in moviesOnWatchlist.MovieDetailModels)
-                await _client.UpdateWatchlist("movie", false, movie.Id);
+                await _client.UpdateWatchlist(_settings.SessionId, "movie", false, movie.Id);
         }
 
         public Task DisposeAsync() => Task.CompletedTask;
@@ -50,7 +51,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenCalledOnEmptyList_ReturnsEmptyCollection()
         {
 
-            GetMovieWatchlistResult result = await _client.GetMovieWatchlist(accountId: null, language: null, sortBy: null, page: null, retryCount: 0);
+            GetMovieWatchlistResult result = await _client.GetMovieWatchlist(_settings.SessionId, accountId: null, language: null, sortBy: null, page: null, retryCount: 0);
             _output.WriteLine($"Server returned {result.HttpStatusCode}");
             _output.WriteLine($"Json: {result.Json}");
 
@@ -61,15 +62,14 @@ namespace Ch9.Test.TmdbNetworkClientTests
             Assert.True(watchlist.MovieDetailModels.Count == 0);
         }
 
-
         [Fact]
         // happy path
         public async Task WhenCalledOnNonemptyList_GivesBackList()
         {
-            await _client.UpdateWatchlist("movie", true, _movie1);
-            await _client.UpdateWatchlist("movie", true, _movie2);
+            await _client.UpdateWatchlist(_settings.SessionId, "movie", true, _movie1);
+            await _client.UpdateWatchlist(_settings.SessionId, "movie", true, _movie2);
 
-            GetMovieWatchlistResult result = await _client.GetMovieWatchlist(accountId: null, language: null, sortBy: null, page: null, retryCount: 0);
+            GetMovieWatchlistResult result = await _client.GetMovieWatchlist(_settings.SessionId, accountId: null, language: null, sortBy: null, page: null, retryCount: 0);
             _output.WriteLine($"Server returned {result.HttpStatusCode}");
             _output.WriteLine($"Json: {result.Json}");
 
@@ -86,15 +86,15 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // happy path
         public async Task WhenCalledWithSortOption_RespectsSortRequest()
         {
-            await _client.UpdateWatchlist("movie", true, _movie1);
-            await _client.UpdateWatchlist("movie", true, _movie2);
+            await _client.UpdateWatchlist(_settings.SessionId, "movie", true, _movie1);
+            await _client.UpdateWatchlist(_settings.SessionId, "movie", true, _movie2);
 
 
-            GetMovieWatchlistResult resultAsc = await _client.GetMovieWatchlist(accountId: null, language: null, sortBy: "created_at.asc", page: null, retryCount: 0);
+            GetMovieWatchlistResult resultAsc = await _client.GetMovieWatchlist(_settings.SessionId, accountId: null, language: null, sortBy: "created_at.asc", page: null, retryCount: 0);
             var watchlistAsc = JsonConvert.DeserializeObject<SearchResult>(resultAsc.Json);
             var movieIdsAsc = watchlistAsc.MovieDetailModels.Select(movie => movie.Id);
 
-            GetMovieWatchlistResult resultDesc = await _client.GetMovieWatchlist(accountId: null, language: null, sortBy: "created_at.desc", page: null, retryCount: 0);
+            GetMovieWatchlistResult resultDesc = await _client.GetMovieWatchlist(_settings.SessionId, accountId: null, language: null, sortBy: "created_at.desc", page: null, retryCount: 0);
             var watchlistDesc = JsonConvert.DeserializeObject<SearchResult>(resultDesc.Json);
             var movieIdsDesc = watchlistDesc.MovieDetailModels.Select(movie => movie.Id);
 
@@ -110,7 +110,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         {
             _settings.SessionId = "invalidSessionId";
 
-            GetMovieWatchlistResult result = await _client.GetMovieWatchlist(accountId: null, language: null, sortBy: null, page: null, retryCount: 0);
+            GetMovieWatchlistResult result = await _client.GetMovieWatchlist(_settings.SessionId, accountId: null, language: null, sortBy: null, page: null, retryCount: 0);
             _output.WriteLine($"Server returned {result.HttpStatusCode}");
 
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.Unauthorized);

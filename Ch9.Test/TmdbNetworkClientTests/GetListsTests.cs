@@ -1,11 +1,11 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
-using Ch9.Models;
-using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
+using Ch9.Models;
+using Ch9.Services.LocalSettings;
+using Ch9.Data.ApiClient;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -25,8 +25,8 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settingsKeyValues = new Dictionary<string, object>();
             _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";
             _settingsKeyValues[nameof(Settings.SessionId)] = "563636d0e4a0b41b775ba7703cc5c985f36cffaf"; // !!!! correct it !!!!!
-            _settings = new Settings(_settingsKeyValues);
-            _client = new TmdbNetworkClient(_settings, null);
+            _settings = new Settings(_settingsKeyValues, null);
+            _client = new TmdbNetworkClient(null, _settings.ApiKey);
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task AccountIdMissing_ReturnsListForCurrentAccount()
         {
             // Act
-            var result = await _client.GetLists();
+            var result = await _client.GetLists(_settings.SessionId);
             _output.WriteLine($"Server returned {result.HttpStatusCode}, message: {result?.Json ?? "some error..."}");
             GetListsModel lists = JsonConvert.DeserializeObject<GetListsModel>(result?.Json);
 
@@ -49,7 +49,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task CalledWithUsersOwnAccountId_ReturnsListForCurrentAccount()
         {
             // Act
-            var result = await _client.GetLists(8341984);
+            var result = await _client.GetLists(_settings.SessionId, 8341984);
             _output.WriteLine($"Server returned {result.HttpStatusCode}, message: {result?.Json ?? "some error..."}");
             GetListsModel lists = JsonConvert.DeserializeObject<GetListsModel>(result?.Json);
 
@@ -68,7 +68,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             int invalidId = 6666666;
 
             // Act
-            var result = await _client.GetLists(invalidId);
+            var result = await _client.GetLists(_settings.SessionId, invalidId);
             _output.WriteLine($"Server returned {result.HttpStatusCode}, message: {result?.Json ?? "some error..."}");
             GetListsModel lists = JsonConvert.DeserializeObject<GetListsModel>(result?.Json);
 
@@ -86,7 +86,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task CalledWithLanguageOption_DoesNotBreak(string language)
         {
             // Act
-            var result = await _client.GetLists(language: language);
+            var result = await _client.GetLists(_settings.SessionId, language: language);
             _output.WriteLine($"Server returned {result.HttpStatusCode}, message: {result?.Json ?? "some error..."}");
             GetListsModel lists = JsonConvert.DeserializeObject<GetListsModel>(result?.Json);
 
@@ -106,7 +106,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task CalledWithPageOptions_DoesNotBreakWhenPageDoesNotexist(int? page)
         {
             // Act
-            var result = await _client.GetLists(page: page);
+            var result = await _client.GetLists(_settings.SessionId, page: page);
             _output.WriteLine($"Server returned {result.HttpStatusCode}, message: {result?.Json ?? "some error..."}");
             GetListsModel lists = JsonConvert.DeserializeObject<GetListsModel>(result?.Json);
 
@@ -125,7 +125,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settings.SessionId = invalidSessionId;
 
             // Act
-            var result = await _client.GetLists();
+            var result = await _client.GetLists(_settings.SessionId);
             _output.WriteLine($"Server returned {result.HttpStatusCode}, message: {result?.Json ?? "some error..."}");
 
             // Assert

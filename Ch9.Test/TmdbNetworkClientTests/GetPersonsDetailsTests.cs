@@ -1,11 +1,12 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
-using Ch9.Models;
-using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
+using Ch9.Models;
+using Ch9.Services.LocalSettings;
+using Ch9.Data.ApiClient;
+using Ch9.Data.Contracts;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -27,8 +28,8 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settingsKeyValues = new Dictionary<string, object>();
             _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";
 
-            _settings = new Settings(_settingsKeyValues);
-            _client = new TmdbNetworkClient(_settings, null);
+            _settings = new Settings(_settingsKeyValues, null);
+            _client = new TmdbNetworkClient(null, _settings.ApiKey);
         }
 
         [Fact]
@@ -67,7 +68,6 @@ namespace Ch9.Test.TmdbNetworkClientTests
         //    GetPersonsDetailsModel personsDetails = JsonConvert.DeserializeObject<GetPersonsDetailsModel>(response.Json);
         //    PrintPersonsDetails(personsDetails);
         //}
-
 
         private void PrintPersonsDetails(PersonsDetailsModel person)
         {

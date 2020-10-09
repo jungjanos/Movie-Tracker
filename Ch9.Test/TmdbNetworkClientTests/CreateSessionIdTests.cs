@@ -1,11 +1,11 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
-using Ch9.Models;
-using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
+using Newtonsoft.Json;
+using Ch9.Models;
+using Ch9.Services.LocalSettings;
+using Ch9.Data.ApiClient;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -35,8 +35,8 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";
             _settingsKeyValues[nameof(Settings.AccountName)] = "j4nitest";
             _settingsKeyValues[nameof(Settings.Password)] = "awx123.";
-            _settings = new Settings(_settingsKeyValues);
-            _client = new TmdbNetworkClient(_settings, null);
+            _settings = new Settings(_settingsKeyValues, null);
+            _client = new TmdbNetworkClient(null, _settings.ApiKey);
         }
 
         public async Task InitializeAsync()
@@ -83,7 +83,6 @@ namespace Ch9.Test.TmdbNetworkClientTests
         [InlineData(3, 1000)]
         public async Task WhenArgumentsValidAndCalledWithRetryOption_ReturnsNewSessionId(int retryCount, int delayMilliseconds)
         {
-
             // Act            
             var result = await _client.CreateSessionId(ValidatedToken, retryCount, delayMilliseconds);
             var session = JsonConvert.DeserializeObject<SessionIdResponseModel>(result.Json);
@@ -112,5 +111,4 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _output.WriteLine($"Server responded with status code: {result.HttpStatusCode}");
         }
     }
-
 }

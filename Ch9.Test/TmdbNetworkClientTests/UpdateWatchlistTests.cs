@@ -1,12 +1,13 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
-using Ch9.Models;
-using Ch9.Utils;
-using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
+using Ch9.Models;
+using Ch9.Infrastructure.Extensions;
+using Ch9.Services.LocalSettings;
+using Ch9.Data.ApiClient;
+using Ch9.Data.Contracts;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -29,18 +30,18 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settingsKeyValues = new Dictionary<string, object>();
             _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";
             _settingsKeyValues[nameof(Settings.SessionId)] = "563636d0e4a0b41b775ba7703cc5c985f36cffaf"; // !!!! correct it !!!!!
-            _settings = new Settings(_settingsKeyValues);
-            _client = new TmdbNetworkClient(_settings, null);
+            _settings = new Settings(_settingsKeyValues, null);
+            _client = new TmdbNetworkClient(null, _settings.ApiKey);
         }
 
         // empty the watchlist if not yet empty
         public async Task InitializeAsync()
         {
-            GetMovieWatchlistResult getWatchlist = await _client.GetMovieWatchlist();
+            GetMovieWatchlistResult getWatchlist = await _client.GetMovieWatchlist(_settings.SessionId);
             SearchResult moviesOnWatchlist = JsonConvert.DeserializeObject<SearchResult>(getWatchlist.Json);
 
             foreach (var movie in moviesOnWatchlist.MovieDetailModels)
-                await _client.UpdateWatchlist("movie", false, movie.Id);
+                await _client.UpdateWatchlist(_settings.SessionId, "movie", false, movie.Id);
         }
 
         public Task DisposeAsync() => Task.CompletedTask;
@@ -49,11 +50,11 @@ namespace Ch9.Test.TmdbNetworkClientTests
         //happy path
         public async Task WhenAddingMovieNotOnWatchlist_AddsMovie()
         {
-            var response = await _client.UpdateWatchlist(mediaType: "movie", add: true, mediaId: _movie1, accountId: null, retryCount: 0);
+            var response = await _client.UpdateWatchlist(_settings.SessionId, mediaType: "movie", add: true, mediaId: _movie1, accountId: null, retryCount: 0);
             _output.WriteLine($"Server responded: {response.HttpStatusCode}");
             _output.WriteLine(response.Json);
 
-            var watchlistResponse = await _client.GetMovieWatchlist();
+            var watchlistResponse = await _client.GetMovieWatchlist(_settings.SessionId);
 
             Assert.Contains(_movie1.ToString(), watchlistResponse.Json);
         }
@@ -62,12 +63,12 @@ namespace Ch9.Test.TmdbNetworkClientTests
         //happy path
         public async Task WhenAddingMovieAlreadyOnWatchlist_ReturnsSuccess()
         {
-            await _client.UpdateWatchlist(mediaType: "movie", add: true, mediaId: _movie1, accountId: null, retryCount: 0);
-            var response2 = await _client.UpdateWatchlist(mediaType: "movie", add: true, mediaId: _movie1, accountId: null, retryCount: 0);
+            await _client.UpdateWatchlist(_settings.SessionId, mediaType: "movie", add: true, mediaId: _movie1, accountId: null, retryCount: 0);
+            var response2 = await _client.UpdateWatchlist(_settings.SessionId, mediaType: "movie", add: true, mediaId: _movie1, accountId: null, retryCount: 0);
             _output.WriteLine($"Server responded: {response2.HttpStatusCode}");
             _output.WriteLine(response2.Json);
 
-            var watchlistResponse = await _client.GetMovieWatchlist();
+            var watchlistResponse = await _client.GetMovieWatchlist(_settings.SessionId);
 
             Assert.True(response2.HttpStatusCode.IsSuccessCode());
             Assert.Contains(_movie1.ToString(), watchlistResponse.Json);
@@ -77,7 +78,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // failure path
         public async Task WhenAddingInvalidMovie_Returns404()
         {
-            var response = await _client.UpdateWatchlist(mediaType: "movie", add: true, mediaId: _invalidMovieId, accountId: null, retryCount: 0);
+            var response = await _client.UpdateWatchlist(_settings.SessionId, mediaType: "movie", add: true, mediaId: _invalidMovieId, accountId: null, retryCount: 0);
             _output.WriteLine($"Server responded: {response.HttpStatusCode}");
 
             Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.NotFound);
@@ -87,7 +88,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // failure path
         public async Task WhenRemovingInvalidMovie_Returns404()
         {
-            var response = await _client.UpdateWatchlist(mediaType: "movie", add: false, mediaId: _invalidMovieId, accountId: null, retryCount: 0);
+            var response = await _client.UpdateWatchlist(_settings.SessionId, mediaType: "movie", add: false, mediaId: _invalidMovieId, accountId: null, retryCount: 0);
             _output.WriteLine($"Server responded: {response.HttpStatusCode}");
 
             Assert.True(response.HttpStatusCode == System.Net.HttpStatusCode.NotFound);
@@ -98,15 +99,15 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenRemovingMovieOnWatchlist_RemovesMovie()
         {
             // adding 
-            await _client.UpdateWatchlist(mediaType: "movie", add: true, mediaId: _movie1, accountId: null, retryCount: 0);
-            await _client.UpdateWatchlist(mediaType: "movie", add: true, mediaId: _movie2, accountId: null, retryCount: 0);
+            await _client.UpdateWatchlist(_settings.SessionId, mediaType: "movie", add: true, mediaId: _movie1, accountId: null, retryCount: 0);
+            await _client.UpdateWatchlist(_settings.SessionId, mediaType: "movie", add: true, mediaId: _movie2, accountId: null, retryCount: 0);
 
             // removing 
-            var response = await _client.UpdateWatchlist(mediaType: "movie", add: false, mediaId: _movie1, accountId: null, retryCount: 0);
+            var response = await _client.UpdateWatchlist(_settings.SessionId, mediaType: "movie", add: false, mediaId: _movie1, accountId: null, retryCount: 0);
             _output.WriteLine($"Server responded: {response.HttpStatusCode}");
             _output.WriteLine(response.Json);
 
-            var watchlistResponse = await _client.GetMovieWatchlist();
+            var watchlistResponse = await _client.GetMovieWatchlist(_settings.SessionId);
 
             Assert.DoesNotContain(_movie1.ToString(), watchlistResponse.Json);
             Assert.Contains(_movie2.ToString(), watchlistResponse.Json);
@@ -117,14 +118,14 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenRemovingMovieNotOnWatchlist_ReturnsSuccess()
         {
             // adding movie
-            await _client.UpdateWatchlist(mediaType: "movie", add: true, mediaId: _movie1, accountId: null, retryCount: 0);
+            await _client.UpdateWatchlist(_settings.SessionId, mediaType: "movie", add: true, mediaId: _movie1, accountId: null, retryCount: 0);
 
             // removing other movie not on list
-            var response = await _client.UpdateWatchlist(mediaType: "movie", add: false, mediaId: _movie2, accountId: null, retryCount: 0);
+            var response = await _client.UpdateWatchlist(_settings.SessionId, mediaType: "movie", add: false, mediaId: _movie2, accountId: null, retryCount: 0);
             _output.WriteLine($"Server responded: {response.HttpStatusCode}");
             _output.WriteLine(response.Json);
 
-            var watchlistResponse = await _client.GetMovieWatchlist();
+            var watchlistResponse = await _client.GetMovieWatchlist(_settings.SessionId);
 
             Assert.DoesNotContain(_movie2.ToString(), watchlistResponse.Json);
             Assert.True(response.HttpStatusCode.IsSuccessCode());

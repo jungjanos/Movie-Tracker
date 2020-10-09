@@ -1,13 +1,13 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
-using Ch9.Models;
-using Ch9.Utils;
-using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
+using Ch9.Models;
+using Ch9.Data.ApiClient;
+using Ch9.Services.LocalSettings;
+using Ch9.Infrastructure.Extensions;
 
 namespace Ch9.Test.TmdbNetworkClientTests
 {
@@ -31,8 +31,8 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settingsKeyValues = new Dictionary<string, object>();
             _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";
             _settingsKeyValues[nameof(Settings.SessionId)] = "563636d0e4a0b41b775ba7703cc5c985f36cffaf"; // !!!! correct it !!!!!
-            _settings = new Settings(_settingsKeyValues);
-            _client = new TmdbNetworkClient(_settings, null);
+            _settings = new Settings(_settingsKeyValues, null);
+            _client = new TmdbNetworkClient(null, _settings.ApiKey);
 
             _validMovieIds = new List<int>
             {
@@ -44,7 +44,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // Setup: create a temporary list for the tests
         public async Task InitializeAsync()
         {
-            var createListResult = await _client.CreateList("Test list 2", "some test list tralalala la í ő ű z ");
+            var createListResult = await _client.CreateList(_settings.SessionId, "Test list 2", "some test list tralalala la í ő ű z ");
             _output.WriteLine($"{nameof(InitializeAsync)}: {nameof(_client.CreateList)} returned {createListResult.HttpStatusCode}");
             _listId = JsonConvert.DeserializeObject<ListCrudResponseModel>(createListResult.Json).ListId;
             _output.WriteLine($"{nameof(InitializeAsync)}: list created with id {_listId}");
@@ -53,7 +53,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // Teardown
         public async Task DisposeAsync()
         {
-            var result = await _client.DeleteList(_listId);
+            var result = await _client.DeleteList(_settings.SessionId, _listId);
             // The TMDB WebAPI has some glitch with the CreateList response code: Http.500 == Success !!
             _output.WriteLine($"{nameof(DisposeAsync)}: {nameof(_client.DeleteList)}({_listId}) returned {(result.HttpStatusCode == System.Net.HttpStatusCode.InternalServerError ? "Success" : "some failure...")}");
         }
@@ -66,7 +66,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             int mediaId = _validMovieIds.First();
 
             // Act
-            var result = await _client.AddMovie(_listId, mediaId);
+            var result = await _client.AddMovie(_settings.SessionId, _listId, mediaId);
             _output.WriteLine($"{nameof(_client.AddMovie)}(list: {_listId}, mediaId: {mediaId}) responded with: {result.HttpStatusCode}");
 
             if (result.HttpStatusCode.IsSuccessCode())
@@ -83,13 +83,13 @@ namespace Ch9.Test.TmdbNetworkClientTests
             // Act
             foreach (var mediaId in _validMovieIds)
             {
-                var result = await _client.AddMovie(_listId, mediaId);
+                var result = await _client.AddMovie(_settings.SessionId, _listId, mediaId);
                 _output.WriteLine($"{nameof(_client.AddMovie)}(list: {_listId}, mediaId: {mediaId}) responded with: {result.HttpStatusCode}");
                 if (result.HttpStatusCode.IsSuccessCode())
                     _output.WriteLine($"TMDB server's response message {result.Json}");
             }
 
-            var listDetailResult = await _client.GetListDetails(_listId);
+            var listDetailResult = await _client.GetListDetails(_settings.SessionId, _listId);
             MovieListModel listDetails = null;
             if (listDetailResult.HttpStatusCode.IsSuccessCode())
             {
@@ -109,7 +109,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             int mediaId = 12345; // invalid media id
 
             // Act
-            var result = await _client.AddMovie(_listId, mediaId);
+            var result = await _client.AddMovie(_settings.SessionId, _listId, mediaId);
             _output.WriteLine($"{nameof(_client.AddMovie)}(list: {_listId}, mediaId: {mediaId}) responded with: {result.HttpStatusCode}");
 
             // Assert
@@ -126,7 +126,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settings.SessionId = "thisisaninvalidsessionid";
 
             // Act
-            var result = await _client.AddMovie(_listId, mediaId);
+            var result = await _client.AddMovie(_settings.SessionId, _listId, mediaId);
             _settings.SessionId = temp;
             _output.WriteLine($"{nameof(_client.AddMovie)}(list: {_listId}, mediaId: {mediaId}) responded with: {result.HttpStatusCode}");
 

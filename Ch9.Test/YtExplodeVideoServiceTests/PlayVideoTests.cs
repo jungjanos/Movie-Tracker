@@ -1,13 +1,13 @@
-﻿using Ch9.ApiClient;
-using Ch9.Services;
-using Ch9.Services.VideoService;
-using Ch9.Ui.Contracts;
+﻿using Ch9.Services.VideoService;
 using Ch9.Models;
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
+using Ch9.Services.LocalSettings;
+using Ch9.Services;
+using Ch9.Data.ApiClient;
 
 namespace Ch9.Test.YtExplodeVideoServiceTests
 {
@@ -29,7 +29,7 @@ namespace Ch9.Test.YtExplodeVideoServiceTests
             settingsKeyValues[nameof(Settings.SearchLanguage)] = _englishLanguage;
             settingsKeyValues[nameof(Settings.PlaybackQuality)] = VideoPlaybackQuality.High.ToString();
 
-            var settings = new Settings(settingsKeyValues);
+            var settings = new Settings(settingsKeyValues, null);
             var tmdbCachedSearchClient = new TmdbCachedSearchClient(new TmdbNetworkClient(settings, new System.Net.Http.HttpClient()));
             _ytExplodeVideoService = new YtExplodeVideoService(null, settings, tmdbCachedSearchClient);
 

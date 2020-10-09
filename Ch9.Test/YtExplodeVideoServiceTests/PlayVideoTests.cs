@@ -8,6 +8,7 @@ using Xunit.Abstractions;
 using Ch9.Services.LocalSettings;
 using Ch9.Services;
 using Ch9.Data.ApiClient;
+using Ch9.Services.ApiCommunicationService;
 
 namespace Ch9.Test.YtExplodeVideoServiceTests
 {
@@ -30,8 +31,10 @@ namespace Ch9.Test.YtExplodeVideoServiceTests
             settingsKeyValues[nameof(Settings.PlaybackQuality)] = VideoPlaybackQuality.High.ToString();
 
             var settings = new Settings(settingsKeyValues, null);
-            var tmdbCachedSearchClient = new TmdbCachedSearchClient(new TmdbNetworkClient(settings, new System.Net.Http.HttpClient()));
-            _ytExplodeVideoService = new YtExplodeVideoService(null, settings, tmdbCachedSearchClient);
+            var tmdbCachedSearchClient = new TmdbCachedSearchClient(new TmdbNetworkClient(null, settings.ApiKey));
+            //_ytExplodeVideoService = new YtExplodeVideoService(null, settings, tmdbCachedSearchClient);
+            _ytExplodeVideoService = new YtExplodeVideoService(null, settings, new TmdbApiService(tmdbCachedSearchClient, settings), null);
+
 
             _mockPageService.Setup(ps => ps.PushVideoPageAsync(It.IsAny<string>())).Callback<string>(streamUrl => streamUrlResult = streamUrl);
         }

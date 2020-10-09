@@ -7,6 +7,7 @@ using Xunit;
 using Xunit.Abstractions;
 using Ch9.Services.LocalSettings;
 using Ch9.Data.ApiClient;
+using Ch9.Services.ApiCommunicationService;
 
 namespace Ch9.Test.YtExplodeVideoServiceTests
 {
@@ -28,7 +29,8 @@ namespace Ch9.Test.YtExplodeVideoServiceTests
 
             var settings = new Settings(settingsKeyValues, null);
             var tmdbCachedSearchClient = new TmdbCachedSearchClient(new TmdbNetworkClient(new System.Net.Http.HttpClient(), settings.ApiKey));
-            _ytExplodeVideoService = new YtExplodeVideoService(null, settings, tmdbCachedSearchClient, null);
+            //_ytExplodeVideoService = new YtExplodeVideoService(null, settings, tmdbCachedSearchClient, null);
+            _ytExplodeVideoService = new YtExplodeVideoService(null, settings, new TmdbApiService(tmdbCachedSearchClient, settings), null);
         }
 
         //happy path

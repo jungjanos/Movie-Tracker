@@ -1,13 +1,14 @@
-﻿using Ch9.Services.VideoService;
-using Ch9.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
+using Ch9.Services.VideoService;
+using Ch9.Models;
 using Ch9.Services.LocalSettings;
 using Ch9.Data.ApiClient;
+using Ch9.Services.ApiCommunicationService;
 
 namespace Ch9.Test.YtExplodeVideoServiceTests
 {
@@ -36,7 +37,7 @@ namespace Ch9.Test.YtExplodeVideoServiceTests
 
             var settings = new Settings(settingsKeyValues, null);
             var tmdbCachedSearchClient = new TmdbCachedSearchClient(new TmdbNetworkClient(new System.Net.Http.HttpClient(), settings.ApiKey));
-            _ytExplodeVideoService = new YtExplodeVideoService(new System.Net.Http.HttpClient(), settings, tmdbCachedSearchClient, null);
+            _ytExplodeVideoService = new YtExplodeVideoService(null, settings, new TmdbApiService(tmdbCachedSearchClient, settings), null);
         }
 
         [Fact]

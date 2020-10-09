@@ -70,7 +70,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenCalledWithInvalidId_Returns404()
         {
             // Arrange 
-            int listId = 123456; // invalid id
+            int listId = 1231527006; // invalid id
 
             // Act
             var result = await _client.GetListDetails(_settings.SessionId, listId);

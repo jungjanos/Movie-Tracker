@@ -1,10 +1,10 @@
-﻿using Ch9.Services.VideoService;
-using Ch9.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
+using Ch9.Services.VideoService;
+using Ch9.Models;
 using Ch9.Services.LocalSettings;
 using Ch9.Data.ApiClient;
 using Ch9.Services.ApiCommunicationService;
@@ -29,8 +29,7 @@ namespace Ch9.Test.YtExplodeVideoServiceTests
             settingsKeyValues[nameof(Settings.PlaybackQuality)] = VideoPlaybackQuality.High.ToString();
 
             var settings = new Settings(settingsKeyValues, null);
-            var tmdbCachedSearchClient = new TmdbCachedSearchClient(new TmdbNetworkClient(new System.Net.Http.HttpClient(), settings.ApiKey));
-            //_ytExplodeVideoService = new YtExplodeVideoService(null, settings, tmdbCachedSearchClient, null);
+            var tmdbCachedSearchClient = new TmdbCachedSearchClient(new TmdbNetworkClient(new System.Net.Http.HttpClient(), settings.ApiKey));            
             _ytExplodeVideoService = new YtExplodeVideoService(null, settings, new TmdbApiService(tmdbCachedSearchClient, settings), null);
         }
 
@@ -55,7 +54,6 @@ namespace Ch9.Test.YtExplodeVideoServiceTests
 
             Assert.Null(videoModel.Streams);
         }
-
 
         private void PrintStreamSetDetails(VideoStreamInfoSet streamSet)
         {

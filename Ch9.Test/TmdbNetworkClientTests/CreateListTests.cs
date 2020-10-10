@@ -27,7 +27,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _listIdsToDispose = new List<int>();
             _settingsKeyValues = new Dictionary<string, object>();
             _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";
-            _settingsKeyValues[nameof(Settings.SessionId)] = "563636d0e4a0b41b775ba7703cc5c985f36cffaf"; // !!!! correct it !!!!!
+            _settingsKeyValues[nameof(Settings.SessionId)] = "17e9c7d453286dbd089842c056f5316605516f26";
             _settings = new Settings(_settingsKeyValues, null);
             _client = new TmdbNetworkClient(null, _settings.ApiKey);
         }
@@ -50,7 +50,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             string language = "en";
 
             // Act
-            var result = await _client.CreateList(name, description, language);
+            var result = await _client.CreateList(_settings.SessionId, name, description, language);
             _output.WriteLine($"TMDB server responded: {result.HttpStatusCode.ToString()}");
 
             if (result.HttpStatusCode == System.Net.HttpStatusCode.Created)
@@ -70,12 +70,12 @@ namespace Ch9.Test.TmdbNetworkClientTests
             string description = "test double";
             string language = "en";
 
-            var result1 = await _client.CreateList(name, description, language);
+            var result1 = await _client.CreateList(_settings.SessionId, name, description, language);
             if (result1.HttpStatusCode == System.Net.HttpStatusCode.Created)
                 _listIdsToDispose.Add(JsonConvert.DeserializeObject<ListCrudResponseModel>(result1.Json).ListId);
 
             // Act
-            var result2 = await _client.CreateList(name, description, language);
+            var result2 = await _client.CreateList(_settings.SessionId, name, description, language);
             _output.WriteLine($"TMDB server responded: {result2.HttpStatusCode.ToString()}");
             if (result2.HttpStatusCode == System.Net.HttpStatusCode.Created)
                 _listIdsToDispose.Add(JsonConvert.DeserializeObject<ListCrudResponseModel>(result2.Json).ListId);
@@ -96,7 +96,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             _settings.SessionId = "thisisaninvalidsessionid";
 
             // Act
-            var result = await _client.CreateList(name, description, language);
+            var result = await _client.CreateList(_settings.SessionId, name, description, language);
             _settings.SessionId = temp;
 
             _output.WriteLine($"TMDB server responded: {result.HttpStatusCode.ToString()}");
@@ -117,7 +117,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             await _client.CreateList(name, description, language);
 
             // Act
-            var result = await _client.CreateList(name, description, language);
+            var result = await _client.CreateList(_settings.SessionId, name, description, language);
             _output.WriteLine($"TMDB server responded: {result.HttpStatusCode.ToString()}");
 
             // Assert

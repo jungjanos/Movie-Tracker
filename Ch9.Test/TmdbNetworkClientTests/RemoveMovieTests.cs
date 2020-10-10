@@ -30,7 +30,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
             _settingsKeyValues = new Dictionary<string, object>();
             _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";
-            _settingsKeyValues[nameof(Settings.SessionId)] = "563636d0e4a0b41b775ba7703cc5c985f36cffaf"; // !!!! correct it !!!!!
+            _settingsKeyValues[nameof(Settings.SessionId)] = "17e9c7d453286dbd089842c056f5316605516f26"; 
             _settings = new Settings(_settingsKeyValues, null);
             _client = new TmdbNetworkClient(null, _settings.ApiKey);
 
@@ -44,7 +44,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // Setup: create a temporary list with movies for the tests
         public async Task InitializeAsync()
         {
-            var createListResult = await _client.CreateList(_settings.SessionId, "Test list1 with movies", "test list for movie deletion");
+            var createListResult = await _client.CreateList(sessionId: _settings.SessionId, name: "Test list1 with movies", description: "");
             _output.WriteLine($"{nameof(InitializeAsync)}: {nameof(_client.CreateList)}() returned {createListResult.HttpStatusCode}");
             _listId = JsonConvert.DeserializeObject<ListCrudResponseModel>(createListResult.Json).ListId;
             _output.WriteLine($"{nameof(InitializeAsync)}: list created with id {_listId}");

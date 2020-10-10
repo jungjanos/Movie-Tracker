@@ -23,7 +23,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
 
             _settingsKeyValues = new Dictionary<string, object>();
             _settingsKeyValues[nameof(Settings.ApiKey)] = "764d596e888359d26c0dc49deffecbb3";
-            _settingsKeyValues[nameof(Settings.SessionId)] = "563636d0e4a0b41b775ba7703cc5c985f36cffaf"; // !!!! correct it !!!!!
+            _settingsKeyValues[nameof(Settings.SessionId)] = "17e9c7d453286dbd089842c056f5316605516f26"; 
             _settings = new Settings(_settingsKeyValues, null);
             _client = new TmdbNetworkClient(null, _settings.ApiKey);
         }
@@ -38,7 +38,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
             string description = "delete test";
             string language = "en";
 
-            var createListResult = await _client.CreateList(name, description, language);
+            var createListResult = await _client.CreateList(_settings.SessionId, name, description, language);
             var createResponse = JsonConvert.DeserializeObject<ListCrudResponseModel>(createListResult?.Json);
 
             int? id = createResponse?.ListId;
@@ -62,7 +62,7 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenListDoesNotExists_ReturnsNotFound404()
         {
             // Arrange some invalid Id:
-            int id = 123456;
+            int id = 1234024256;
 
             // Act
             var deleteResult = await _client.DeleteList(_settings.SessionId, id);

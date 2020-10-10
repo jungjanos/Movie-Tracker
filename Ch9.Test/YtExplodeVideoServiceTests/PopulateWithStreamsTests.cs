@@ -11,6 +11,7 @@ using Ch9.Services.ApiCommunicationService;
 
 namespace Ch9.Test.YtExplodeVideoServiceTests
 {
+    
     public class PopulateWithStreamsTests
     {
         private readonly ITestOutputHelper _output;
@@ -34,7 +35,7 @@ namespace Ch9.Test.YtExplodeVideoServiceTests
         }
 
         //happy path
-        [Fact]
+        [Fact]        
         public async Task WhenCalledOnValidYoutubeId_PopulatesObject()
         {
             TmdbVideoModel videoModel = new TmdbVideoModel { Key = _youtubetMovieTrailer };

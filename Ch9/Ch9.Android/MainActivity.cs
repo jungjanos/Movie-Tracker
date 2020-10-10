@@ -30,8 +30,7 @@ namespace Ch9.Droid
             SubscribeToMessages();
 
             HttpClient httpClient = new HttpClient(new Xamarin.Android.Net.AndroidClientHandler());
-            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows) Gecko Firefox");
-            //var x = Xamarin.Forms.Application.Current.Properties;
+            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows) Gecko Firefox");            
             LoadApplication(new App(httpClient));
         }
 

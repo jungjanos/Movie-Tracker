@@ -61,11 +61,11 @@ namespace Ch9.Test.TmdbNetworkClientTests
         [Fact]
         public async Task WhenApiKeyIsInvalid_DoesNotBreakAndGivesErrorCode()
         {
-            //Arrange            
-            _settingsKeyValues[nameof(Settings.ApiKey)] = "invalidkeytest1012";
+            //Arrange
+            var client = new TmdbNetworkClient(null, "invalidkeytest1012");
 
             //Act
-            CreateRequestTokenResult result = await _client.CreateRequestToken();
+            CreateRequestTokenResult result = await client.CreateRequestToken();
 
             //Assert
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.Unauthorized);
@@ -75,10 +75,10 @@ namespace Ch9.Test.TmdbNetworkClientTests
         public async Task WhenApiKeyIsInvalidAndCalledMultipleTimes_DoesNotBreakAndGivesErrorCode()
         {
             //Arrange
-            _settingsKeyValues[nameof(Settings.ApiKey)] = "invalidkeytest1012";
+            var client = new TmdbNetworkClient(null, "invalidkeytest1012");
 
             //Act
-            CreateRequestTokenResult result = await _client.CreateRequestToken(3, 1000);
+            CreateRequestTokenResult result = await client.CreateRequestToken(3, 1000);
 
             //Assert
             Assert.True(result.HttpStatusCode == System.Net.HttpStatusCode.Unauthorized);

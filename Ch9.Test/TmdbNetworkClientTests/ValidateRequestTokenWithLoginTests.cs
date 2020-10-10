@@ -120,11 +120,11 @@ namespace Ch9.Test.TmdbNetworkClientTests
         // error path
         public async Task WhenCalledWithInValidApiKeyAndRetryOption_ReturnsCode401AndDoesNotBreak(int retryCount, int delayMilliseconds)
         {
-            // Arrange
-            _settings.ApiKey = "invalidkeytestcase";
+            // Arrange            
+            var client = new TmdbNetworkClient(null, "invalidkeytestcase");
 
             // Act
-            var result = await _client.ValidateRequestTokenWithLogin(
+            var result = await client.ValidateRequestTokenWithLogin(
                 _settings.AccountName,
                 _settings.Password,
                 RequestToken,

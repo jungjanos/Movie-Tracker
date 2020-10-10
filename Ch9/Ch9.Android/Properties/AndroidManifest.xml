@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.janos.jung.movietracker" android:versionName="1.01.01 upgraded packages" android:installLocation="auto" android:versionCode="66">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.janos.jung.movietracker" android:versionName="1.02.00 upgraded target android version, package updates" android:installLocation="auto" android:versionCode="67">
 	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="30" />
 	<application android:label="MovieTracker" android:icon="@drawable/CinemaPic3"></application>
 </manifest>

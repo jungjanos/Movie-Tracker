@@ -17,8 +17,6 @@ namespace Ch9.ViewModels
     {
         public MovieDetailModel Movie { get; private set; }        
         private readonly UsersMovieListsService2 _movieListsService2;
-        private readonly IMovieDetailModelConfigurator _movieDetailModelConfigurator;
-        private readonly IPersonDetailModelConfigurator _personDetailModelConfigurator;
         private readonly IMovieDetailsService _movieDetailsService;
         private readonly IVideoService _videoService;
         private readonly IWeblinkComposer _weblinkComposer;
@@ -110,8 +108,6 @@ namespace Ch9.ViewModels
         public MovieDetailPageViewModel(
             MovieDetailModel movie,            
             UsersMovieListsService2 movieListsService2,
-            IMovieDetailModelConfigurator movieDetailModelConfigurator,
-            IPersonDetailModelConfigurator personDetailModelConfigurator,
             IMovieDetailsService movieDetailsService,
             IVideoService videoService,
             IWeblinkComposer weblinkComposer,
@@ -119,8 +115,6 @@ namespace Ch9.ViewModels
         {
             Movie = movie;            
             _movieListsService2 = movieListsService2;
-            _movieDetailModelConfigurator = movieDetailModelConfigurator;
-            _personDetailModelConfigurator = personDetailModelConfigurator;
             _movieDetailsService = movieDetailsService;
             _videoService = videoService;
             _weblinkComposer = weblinkComposer;

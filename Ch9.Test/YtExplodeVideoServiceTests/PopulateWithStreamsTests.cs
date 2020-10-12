@@ -10,8 +10,7 @@ using Ch9.Data.ApiClient;
 using Ch9.Services.ApiCommunicationService;
 
 namespace Ch9.Test.YtExplodeVideoServiceTests
-{
-    
+{    
     public class PopulateWithStreamsTests
     {
         private readonly ITestOutputHelper _output;

@@ -1,14 +1,14 @@
-﻿using Ch9.Services.VideoService;
-using Ch9.Models;
-using Moq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
+using Moq;
+using Ch9.Services.VideoService;
+using Ch9.Models;
 using Ch9.Services.LocalSettings;
-using Ch9.Services;
 using Ch9.Data.ApiClient;
 using Ch9.Services.ApiCommunicationService;
+using Ch9.Services.Contracts;
 
 namespace Ch9.Test.YtExplodeVideoServiceTests
 {
@@ -20,7 +20,7 @@ namespace Ch9.Test.YtExplodeVideoServiceTests
 
         private string _youtubetMovieTrailer = "w7pYhpJaJW8"; // Alita        
         private string _invalidYoutubeKey = "-bBzMeBFqFV";
-        private Mock<IPageService> _mockPageService = new Mock<IPageService>();
+        private Mock<IPlayVideo> _mockVideoPlayer = new Mock<IPlayVideo>();
         private string streamUrlResult = null;
 
         public PlayVideoTests(ITestOutputHelper output)
@@ -32,11 +32,9 @@ namespace Ch9.Test.YtExplodeVideoServiceTests
 
             var settings = new Settings(settingsKeyValues, null);
             var tmdbCachedSearchClient = new TmdbCachedSearchClient(new TmdbNetworkClient(null, settings.ApiKey));
-            //_ytExplodeVideoService = new YtExplodeVideoService(null, settings, tmdbCachedSearchClient);
-            _ytExplodeVideoService = new YtExplodeVideoService(null, settings, new TmdbApiService(tmdbCachedSearchClient, settings), null);
+            _mockVideoPlayer.Setup(player => player.OpenVideoStreamDirectly(It.IsAny<string>())).Callback<string>(streamUrl => streamUrlResult = streamUrl);
 
-
-            _mockPageService.Setup(ps => ps.PushVideoPageAsync(It.IsAny<string>())).Callback<string>(streamUrl => streamUrlResult = streamUrl);
+            _ytExplodeVideoService = new YtExplodeVideoService(null, settings, new TmdbApiService(tmdbCachedSearchClient, settings), _mockVideoPlayer.Object);
         }
 
         // happy path
@@ -48,10 +46,10 @@ namespace Ch9.Test.YtExplodeVideoServiceTests
             await _ytExplodeVideoService.PopulateWithStreams(videoModel);
 
             // Act
-            await _ytExplodeVideoService.PlayVideo(videoModel, _mockPageService.Object);
+            await _ytExplodeVideoService.PlayVideo(videoModel);
 
             // Assert
-            _mockPageService.Verify(m => m.PushVideoPageAsync(It.Is<string>(str => !string.IsNullOrEmpty(str))), Times.Once);
+            _mockVideoPlayer.Verify(m => m.OpenVideoStreamDirectly(It.Is<string>(str => !string.IsNullOrEmpty(str))), Times.Once);
             _output.WriteLine($"Selected stream Url: {streamUrlResult}");
         }
 
@@ -64,10 +62,10 @@ namespace Ch9.Test.YtExplodeVideoServiceTests
             await _ytExplodeVideoService.PopulateWithStreams(videoModel);
 
             //Act
-            await _ytExplodeVideoService.PlayVideo(videoModel, _mockPageService.Object);
+            await _ytExplodeVideoService.PlayVideo(videoModel);
 
             //Assert
-            _mockPageService.Verify(m => m.PushVideoPageAsync(It.IsAny<string>()), Times.Never);
+            _mockVideoPlayer.Verify(m => m.OpenVideoStreamDirectly(It.IsAny<string>()), Times.Never);
             _output.WriteLine($"Selected stream Url: {streamUrlResult}");
         }
     }

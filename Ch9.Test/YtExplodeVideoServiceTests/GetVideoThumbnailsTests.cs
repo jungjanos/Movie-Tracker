@@ -17,7 +17,6 @@ namespace Ch9.Test.YtExplodeVideoServiceTests
     // for the critical YtExplodeVideoService.GetVideoThumbnails(...) function accessing the YoutubeExplode
     // API (ripping thumbnails and video data from Youtube)
 
-
     public class GetVideoThumbnailsTests
     {
         private readonly ITestOutputHelper _output;
@@ -89,7 +88,6 @@ namespace Ch9.Test.YtExplodeVideoServiceTests
             Assert.IsType<Exception>(exception);
             Assert.Contains("TMDB", (exception as Exception).Message);
         }
-
 
         private void PrintImageDetails(ImageModel image)
         {

@@ -1,14 +1,13 @@
 ﻿#if !GOOGLEPLAY
-using YoutubeExplode;
-using YoutubeExplode.Models.MediaStreams;
-
-using Ch9.Models;
-using Ch9.Services.Contracts;
 
 using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using YoutubeExplode;
+using YoutubeExplode.Videos.Streams;
+using Ch9.Models;
+using Ch9.Services.Contracts;
 
 namespace Ch9.Services.VideoService
 {
@@ -40,19 +39,22 @@ namespace Ch9.Services.VideoService
             _streamSelector = new YtVideoStreamSelector(settings);
         }
 
+        /// <summary>Tries to populate the Streams property. Does not throw </summary>
         public async Task PopulateWithStreams(TmdbVideoModel attachedVideo)
         {
             try
             {
-                MediaStreamInfoSet streamInfoSet = await _youtubeClient.GetVideoMediaStreamInfosAsync(attachedVideo.Key);
-                var streams = streamInfoSet.Muxed.Select(stream => GetStreamInfo(stream));
+                var videoManifest = await _youtubeClient.Videos.Streams.GetManifestAsync(attachedVideo.Key);
+                var muxedList = videoManifest.GetMuxed();
 
-                attachedVideo.Streams = new VideoStreamInfoSet(streams, streamInfoSet.ValidUntil);
+                var streams = muxedList.Select(stream => MapStreamInfo(stream));
+
+                attachedVideo.Streams = new VideoStreamInfoSet(streams, DateTimeOffset.Now.AddMinutes(60)); // validity no longer provided by YtExplode, setting it arbitrarily 
             }
             catch { }
         }
 
-        private static Models.VideoStreamInfo GetStreamInfo(MuxedStreamInfo muxedStreamInfo) => new Models.VideoStreamInfo(
+        private static VideoStreamInfo MapStreamInfo(MuxedStreamInfo muxedStreamInfo) => new VideoStreamInfo(
             streamUrl: muxedStreamInfo.Url,
             quality: (Models.VideoQuality)muxedStreamInfo.VideoQuality,
             qualityLabel: muxedStreamInfo.VideoQualityLabel,

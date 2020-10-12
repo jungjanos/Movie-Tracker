@@ -13,7 +13,6 @@
   <ItemGroup>
     <Compile Remove="TmdbNetworkClientTests\GetAccountMovieStatesTests2.cs" />
     <Compile Remove="TmdbNetworkClientTests\GetMovieDetailsWithAccountStatesTests_AccountMovieStates_ONLY.cs" />
-    <Compile Remove="YtExplodeVideoServiceTests\PlayVideoTests.cs" />
   </ItemGroup>
 
   <ItemGroup>
